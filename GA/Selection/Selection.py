@@ -1,0 +1,52 @@
+from abc import ABC, abstractmethod
+from typing import List
+from evodesign.Population import Individual
+
+
+
+
+
+class Selection(ABC):
+  """
+  La representación de la operación de selección de padres que se aplica para 
+  seleccionar un subconjunto de individuos (i.e., de secuencias) de una 
+  población particular.
+  """
+  
+  def __init__(self, selectionSize: int) -> None:
+    """
+    Constructor.
+    - `selectionSize`: el número de individuos a elegir como padres.
+    """
+    super().__init__()
+    self._selection_size = selectionSize
+  
+
+
+  @classmethod
+  @abstractmethod
+  def get_name(cls) -> str:
+    pass
+
+
+
+  @abstractmethod
+  def select_parents(self, population: List[Individual]) -> List[Individual]:
+    """
+    Selecciona algunos individuos del arreglo especificado por `population` 
+    para posteriormente recombinarlos y generar la población de la siguiente 
+    generación.
+    """
+    pass
+
+
+
+  def get_params_memento(self) -> dict:
+    return {
+      'selectionSize': self._selection_size
+    }
+
+
+
+  def apply(self, population: List[Individual]) -> List[Individual]:
+    return self.select_parents(population)
