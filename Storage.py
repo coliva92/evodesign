@@ -3,10 +3,11 @@ import json
 from .Population import Individual
 from typing import List, Tuple
 from .Algorithm import Algorithm
-from .Prediction import ESMFold as Predictor_ESMFold
 from .Prediction import Testing as Predictor_Testing
-from .Fitness import NegativeRmsd as Fitness_NegativeRmsd
+from .Prediction import ESMFold as Predictor_ESMFold
 from .Fitness import Testing as Fitness_Testing
+from .Fitness import NegativeRmsd as Fitness_NegativeRmsd
+from .Fitness import NegativeGdt as Fitness_NegativeGdt
 from .GA import GeneticAlgorithm as GA
 from .GA.Selection import Overselection as GA_Selection_Overselection
 from .GA.Selection import Tournament as GA_Selection_Tournament
