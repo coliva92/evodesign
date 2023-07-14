@@ -23,7 +23,7 @@ class _Workspace:
     self.stats_filename = self.setup_filename.replace('setup.json', 
                                                       'statistics.csv')
     self.children_filename = self.setup_filename.replace('setup.json', 
-                                                         '~children.json')
+                                                         '~children.bkp')
     self.graph_filename = self.setup_filename.replace('setup.json', 
                                                       'fitness.png')
     self.populations_folder = self.setup_filename.replace('setup.json', 
