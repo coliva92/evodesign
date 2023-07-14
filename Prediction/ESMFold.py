@@ -34,6 +34,7 @@ class ESMFold(Predictor):
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence)
     if response.status_code != 200:
+      # print(response.content.decode())
       raise RuntimeError('a call to the ESMFold remote API failed.')
     with open(pdbFilename, 'wt', encoding='utf-8') as file:
         file.write(response.content.decode())
