@@ -2,6 +2,17 @@
 
 Esta es un programa y un _framework_ rudimentario, escrito en Python 3.8, para ejecutar diferentes algoritmos evolutivos para el diseño de proteínas. En el diseño de proteínas, el objetivo es encontrar la secuencia de aminoácidos que se pliega en una estructura objetivo determinada.
 
+## Contenido
+
+1. [Instalación](#instalacion)
+2. [Instrucciones de uso desde la consola](#instrucciones-consola)
+  1. [Ejemplo](#ejemplo)
+  2. [Condición de finalización del algoritmo evolutivo](#condicion-finalizacion)
+  3. [Reanudar la ejecución del programa a partir de una interrupción anterior](#reanudar-ejecucion)
+  4. [Extender la ejecución del programa](#extender-ejecucion)
+
+
+<a name="instalacion"></a>
 ## Instalación
 
 Para utilizar EvoDesign, primero se debe instalar BioPython y Matplotlib en sus versiones más recientes. **Si usted usa Anaconda Python, no es necesario que instale estos paquetes de software**.
@@ -9,6 +20,7 @@ Para utilizar EvoDesign, primero se debe instalar BioPython y Matplotlib en sus 
 - [Instrucciones de instalación de BioPython](https://biopython.org/wiki/Download).
 - [Instrucciones de instalación de Matplotlib](https://matplotlib.org/stable/users/getting_started/index.html#installation-quick-start).
 
+<a name="instrucciones-consola"></a>
 ## Instrucciones de uso desde la consola
 
 Para correr un algoritmo evolutivo utilizando EvoDesign, se deben seguir los siguientes pasos:
@@ -18,6 +30,7 @@ Para correr un algoritmo evolutivo utilizando EvoDesign, se deben seguir los sig
 3. Llenar el archivo `setup.json` con la configuración del algoritmo que se desea ejecutar. En el ejemplo siguiente se describe el formato en que debe escribirse dicha configuración.
 4. Comenzar la ejecución del programa usando el comando: `python3 -m evodesign <workspace>/setup.json`. 
 
+<a name="ejemplo"></a>
 ### Ejemplo
 
 Supóngase que se desea ejecutar un algoritmo genético que cumpla con las siguientes características:
@@ -109,6 +122,7 @@ Al finalizar la ejecución del programa, la carpeta _workspace_ debería contene
 - El archivo `setup.json` es el mismo archivo de configuración que se mencionó anteriormente. No se modifica durante la ejecución del algoritmo. 
 - El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Algunos de estos datos incluyen: la aptitud promedio de toda la población, la aptitud más alta de la población, y la secuencia de aminoácidos cuya aptitud es la mayor.
 
+<a name="condicion-finalizacion"></a>
 ### Condición de finalización del algoritmo evolutivo
 
 La condición de finalización está preestablecida y es particular según el algoritmo evolutivo seleccionado en la configuración del programa. Sin embargo, en general el programa finalizará su ejecución al momento que se cumpla al menos una de las siguientes condiciones: 
@@ -117,6 +131,7 @@ La condición de finalización está preestablecida y es particular según el al
 - se alcanzó el número máximo de iteraciones a ejecutar (cantidad que debió ser especificada por el usuario en el archivo de configuración);
 - hubo cierta cantidad de iteraciones consecutivas donde la aptitud poblacional no experimentó cambios relevantes (es decir, cuando se ha llegado a un óptimo local). 
 
+<a name="reanudar-ejecucion"></a>
 ### Reanudar la ejecución del programa a partir de una interrupción anterior
 
 Es posible que en algún punto se vea interrumpida la ejecución del programa (ya sea porque ocurrió un error, porque el API remoto de ESMFold falló en responder a una petición, o porque el usuario interrumpió el programa deliveradamente). En estos casos, es posible reanudar la ejecución del programa, continuando desde la iteración que fue interrumpida. Para ello, simplemente hay que volver a ingresar en la consola el mismo comando mostrado anteriormente: 
@@ -125,6 +140,7 @@ Es posible que en algún punto se vea interrumpida la ejecución del programa (y
 python -m evodesign example/setup.json
 ```
 
+<a name="extender-ejecucion"></a>
 ### Extender la ejecución del programa
 
 Supóngase que el algoritmo utilizado en el ejemplo anterior terminó de ejecutar las 20 iteraciones que fueron especificadas en `example/setup.json`, y supóngase que se desea correr este mismo algoritmo por 10 iteraciones adicionales. Para lograr esto, simplemente debe modificarse el archivo `example/setup.json` para cambiar el campo que originalmente decía `"numIterations": 20` por `"numIterations": 30`. Luego, se vuelve a ejecutar el comando `python -m evodesign example/setup.json`.
