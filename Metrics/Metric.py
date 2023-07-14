@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 from Bio.PDB.Atom import Atom
 
 
@@ -20,7 +20,7 @@ class Metric(ABC):
   @abstractmethod
   def compute(self, 
               model_backbone: List[Atom], 
-              reference_backbone: Optional[List[Atom]]) -> float:
+              reference_backbone: List[Atom]) -> float:
     """
     Calcula la métrica de calidad del esqueleto especificado por `backbone`.
     """

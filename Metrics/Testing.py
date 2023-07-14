@@ -1,6 +1,6 @@
 from .Metric import Metric
 from Bio.PDB.Atom import Atom
-from typing import List, Optional
+from typing import List
 import random
 
 
@@ -16,7 +16,7 @@ class Testing(Metric):
 
   def compute(self, 
               model_backbone: List[Atom],
-              reference_backbone: Optional[List[Atom]]) -> float:
+              reference_backbone: List[Atom]) -> float:
     """
     Superpone el esqueleto especificado por `backbone` sobre el esqueleto de 
     referencia y retorna el RMSD resultante.
