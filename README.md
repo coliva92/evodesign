@@ -6,11 +6,10 @@ Esta es un programa y un _framework_ rudimentario, escrito en Python 3.8, para e
 
 1. [Instalación](#instalacion)
 2. [Instrucciones de uso desde la consola](#instrucciones-consola)
-  1. [Ejemplo](#ejemplo)
+  1. 1. [Ejemplo](#ejemplo)
   2. [Condición de finalización del algoritmo evolutivo](#condicion-finalizacion)
   3. [Reanudar la ejecución del programa a partir de una interrupción anterior](#reanudar-ejecucion)
   4. [Extender la ejecución del programa](#extender-ejecucion)
-
 
 <a name="instalacion"></a>
 ## Instalación
@@ -120,7 +119,10 @@ Al finalizar la ejecución del programa, la carpeta _workspace_ debería contene
 - El archivo `~children.bkp` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
 - El archivo `fitness.png` contiene la gráfica que muestra la aptitud de la población en cada iteración del algoritmo.
 - El archivo `setup.json` es el mismo archivo de configuración que se mencionó anteriormente. No se modifica durante la ejecución del algoritmo. 
-- El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Algunos de estos datos incluyen: la aptitud promedio de toda la población, la aptitud más alta de la población, y la secuencia de aminoácidos cuya aptitud es la mayor.
+- El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Estos datos son los siguientes:
+  - La aptitud mínima, promedio y máxima de la población.
+  - El identificador, el valor de aptitudo, y los valores individuales de las demás métricas correspondientes al individuo de mayor aptitud.
+  - La secuencia de aminoácidos correspondiente al individuo de mayor aptitud.
 
 <a name="condicion-finalizacion"></a>
 ### Condición de finalización del algoritmo evolutivo
