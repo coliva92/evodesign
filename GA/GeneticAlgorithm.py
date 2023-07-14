@@ -16,7 +16,7 @@ import evodesign.Statistics as Statistics
 class GeneticAlgorithm(Algorithm):
   
   def __init__(self,
-               taskName: str,
+               workspaceName: str,
                referencePdbFilename: str,
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
@@ -26,7 +26,7 @@ class GeneticAlgorithm(Algorithm):
                recombination: Recombination,
                mutation: Mutation,
                replacement: Replacement) -> None:
-    super().__init__(taskName, referencePdbFilename, predictor)
+    super().__init__(workspaceName, referencePdbFilename, predictor)
     self._population_size = populationSize
     self._num_iterations = numIterations
     self._fitness_fn = fitnessFunction
@@ -135,7 +135,7 @@ class GeneticAlgorithm(Algorithm):
       self._avg_fitnesses.append(stats['fitness_mean'])
     Statistics.plot_fitness_over_iterations(self.workspace.stats_filename, 
                                             self.workspace.graph_filename,
-                                            self.workspace.task_name)
+                                            self.workspace.name)
 
 
 

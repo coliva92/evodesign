@@ -14,11 +14,11 @@ import os
 class _Workspace:
   
   def __init__(self, 
-               taskName: str, 
+               name: str, 
                referencePdbFilename: str) -> None:
     self.reference_filename = referencePdbFilename
-    self.task_name = taskName
-    self.setup_filename = os.path.abspath(os.path.join(self.task_name, 
+    self.name = name
+    self.setup_filename = os.path.abspath(os.path.join(self.name, 
                                                        'setup.json'))
     self.stats_filename = self.setup_filename.replace('setup.json', 
                                                       'statistics.csv')
@@ -98,7 +98,7 @@ class Algorithm(ABC):
   """
   
   def __init__(self,
-               taskName: str,
+               workspaceName: str,
                referencePdbFilename: str,
                predictor: Predictor) -> None:
     """
@@ -115,7 +115,7 @@ class Algorithm(ABC):
     reference = PDB.load_structure_from_pdb_file(referencePdbFilename)
     self._sequence_length = Chain.count_residues_from_chain(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_from_chain(reference)
-    self.workspace = _Workspace(taskName, referencePdbFilename)
+    self.workspace = _Workspace(workspaceName, referencePdbFilename)
 
 
 
@@ -134,7 +134,7 @@ class Algorithm(ABC):
 
   def get_params_memento(self) -> dict:
     return {
-      'taskName': self.workspace.task_name,
+      'workspaceName': self.workspace.name,
       'referencePdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.get_name()
     }
