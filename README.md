@@ -6,7 +6,7 @@ Esta es un programa y un _framework_ rudimentario, escrito en Python 3.8, para e
 
 1. [Instalación](#instalacion)
 2. [Instrucciones de uso desde la consola](#instrucciones-consola)
-  1. 1. [Ejemplo](#ejemplo)
+  1. [Ejemplo](#ejemplo)
   2. [Condición de finalización del algoritmo evolutivo](#condicion-finalizacion)
   3. [Reanudar la ejecución del programa a partir de una interrupción anterior](#reanudar-ejecucion)
   4. [Extender la ejecución del programa](#extender-ejecucion)
