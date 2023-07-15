@@ -51,7 +51,8 @@ class _Workspace:
                       ) -> None:
     """Respalda el conjunto de individuos especificado por `population` en un 
     archivo JSON localizado en `{self.name}/populations/pop_{iterationId}.json`.
-    - `iterationId`: el identificador de la iteración que corresponde a la población a respaldar.
+    - `iterationId`: el identificador de la iteración que corresponde a la 
+    población a respaldar.
     - `population`: la colección de individuos que van a respaldarse. 
     """
     os.makedirs(self.populations_folder, exist_ok=True)
@@ -70,7 +71,8 @@ class _Workspace:
   def backup_children(self, 
                       children: List[Individual]
                       ) -> None:
-    """Respalda la lista de hijos especificada por `children` en un archivo JSON localizado en `{self.name}/~children.bkp`.
+    """Respalda la lista de hijos especificada por `children` en un archivo 
+    JSON localizado en `{self.name}/~children.bkp`.
     - `children`: la lista de secuencias hijas que van a respaldarse.
     """
     memento = [ individual.get_memento() for individual in children ]
@@ -84,9 +86,13 @@ class _Workspace:
                              idx: int, 
                              child: Individual
                              ) -> None:
-    """Modifica el contenido del archivo `{self.name}/~children.bkp`, en la posición indicada por `idx`, para escribir los datos especificados por `child`.
-    - `idx`: el identificador ordinal de la secuencia hija cuyos datos serán reemplazados en el archivo `~children.bkp`.
-    - `child`: la secuencia y sus datos correspondientes que van a escribirse al archivo.
+    """Modifica el contenido del archivo `{self.name}/~children.bkp`, en la 
+    posición indicada por `idx`, para escribir los datos especificados por 
+    `child`.
+    - `idx`: el identificador ordinal de la secuencia hija cuyos datos serán 
+    reemplazados en el archivo `~children.bkp`.
+    - `child`: la secuencia y sus datos correspondientes que van a escribirse 
+    al archivo.
     """
     memento = child.get_memento()
     self.children_memento[idx] = memento
