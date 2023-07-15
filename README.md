@@ -41,7 +41,7 @@ Para lograr esto, el archivo de configuración `setup.json` debe contener lo sig
   "algorithmType": "GA",
   "algorithmParams": {
     "workspaceName": "example",
-    "referencePdbFilename": "example/1Y32.pdb",
+    "targetPdbFilename": "example/1Y32.pdb",
     "predictor": "Predictor_ESMFold",
     "fitnessFunction": "Fitness_NegativeRmsd",
     "populationSize": 10,
@@ -68,7 +68,7 @@ La configuración anterior puede interpretarse de la siguiente manera:
 
 - El campo `"algorithmType": "GA"` indica que se desea usar un algoritmo genético tradicional.
 - El campo `"workspaceName": "example"` indica el nombre de la carpeta _workspace_ donde se guardarán los datos producidos por el algoritmo.
-- El campo `"referencePdbFilename": "example/1Y32.pdb"` indica la ubicación del archivo PDB que contiene la estructura de entrada. **No es necesario que dicho archivo esté localizado en la carpeta _workspace_**.
+- El campo `"targetPdbFilename": "example/1Y32.pdb"` indica la ubicación del archivo PDB que contiene la estructura de entrada. **No es necesario que dicho archivo esté localizado en la carpeta _workspace_**.
 - El campo `"fitnessFunction": "Fitness_NegativeRmsd"` indica que la función de aptitud a utilizar es el RMSD.
 - El campo `"populationSize": 10` indica que el tamaño de la población es 10.
 - El campo `"numIterations: 20"` indica que el algoritmo correrá por 20 iteraciones.

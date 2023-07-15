@@ -1,3 +1,6 @@
+"""Colección de funciones auxiliares para obtener estadísticas poblacionales 
+del algoritmo evolutivo, y guardarlas en un archivo.
+"""
 from typing import List, Dict
 from .Population import Individual
 import math
@@ -10,6 +13,19 @@ import matplotlib.pyplot as plt
 
 
 def compute_statistics(population: List[Individual]) -> Dict[str, float]:
+  """Calcula varias estadísticas de la población especificada por `population` 
+  y las retorna en un diccionario. Dicho diccionario contiene como mínimo los 
+  siguientes datos:
+  - `min_fitness`: la aptitud mínima.
+  - `fitness_mean`: la aptitud promedio.
+  - `max_fitness`: la aptitud máxima.
+  - `best_sequence_id`: el identificador único universal (UUID) de aquél 
+    individuo contenido en `population` que tiene la aptitud más alta.
+  - `best_sequence`: la secuencia de aminoácidos correspondiente al individuo 
+    de `population` cuya aptitud es la más alta. 
+  
+  El diccionario también puede contener campos adicionales que contienen otras métricas de calidad o atributos correspondientes al individuo con la aptitud más alta.
+  """
   stats = {
     'min_fitness': math.inf,
     'fitness_mean': None,
@@ -34,9 +50,18 @@ def compute_statistics(population: List[Individual]) -> Dict[str, float]:
 
 
 
-def compute_statistics_and_save(generationId: int,
+def compute_statistics_and_save(iterationId: int,
                                 population: List[Individual],
-                                filename: str) -> Dict[str, float]:
+                                filename: str
+                                ) -> Dict[str, float]:
+  """Calcula varias estadísticas de la población especificada por `population` 
+  y las guarda en un archivo CSV, en la locación especificada por `filename`.
+  - `iterationId`: el identificador de la iteración que corresponde a la 
+    población a respaldar.
+  - `population`: la colección de individuos que van a respaldarse. 
+  - `filename`: el nombre del archivo donde se guardarán las estadísticas 
+    calculadas.
+  """
   stats = compute_statistics(population)
   file_exists = os.path.isfile(filename)
   with open(filename, 'at', encoding='utf-8') as file:
@@ -44,14 +69,16 @@ def compute_statistics_and_save(generationId: int,
       temp = [ name for name in stats.keys() ]
       file.write('iteration_id,' + ','.join(temp) + '\n')
     temp = [ f'{data}' for data in stats.values() ]
-    file.write(f'{generationId},' + ','.join(temp) + '\n')
+    file.write(f'{iterationId},' + ','.join(temp) + '\n')
   return stats
 
 
 
 def load_statistics_from_csv_file(filename: str) -> List[Dict[str, float]]:
-  if not os.path.isfile(filename): 
-    return []
+  """Carga las estadísticas poblacionales almacenadas en el archivo CSV 
+  especificado por `filename`.
+  """
+  if not os.path.isfile(filename): return []
   stats = []
   is_heading = True
   for line in open(filename, 'rt', encoding='utf-8'):
@@ -71,7 +98,16 @@ def load_statistics_from_csv_file(filename: str) -> List[Dict[str, float]]:
 
 def plot_fitness_over_iterations(csvFilename: str, 
                                  graphFilename: str,
-                                 title: str) -> None:
+                                 title: str
+                                 ) -> None:
+  """Crea un archivo PNG que contiene una gráfica de línea donde se muestra la 
+  aptitud mínima, la promedio y la máxima con respecto a cada iteración 
+  ejecutada por el algoritmo evolutivo.
+  - `csvFilename`: la locación del archivo CSV de donde se cargarán las 
+    estadísticas de aptitud.
+  - `graphFilename`: la locación donde se guardará la gráfica generada.
+  - `title`: el título que se desplegará en la gráfica.
+  """
   iterations = []
   minimums = []
   averages = []

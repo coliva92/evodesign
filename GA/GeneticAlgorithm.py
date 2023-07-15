@@ -17,7 +17,7 @@ class GeneticAlgorithm(Algorithm):
   
   def __init__(self,
                workspaceName: str,
-               referencePdbFilename: str,
+               targetPdbFilename: str,
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
                populationSize: int,
@@ -26,7 +26,7 @@ class GeneticAlgorithm(Algorithm):
                recombination: Recombination,
                mutation: Mutation,
                replacement: Replacement) -> None:
-    super().__init__(workspaceName, referencePdbFilename, predictor)
+    super().__init__(workspaceName, targetPdbFilename, predictor)
     self._population_size = populationSize
     self._num_iterations = numIterations
     self._fitness_fn = fitnessFunction

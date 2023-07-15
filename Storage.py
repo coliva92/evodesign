@@ -1,3 +1,5 @@
+"""Colección de funciones auxiliares que se encargan de almacenar y restaurar los datos respaldados del algoritmo evolutivo y de las poblaciones procesadas durante la ejecución de ese mismo algoritmo.
+"""
 import sys
 import json
 from .Population import Individual
@@ -27,6 +29,9 @@ from .GA.Replacement import TotalReplacement as GA_Replacement_TotalReplacement
 
 
 def load_memento_from_json_file(filename: str) -> dict:
+  """Carga el diccionario contenido en el archivo JSON especificado por 
+  `filename`.
+  """
   with open(filename, 'rt', encoding='utf-8') as file:
     memento = json.load(file)
   return memento
@@ -34,6 +39,10 @@ def load_memento_from_json_file(filename: str) -> dict:
 
 
 def load_algorithm_from_memento(memento: dict) -> Algorithm:
+  """Usa los datos contenidos en el diccionario especificado por `memento` para 
+  construir una instancia del algoritmo evolutivo indicado en ese mismo 
+  diccionario.
+  """
   algorithm_class = getattr(sys.modules[__name__], memento['algorithmType'])
   algorithm_params, operation_params = {}, {}
   other_algorithm_params = {}
@@ -58,14 +67,17 @@ def load_algorithm_from_memento(memento: dict) -> Algorithm:
     algorithm_params[key] = value
   algorithm = algorithm_class(**algorithm_params)
   if '__savedPopulations' in memento:
-    algorithm.append_memento_and_cache(memento['__savedPopulations'])
+    algorithm.append_and_cache_memento(memento['__savedPopulations'])
   else:
-    algorithm.append_memento_and_cache()
+    algorithm.append_and_cache_memento()
   return algorithm
 
 
 
 def load_population_from_memento(memento: dict) -> Tuple[int, List[Individual]]:
+  """Carga la colección de individuos del archivo JSON más reciente descrito en 
+  el diccionario de datos de respaldo especificado por `memento`.
+  """
   if '__savedPopulations' not in memento or \
       len(memento['__savedPopulations']) == 0:
     return 0, []
