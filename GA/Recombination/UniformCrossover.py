@@ -21,12 +21,19 @@ class UniformCrossover(Recombination):
                changeDegree: float = 0.0) -> None:
     super().__init__(probability)
     self._weights = [ changeDegree, 1.0 - changeDegree ]
+    self._change_degree = changeDegree
 
 
 
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Recombination_UniformCrossover'
+  
+
+
+  def get_params_memento(self) -> dict:
+    params = super().get_params_memento()
+    params['changeDegree'] = self._change_degree
 
 
 
