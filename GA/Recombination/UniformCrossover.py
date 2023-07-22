@@ -18,10 +18,10 @@ class UniformCrossover(Recombination):
 
   def __init__(self, 
                probability: float = 1.0, 
-               changeDegree: float = 0.0) -> None:
+               bias: float = 0.5) -> None:
     super().__init__(probability)
-    self._weights = [ changeDegree, 1.0 - changeDegree ]
-    self._change_degree = changeDegree
+    self._weights = [ bias, 1.0 - bias ]
+    self._bias = bias
 
 
 
@@ -33,7 +33,8 @@ class UniformCrossover(Recombination):
 
   def get_params_memento(self) -> dict:
     params = super().get_params_memento()
-    params['changeDegree'] = self._change_degree
+    params['bias'] = self._bias
+    return params
 
 
 
@@ -49,7 +50,7 @@ class UniformCrossover(Recombination):
     n = len(mother)
     selections = random.choices(self._options, self._weights, k=n)
     temp = [ mother, father ]
-    sister = ''.join([ temp[parent][i] for i, parent in selections ])
+    sister = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
     temp[0], temp[1] = father, mother
-    brother = ''.join([ temp[parent][i] for i, parent in selections ])
+    brother = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
     return [ sister, brother ]
