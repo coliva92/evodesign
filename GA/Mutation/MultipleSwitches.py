@@ -46,6 +46,6 @@ class MultipleSwitches(Mutation):
     for i in positions:
       letter = temp[i]
       while temp[i] == letter:
-        letter = random.choices(AMINOACIDS, k=1)[0]
+        letter = random.choice(AMINOACIDS)
       temp[i] = letter
     return ''.join(temp)

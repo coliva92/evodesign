@@ -35,7 +35,7 @@ class SingleSwitch(Mutation):
     i = random.randint(0, len(sequence) - 1)
     letter = sequence[i]
     while sequence[i] == letter:
-      letter = random.choices(AMINOACIDS, k=1)[0]
+      letter = random.choice(AMINOACIDS)
     # en Python, las cadenas son inmutables
     temp = list(sequence)
     temp[i] = letter

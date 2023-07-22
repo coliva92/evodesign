@@ -59,5 +59,5 @@ class Overselection(Selection):
     generación.
     """
     if random.choices(Overselection._options, self._weights, k=1)[0]:
-      return random.choices(population[0:self._top_size], k=self._selection_size)
-    return random.choices(population[self._top_size:], k=self._selection_size)
+      return random.sample(population[0:self._top_size], self._selection_size)
+    return random.sample(population[self._top_size:], self._selection_size)

@@ -50,7 +50,7 @@ class Tournament(Selection):
     """
     selected_parents = []
     for _ in range(self._selection_size):
-      candidates = random.choices(population, k=self._tournament_size)
+      candidates = random.sample(population, self._tournament_size)
       candidates = sorted(candidates)
       selected_parents.append(candidates[-1])
     return selected_parents
