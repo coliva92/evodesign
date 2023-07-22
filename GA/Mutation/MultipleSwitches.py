@@ -26,6 +26,13 @@ class MultipleSwitches(Mutation):
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Mutation_MultipleSwitches'
+  
+
+
+  def get_params_memento(self) -> dict:
+    params = super().get_params_memento()
+    params['numSwitches'] = self._num_switches
+    return params
 
 
 
@@ -33,7 +40,7 @@ class MultipleSwitches(Mutation):
     """
     Muta la secuencia especificada por `sequence` y retorna la nueva secuencia.
     """
-    positions = random.sample(range(len(sequence)), self._num_switches)
+    positions = random.sample(list(range(len(sequence))), self._num_switches)
     # en Python, las cadenas son inmutables; hay que convertirlas a una lista
     temp = list(sequence)
     for i in positions:

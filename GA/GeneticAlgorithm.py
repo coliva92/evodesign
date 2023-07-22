@@ -44,8 +44,8 @@ class GeneticAlgorithm(Algorithm):
 
 
 
-  def get_params_memento(self) -> dict:
-    params = super().get_params_memento()
+  def _get_params_memento(self) -> dict:
+    params = super()._get_params_memento()
     params['fitnessFunction'] = self._fitness_fn.get_name()
     params['populationSize'] = self._population_size
     params['numIterations'] = self._num_iterations

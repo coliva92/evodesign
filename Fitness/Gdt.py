@@ -1,30 +1,27 @@
 from .FitnessFunction import FitnessFunction
 from typing import Dict
-from ..Metrics import Rmsd
+from ..Metrics import Rmsd, Gdt as GdtMetric
 
 
 
 
 
-class NegativeRmsd(FitnessFunction):
-  """
-  La función objetivo que consiste únicamente de minimizar el RMSD.
-  """
+class Gdt(FitnessFunction):
   
   def __init__(self) -> None:
-    super().__init__({ 'rmsd': Rmsd() })
+    super().__init__({ 'rmsd': Rmsd(), 'gdt_ts': GdtMetric() })
   
 
 
   @classmethod
   def get_name(cls) -> str:
-    return 'Fitness_NegativeRmsd'
+    return 'Fitness_Gdt'
   
 
 
   @classmethod
   def upper_bound(cls) -> float:
-    return 0.0
+    return 1.0
   
 
 
@@ -36,4 +33,4 @@ class NegativeRmsd(FitnessFunction):
     Calcula la aptitud de la secuencia especificada por `sequence`, utilizando
     los valores especificados por `metrics`.
     """
-    return -metrics['rmsd']
+    return metrics['gdt_ts']

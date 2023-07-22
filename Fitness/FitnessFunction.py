@@ -4,7 +4,6 @@ from Bio.PDB.Atom import Atom
 from ..Metrics import Metric
 from ..Prediction import Predictor
 from ..Population import Individual
-import os
 
 
 
@@ -43,7 +42,10 @@ class FitnessFunction(ABC):
 
   
   @abstractmethod
-  def compute_fitness(self, metrics: Dict[str, float]) -> float:
+  def compute_fitness(self, 
+                      sequence: str, 
+                      metrics: Dict[str, float]
+                      ) -> float:
     """
     Calcula la aptitud de la secuencia especificada por `sequence`, utilizando
     los valores especificados por `metrics`.
@@ -68,4 +70,5 @@ class FitnessFunction(ABC):
     for metric, calculator in self._metric_calculators.items():
       individual.metrics[metric] = calculator.compute(backbone, 
                                                       reference_backbone)
-    individual.fitness = self.compute_fitness(individual.metrics)
+    individual.fitness = self.compute_fitness(individual.sequence, 
+                                              individual.metrics)

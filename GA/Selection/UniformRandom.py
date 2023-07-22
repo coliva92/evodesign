@@ -34,4 +34,4 @@ class UniformRandom(Selection):
     para posteriormente recombinarlos y generar la población de la siguiente 
     generación.
     """
-    return random.choices(population, k=self._selection_size)
+    return random.sample(population, self._selection_size)
