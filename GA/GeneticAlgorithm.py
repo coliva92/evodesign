@@ -123,8 +123,8 @@ class GeneticAlgorithm(Algorithm):
         break
       if iterationId >= 10:
         older_avg = self._avg_fitnesses[iterationId - 10]
-        newer_avg = self._avg_fitnesses[iterationId - 1]
-        if abs(older_avg - newer_avg) < 0.001:
+        newer_avg = self._avg_fitnesses[iterationId]
+        if newer_avg - older_avg < 0.0001:
           break
       population = self.step(population)
       iterationId += 1
