@@ -1,1 +1,1 @@
-from .GeneticAlgorithm import GeneticAlgorithm
+from .SteadyStateGeneticAlgorithm import SteadyStateGeneticAlgorithm

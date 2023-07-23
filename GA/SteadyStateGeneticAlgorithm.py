@@ -13,7 +13,7 @@ import evodesign.Statistics as Statistics
 
 
 
-class GeneticAlgorithm(Algorithm):
+class SteadyStateGeneticAlgorithm(Algorithm):
   
   def __init__(self,
                workspaceName: str,
@@ -35,7 +35,7 @@ class GeneticAlgorithm(Algorithm):
     self._mutation = mutation
     self._replacement = replacement
     self._avg_fitnesses = []
-  
+
 
 
   @classmethod

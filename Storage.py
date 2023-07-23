@@ -10,7 +10,7 @@ from .Prediction import Null as Predictor_Null
 from .Fitness import NegativeRmsd as Fitness_NegativeRmsd
 from .Fitness import Gdt as Fitness_Gdt
 from .Fitness import NegativeRastrigin as Fitness_NegativeRastrigin
-from .GA import GeneticAlgorithm as GA
+from .GA import SteadyStateGeneticAlgorithm as GA_Steady
 from .GA.Selection import Overselection as GA_Selection_Overselection
 from .GA.Selection import Tournament as GA_Selection_Tournament
 from .GA.Selection import UniformRandom as GA_Selection_UniformRandom
