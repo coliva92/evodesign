@@ -33,8 +33,11 @@ class ESMFold(Predictor):
     """
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence)
+    if response.status_code == 405:
+      raise RuntimeError('Forbidden')
+    if response.status_code == 500:
+      raise RuntimeError('Internal server error')
     if response.status_code != 200:
-      # print(response.content.decode())
-      raise RuntimeError('a call to the ESMFold remote API failed.')
+      raise RuntimeError('Unknown HTTP error')
     with open(pdbFilename, 'wt', encoding='utf-8') as file:
         file.write(response.content.decode())

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import evodesign.Storage as Storage
+import time
 
 
 
@@ -21,6 +22,7 @@ while True:
     iterationId, population = Storage.load_population_from_memento(memento)
     algorithm.run(iterationId, population)
     break
-  except RuntimeError:
+  except RuntimeError as e:
+    if e == 'Forbidden': time.sleep('180')
     filename = algorithm.workspace.setup_filename
     continue
