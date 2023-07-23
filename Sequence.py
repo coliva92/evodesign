@@ -14,12 +14,36 @@ AMINOACIDS = 'ACDEFGHIKLMNPQRSTVWY'
 
 
 
-"""La posición ordinal de cada letra que representa un aminoácido, según su 
-orden alfabético."""
-AMINOACID_ORDINALS = {
-  'A': 0, 'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'H': 6, 'I': 7, 'K': 8,
-  'L': 9, 'M': 10, 'N': 11, 'P': 12, 'Q': 13, 'R': 14, 'S': 15, 'T': 16, 
-  'V': 17, 'W': 18, 'Y': 19
+AMINOACIDS_BY_CATEGORY = {
+  'negative': 'DE',
+  'positive': 'HKR',
+  'unchargedPolar': 'NQSTY',
+  'nonpolar': 'ACFGILMPVW'
+}
+
+
+
+AMINOACID_CATEGORIES = {
+  'A': 'nonpolar',
+  'C': 'nonpolar',
+  'D': 'negative',
+  'E': 'negative',
+  'F': 'nonpolar',
+  'G': 'nonpolar',
+  'H': 'positive',
+  'I': 'nonpolar',
+  'K': 'positive',
+  'L': 'nonpolar',
+  'M': 'nonpolar',
+  'N': 'unchargedPolar',
+  'P': 'nonpolar',
+  'Q': 'unchargedPolar',
+  'R': 'positive',
+  'S': 'unchargedPolar',
+  'T': 'unchargedPolar',
+  'V': 'nonpolar',
+  'W': 'nonpolar',
+  'Y': 'unchargedPolar'
 }
 
 
