@@ -40,7 +40,7 @@ class SteadyStateGeneticAlgorithm(Algorithm):
 
   @classmethod
   def get_type(cls) -> str:
-    return 'GA'
+    return 'GA_Steady'
 
 
 

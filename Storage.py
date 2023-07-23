@@ -42,6 +42,7 @@ def load_algorithm_from_memento(memento: dict) -> Algorithm:
   diccionario.
   """
   algorithm_class = getattr(sys.modules[__name__], memento['algorithmType'])
+  algorithm_name = memento['algorithmType'][:memento['algorithmType'].find('_')]
   algorithm_params, operation_params = {}, {}
   other_algorithm_params = {}
   for key, value in memento['algorithmParams'].items():
@@ -49,7 +50,7 @@ def load_algorithm_from_memento(memento: dict) -> Algorithm:
       name = key.replace('Params', '')
       operation_params[name] = value
       continue
-    if type(value) == str and value.startswith(memento['algorithmType']):
+    if type(value) == str and value.startswith(algorithm_name):
       algorithm_params[key] = getattr(sys.modules[__name__], value)
       continue
     if type(value) == str and value.startswith('Predictor'):
