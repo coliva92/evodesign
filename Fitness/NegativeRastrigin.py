@@ -21,7 +21,6 @@ class NegativeRastrigin(FitnessFunction):
     -0.512 
   ]
   _target_sequence = None
-  _sequence_length = None
   _aminoacid_ordinals = None
 
 
@@ -51,7 +50,7 @@ class NegativeRastrigin(FitnessFunction):
     Sigma = 0.0
     for x_i in x:
       Sigma += (x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i))
-    return -10.0 * self._sequence_length - Sigma # queremos el valor negativo
+    return -10.0 * len(sequence) - Sigma # queremos el valor negativo
 
 
 
@@ -70,9 +69,8 @@ class NegativeRastrigin(FitnessFunction):
     # Esto no debería afectar las pruebas con el algoritmo puesto que, de 
     # cualquier forma, ya se está ignorando la estructura objetivo al utilizar 
     # la función de prueba de Rastrigin. 
-    if self._target_sequence == None or self._sequence_length == None:
-      self._sequence_length = len(sequence)
-      d = self._sequence_length
+    if self._target_sequence == None:
+      d = len(sequence)
       m = len(TEST_SEQUENCE)
       temp = TEST_SEQUENCE
       while d > m: temp += TEST_SEQUENCE
@@ -83,7 +81,7 @@ class NegativeRastrigin(FitnessFunction):
         temp = {}
         for i, aa in enumerate(AMINOACIDS): temp[aa] = perm[i]
         self._aminoacid_ordinals.append(temp)
-    x, n = [], self._sequence_length
+    x, n = [], len(sequence)
     for i in range(n):
       a = self._aminoacid_ordinals[i][self._target_sequence[i]]
       b = self._aminoacid_ordinals[i][sequence[i]]

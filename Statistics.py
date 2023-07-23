@@ -84,12 +84,11 @@ def load_statistics_from_csv_file(filename: str) -> List[Dict[str, float]]:
   for line in open(filename, 'rt', encoding='utf-8'):
     if is_heading:
       column_names = line.strip().split(',')
-      num_columns = len(column_names)
       is_heading = False
       continue
     values = line.strip().split(',')
     temp = {}
-    for i in range(num_columns):
+    for i in range(len(column_names)):
       temp[column_names[i]] = ast.literal_eval(values[i])
     stats.append(temp)
   return stats
