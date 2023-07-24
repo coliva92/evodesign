@@ -20,13 +20,13 @@ class NegativeRastrigin(FitnessFunction):
     -5.12, -4.608, -4.096, -3.584, -3.072, -2.56, -2.048, -1.536, -1.024, 
     -0.512 
   ]
-  _target_sequence = None
-  _aminoacid_ordinals = None
 
 
 
   def __init__(self) -> None:
     super().__init__({})
+    self._target_sequence = None
+    self._aminoacid_ordinals = None
 
 
 

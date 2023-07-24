@@ -13,10 +13,6 @@ import evodesign.Statistics as Statistics
 
 
 class SimpleGeneticAlgorithm(Algorithm):
-  
-  best_solution = None
-
-  
 
   def __init__(self,
                workspaceName: str,
@@ -36,6 +32,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
+    self._best_solution = None
 
 
 
@@ -104,7 +101,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       iterationId = 0
       population = self.initialize()
       stats = Statistics.compute_statistics(population)
-      self.best_solution = population[-1]
+      self._best_solution = population[-1]
       self.workspace.save_population(iterationId, population)
       Statistics.save_statistics_to_csv_file(stats, 
                                              iterationId, 
@@ -163,7 +160,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     temp = Statistics.load_statistics_from_csv_file(
       self.workspace.stats_filename)
     if len(temp) > 0:
-      self.best_solution = Individual(temp[-1]['best_sequence'],
+      self._best_solution = Individual(temp[-1]['best_sequence'],
                                       temp[-1]['best_sequence_id'],
                                       temp[-1]['best_sequence_fitness'])
 
@@ -173,12 +170,12 @@ class SimpleGeneticAlgorithm(Algorithm):
                             population: List[Individual], 
                             stats: Dict[str, float]
                             ) -> Tuple[List[Individual], Dict[str, float]]:
-    if self.best_solution == None or population[-1] > self.best_solution: 
-      self.best_solution = population[-1]
-    elif population[-1] != self.best_solution:
-      population = population[1:] + [ self.best_solution ]
-    stats['best_sequence_id'] = self.best_solution.id
-    stats['best_sequence_fitness'] = self.best_solution.fitness
-    stats['best_sequence'] = f'"{self.best_solution.sequence}"'
+    if self._best_solution == None or population[-1] > self._best_solution: 
+      self._best_solution = population[-1]
+    elif population[-1] != self._best_solution:
+      population = population[1:] + [ self._best_solution ]
+    stats['best_sequence_id'] = self._best_solution.id
+    stats['best_sequence_fitness'] = self._best_solution.fitness
+    stats['best_sequence'] = f'"{self._best_solution.sequence}"'
     return population, stats
   

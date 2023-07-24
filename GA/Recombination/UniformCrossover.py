@@ -47,9 +47,12 @@ class UniformCrossover(Recombination):
     """
     # suponemos que ambos padres son de la misma longitud y que vienen 
     # ordenados por aptitud de manera ascendente
-    selections = random.choices(self._options, self._weights, k=len(mother))
+    selections = random.choices(UniformCrossover._options, 
+                                self._weights, 
+                                k=len(mother))
     temp = [ mother, father ]
     sister = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
     temp[0], temp[1] = father, mother
-    brother = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
+    brother = ''.join(
+      [ temp[parent][i] for i, parent in enumerate(selections) ])
     return [ sister, brother ]

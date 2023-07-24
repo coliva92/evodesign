@@ -58,6 +58,6 @@ class Overselection(Selection):
     para posteriormente recombinarlos y generar la población de la siguiente 
     generación.
     """
-    if random.choices(self._options, self._weights, k=1)[0]:
+    if random.choices(Overselection._options, self._weights, k=1)[0]:
       return random.sample(population[-self._top_size:], self._selection_size)
     return random.sample(population[0:-self._top_size], self._selection_size)

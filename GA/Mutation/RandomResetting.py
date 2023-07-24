@@ -45,7 +45,7 @@ class RandomResetting(Mutation):
     """
     temp = list(sequence)
     for i in range(len(temp)):
-      if random.choices(self._options, self._weights)[0]:
+      if random.choices(Mutation._options, self._weights)[0]:
         letter = temp[i]
         while temp[i] == letter:
           letter = random.choice(AMINOACIDS)
