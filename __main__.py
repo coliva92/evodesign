@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 import evodesign.Storage as Storage
-import time
+import evodesign.Prediction.ESMFold as ESMFold
 
 
 
@@ -23,6 +23,6 @@ while True:
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:
-    if e == 'Forbidden': time.sleep('300')
+    ESMFold.handle_api_errors(e)
     filename = algorithm.workspace.setup_filename
     continue
