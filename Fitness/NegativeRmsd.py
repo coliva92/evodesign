@@ -18,7 +18,7 @@ class NegativeRmsd(FitnessFunction):
 
   @classmethod
   def get_name(cls) -> str:
-    return 'Fitness_NegativeRmsd'
+    return 'Fitness_NegativeRMSD'
   
 
 

@@ -15,7 +15,7 @@ class Gdt(FitnessFunction):
 
   @classmethod
   def get_name(cls) -> str:
-    return 'Fitness_Gdt'
+    return 'Fitness_GDT'
   
 
 

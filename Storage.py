@@ -5,23 +5,13 @@ import json
 from .Population import Individual
 from typing import List, Tuple
 from .Algorithm import Algorithm
-from .Prediction import ESMFold as Predictor_ESMFold
-from .Prediction import Null as Predictor_Null
-from .Fitness import NegativeRmsd as Fitness_NegativeRmsd
-from .Fitness import Gdt as Fitness_Gdt
-from .Fitness import NegativeRastrigin as Fitness_NegativeRastrigin
-from .GA import SteadyStateGeneticAlgorithm as GA_Steady
-from .GA.Selection import Overselection as GA_Selection_Overselection
-from .GA.Selection import Tournament as GA_Selection_Tournament
-from .GA.Selection import Uniform as GA_Selection_Uniform
-from .GA.Recombination import CenterPointCrossover as GA_Recombination_CenterPointCrossover
-from .GA.Recombination import SinglePointCrossover as GA_Recombination_SinglePointCrossover
-from .GA.Recombination import TwoPointCrossover as GA_Recombination_TwoPointCrossover
-from .GA.Recombination import UniformCrossover as GA_Recombination_UniformCrossover
-from .GA.Mutation import SingleSwitch as GA_Mutation_SingleSwitch
-from .GA.Mutation import MultipleSwitches as GA_Mutation_MultipleSwitches
-from .GA.Mutation import RandomResetting as GA_Random_Resetting
-from .GA.Replacement import WorseOut as GA_Replacement_WorseOut
+from .Prediction import *
+from .Fitness import *
+from .GA import *
+from .GA.Selection import *
+from .GA.Recombination import *
+from .GA.Mutation import *
+from .GA.Replacement import *
 
 
 

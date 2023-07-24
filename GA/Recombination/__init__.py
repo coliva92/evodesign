@@ -1,5 +1,5 @@
 from .Recombination import Recombination
-from .SinglePointCrossover import SinglePointCrossover
-from .TwoPointCrossover import TwoPointCrossover
-from .CenterPointCrossover import CenterPointCrossover
-from .UniformCrossover import UniformCrossover
+from .SinglePointCrossover import SinglePointCrossover as GA_Recombination_SinglePointCrossover
+from .TwoPointCrossover import TwoPointCrossover as GA_Recombination_TwoPointCrossover
+from .CenterPointCrossover import CenterPointCrossover as GA_Recombination_CenterPointCrossover
+from .UniformCrossover import UniformCrossover as GA_Recombination_UniformCrossover
