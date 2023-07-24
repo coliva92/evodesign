@@ -7,7 +7,7 @@ import random
 
 
 
-class UniformRandom(Selection):
+class Uniform(Selection):
   """
   Operación de selección donde los padres se eligen aleatoriamente de toda la 
   población con probabilidad uniforme.
@@ -24,7 +24,7 @@ class UniformRandom(Selection):
 
   @classmethod
   def get_name(cls) -> str:
-    return 'GA_Selection_UniformRandom'
+    return 'GA_Selection_Uniform'
 
 
 

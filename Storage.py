@@ -13,7 +13,7 @@ from .Fitness import NegativeRastrigin as Fitness_NegativeRastrigin
 from .GA import SteadyStateGeneticAlgorithm as GA_Steady
 from .GA.Selection import Overselection as GA_Selection_Overselection
 from .GA.Selection import Tournament as GA_Selection_Tournament
-from .GA.Selection import UniformRandom as GA_Selection_UniformRandom
+from .GA.Selection import Uniform as GA_Selection_Uniform
 from .GA.Recombination import CenterPointCrossover as GA_Recombination_CenterPointCrossover
 from .GA.Recombination import SinglePointCrossover as GA_Recombination_SinglePointCrossover
 from .GA.Recombination import TwoPointCrossover as GA_Recombination_TwoPointCrossover

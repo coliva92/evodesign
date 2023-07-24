@@ -1,4 +1,4 @@
 from .Selection import Selection
 from .Tournament import Tournament
-from .UniformRandom import UniformRandom
+from .Uniform import Uniform
 from .Overselection import Overselection
