@@ -23,6 +23,6 @@ while True:
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:
-    if e == 'Forbidden': time.sleep('180')
+    if e == 'Forbidden': time.sleep('300')
     filename = algorithm.workspace.setup_filename
     continue
