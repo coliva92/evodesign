@@ -144,6 +144,6 @@ def plot_fitness_over_iterations(csvFilename: str,
   ax.set_title(title)
   ax.set_xlabel('Iterations')
   ax.set_ylabel('Fitness')
-  ax.legend(loc='lower right')
+  ax.legend(loc='best')
   ax.grid()
   fig.savefig(graphFilename)
