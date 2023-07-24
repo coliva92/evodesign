@@ -20,6 +20,7 @@ from .GA.Recombination import TwoPointCrossover as GA_Recombination_TwoPointCros
 from .GA.Recombination import UniformCrossover as GA_Recombination_UniformCrossover
 from .GA.Mutation import SingleSwitch as GA_Mutation_SingleSwitch
 from .GA.Mutation import MultipleSwitches as GA_Mutation_MultipleSwitches
+from .GA.Mutation import RandomResetting as GA_Random_Resetting
 from .GA.Replacement import WorseOut as GA_Replacement_WorseOut
 
 
