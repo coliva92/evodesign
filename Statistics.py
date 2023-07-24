@@ -1,7 +1,7 @@
 """Colección de funciones auxiliares para obtener estadísticas poblacionales 
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
-from typing import List, Dict
+from typing import List, Dict, Optional
 from .Population import Individual
 import math
 import os
@@ -21,6 +21,7 @@ def compute_statistics(population: List[Individual]) -> Dict[str, float]:
   - `max_fitness`: la aptitud máxima.
   - `best_sequence_id`: el identificador único universal (UUID) de aquél 
     individuo contenido en `population` que tiene la aptitud más alta.
+  - `best_sequence_fitness`: el valor de aptitud más alto encontrado.
   - `best_sequence`: la secuencia de aminoácidos correspondiente al individuo 
     de `population` cuya aptitud es la más alta. 
   
@@ -30,7 +31,9 @@ def compute_statistics(population: List[Individual]) -> Dict[str, float]:
     'min_fitness': math.inf,
     'fitness_mean': None,
     'max_fitness': -math.inf,
-    'best_sequence_id': None
+    'best_sequence_id': None,
+    'best_sequence_fitness': None,
+    'best_sequence': None
   }
   s = 0.0
   for individual in population:
@@ -40,20 +43,17 @@ def compute_statistics(population: List[Individual]) -> Dict[str, float]:
       stats['max_fitness'] = individual.fitness
       stats['best_sequence_id'] = individual.id
       stats['best_sequence_fitness'] = individual.fitness
-      best_sequence = individual.sequence
-      for name, value in individual.metrics.items():
-        stats[f'best_sequence_{name}'] = value
+      stats['best_sequence'] = f'"{individual.sequence}"'
     s += individual.fitness
   stats['fitness_mean'] = s / len(population)
-  stats['best_sequence'] = f'"{best_sequence}"'
   return stats
 
 
 
-def compute_statistics_and_save(iterationId: int,
-                                population: List[Individual],
+def save_statistics_to_csv_file(stats: Dict[str, float],
+                                iterationId: int,
                                 filename: str
-                                ) -> Dict[str, float]:
+                                ) -> None:
   """Calcula varias estadísticas de la población especificada por `population` 
   y las guarda en un archivo CSV, en la locación especificada por `filename`.
   - `iterationId`: el identificador de la iteración que corresponde a la 
@@ -62,7 +62,6 @@ def compute_statistics_and_save(iterationId: int,
   - `filename`: el nombre del archivo donde se guardarán las estadísticas 
     calculadas.
   """
-  stats = compute_statistics(population)
   file_exists = os.path.isfile(filename)
   with open(filename, 'at', encoding='utf-8') as file:
     if not file_exists:
@@ -70,7 +69,6 @@ def compute_statistics_and_save(iterationId: int,
       file.write('iteration_id,' + ','.join(temp) + '\n')
     temp = [ f'{data}' for data in stats.values() ]
     file.write(f'{iterationId},' + ','.join(temp) + '\n')
-  return stats
 
 
 
@@ -111,6 +109,7 @@ def plot_fitness_over_iterations(csvFilename: str,
   minimums = []
   averages = []
   maximums = []
+  best_solutions = []
   is_heading = True
   for line in open(csvFilename, 'rt', encoding='utf-8'):
     values = line.strip().split(',')
@@ -128,18 +127,23 @@ def plot_fitness_over_iterations(csvFilename: str,
         if header == 'max_fitness':
           max_fitness = i
           continue
+        if header == 'best_sequence_fitness':
+          best_solution = i
+          continue
       is_heading = False
       continue
     iterations.append(ast.literal_eval(values[iteration_id]))
     minimums.append(ast.literal_eval(values[min_fitness]))
     averages.append(ast.literal_eval(values[fitness_mean]))
     maximums.append(ast.literal_eval(values[max_fitness]))
-  plt.plot(iterations, minimums, label='Min. fitness')
-  plt.plot(iterations, averages, label='Fitness mean')
-  plt.plot(iterations, maximums, label='Max. fitness')
-  plt.xlabel('Iterations')
-  plt.ylabel('Fitness')
-  plt.legend()
-  plt.title(title)
-  plt.savefig(graphFilename)
-  plt.close()
+    best_solutions.append(ast.literal_eval(values[best_solution]))
+  fig, ax = plt.subplots(1)
+  ax.plot(iterations, averages, label='Fitness mean')
+  ax.fill_between(iterations, minimums, maximums, alpha=0.3)
+  ax.plot(iterations, best_solutions, label='Best solution found')
+  ax.set_title(title)
+  ax.set_xlabel('Iterations')
+  ax.set_ylabel('Fitness')
+  ax.legend(loc='lower right')
+  ax.grid()
+  fig.savefig(graphFilename)

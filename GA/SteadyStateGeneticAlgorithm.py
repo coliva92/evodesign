@@ -1,5 +1,5 @@
 from ..Algorithm import Algorithm
-from typing import List, Optional
+from typing import List, Optional, Dict
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -25,7 +25,8 @@ class SteadyStateGeneticAlgorithm(Algorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
-               replacement: Replacement) -> None:
+               replacement: Replacement
+               ) -> None:
     super().__init__(workspaceName, targetPdbFilename, predictor)
     self._population_size = populationSize
     self._num_iterations = numIterations
@@ -65,7 +66,7 @@ class SteadyStateGeneticAlgorithm(Algorithm):
     m, n = self._sequence_length, self._population_size
     population = [ Individual.random(m) for _ in range(n) ]
     self.workspace.save_population(0, population)
-    self._compute_population_fitness(population)
+    self._compute_initial_population_fitness(population)
     return sorted(population)
 
 
@@ -101,21 +102,25 @@ class SteadyStateGeneticAlgorithm(Algorithm):
     if len(population) == 0:
       iterationId = 0
       population = self.initialize()
-      self.workspace.save_population(iterationId, population)
-      stats = Statistics.compute_statistics_and_save(iterationId, 
-                                                     population, 
-                                                     self.workspace.stats_filename)
+      stats = Statistics.compute_statistics(population)
+      self.best_solution = population[-1]
       self._avg_fitnesses.append(stats['fitness_mean'])
+      self.workspace.save_population(iterationId, population)
+      Statistics.save_statistics_to_csv_file(stats, 
+                                             iterationId, 
+                                             self.workspace.stats_filename)
     else:
-      self._load_avg_fitnesses()
-      recovering = self._compute_population_fitness(population)
+      self._recovering_statistics()
+      recovering = self._compute_initial_population_fitness(population)
     if recovering:
       population = sorted(population)
-      self.workspace.save_population(iterationId, population)
-      stats = Statistics.compute_statistics_and_save(iterationId, 
-                                                     population, 
-                                                     self.workspace.stats_filename)
+      stats = Statistics.compute_statistics(population)
+      stats = self._update_best_solution(population, stats)
       self._avg_fitnesses.append(stats['fitness_mean'])
+      self.workspace.save_population(iterationId, population)
+      Statistics.save_statistics_to_csv_file(stats, 
+                                             iterationId, 
+                                             self.workspace.stats_filename)
     while True:
       if iterationId == self._num_iterations - 1:
         break
@@ -128,18 +133,22 @@ class SteadyStateGeneticAlgorithm(Algorithm):
           break
       population = self.step(population)
       iterationId += 1
+      stats = Statistics.compute_statistics(population)
       self.workspace.save_population(iterationId, population)
-      stats = Statistics.compute_statistics_and_save(iterationId, 
-                                                     population, 
-                                                     self.workspace.stats_filename)
+      stats = self._update_best_solution(population, stats)
       self._avg_fitnesses.append(stats['fitness_mean'])
+      Statistics.save_statistics_to_csv_file(stats, 
+                                             iterationId, 
+                                             self.workspace.stats_filename)
     Statistics.plot_fitness_over_iterations(self.workspace.stats_filename, 
                                             self.workspace.graph_filename,
                                             self.workspace.name)
 
 
 
-  def _compute_population_fitness(self, population: List[Individual]) -> bool:
+  def _compute_initial_population_fitness(self, 
+                                          population: List[Individual]
+                                          ) -> bool:
     computed_some_fitness = False
     for individual in population:
       if individual.fitness == None:
@@ -157,7 +166,24 @@ class SteadyStateGeneticAlgorithm(Algorithm):
 
 
 
-  def _load_avg_fitnesses(self) -> None:
+  def _recovering_statistics(self) -> None:
     temp = Statistics.load_statistics_from_csv_file(
       self.workspace.stats_filename)
     self._avg_fitnesses = [ stats['fitness_mean'] for stats in temp ]
+    self.best_solution = Individual(temp[-1]['best_sequence'],
+                                    temp[-1]['best_sequence_id'],
+                                    temp[-1]['best_sequence_fitness'])
+
+
+
+  def _update_best_solution(self, 
+                            population: List[Individual], 
+                            stats: Dict[str, float]
+                            ) -> Dict[str, float]:
+    if population[-1] > self.best_solution: 
+      self.best_solution = population[-1]
+      stats['best_sequence_id'] = self.best_solution.id
+      stats['best_sequence_fitness'] = self.best_solution.fitness
+      stats['best_sequence'] = f'"{self.best_solution.sequence}"'
+    return stats
+  
