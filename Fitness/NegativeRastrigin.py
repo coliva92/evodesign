@@ -1,6 +1,6 @@
 from .FitnessFunction import FitnessFunction
 from typing import Dict, List
-from ..Sequence import TEST_SEQUENCE, AMINOACIDS
+from ..Sequence import _TEST_SEQUENCE, AMINOACIDS
 import math
 import random
 
@@ -71,9 +71,9 @@ class NegativeRastrigin(FitnessFunction):
     # la función de prueba de Rastrigin. 
     if self._target_sequence == None:
       d = len(sequence)
-      m = len(TEST_SEQUENCE)
-      temp = TEST_SEQUENCE
-      while d > m: temp += TEST_SEQUENCE
+      m = len(_TEST_SEQUENCE)
+      temp = _TEST_SEQUENCE
+      while d > m: temp += _TEST_SEQUENCE
       self._target_sequence = temp[:d]
       self._aminoacid_ordinals = []
       for _ in range(d):
