@@ -38,14 +38,15 @@ class ESMFoldRemoteApi(Predictor):
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence)
     if response.status_code == 405:
-      ESMFold.forbiddens_count += 1
+      ESMFoldRemoteApi.forbiddens_count += 1
       raise RuntimeError('Forbidden')
     if response.status_code == 500:
-      ESMFold.server_errors_count += 1
+      ESMFoldRemoteApi.server_errors_count += 1
       raise RuntimeError('Internal server error')
     if response.status_code != 200:
       raise RuntimeError('Unknown HTTP error')
-    ESMFold.forbiddens_count, ESMFold.server_errors_count = 0, 0
+    ESMFoldRemoteApi.forbiddens_count = 0 
+    ESMFoldRemoteApi.server_errors_count = 0
     with open(pdbFilename, 'wt', encoding='utf-8') as the_file:
         the_file.write(response.content.decode())
 
@@ -53,8 +54,8 @@ class ESMFoldRemoteApi(Predictor):
 
 def handle_api_errors(e: RuntimeError) -> None:
   if e == 'Forbidden': 
-    sleep_time = 920 if ESMFold.forbiddens_count == 1 else 1820
+    sleep_time = 920 if ESMFoldRemoteApi.forbiddens_count == 1 else 1820
     time.sleep(sleep_time)
   if e == 'Internal server error' and \
-      ESMFold.server_errors_count >= 5:
+      ESMFoldRemoteApi.server_errors_count >= 5:
     time.sleep(300)
