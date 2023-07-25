@@ -21,7 +21,7 @@ class Gdt(FitnessFunction):
 
   @classmethod
   def upper_bound(cls) -> float:
-    return 1.0
+    return 0.95
   
 
 

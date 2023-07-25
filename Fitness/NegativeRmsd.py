@@ -24,7 +24,7 @@ class NegativeRmsd(FitnessFunction):
 
   @classmethod
   def upper_bound(cls) -> float:
-    return 0.0
+    return -1.95
   
 
 
