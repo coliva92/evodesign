@@ -4,6 +4,8 @@
 from typing import List
 from Bio.PDB.Structure import Structure
 from Bio.PDB.Atom import Atom
+from Bio.PDB import PDBParser
+import os
 
 
 
@@ -12,6 +14,15 @@ from Bio.PDB.Atom import Atom
 """Las letras válidas que representan los átomos del esqueleto polipeptídico.
 """
 BACKBONE_ATOMS = [ 'N', 'CA', 'C' ]
+
+
+
+def load_structure_from_pdb_file(filename: str) -> Structure:
+  """Carga una proteína desde el archivo PDB especificado por `filename`.
+  """
+  id = os.path.splitext(os.path.basename(filename))[0]
+  parser = PDBParser()
+  return parser.get_structure(id, filename)
 
 
 
