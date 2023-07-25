@@ -1,7 +1,6 @@
 from .Metric import Metric
 from typing import List, Optional
 from Bio.PDB.Atom import Atom
-from Bio.PDB import Superimposer
 
 
 
