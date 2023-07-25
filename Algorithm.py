@@ -163,6 +163,7 @@ class Algorithm(ABC):
     self._sequence_length = Chain.count_residues_from_chain(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_from_chain(reference)
     self.workspace = _Workspace(workspaceName, targetPdbFilename)
+    self.best_solution = None
 
 
 
