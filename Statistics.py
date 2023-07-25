@@ -1,7 +1,7 @@
 """Colección de funciones auxiliares para obtener estadísticas poblacionales 
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
-from typing import List, Dict, Optional
+from typing import List, Dict
 from .Population import Individual
 import math
 import os
@@ -63,12 +63,12 @@ def save_statistics_to_csv_file(stats: Dict[str, float],
     calculadas.
   """
   file_exists = os.path.isfile(filename)
-  with open(filename, 'at', encoding='utf-8') as file:
+  with open(filename, 'at', encoding='utf-8') as the_file:
     if not file_exists:
       temp = [ name for name in stats.keys() ]
-      file.write('iteration_id,' + ','.join(temp) + '\n')
+      the_file.write('iteration_id,' + ','.join(temp) + '\n')
     temp = [ f'{data}' for data in stats.values() ]
-    file.write(f'{iterationId},' + ','.join(temp) + '\n')
+    the_file.write(f'{iterationId},' + ','.join(temp) + '\n')
 
 
 
