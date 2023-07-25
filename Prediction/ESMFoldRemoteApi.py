@@ -1,6 +1,5 @@
 from .Predictor import Predictor
 import requests
-import time
 
 
 
@@ -10,9 +9,9 @@ class ESMFoldRemoteApi(Predictor):
   """
   El algoritmo ESMFold para predecir la estructura de una proteína.
   """
-  
-  forbiddens_count = 0
-  server_errors_count = 0
+
+  _MAX_REQUESTS = 256
+  _requests_count = 0
 
 
 
@@ -35,27 +34,18 @@ class ESMFoldRemoteApi(Predictor):
     `sequence` y escribe en resultado en un archivo PDB cuyo nombre está 
     especificado por `pdbFilename`.
     """
+    if ESMFoldRemoteApi._requests_count >= ESMFoldRemoteApi._MAX_REQUESTS:
+      raise RecursionError('ESMFold API max requests reached')
+    ESMFoldRemoteApi._requests_count += 1
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence)
     if response.status_code == 405:
-      ESMFoldRemoteApi.forbiddens_count += 1
       raise RuntimeError('Forbidden')
+    if response.status_code == 408:
+      raise RuntimeError('Request Timeout')
     if response.status_code == 500:
-      ESMFoldRemoteApi.server_errors_count += 1
-      raise RuntimeError('Internal server error')
+      raise RuntimeError('Internal Server Error')
     if response.status_code != 200:
       raise RuntimeError('Unknown HTTP error')
-    ESMFoldRemoteApi.forbiddens_count = 0 
-    ESMFoldRemoteApi.server_errors_count = 0
     with open(pdbFilename, 'wt', encoding='utf-8') as the_file:
         the_file.write(response.content.decode())
-
-
-
-def handle_api_errors(e: RuntimeError) -> None:
-  if e == 'Forbidden': 
-    sleep_time = 920 if ESMFoldRemoteApi.forbiddens_count == 1 else 1820
-    time.sleep(sleep_time)
-  if e == 'Internal server error' and \
-      ESMFoldRemoteApi.server_errors_count >= 5:
-    time.sleep(300)
