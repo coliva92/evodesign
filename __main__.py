@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 import evodesign.Storage as Storage
-import evodesign.Prediction.ESMFold as ESMFold
+from evodesign.Prediction import Predictor_ESMFold_RemoteApi
 
 
 
@@ -23,6 +23,6 @@ while True:
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:
-    ESMFold.handle_api_errors(e)
+    Predictor_ESMFold_RemoteApi.handle_api_errors(e)
     filename = algorithm.workspace.setup_filename
     continue

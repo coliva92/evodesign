@@ -6,7 +6,7 @@ import time
 
 
 
-class ESMFold(Predictor):
+class ESMFoldRemoteApi(Predictor):
   """
   El algoritmo ESMFold para predecir la estructura de una proteína.
   """
