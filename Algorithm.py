@@ -27,16 +27,16 @@ class _Workspace:
     self.reference_filename = targetPdbFilename
     self.name = name
     self.setup_filename = os.path.abspath(os.path.join(self.name, 
-                                                       'setup.json'))
-    self.stats_filename = self.setup_filename.replace('setup.json', 
+                                                       'settings.json'))
+    self.stats_filename = self.setup_filename.replace('settings.json', 
                                                       'statistics.csv')
-    self.children_filename = self.setup_filename.replace('setup.json', 
+    self.children_filename = self.setup_filename.replace('settings.json', 
                                                          '~children.tmp')
-    self.graph_filename = self.setup_filename.replace('setup.json', 
+    self.graph_filename = self.setup_filename.replace('settings.json', 
                                                       'fitness.png')
-    self.populations_folder = self.setup_filename.replace('setup.json', 
+    self.populations_folder = self.setup_filename.replace('settings.json', 
                                                           'populations')
-    self.pdbs_folder = self.setup_filename.replace('setup.json', 
+    self.pdbs_folder = self.setup_filename.replace('settings.json', 
                                                    'pdbs')
     self.population_filenames = []
     self.memento = {}
