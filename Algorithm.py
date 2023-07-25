@@ -32,7 +32,7 @@ class _Workspace:
     self.stats_filename = self.setup_filename.replace('setup.json', 
                                                       'statistics.csv')
     self.children_filename = self.setup_filename.replace('setup.json', 
-                                                         '~children.bkp')
+                                                         '~children.tmp')
     self.graph_filename = self.setup_filename.replace('setup.json', 
                                                       'fitness.png')
     self.populations_folder = self.setup_filename.replace('setup.json', 
@@ -59,12 +59,12 @@ class _Workspace:
     memento = [ individual.get_memento() for individual in population ]
     filename = os.path.join(self.populations_folder, f'pop_{iterationId}.json')
     new_save_file = not os.path.isfile(filename)
-    with open(filename, 'wt', encoding='utf-8') as file:
-      file.write(json.dumps(memento, indent=2) + '\n')
+    with open(filename, 'wt', encoding='utf-8') as the_file:
+      the_file.write(json.dumps(memento, indent=2) + '\n')
     if new_save_file:
       self.population_filenames.append(filename)
-      with open(self.setup_filename, 'wt', encoding='utf-8') as file:
-        file.write(json.dumps(self.memento, indent=2) + '\n')
+      with open(self.setup_filename, 'wt', encoding='utf-8') as the_file:
+        the_file.write(json.dumps(self.memento, indent=2) + '\n')
 
 
 
@@ -76,8 +76,8 @@ class _Workspace:
     - `children`: la lista de secuencias hijas que van a respaldarse.
     """
     memento = [ individual.get_memento() for individual in children ]
-    with open(self.children_filename, 'wt', encoding='utf-8') as file:
-      file.write(json.dumps(memento, indent=2) + '\n')
+    with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
+      the_file.write(json.dumps(memento, indent=2) + '\n')
     self.children_memento = memento
   
 
@@ -96,8 +96,8 @@ class _Workspace:
     """
     memento = child.get_memento()
     self.children_memento[idx] = memento
-    with open(self.children_filename, 'wt', encoding='utf-8') as file:
-      file.write(json.dumps(self.children_memento, indent=2) + '\n')
+    with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
+      the_file.write(json.dumps(self.children_memento, indent=2) + '\n')
   
 
 
@@ -105,8 +105,8 @@ class _Workspace:
     """Vacía el contenido del archivo `{self.name}/~children.bkp`, usado para 
     respaldar los datos de las secuencias hijas producidas.
     """
-    with open(self.children_filename, 'wt', encoding='utf-8') as file:
-      file.write('[]\n')
+    with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
+      the_file.write('[]\n')
     self.children_memento = []
   
 
@@ -118,8 +118,8 @@ class _Workspace:
     """
     if not os.path.isfile(self.children_filename):
       return False
-    with open(self.children_filename, 'rt', encoding='utf-8') as file:
-      memento = json.load(file)
+    with open(self.children_filename, 'rt', encoding='utf-8') as the_file:
+      memento = json.load(the_file)
     if len(memento) == 0:
       return False
     self.children_memento = memento

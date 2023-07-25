@@ -1,4 +1,6 @@
-"""Colección de funciones auxiliares que se encargan de almacenar y restaurar los datos respaldados del algoritmo evolutivo y de las poblaciones procesadas durante la ejecución de ese mismo algoritmo.
+"""Colección de funciones auxiliares que se encargan de almacenar y restaurar 
+los datos respaldados del algoritmo evolutivo y de las poblaciones procesadas 
+durante la ejecución de ese mismo algoritmo.
 """
 import sys
 import json
@@ -21,8 +23,8 @@ def load_memento_from_json_file(filename: str) -> dict:
   """Carga el diccionario contenido en el archivo JSON especificado por 
   `filename`.
   """
-  with open(filename, 'rt', encoding='utf-8') as file:
-    memento = json.load(file)
+  with open(filename, 'rt', encoding='utf-8') as the_file:
+    memento = json.load(the_file)
   return memento
 
 
@@ -71,8 +73,8 @@ def load_population_from_memento(memento: dict) -> Tuple[int, List[Individual]]:
   if '__savedPopulations' not in memento or \
       len(memento['__savedPopulations']) == 0:
     return 0, []
-  with open(memento['__savedPopulations'][-1], 'rt', encoding='utf-8') as file:
-    population_memento = json.load(file)
+  with open(memento['__savedPopulations'][-1], 'rt', encoding='utf-8') as the_file:
+    population_memento = json.load(the_file)
   iterationId = len(memento['__savedPopulations']) - 1
   population = [ Individual(**params) for params in population_memento ]
   return iterationId, population

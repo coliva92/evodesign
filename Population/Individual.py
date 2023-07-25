@@ -15,6 +15,7 @@ class Individual:
   _next_id = 0
 
 
+
   def __init__(self, 
                sequence: str, 
                id: Optional[str] = None,

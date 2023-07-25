@@ -46,14 +46,14 @@ class ESMFold(Predictor):
     if response.status_code != 200:
       raise RuntimeError('Unknown HTTP error')
     ESMFold.forbiddens_count, ESMFold.server_errors_count = 0, 0
-    with open(pdbFilename, 'wt', encoding='utf-8') as file:
-        file.write(response.content.decode())
+    with open(pdbFilename, 'wt', encoding='utf-8') as the_file:
+        the_file.write(response.content.decode())
 
 
 
 def handle_api_errors(e: RuntimeError) -> None:
   if e == 'Forbidden': 
-    sleep_time = 620 if ESMFold.forbiddens_count == 1 else 3620
+    sleep_time = 920 if ESMFold.forbiddens_count == 1 else 1820
     time.sleep(sleep_time)
   if e == 'Internal server error' and \
       ESMFold.server_errors_count >= 5:
