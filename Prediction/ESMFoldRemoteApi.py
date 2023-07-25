@@ -22,7 +22,7 @@ class ESMFoldRemoteApi(Predictor):
 
   @classmethod
   def get_name(cls) -> str:
-    return 'Predictor_ESMFold'
+    return 'Predictor_ESMFold_RemoteApi'
   
 
   
