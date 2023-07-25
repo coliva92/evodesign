@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from .Population import Individual
-import evodesign.PDB as PDB
 import evodesign.Chain as Chain
 from .Prediction import Predictor
 import json
@@ -160,7 +159,7 @@ class Algorithm(ABC):
     """
     super().__init__()
     self._predictor = predictor
-    reference = PDB.load_structure_from_pdb_file(targetPdbFilename)
+    reference = Chain.load_structure_from_pdb_file(targetPdbFilename)
     self._sequence_length = Chain.count_residues_from_chain(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_from_chain(reference)
     self.workspace = _Workspace(workspaceName, targetPdbFilename)
