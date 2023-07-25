@@ -36,7 +36,7 @@ Para correr un algoritmo evolutivo utilizando EvoDesign, se deben seguir los sig
 Supóngase que se desea ejecutar un algoritmo genético que cumpla con las siguientes características:
 
 - **Representación de los individuos**: secuencias de aminoácidos (cada cadena lateral se representa por medio de una letra).
-- **Función de aptitud**: el RMSD de la superposición contra la estructura objetivo. 
+- **Función de aptitud**: el GDT de la superposición contra la estructura objetivo. 
 - **Tamaño de la población**: 10 individuos.
 - **Selección**: por [torneo](https://en.wikipedia.org/wiki/Tournament_selection) entre 3 individuos.
 - **Número de padres e hijos**: 2.
