@@ -14,12 +14,6 @@ AMINOACIDS = 'ACDEFGHIKLMNPQRSTVWY'
 
 
 
-_TEST_SEQUENCE = 'GREETINGSHEREAREELEVENSIDECHAINNAMES' + \
-  'ALANINECYSTEINEASPARTATEPHENYLALANINEGLYCINEHISTIDINELYSINEASPARAGINE' + \
-  'ARGININESERINEVALINE'
-
-
-
 def create_random_sequence(length: int) -> str:
   """Retorna una una cadena de aminoácidos aleatoria de longitud especificada 
   por `length`.
