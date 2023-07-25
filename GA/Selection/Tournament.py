@@ -49,9 +49,16 @@ class Tournament(Selection):
     generación.
     """
     selected_parents = []
-    for _ in range(self._selection_size):
+    for i in range(self._selection_size):
       candidates = random.sample(population, self._tournament_size)
       candidates = sorted(candidates)
-      selected_parents.append(candidates[-1])
+      winner = candidates[-1]
+      # garantizamos que dos padres consecutivos siempre sean diferentes
+      if i % 2 != 0:
+        while selected_parents[i - 1].sequence == winner.sequence:
+          candidates = random.sample(population, self._tournament_size)
+          candidates = sorted(candidates)
+          winner = candidates[-1]
+      selected_parents.append(winner)
     return selected_parents
     
