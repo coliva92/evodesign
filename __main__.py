@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
 import evodesign.Storage as Storage
-import evodesign.Prediction.ESMFoldRemoteApi as ESMFold
 
 
 
