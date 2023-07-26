@@ -31,7 +31,10 @@ class WorseOut(Replacement):
     Reemplaza parte de los individuos especificados por `population` con 
     aquellos especificados por `children`.
     """
-    # suponemos que ambos arreglos ya tienen su valores de aptitud calculados
-    next_population = sorted(population + children)
-    # suponemos que estamos maximizando la aptitud
-    return next_population[len(children):]
+    for child in children:
+      for i, individual in enumerate(population):
+        if child > individual:
+          continue
+        population.insert(i, child)
+        break
+    return population[len(children):]
