@@ -85,7 +85,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     try:
       self._compute_population_fitness(children)
     except RuntimeError as e:
-      self.workspace.update_children_backup(children)
+      self.workspace.backup_children(children)
       raise e
     self.workspace.delete_children_backup()
     return self._replacement.apply(population, children)

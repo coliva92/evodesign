@@ -70,18 +70,9 @@ class Workspace:
     JSON localizado en `{self.name}/~children.tmp`.
     - `children`: la lista de secuencias hijas que van a respaldarse.
     """
-    memento = [ individual.get_memento() for individual in children ]
-    with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
-      the_file.write(json.dumps(memento, indent=2) + '\n')
-  
-
-
-  def update_children_backup(self, 
-                             children: List[Individual]
-                             ) -> None:
     memento = [ child.get_memento() for child in children ]
-    with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
-      the_file.write(json.dumps(memento, indent=2) + '\n')
+    with open(self.children_filename, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(memento, indent=2) + '\n')
 
 
 
