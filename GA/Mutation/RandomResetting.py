@@ -45,7 +45,8 @@ class RandomResetting(Mutation):
     """
     seq_list = list(sequence)
     for i, residue in enumerate(seq_list):
-      if random.choices(Mutation._options, self._weights)[0]:
+      should_mutate = random.choices(Mutation._options, self._weights)[0]
+      if should_mutate:
         letter = residue
         while residue == letter: 
           letter = random.choice(AMINOACIDS)

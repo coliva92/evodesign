@@ -40,11 +40,12 @@ class MultipleSwitches(Mutation):
     """
     Muta la secuencia especificada por `sequence` y retorna la nueva secuencia.
     """
+    positions = random.sample(list(range(len(sequence))), self._num_switches)
     # en Python, las cadenas son inmutables; hay que convertirlas a una lista
     seq_list = list(sequence)
-    for i in random.sample(list(range(len(sequence))), self._num_switches):
+    for i in positions:
       letter = seq_list[i]
-      while seq_list[i] == letter:
+      while seq_list[i] == letter: 
         letter = random.choice(AMINOACIDS)
       seq_list[i] = letter
     return ''.join(seq_list)

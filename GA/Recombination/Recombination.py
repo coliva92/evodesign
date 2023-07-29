@@ -69,7 +69,7 @@ class Recombination(ABC):
     while (i < num_recombinations):
       if random.choices(Recombination._options, self._weights, k=1)[0]:
         sequences = self.create_children(parents[i].sequence,
-                                          parents[i + 1].sequence)
+                                         parents[i + 1].sequence)
         sister, brother = Individual(sequences[0]), Individual(sequences[1])
       else:
         n = len(parents[i].sequence)
