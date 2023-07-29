@@ -14,7 +14,7 @@ from dataclasses import dataclass
 
 
 @dataclass()
-class PopulationStats:
+class Statistics:
 
   min_fitness: float = math.inf
   fitness_mean: float = -math.inf
@@ -27,7 +27,7 @@ class PopulationStats:
 
 
 
-def compute_statistics(population: List[Individual]) -> PopulationStats:
+def compute_statistics(population: List[Individual]) -> Statistics:
   """Calcula varias estadísticas de la población especificada por `population` 
   y las retorna en un diccionario. Dicho diccionario contiene como mínimo los 
   siguientes datos:
@@ -42,7 +42,7 @@ def compute_statistics(population: List[Individual]) -> PopulationStats:
   
   El diccionario también puede contener campos adicionales que contienen otras métricas de calidad o atributos correspondientes al individuo con la aptitud más alta.
   """
-  stats = PopulationStats()
+  stats = Statistics()
   s = 0.0
   for individual in population:
     if individual.fitness < stats.min_fitness:
@@ -58,7 +58,7 @@ def compute_statistics(population: List[Individual]) -> PopulationStats:
 
 
 
-def save_statistics_to_csv(stats: PopulationStats,
+def save_statistics_to_csv(stats: Statistics,
                            iterationId: int,
                            filename: str
                            ) -> None:
@@ -80,7 +80,7 @@ def save_statistics_to_csv(stats: PopulationStats,
 
 
 
-def load_statistics_from_csv(filename: str) -> List[PopulationStats]:
+def load_statistics_from_csv(filename: str) -> List[Statistics]:
   """Carga las estadísticas poblacionales almacenadas en el archivo CSV 
   especificado por `filename`.
   """
@@ -97,7 +97,7 @@ def load_statistics_from_csv(filename: str) -> List[PopulationStats]:
     for i in range(len(column_names)):
       if column_names[i] != 'iteration_id':
         data[column_names[i]] = ast.literal_eval(values[i])
-    stats.append(PopulationStats(**data))
+    stats.append(Statistics(**data))
   return stats
 
 
