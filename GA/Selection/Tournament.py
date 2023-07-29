@@ -14,6 +14,12 @@ class Tournament(Selection):
   se tiene una población grande y no necesariamente se conoce la información de 
   la población entera.
   """
+
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Selection_Tournament'
+  
+  
   
   def __init__(self,
                selectionSize: int,
@@ -26,12 +32,6 @@ class Tournament(Selection):
     """
     super().__init__(selectionSize)
     self._tournament_size = tournamentSize
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Selection_Tournament'
   
 
 

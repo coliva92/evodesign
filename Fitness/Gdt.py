@@ -8,11 +8,6 @@ from ..Metrics import Rmsd, Gdt as GdtMetric
 
 class Gdt(FitnessFunction):
   
-  def __init__(self) -> None:
-    super().__init__({ 'rmsd': Rmsd(), 'gdt_ts': GdtMetric() })
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'Fitness_GDT'
@@ -22,6 +17,11 @@ class Gdt(FitnessFunction):
   @classmethod
   def upper_bound(cls) -> float:
     return 0.95
+  
+
+  
+  def __init__(self) -> None:
+    super().__init__({ 'rmsd': Rmsd(), 'gdt_ts': GdtMetric() })
   
 
 

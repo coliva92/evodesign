@@ -16,6 +16,12 @@ import evodesign.Statistics as Statistics
 
 class SimpleGeneticAlgorithm(Algorithm):
 
+  @classmethod
+  def get_type(cls) -> str:
+    return 'GA_Simple'
+
+
+
   def __init__(self,
                workspaceName: str,
                targetPdbFilename: str,
@@ -36,12 +42,6 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
     self._statistics = []
-
-
-
-  @classmethod
-  def get_type(cls) -> str:
-    return 'GA_Simple'
 
 
 

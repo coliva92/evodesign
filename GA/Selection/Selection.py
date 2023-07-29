@@ -12,6 +12,13 @@ class Selection(ABC):
   seleccionar un subconjunto de individuos (i.e., de secuencias) de una 
   población particular.
   """
+
+  @classmethod
+  @abstractmethod
+  def get_name(cls) -> str:
+    raise NotImplementedError
+  
+  
   
   def __init__(self, selectionSize: int) -> None:
     """
@@ -20,13 +27,6 @@ class Selection(ABC):
     """
     super().__init__()
     self._selection_size = selectionSize
-  
-
-
-  @classmethod
-  @abstractmethod
-  def get_name(cls) -> str:
-    raise NotImplementedError
 
 
 

@@ -8,14 +8,14 @@ from evodesign.Population import Individual
 
 class Generational(Replacement):
   
-  def __init__(self) -> None:
-    super().__init__()
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Replacement_Generational'
+  
+
+  
+  def __init__(self) -> None:
+    super().__init__()
 
 
 

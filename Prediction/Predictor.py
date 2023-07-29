@@ -14,16 +14,16 @@ class Predictor(ABC):
   La representación de un algoritmo de predicción de la estructura de una 
   proteína.
   """
-  
-  def __init__(self) -> None:
-    super().__init__()
-  
-
 
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
     raise NotImplementedError
+  
+  
+  
+  def __init__(self) -> None:
+    super().__init__()
 
 
   

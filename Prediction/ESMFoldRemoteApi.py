@@ -15,14 +15,14 @@ class ESMFoldRemoteApi(Predictor):
 
 
 
-  def __init__(self) -> None:
-    super().__init__()
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'Predictor_ESMFold_RemoteApi'
+  
+
+  
+  def __init__(self) -> None:
+    super().__init__()
   
 
   

@@ -16,18 +16,20 @@ class UniformCrossover(Recombination):
   
   _options = [ 0, 1 ]
 
+
+
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Recombination_UniformCrossover'
+  
+  
+
   def __init__(self, 
                probability: float = 1.0, 
                bias: float = 0.5) -> None:
     super().__init__(probability)
     self._weights = [ bias, 1.0 - bias ]
     self._bias = bias
-
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Recombination_UniformCrossover'
   
 
 

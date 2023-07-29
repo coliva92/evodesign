@@ -13,15 +13,15 @@ class TwoPointsCrossover(Recombination):
   Los dos puntos intermedios que separan las secuencias de cada padre en tres 
   segmentos se eligen de manera aleatoria. 
   """
-  
-  def __init__(self, probability: float = 1.0) -> None:
-    super().__init__(probability)
-  
-
 
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Recombination_TwoPointCrossover'
+  
+  
+  
+  def __init__(self, probability: float = 1.0) -> None:
+    super().__init__(probability)
 
 
 

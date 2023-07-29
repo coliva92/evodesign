@@ -13,15 +13,15 @@ class SinglePointCrossover(Recombination):
   intermedio donde se separan los segmentos para cada padre se elige de manera 
   aleatoria.
   """
-  
-  def __init__(self, probability: float = 1.0) -> None:
-    super().__init__(probability)
-  
-
 
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Recombination_SinglePointCrossover'
+  
+  
+  
+  def __init__(self, probability: float = 1.0) -> None:
+    super().__init__(probability)
 
 
 

@@ -14,18 +14,6 @@ class FitnessFunction(ABC):
   Representación de la función de aptitud que será optimizada por el algoritmo 
   evolutivo.
   """
-  
-  def __init__(self, metrics: Dict[str, Metric]) -> None:
-    """
-    Constructor.
-    - `metrics`: las métricas de calidad que serán calculadas para la 
-      estructura de cada secuencia y que posteriormente serán utilizadas para 
-      calcular la aptitud del individuo correspondiente.
-    """
-    super().__init__()
-    self._metric_calculators = metrics
-  
-
 
   @classmethod
   @abstractmethod
@@ -38,6 +26,18 @@ class FitnessFunction(ABC):
   @abstractmethod
   def upper_bound(cls) -> float:
     raise NotImplementedError
+  
+  
+  
+  def __init__(self, metrics: Dict[str, Metric]) -> None:
+    """
+    Constructor.
+    - `metrics`: las métricas de calidad que serán calculadas para la 
+      estructura de cada secuencia y que posteriormente serán utilizadas para 
+      calcular la aptitud del individuo correspondiente.
+    """
+    super().__init__()
+    self._metric_calculators = metrics
 
 
   

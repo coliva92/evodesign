@@ -11,14 +11,14 @@ class CenterPointCrossover(Recombination):
   de un padre con la mitad del otro padre.
   """
   
-  def __init__(self, probability: float = 1.0) -> None:
-    super().__init__(probability)
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Recombination_CenterPointCrossover'
+  
+
+  
+  def __init__(self, probability: float = 1.0) -> None:
+    super().__init__(probability)
 
 
 

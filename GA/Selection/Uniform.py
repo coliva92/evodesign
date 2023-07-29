@@ -12,6 +12,12 @@ class Uniform(Selection):
   Operación de selección donde los padres se eligen aleatoriamente de toda la 
   población con probabilidad uniforme.
   """
+
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Selection_Uniform'
+  
+  
   
   def __init__(self, selectionSize: int) -> None:
     """
@@ -19,12 +25,6 @@ class Uniform(Selection):
     - `selectionSize`: el número de individuos a elegir como padres.
     """
     super().__init__(selectionSize)
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Selection_Uniform'
 
 
 

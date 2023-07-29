@@ -16,6 +16,12 @@ class Overselection(Selection):
   """
 
   _options = [ True, False ]
+
+
+
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Selection_Overselection'
   
 
 
@@ -35,12 +41,6 @@ class Overselection(Selection):
     self._top_size = topSize
     self._weights = [ topProbability, 1.0 - topProbability ]
     self._top_probability = topProbability
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Selection_Overselection'
   
 
 

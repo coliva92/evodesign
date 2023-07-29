@@ -17,6 +17,13 @@ class Recombination(ABC):
 
 
 
+  @classmethod
+  @abstractmethod
+  def get_name(cls) -> str:
+    raise NotImplementedError
+
+
+
   def __init__(self, probability: float = 1.0) -> None:
     """
     Constructor.
@@ -26,13 +33,6 @@ class Recombination(ABC):
     super().__init__()
     self._weights = [ probability, 1.0 - probability ]
     self._probability = probability
-  
-
-
-  @classmethod
-  @abstractmethod
-  def get_name(cls) -> str:
-    raise NotImplementedError
   
 
 

@@ -16,6 +16,20 @@ class Individual:
 
 
 
+  @classmethod
+  def random(cls, sequenceLength: int):
+    return cls(Sequence.create_random_sequence(sequenceLength))
+  
+
+
+  @classmethod
+  def _create_id(cls) -> id:
+    id = cls._next_id
+    cls._next_id += 1
+    return id
+
+
+
   def __init__(self, 
                sequence: str, 
                id: Optional[int] = None,
@@ -40,12 +54,6 @@ class Individual:
     self.sequence = sequence
     self.fitness = fitness
     self.metrics = metrics
-  
-
-
-  @classmethod
-  def random(cls, sequenceLength: int):
-    return cls(Sequence.create_random_sequence(sequenceLength))
   
 
 
@@ -80,11 +88,3 @@ class Individual:
     if other.__class__ != self.__class__:
       return NotImplemented
     return (self.fitness < other.fitness) or (self.fitness ==  other.fitness)
-
-
-
-  @classmethod
-  def _create_id(cls) -> id:
-    id = cls._next_id
-    cls._next_id += 1
-    return id

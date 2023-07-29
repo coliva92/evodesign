@@ -12,6 +12,12 @@ class RandomResetting(Mutation):
   secuencia y se cambia por otro aminoácido aleatorio.
   """
 
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Mutation_RandomResetting'
+  
+  
+
   def __init__(self, 
                probability: float = 1.0, 
                residueProbability: float = 0.1) -> None:
@@ -23,12 +29,6 @@ class RandomResetting(Mutation):
     super().__init__(probability)
     self._residue_prob = residueProbability
     self._weights = [ residueProbability, 1.0 - residueProbability ]
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Mutation_RandomResetting'
   
 
 

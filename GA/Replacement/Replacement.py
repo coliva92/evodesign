@@ -11,16 +11,16 @@ class Replacement(ABC):
   La representación para la operación de reemplazo que se aplica sobre 
   algunos individuos de la población (i.e., sobre algunas secuencias).
   """
-  
-  def __init__(self) -> None:
-    super().__init__()
-  
-
 
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
     raise NotImplementedError
+  
+  
+  
+  def __init__(self) -> None:
+    super().__init__()
 
 
 

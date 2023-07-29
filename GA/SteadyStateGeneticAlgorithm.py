@@ -14,6 +14,12 @@ from ..Population import Individual
 
 class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
+  @classmethod
+  def get_type(cls) -> str:
+    return 'GA_Steady'
+  
+
+  
   def __init__(self,
                workspaceName: str,
                targetPdbFilename: str,
@@ -37,12 +43,6 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      mutation)
     self._replacement = replacement
     self._avg_fitnesses = []
-
-
-
-  @classmethod
-  def get_type(cls) -> str:
-    return 'GA_Steady'
 
 
 

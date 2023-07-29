@@ -14,6 +14,15 @@ class Algorithm(ABC):
   """La representación genérica de algún algoritmo evolutivo. 
   """
   
+  @classmethod
+  @abstractmethod
+  def get_type(cls) -> str:
+    """Retorna el nombre del algoritmo.
+    """
+    raise NotImplementedError
+  
+
+
   def __init__(self,
                workspaceName: str,
                targetPdbFilename: str,
@@ -38,15 +47,6 @@ class Algorithm(ABC):
     self._reference_backbone = Chain.filter_backbone_atoms_in_chain(reference)
     self.workspace = Workspace(workspaceName, targetPdbFilename)
     self.best_solution = None
-
-
-
-  @classmethod
-  @abstractmethod
-  def get_type(cls) -> str:
-    """Retorna el nombre del algoritmo.
-    """
-    raise NotImplementedError
 
 
 

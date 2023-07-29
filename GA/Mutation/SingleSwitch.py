@@ -12,6 +12,12 @@ class SingleSwitch(Mutation):
   secuencia y se cambia por otro aminoácido aleatorio.
   """
 
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Mutation_SingleSwitch'
+  
+  
+
   def __init__(self, probability: float = 1.0) -> None:
     """
     Constructor.
@@ -19,12 +25,6 @@ class SingleSwitch(Mutation):
       un individuo.
     """
     super().__init__(probability)
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Mutation_SingleSwitch'
 
 
 

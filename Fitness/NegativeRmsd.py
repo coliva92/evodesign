@@ -11,11 +11,6 @@ class NegativeRmsd(FitnessFunction):
   La función objetivo que consiste únicamente de minimizar el RMSD.
   """
   
-  def __init__(self) -> None:
-    super().__init__({ 'rmsd': Rmsd() })
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'Fitness_NegativeRMSD'
@@ -25,6 +20,11 @@ class NegativeRmsd(FitnessFunction):
   @classmethod
   def upper_bound(cls) -> float:
     return -1.95
+  
+
+  
+  def __init__(self) -> None:
+    super().__init__({ 'rmsd': Rmsd() })
   
 
 

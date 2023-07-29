@@ -13,14 +13,14 @@ class WorseOut(Replacement):
   siguiente generación.
   """
   
-  def __init__(self) -> None:
-    super().__init__()
-  
-
-
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Replacement_WorseOut'
+  
+
+  
+  def __init__(self) -> None:
+    super().__init__()
 
 
 

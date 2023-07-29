@@ -12,6 +12,12 @@ class MultipleSwitches(Mutation):
   secuencia y se cambia por otro aminoácido aleatorio.
   """
 
+  @classmethod
+  def get_name(cls) -> str:
+    return 'GA_Mutation_MultipleSwitches'
+  
+  
+
   def __init__(self, probability: float = 1.0, numSwitches: int = 1) -> None:
     """
     Constructor.
@@ -20,12 +26,6 @@ class MultipleSwitches(Mutation):
     """
     super().__init__(probability)
     self._num_switches = numSwitches
-  
-
-
-  @classmethod
-  def get_name(cls) -> str:
-    return 'GA_Mutation_MultipleSwitches'
   
 
 
