@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 from typing import List
-from evodesign.Population import Individual
+from evodesign import Individual
 
 
 

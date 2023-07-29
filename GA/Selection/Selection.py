@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from evodesign.Population import Individual
+from evodesign import Individual
 
 
 
