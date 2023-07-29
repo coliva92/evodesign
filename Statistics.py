@@ -1,7 +1,7 @@
 """Colección de funciones auxiliares para obtener estadísticas poblacionales 
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
-from typing import List, Dict
+from typing import List, Optional
 from .Population import Individual
 import math
 import os
@@ -17,11 +17,11 @@ from dataclasses import dataclass
 class Statistics:
 
   min_fitness: float = math.inf
-  fitness_mean: float = -math.inf
+  fitness_mean: Optional[float] = None
   max_fitness: float = -math.inf
-  best_sequence_id: int = -1
-  best_sequence_fitness: float = -math.inf
-  best_sequence: str = ''
+  best_sequence_id: Optional[int] = None
+  best_sequence_fitness: Optional[float] = None
+  best_sequence: Optional[str] = None
 
 
 
