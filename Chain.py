@@ -13,11 +13,11 @@ import os
 
 """Las letras válidas que representan los átomos del esqueleto polipeptídico.
 """
-BACKBONE_ATOMS = [ 'N', 'CA', 'C' ]
+BACKBONE_ATOM_NAMES = [ 'N', 'CA', 'C' ]
 
 
 
-def load_structure_from_pdb_file(filename: str) -> Structure:
+def load_structure_from_pdb(filename: str) -> Structure:
   """Carga una proteína desde el archivo PDB especificado por `filename`.
   """
   id = os.path.splitext(os.path.basename(filename))[0]
@@ -26,10 +26,10 @@ def load_structure_from_pdb_file(filename: str) -> Structure:
 
 
 
-def count_residues_from_chain(structure: Structure, 
-                              modelId: int = 0, 
-                              chainId: str = 'A'
-                              ) -> int:
+def count_chain_residues(structure: Structure, 
+                         modelId: int = 0, 
+                         chainId: str = 'A'
+                         ) -> int:
   """Retorna el número de residuos de una cadena en la proteína especificada.
   Se requiere conocer el identificador del modelo y la cadena para ejecutar 
   esta función (ver la sección "The Structure Object" de [esta documentación](https://biopython.org/wiki/The_Biopython_Structural_Bioinformatics_FAQ)).
@@ -42,10 +42,10 @@ def count_residues_from_chain(structure: Structure,
 
 
 
-def filter_backbone_atoms_from_chain(structure: Structure,
-                                     modelId: int = 0, 
-                                     chainId: str = 'A'
-                                     ) -> List[Atom]:
+def filter_backbone_atoms_in_chain(structure: Structure,
+                                   modelId: int = 0, 
+                                   chainId: str = 'A'
+                                   ) -> List[Atom]:
   """Retorna un arreglo que contiene únicamente los átomos del esqueleto 
   polipeptídico de la proteína especificada. Se requiere conocer el 
   identificador del modelo y la cadena para ejecutar 
@@ -57,6 +57,6 @@ def filter_backbone_atoms_from_chain(structure: Structure,
   """
   backbone = []
   for atom in structure[modelId][chainId].get_atoms():
-    if atom.get_name() in BACKBONE_ATOMS:
+    if atom.get_name() in BACKBONE_ATOM_NAMES:
       backbone.append(atom)
   return backbone

@@ -134,9 +134,9 @@ class Algorithm(ABC):
     """
     super().__init__()
     self._predictor = predictor
-    reference = Chain.load_structure_from_pdb_file(targetPdbFilename)
-    self._sequence_length = Chain.count_residues_from_chain(reference)
-    self._reference_backbone = Chain.filter_backbone_atoms_from_chain(reference)
+    reference = Chain.load_structure_from_pdb(targetPdbFilename)
+    self._sequence_length = Chain.count_chain_residues(reference)
+    self._reference_backbone = Chain.filter_backbone_atoms_in_chain(reference)
     self.workspace = _Workspace(workspaceName, targetPdbFilename)
     self.best_solution = None
 

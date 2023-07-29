@@ -62,4 +62,4 @@ class Predictor(ABC):
       self.predict_structure(sequence, pdbFilename)
     parser = PDBParser()
     structure = parser.get_structure(id, pdbFilename)
-    return Chain.filter_backbone_atoms_from_chain(structure)
+    return Chain.filter_backbone_atoms_in_chain(structure)
