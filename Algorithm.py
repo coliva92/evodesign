@@ -40,7 +40,6 @@ class _Workspace:
                                                    'pdbs')
     self.population_filenames = []
     self.memento = {}
-    self.children_memento = []
 
 
 
@@ -71,66 +70,42 @@ class _Workspace:
                       children: List[Individual]
                       ) -> None:
     """Respalda la lista de hijos especificada por `children` en un archivo 
-    JSON localizado en `{self.name}/~children.bkp`.
+    JSON localizado en `{self.name}/~children.tmp`.
     - `children`: la lista de secuencias hijas que van a respaldarse.
     """
     memento = [ individual.get_memento() for individual in children ]
     with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
       the_file.write(json.dumps(memento, indent=2) + '\n')
-    self.children_memento = memento
   
 
 
   def update_children_backup(self, 
-                             idx: int, 
-                             child: Individual
+                             children: List[Individual]
                              ) -> None:
-    """Modifica el contenido del archivo `{self.name}/~children.bkp`, en la 
-    posición indicada por `idx`, para escribir los datos especificados por 
-    `child`.
-    - `idx`: el identificador ordinal de la secuencia hija cuyos datos serán 
-    reemplazados en el archivo `~children.bkp`.
-    - `child`: la secuencia y sus datos correspondientes que van a escribirse 
-    al archivo.
-    """
-    memento = child.get_memento()
-    self.children_memento[idx] = memento
+    memento = [ child.get_memento() for child in children ]
     with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
-      the_file.write(json.dumps(self.children_memento, indent=2) + '\n')
-  
+      the_file.write(json.dumps(memento, indent=2) + '\n')
+
 
 
   def delete_children_backup(self) -> None:
-    """Vacía el contenido del archivo `{self.name}/~children.bkp`, usado para 
+    """Vacía el contenido del archivo `{self.name}/~children.tmp`, usado para 
     respaldar los datos de las secuencias hijas producidas.
     """
     with open(self.children_filename, 'wt', encoding='utf-8') as the_file:
       the_file.write('[]\n')
-    self.children_memento = []
-  
-
-
-  def has_backed_up_children(self) -> bool:
-    """Retorna `True` si existe el archivo `{self.name}/~children.bkp`, usado 
-    para respaldar los datos de las secuencias hijas producidas, y si dicho 
-    archivo no está vacío. En caso contrario, retorna `False`
-    """
-    if not os.path.isfile(self.children_filename):
-      return False
-    with open(self.children_filename, 'rt', encoding='utf-8') as the_file:
-      memento = json.load(the_file)
-    if len(memento) == 0:
-      return False
-    self.children_memento = memento
-    return True
 
 
 
   def restore_children_from_backup(self) -> List[Individual]:
-    """Carga a un arreglo el contenido del archivo `{self.name}/~children.bkp`, 
+    """Carga a un arreglo el contenido del archivo `{self.name}/~children.tmp`, 
     usado para respaldar los datos de las secuencias hijas producidas.
     """
-    return [ Individual(**params) for params in self.children_memento ]
+    if not os.path.isfile(self.children_filename):
+      return []
+    with open(self.children_filename, 'rt', encoding='utf-8') as the_file:
+      memento = json.load(the_file)
+    return [ Individual(**params) for params in memento ]
 
 
 
