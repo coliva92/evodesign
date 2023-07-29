@@ -104,8 +104,8 @@ class SimpleGeneticAlgorithm(Algorithm):
       stats = Statistics.compute_statistics(population)
       self._statistics.append(stats)
       self.workspace.save_population(iterationId, population)
-      Statistics.save_statistics(iterationId,
-                                 stats, 
+      Statistics.save_statistics(stats, 
+                                 iterationId,
                                  self.workspace.stats_filename)
     if iterationId > 0:
       self.best_solution = population[-1]
@@ -124,8 +124,8 @@ class SimpleGeneticAlgorithm(Algorithm):
         self._statistics.append(stats)
         self.workspace.save_population(iterationId, population)
         Statistics.save_statistics(stats, 
-                                  iterationId, 
-                                  self.workspace.stats_filename)
+                                   iterationId, 
+                                   self.workspace.stats_filename)
     while True:
       if iterationId == self._num_iterations - 1:
         break

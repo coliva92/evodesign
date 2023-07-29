@@ -58,8 +58,8 @@ def compute_statistics(population: List[Individual]) -> PopulationStats:
 
 
 
-def save_statistics(iterationId: int,
-                    stats: PopulationStats,
+def save_statistics(stats: PopulationStats,
+                    iterationId: int,
                     filename: str
                     ) -> None:
   """Calcula varias estadísticas de la población especificada por `population` 
@@ -71,12 +71,12 @@ def save_statistics(iterationId: int,
     calculadas.
   """
   file_exists = os.path.isfile(filename)
-  with open(filename, 'at', encoding='utf-8') as the_file:
+  with open(filename, 'at', encoding='utf-8') as json_file:
     if not file_exists:
       temp = [ name for name, _ in vars(stats).items() ]
-      the_file.write('iteration_id,' + ','.join(temp) + '\n')
+      json_file.write('iteration_id,' + ','.join(temp) + '\n')
     temp = [ f'{data}' for _, data in vars(stats).items() ]
-    the_file.write(f'{iterationId},' + ','.join(temp) + '\n')
+    json_file.write(f'{iterationId},' + ','.join(temp) + '\n')
 
 
 
