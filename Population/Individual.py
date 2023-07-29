@@ -18,7 +18,7 @@ class Individual:
 
   def __init__(self, 
                sequence: str, 
-               id: Optional[str] = None,
+               id: Optional[int] = None,
                fitness: Optional[float] = None,
                metrics: Optional[Dict[str, float]] = None) -> None:
     """
@@ -33,10 +33,8 @@ class Individual:
     """
     if metrics == None: metrics = {}
     self.id = id
-    if id != None:
-      integer_id = int(float(id))
-      if integer_id >= Individual._next_id:
-        Individual._next_id = integer_id + 1
+    if id != None and id >= Individual._next_id:
+        Individual._next_id = id + 1
     else:
       self.id = Individual._create_id()
     self.sequence = sequence
@@ -86,7 +84,7 @@ class Individual:
 
 
   @classmethod
-  def _create_id(cls) -> str:
-    id = f'{cls._next_id}'
+  def _create_id(cls) -> id:
+    id = cls._next_id
     cls._next_id += 1
     return id
