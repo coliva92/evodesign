@@ -47,8 +47,7 @@ class Individual:
 
   @classmethod
   def random(cls, sequenceLength: int):
-    sequence = Sequence.create_random_sequence(sequenceLength)
-    return cls(sequence)
+    return cls(Sequence.create_random_sequence(sequenceLength))
   
 
 
@@ -66,22 +65,22 @@ class Individual:
 
   
   def __eq__(self, other) -> bool:
-    if not isinstance(other, Individual):
-      return False
+    if other.__class__ != self.__class__:
+      return NotImplemented
     return self.fitness == other.fitness
   
 
 
   def __lt__(self, other):
-    if not isinstance(other, Individual):
-      return True
+    if other.__class__ != self.__class__:
+      return NotImplemented
     return self.fitness < other.fitness
   
 
 
   def __le__(self, other):
-    if not isinstance(other, Individual):
-      return True
+    if other.__class__ != self.__class__:
+      return NotImplemented
     return (self.fitness < other.fitness) or (self.fitness ==  other.fitness)
 
 
