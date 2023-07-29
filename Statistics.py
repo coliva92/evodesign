@@ -1,13 +1,13 @@
 """Colección de funciones auxiliares para obtener estadísticas poblacionales 
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
+from dataclasses import dataclass
 from typing import List, Optional
 from .Individual import Individual
 import math
 import os
 import ast
 import matplotlib.pyplot as plt
-from dataclasses import dataclass
 
 
 
