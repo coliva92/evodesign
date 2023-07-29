@@ -185,9 +185,9 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.best_solution = population[-1]
     if population[-1] < self.best_solution:
       population = population[1:] + [ self.best_solution ]
-    stats['best_sequence_id'] = self.best_solution.id
-    stats['best_sequence_fitness'] = self.best_solution.fitness
-    stats['best_sequence'] = f'"{self.best_solution.sequence}"'
+    stats.best_sequence_id = self.best_solution.id
+    stats.best_sequence_fitness = self.best_solution.fitness
+    stats.best_sequence = f'"{self.best_solution.sequence}"'
     return population, stats
 
 

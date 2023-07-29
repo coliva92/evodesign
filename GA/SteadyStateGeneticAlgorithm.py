@@ -66,6 +66,6 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
   def _additional_termination_conditions(self, iterationId: int) -> bool:
     if iterationId >= 10:
-      older_avg = self._statistics[iterationId - 10]['fitness_mean']
-      newer_avg = self._statistics[iterationId]['fitness_mean']
+      older_avg = self._statistics[iterationId - 10].fitness_mean
+      newer_avg = self._statistics[iterationId].fitness_mean
       return newer_avg - older_avg < 0.0001
