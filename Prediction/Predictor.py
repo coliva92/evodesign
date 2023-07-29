@@ -23,7 +23,7 @@ class Predictor(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
 
 
   
@@ -36,7 +36,7 @@ class Predictor(ABC):
     `sequence` y escribe en resultado en un archivo PDB cuyo nombre está 
     especificado por `pdbFilename`.
     """
-    pass
+    raise NotImplementedError
 
 
 

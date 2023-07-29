@@ -147,7 +147,7 @@ class Algorithm(ABC):
   def get_type(cls) -> str:
     """Retorna el nombre del algoritmo.
     """
-    pass
+    raise NotImplementedError
 
 
 
@@ -162,7 +162,7 @@ class Algorithm(ABC):
     - `population`: la colección de individuos que conforman la población sobre 
       la que comenzará a trabajar el algoritmo.
     """
-    pass
+    raise NotImplementedError
 
 
 

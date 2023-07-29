@@ -30,14 +30,14 @@ class FitnessFunction(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
 
   
 
   @classmethod
   @abstractmethod
   def upper_bound(cls) -> float:
-    pass
+    raise NotImplementedError
 
 
   
@@ -50,7 +50,7 @@ class FitnessFunction(ABC):
     Calcula la aptitud de la secuencia especificada por `sequence`, utilizando
     los valores especificados por `metrics`.
     """
-    pass
+    raise NotImplementedError
 
 
 

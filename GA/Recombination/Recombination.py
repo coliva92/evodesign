@@ -32,7 +32,7 @@ class Recombination(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
   
 
 
@@ -51,7 +51,7 @@ class Recombination(ABC):
     Combina las secuencias especificadas por `mother` y `father` para generar 
     nuevas secuencias.
     """
-    pass
+    raise NotImplementedError
 
 
 

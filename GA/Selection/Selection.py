@@ -26,7 +26,7 @@ class Selection(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
 
 
 
@@ -37,7 +37,7 @@ class Selection(ABC):
     para posteriormente recombinarlos y generar la población de la siguiente 
     generación.
     """
-    pass
+    raise NotImplementedError
 
 
 

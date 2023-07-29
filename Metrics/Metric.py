@@ -24,4 +24,4 @@ class Metric(ABC):
     """
     Calcula la métrica de calidad del esqueleto especificado por `backbone`.
     """
-    pass
+    raise NotImplementedError

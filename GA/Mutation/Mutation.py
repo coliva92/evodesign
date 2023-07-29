@@ -32,7 +32,7 @@ class Mutation(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
 
 
 
@@ -48,7 +48,7 @@ class Mutation(ABC):
     """
     Muta la secuencia especificada por `sequence` y retorna la nueva secuencia.
     """
-    pass
+    raise NotImplementedError
 
 
 

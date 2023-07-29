@@ -20,7 +20,7 @@ class Replacement(ABC):
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
-    pass
+    raise NotImplementedError
 
 
 
@@ -37,4 +37,4 @@ class Replacement(ABC):
     Reemplaza parte de los individuos especificados por `population` con 
     aquellos especificados por `children`.
     """
-    pass
+    raise NotImplementedError
