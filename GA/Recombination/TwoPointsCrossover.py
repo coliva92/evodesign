@@ -6,7 +6,7 @@ import random
 
 
 
-class TwoPointCrossover(Recombination):
+class TwoPointsCrossover(Recombination):
   """
   Operación de recombinación donde los hijos se obtienen al combinar un 
   segmento intermedio de un padre con los segmentos extremos del otro padre. 
