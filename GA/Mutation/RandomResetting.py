@@ -43,11 +43,11 @@ class RandomResetting(Mutation):
     """
     Muta la secuencia especificada por `sequence` y retorna la nueva secuencia.
     """
-    temp = list(sequence)
-    for i in range(len(temp)):
+    seq_list = list(sequence)
+    for i, residue in enumerate(seq_list):
       if random.choices(Mutation._options, self._weights)[0]:
-        letter = temp[i]
-        while temp[i] == letter:
+        letter = residue
+        while residue == letter: 
           letter = random.choice(AMINOACIDS)
-        temp[i] = letter
-    return ''.join(temp)
+        seq_list[i] = letter
+    return ''.join(seq_list)

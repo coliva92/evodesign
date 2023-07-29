@@ -82,7 +82,7 @@ class SimpleGeneticAlgorithm(Algorithm):
   def run(self, 
           iterationId: int = 0, 
           population: Optional[List[Individual]] = None) -> None:
-    if population == None: population = []
+    if population is None: population = []
     if len(population) == 0:
       iterationId = 0
       population = self.initialize()
@@ -168,7 +168,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                                   ) -> bool:
     was_some_fitness_computed = False
     for individual in population:
-      if individual.fitness == None:
+      if individual.fitness is None:
         was_some_fitness_computed = True
         filename = self._get_pdb_filename(individual)
         self._fitness_fn.apply(individual, 

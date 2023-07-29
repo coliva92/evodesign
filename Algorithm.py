@@ -77,7 +77,7 @@ class Algorithm(ABC):
   def append_and_cache_memento(self, 
                                population_filenames: Optional[List[str]] = None
                                ) -> None:
-    if population_filenames == None: population_filenames = []
+    if population_filenames is None: population_filenames = []
     self.workspace.population_filenames = population_filenames
     self.workspace.memento = self.create_memento()
 

@@ -44,7 +44,7 @@ class Individual:
       calidad para este individuo; estos valores se utilizan para calcular la 
       aptitud del individuo.
     """
-    if metrics == None: metrics = {}
+    if metrics is None: metrics = {}
     self.id = id
     if id != None and id >= Individual._next_id:
         Individual._next_id = id + 1
