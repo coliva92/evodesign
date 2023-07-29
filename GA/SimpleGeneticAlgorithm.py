@@ -6,7 +6,7 @@ from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
-from ..Population import Individual
+from ..Individual import Individual
 from evodesign.Statistics import Statistics as Stats
 import evodesign.Statistics as Statistics
 

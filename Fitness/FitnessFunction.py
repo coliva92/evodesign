@@ -3,7 +3,7 @@ from typing import Dict, List
 from Bio.PDB.Atom import Atom
 from ..Metrics import Metric
 from ..Prediction import Predictor
-from ..Population import Individual
+from ..Individual import Individual
 
 
 

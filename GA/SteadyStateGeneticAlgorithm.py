@@ -6,7 +6,7 @@ from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import Replacement
-from ..Population import Individual
+from ..Individual import Individual
 
 
 
