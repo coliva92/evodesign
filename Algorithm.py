@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from .Workspace import Workspace
-from .Population import Individual
+from .Individual import Individual
 import evodesign.Chain as Chain
 from .Prediction import Predictor
 import os

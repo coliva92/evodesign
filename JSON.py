@@ -4,7 +4,7 @@ durante la ejecución de ese mismo algoritmo.
 """
 import sys
 import json
-from .Population import Individual
+from .Individual import Individual
 from typing import List, Tuple
 from .Algorithm import Algorithm
 from .Prediction import *

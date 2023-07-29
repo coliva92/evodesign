@@ -1,5 +1,5 @@
 from typing import List
-from .Population import Individual
+from .Individual import Individual
 import json
 import os
 

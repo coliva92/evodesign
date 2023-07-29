@@ -2,7 +2,7 @@
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
 from typing import List, Optional
-from .Population import Individual
+from .Individual import Individual
 import math
 import os
 import ast
