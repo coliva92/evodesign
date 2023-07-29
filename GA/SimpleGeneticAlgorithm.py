@@ -17,7 +17,7 @@ import evodesign.Statistics as Statistics
 class SimpleGeneticAlgorithm(Algorithm):
 
   @classmethod
-  def get_type(cls) -> str:
+  def get_name(cls) -> str:
     return 'GA_Simple'
 
 

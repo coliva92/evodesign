@@ -15,7 +15,7 @@ from ..Population import Individual
 class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
   @classmethod
-  def get_type(cls) -> str:
+  def get_name(cls) -> str:
     return 'GA_Steady'
   
 

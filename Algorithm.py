@@ -16,7 +16,7 @@ class Algorithm(ABC):
   
   @classmethod
   @abstractmethod
-  def get_type(cls) -> str:
+  def get_name(cls) -> str:
     """Retorna el nombre del algoritmo.
     """
     raise NotImplementedError
@@ -81,7 +81,7 @@ class Algorithm(ABC):
 
   def create_memento(self) -> dict:
     return {
-      'algorithmType': self.get_type(),
+      'algorithmType': self.get_name(),
       'algorithmParams': self._get_params_memento(),
       '__savedPopulations': self.workspace.population_filenames
     }
