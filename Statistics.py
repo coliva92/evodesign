@@ -58,10 +58,10 @@ def compute_statistics(population: List[Individual]) -> PopulationStats:
 
 
 
-def save_statistics(stats: PopulationStats,
-                    iterationId: int,
-                    filename: str
-                    ) -> None:
+def save_statistics_to_csv(stats: PopulationStats,
+                           iterationId: int,
+                           filename: str
+                           ) -> None:
   """Calcula varias estadísticas de la población especificada por `population` 
   y las guarda en un archivo CSV, en la locación especificada por `filename`.
   - `iterationId`: el identificador de la iteración que corresponde a la 
@@ -80,7 +80,7 @@ def save_statistics(stats: PopulationStats,
 
 
 
-def load_statistics(filename: str) -> List[PopulationStats]:
+def load_statistics_from_csv(filename: str) -> List[PopulationStats]:
   """Carga las estadísticas poblacionales almacenadas en el archivo CSV 
   especificado por `filename`.
   """

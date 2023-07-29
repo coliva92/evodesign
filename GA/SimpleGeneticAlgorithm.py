@@ -104,12 +104,12 @@ class SimpleGeneticAlgorithm(Algorithm):
       stats = Statistics.compute_statistics(population)
       self._statistics.append(stats)
       self.workspace.save_population(iterationId, population)
-      Statistics.save_statistics(stats, 
-                                 iterationId,
-                                 self.workspace.stats_filename)
+      Statistics.save_statistics_to_csv(stats, 
+                                        iterationId,
+                                        self.workspace.stats_filename)
     if iterationId > 0:
       self.best_solution = population[-1]
-      self._statistics = Statistics.load_statistics(
+      self._statistics = Statistics.load_statistics_from_csv(
         self.workspace.stats_filename)
     else:
       try:
@@ -123,9 +123,9 @@ class SimpleGeneticAlgorithm(Algorithm):
         stats = Statistics.compute_statistics(population)
         self._statistics.append(stats)
         self.workspace.save_population(iterationId, population)
-        Statistics.save_statistics(stats, 
-                                   iterationId, 
-                                   self.workspace.stats_filename)
+        Statistics.save_statistics_to_csv(stats, 
+                                          iterationId, 
+                                          self.workspace.stats_filename)
     while True:
       if iterationId == self._num_iterations - 1:
         break
@@ -139,9 +139,9 @@ class SimpleGeneticAlgorithm(Algorithm):
       self._statistics.append(stats)
       population, stats = self._update_best_solution(population, stats)
       self.workspace.save_population(iterationId, population)
-      Statistics.save_statistics(stats, 
-                                 iterationId, 
-                                 self.workspace.stats_filename)
+      Statistics.save_statistics_to_csv(stats, 
+                                        iterationId, 
+                                        self.workspace.stats_filename)
     Statistics.plot_fitness(self.workspace.stats_filename, 
                             self.workspace.graph_filename,
                             self.workspace.name)
