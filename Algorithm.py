@@ -65,20 +65,6 @@ class Algorithm(ABC):
 
 
 
-  def _get_params_memento(self) -> dict:
-    """Retorna un diccionario que contiene los parámetros de los componentes y 
-    que conforman el algoritmo; este diccionario normalmente se utiliza para 
-    respaldar en un archivo la configuración del algoritmo, para así poder 
-    restaurarla en caso de que se interrumpa la ejecución.
-    """
-    return {
-      'workspaceName': self.workspace.name,
-      'targetPdbFilename': self.workspace.reference_filename,
-      'predictor': self._predictor.get_name()
-    }
-
-
-
   def create_memento(self) -> dict:
     return {
       'algorithmType': self.get_name(),
@@ -97,5 +83,19 @@ class Algorithm(ABC):
 
 
 
+  def _get_params_memento(self) -> dict:
+    """Retorna un diccionario que contiene los parámetros de los componentes y 
+    que conforman el algoritmo; este diccionario normalmente se utiliza para 
+    respaldar en un archivo la configuración del algoritmo, para así poder 
+    restaurarla en caso de que se interrumpa la ejecución.
+    """
+    return {
+      'workspaceName': self.workspace.name,
+      'targetPdbFilename': self.workspace.reference_filename,
+      'predictor': self._predictor.get_name()
+    }
+  
+
+  
   def _get_pdb_filename(self, individual: Individual) -> str:
     return os.path.join(self.workspace.pdbs_folder, f'prot_{individual.id}.pdb')

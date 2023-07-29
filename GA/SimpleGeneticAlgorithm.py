@@ -43,21 +43,6 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._replacement = GA_Replacement_Generational()
     self._statistics = []
 
-
-
-  def _get_params_memento(self) -> dict:
-    params = super()._get_params_memento()
-    params['fitnessFunction'] = self._fitness_fn.get_name()
-    params['populationSize'] = self._population_size
-    params['numIterations'] = self._num_iterations
-    params['selection'] = self._selection.get_name()
-    params['selectionParams'] = self._selection.get_params_memento()
-    params['recombination'] = self._recombination.get_name()
-    params['recombinationParams'] = self._recombination.get_params_memento()
-    params['mutation'] = self._mutation.get_name()
-    params['mutationParams'] = self._mutation.get_params_memento()
-    return params
-
   
 
   def initialize(self) -> List[Individual]:
@@ -150,6 +135,34 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
+  def _get_params_memento(self) -> dict:
+    params = super()._get_params_memento()
+    params['fitnessFunction'] = self._fitness_fn.get_name()
+    params['populationSize'] = self._population_size
+    params['numIterations'] = self._num_iterations
+    params['selection'] = self._selection.get_name()
+    params['selectionParams'] = self._selection.get_params_memento()
+    params['recombination'] = self._recombination.get_name()
+    params['recombinationParams'] = self._recombination.get_params_memento()
+    params['mutation'] = self._mutation.get_name()
+    params['mutationParams'] = self._mutation.get_params_memento()
+    return params
+  
+
+
+  def _evolutionary_step(self, 
+                         population: List[Individual]
+                         ) -> List[Individual]:
+    next_population = []
+    while len(next_population) < len(population):
+      parents = self._selection.apply(population)
+      children = self._recombination.apply(parents)
+      self._mutation.apply(children)
+      next_population += children
+    return next_population
+  
+
+  
   def _compute_population_fitness(self, 
                                   population: List[Individual]
                                   ) -> bool:
@@ -163,19 +176,6 @@ class SimpleGeneticAlgorithm(Algorithm):
                                self._reference_backbone,
                                filename)
     return was_some_fitness_computed
-
-
-
-  def _evolutionary_step(self, 
-                         population: List[Individual]
-                         ) -> List[Individual]:
-    next_population = []
-    while len(next_population) < len(population):
-      parents = self._selection.apply(population)
-      children = self._recombination.apply(parents)
-      self._mutation.apply(children)
-      next_population += children
-    return next_population
 
 
 
