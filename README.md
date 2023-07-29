@@ -125,10 +125,12 @@ Al finalizar la ejecución del programa, la carpeta _workspace_ debería contene
   - El identificador, el valor de aptitudo, y los valores individuales de las demás métricas correspondientes al individuo de mayor aptitud.
   - La secuencia de aminoácidos correspondiente al individuo de mayor aptitud.
 
+<!--
 <a name="opciones-catalogo"></a>
 ### Catálogo completo de las diferentes opciones de configuración
 
 [Haga clic aquí](ConfigManual.md).
+-->
 
 <a name="condicion-finalizacion"></a>
 ### Condición de finalización del algoritmo evolutivo
