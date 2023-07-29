@@ -19,26 +19,27 @@ from .GA.Replacement import *
 
 
 
-def load_memento_from_json_file(filename: str) -> dict:
+def load_dict_from_json(filename: str) -> dict:
   """Carga el diccionario contenido en el archivo JSON especificado por 
   `filename`.
   """
   with open(filename, 'rt', encoding='utf-8') as the_file:
-    memento = json.load(the_file)
-  return memento
+    data = json.load(the_file)
+  return data
 
 
 
-def load_algorithm_from_memento(memento: dict) -> Algorithm:
+def create_algorithm_from_settings_dict(settings: dict) -> Algorithm:
   """Usa los datos contenidos en el diccionario especificado por `memento` para 
   construir una instancia del algoritmo evolutivo indicado en ese mismo 
   diccionario.
   """
-  algorithm_class = getattr(sys.modules[__name__], memento['algorithmType'])
-  algorithm_name = memento['algorithmType'][:memento['algorithmType'].find('_')]
+  algorithm_class = getattr(sys.modules[__name__], settings['algorithmType'])
+  i = settings['algorithmType'].find('_')
+  algorithm_name = settings['algorithmType'][:i]
   algorithm_params, operation_params = {}, {}
   other_algorithm_params = {}
-  for key, value in memento['algorithmParams'].items():
+  for key, value in settings['algorithmParams'].items():
     if key.endswith('Params'):
       name = key.replace('Params', '')
       operation_params[name] = value
@@ -58,23 +59,25 @@ def load_algorithm_from_memento(memento: dict) -> Algorithm:
   for key, value in other_algorithm_params.items():
     algorithm_params[key] = value
   algorithm = algorithm_class(**algorithm_params)
-  if '__savedPopulations' in memento:
-    algorithm.append_and_cache_memento(memento['__savedPopulations'])
+  if '__savedPopulations' in settings:
+    algorithm.append_and_cache_memento(settings['__savedPopulations'])
   else:
     algorithm.append_and_cache_memento()
   return algorithm
 
 
 
-def load_population_from_memento(memento: dict) -> Tuple[int, List[Individual]]:
+def load_latest_population_from_settings_dict(settings: dict
+                                              ) -> Tuple[int, List[Individual]]:
   """Carga la colección de individuos del archivo JSON más reciente descrito en 
   el diccionario de datos de respaldo especificado por `memento`.
   """
-  if '__savedPopulations' not in memento or \
-      len(memento['__savedPopulations']) == 0:
+  if '__savedPopulations' not in settings or \
+      len(settings['__savedPopulations']) == 0:
     return 0, []
-  with open(memento['__savedPopulations'][-1], 'rt', encoding='utf-8') as the_file:
-    population_memento = json.load(the_file)
-  iterationId = len(memento['__savedPopulations']) - 1
-  population = [ Individual(**params) for params in population_memento ]
+  filename = settings['__savedPopulations'][-1]
+  with open(filename, 'rt', encoding='utf-8') as json_file:
+    individuals_data = json.load(json_file)
+  iterationId = len(settings['__savedPopulations']) - 1
+  population = [ Individual(**params) for params in individuals_data ]
   return iterationId, population

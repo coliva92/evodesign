@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import evodesign.Storage as Storage
+import evodesign.JSON as JSON
 
 
 
@@ -16,9 +16,10 @@ args = parser.parse_args()
 filename = args.settings_filename
 while True:
   try:
-    memento = Storage.load_memento_from_json_file(filename)
-    algorithm = Storage.load_algorithm_from_memento(memento)
-    iterationId, population = Storage.load_population_from_memento(memento)
+    settings = JSON.load_dict_from_json(filename)
+    algorithm = JSON.create_algorithm_from_settings_dict(settings)
+    iterationId, population = JSON.load_latest_population_from_settings_dict(
+      settings)
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:
