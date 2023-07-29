@@ -1,5 +1,5 @@
 from typing import List
-from Population import Individual
+from .Population import Individual
 import json
 import os
 
@@ -23,17 +23,17 @@ class Workspace:
     """
     self.reference_filename = targetPdbFilename
     self.name = name
-    self.setup_filename = os.path.abspath(os.path.join(self.name, 
+    self.settings_filename = os.path.abspath(os.path.join(self.name, 
                                                        'settings.json'))
-    self.stats_filename = self.setup_filename.replace('settings.json', 
+    self.stats_filename = self.settings_filename.replace('settings.json', 
                                                       'statistics.csv')
-    self.children_filename = self.setup_filename.replace('settings.json', 
+    self.children_filename = self.settings_filename.replace('settings.json', 
                                                          '~children.tmp')
-    self.graph_filename = self.setup_filename.replace('settings.json', 
+    self.graph_filename = self.settings_filename.replace('settings.json', 
                                                       'fitness.png')
-    self.populations_folder = self.setup_filename.replace('settings.json', 
+    self.populations_folder = self.settings_filename.replace('settings.json', 
                                                           'populations')
-    self.pdbs_folder = self.setup_filename.replace('settings.json', 
+    self.pdbs_folder = self.settings_filename.replace('settings.json', 
                                                    'pdbs')
     self.population_filenames = []
     self.memento = {}
@@ -58,7 +58,7 @@ class Workspace:
       the_file.write(json.dumps(memento, indent=2) + '\n')
     if new_save_file:
       self.population_filenames.append(filename)
-      with open(self.setup_filename, 'wt', encoding='utf-8') as the_file:
+      with open(self.settings_filename, 'wt', encoding='utf-8') as the_file:
         the_file.write(json.dumps(self.memento, indent=2) + '\n')
 
 

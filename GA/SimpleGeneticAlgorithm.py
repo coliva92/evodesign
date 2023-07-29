@@ -7,6 +7,7 @@ from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
 from ..Population import Individual
+from evodesign.Statistics import Statistics as Stats
 import evodesign.Statistics as Statistics
 
 
@@ -35,7 +36,6 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
     self._statistics = []
-    self.best_solution = None
 
 
 
@@ -107,11 +107,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       Statistics.save_statistics_to_csv(stats, 
                                         iterationId,
                                         self.workspace.stats_filename)
-    if iterationId > 0:
-      self.best_solution = population[-1]
-      self._statistics = Statistics.load_statistics_from_csv(
-        self.workspace.stats_filename)
-    else:
+    if iterationId == 0:
       try:
         is_recovering = self._compute_population_fitness(population)
       except RuntimeError as e:
@@ -126,6 +122,12 @@ class SimpleGeneticAlgorithm(Algorithm):
         Statistics.save_statistics_to_csv(stats, 
                                           iterationId, 
                                           self.workspace.stats_filename)
+      else:
+        self.best_solution = population[-1]
+    else:
+      self.best_solution = population[-1]
+      self._statistics = Statistics.load_statistics_from_csv(
+        self.workspace.stats_filename)
     while True:
       if iterationId == self._num_iterations - 1:
         break
@@ -179,8 +181,8 @@ class SimpleGeneticAlgorithm(Algorithm):
 
   def _update_best_solution(self, 
                             population: List[Individual], 
-                            stats: Dict[str, float]
-                            ) -> Tuple[List[Individual], Dict[str, float]]:
+                            stats: Stats
+                            ) -> Tuple[List[Individual], Stats]:
     if population[-1] > self.best_solution: 
       self.best_solution = population[-1]
     if population[-1] < self.best_solution:

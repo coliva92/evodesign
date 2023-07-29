@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from Workspace import Workspace
+from .Workspace import Workspace
 from .Population import Individual
 import evodesign.Chain as Chain
 from .Prediction import Predictor
