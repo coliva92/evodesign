@@ -31,6 +31,6 @@ class Gdt(Metric):
       tally = 0
       for d in distances:
         tally += d <= cutoff
-      ratios_sum += tally / n
+      ratios_sum += tally / float(n)
     return ratios_sum / 4.0
   
