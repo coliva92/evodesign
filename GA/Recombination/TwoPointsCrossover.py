@@ -16,7 +16,7 @@ class TwoPointsCrossover(Recombination):
 
   @classmethod
   def get_name(cls) -> str:
-    return 'GA_Recombination_TwoPointCrossover'
+    return 'GA_Recombination_TwoPointsCrossover'
   
   
   

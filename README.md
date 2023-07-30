@@ -64,7 +64,7 @@ Para lograr esto, el archivo de configuración `settings.json` debe contener lo 
       "selectionSize": 2,
       "tournamentSize": 3
     },
-    "recombination": "GA_Recombination_TwoPointCrossover",
+    "recombination": "GA_Recombination_TwoPointsCrossover",
     "recombinationParams": {},
     "mutation": "GA_Mutation_MultipleSwitches",
     "mutationParams": {
@@ -86,7 +86,7 @@ La configuración anterior puede interpretarse de la siguiente manera:
 - El campo `"populationSize": 10` indica que el tamaño de la población es 10.
 - El campo `"numIterations: 20"` indica que el algoritmo correrá por 20 iteraciones.
 - El campo `"selection": "GA_Selection_Tournament"` indica que se usará selección por torneo. Así mismo, los campos `"selectionSize": 2` y `"tournamentSize": 3`, en la sección `"selectionParams"`, indican respectivamente que se seleccionarán dos padres y que el torneo se realizará entre 3 individuos.
-- El campo `"recombination": "GA_Recombination_TwoPointCrossover"` indica que se usará la recombinación _crossover_ de dos puntos.
+- El campo `"recombination": "GA_Recombination_TwoPointsCrossover"` indica que se usará la recombinación _crossover_ de dos puntos.
 - El campo `"mutation": "GA_Recombation_MultipleSwitches"` indica que la mutación consistirá en cambiar un aminoácido de la secuencia por otro aminoácido elegido de manera aleatoria. Así mismo, `"probability"` y `"numSwitches"`, en la sección `"mutationParams"`, indican respectivamente que la mutación se aplicará con 10% de probabilidad y que solo se mutará 1 posición de la secuencia.
 - El campo `"replacement": "GA_Replacement_WorseOut"` indica que, después de producir los hijos, se eliminarán aquellos individuos del conjunto total cuya aptitud es la menor, de tal manera que el tamaño de la población se mantenga constante en cada iteración. 
 

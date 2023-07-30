@@ -22,7 +22,7 @@ class Individual:
 
 
   @classmethod
-  def _create_id(cls) -> id:
+  def _create_id(cls) -> int:
     id = cls._next_id
     cls._next_id += 1
     return id
