@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import evodesign.JSON as JSON
+import evodesign.Recovery as Recovery
 
 
 
@@ -16,9 +16,9 @@ args = parser.parse_args()
 filename = args.settings_filename
 while True:
   try:
-    settings = JSON.load_dict_from_json(filename)
-    algorithm = JSON.create_algorithm_from_settings_dict(settings)
-    iterationId, population = JSON.load_latest_population_from_settings_dict(
+    settings = Recovery.load_dict_from_json(filename)
+    algorithm = Recovery.create_algorithm_from_settings_dict(settings)
+    iterationId, population = Recovery.load_latest_population_from_settings_dict(
       settings)
     algorithm.run(iterationId, population)
     break
