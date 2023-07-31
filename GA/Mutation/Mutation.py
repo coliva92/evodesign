@@ -57,6 +57,6 @@ class Mutation(ABC):
     Aplica la mutación a los individuos especificados por `children` con la 
     probabilidad especificada en el constructor.
     """
-    for child in children:
+    for i, child in enumerate(children):
       if random.choices(Mutation._options, self._weights, k=1)[0]:
-        child.sequence = self.mutate_sequence(child.sequence)
+        children[i] = Individual(self.mutate_sequence(child.sequence))
