@@ -19,7 +19,6 @@ class Statistics:
   min_fitness: float = math.inf
   fitness_mean: Optional[float] = None
   max_fitness: float = -math.inf
-  best_sequence_id: Optional[int] = None
   best_sequence_fitness: Optional[float] = None
   best_sequence: Optional[str] = None
 
@@ -49,7 +48,6 @@ def compute_statistics(population: List[Individual]) -> Statistics:
       stats.min_fitness = individual.fitness
     if individual.fitness > stats.max_fitness:
       stats.max_fitness = individual.fitness
-      stats.best_sequence_id = individual.id
       stats.best_sequence_fitness = individual.fitness
       stats.best_sequence = f'"{individual.sequence}"'
     s += individual.fitness

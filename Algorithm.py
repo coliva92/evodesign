@@ -98,4 +98,5 @@ class Algorithm(ABC):
 
   
   def _get_pdb_filename(self, individual: Individual) -> str:
-    return os.path.join(self.workspace.pdbs_folder, f'prot_{individual.id}.pdb')
+    return os.path.join(self.workspace.pdbs_folder, 
+                        f'prot_{individual.sequence}.pdb')

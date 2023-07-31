@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 import evodesign.Sequence as Sequence
+import time
 
 
 
@@ -18,20 +19,11 @@ class Individual:
   @classmethod
   def random(cls, sequenceLength: int):
     return cls(Sequence.create_random_sequence(sequenceLength))
-  
-
-
-  @classmethod
-  def _create_id(cls) -> int:
-    id = cls._next_id
-    cls._next_id += 1
-    return id
 
 
 
   def __init__(self, 
-               sequence: str, 
-               id: Optional[int] = None,
+               sequence: str,
                fitness: Optional[float] = None,
                metrics: Optional[Dict[str, float]] = None) -> None:
     """
@@ -45,11 +37,6 @@ class Individual:
       aptitud del individuo.
     """
     if metrics is None: metrics = {}
-    self.id = id
-    if id != None and id >= Individual._next_id:
-        Individual._next_id = id + 1
-    else:
-      self.id = Individual._create_id()
     self.sequence = sequence
     self.fitness = fitness
     self.metrics = metrics
@@ -57,8 +44,7 @@ class Individual:
 
 
   def get_memento(self) -> dict:
-    memento = { 
-      'id': self.id,
+    memento = {
       'fitness': self.fitness,
       'metrics': {},
       'sequence': self.sequence

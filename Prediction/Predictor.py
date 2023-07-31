@@ -4,6 +4,7 @@ from Bio.PDB.Atom import Atom
 from Bio.PDB import PDBParser
 import evodesign.Chain as Chain
 import os
+import time
 
 
 
@@ -40,8 +41,7 @@ class Predictor(ABC):
 
 
 
-  def get_predicted_backbone(self, 
-                             id: str,
+  def get_predicted_backbone(self,
                              sequence: str, 
                              pdbFilename: str) -> List[Atom]:
     """
@@ -61,5 +61,5 @@ class Predictor(ABC):
       os.makedirs(os.path.dirname(os.path.abspath(pdbFilename)), exist_ok=True)
       self.predict_structure(sequence, pdbFilename)
     parser = PDBParser()
-    structure = parser.get_structure(id, pdbFilename)
+    structure = parser.get_structure(f'{time.time_ns()}', pdbFilename)
     return Chain.filter_backbone_atoms_in_chain(structure)

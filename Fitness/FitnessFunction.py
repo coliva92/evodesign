@@ -64,8 +64,7 @@ class FitnessFunction(ABC):
     el algoritmo de predicción de la estructura de la proteína especificado por 
     `predictor`.
     """
-    backbone = predictor.get_predicted_backbone(individual.id, 
-                                                individual.sequence, 
+    backbone = predictor.get_predicted_backbone(individual.sequence, 
                                                 pdbFilename)
     for metric, calculator in self._metric_calculators.items():
       individual.metrics[metric] = calculator.compute(backbone, 
