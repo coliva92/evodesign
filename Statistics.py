@@ -1,8 +1,8 @@
 """Colección de funciones auxiliares para obtener estadísticas poblacionales 
 del algoritmo evolutivo, y guardarlas en un archivo.
 """
-from dataclasses import dataclass
-from typing import List, Optional
+from dataclasses import dataclass, field
+from typing import List
 from .Individual import Individual
 import math
 import os
@@ -16,11 +16,11 @@ import matplotlib.pyplot as plt
 @dataclass()
 class Statistics:
 
-  min_fitness: float = math.inf
-  fitness_mean: Optional[float] = None
-  max_fitness: float = -math.inf
-  best_sequence_fitness: Optional[float] = None
-  best_sequence: Optional[str] = None
+  min_fitness: float = field(default=math.inf)
+  fitness_mean: float = field(default=None)
+  max_fitness: float = field(default=-math.inf)
+  best_sequence_fitness: float = field(default=None)
+  best_sequence: str = field(default=None)
 
 
 
