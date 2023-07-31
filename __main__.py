@@ -17,18 +17,18 @@ filename = args.settings_filename
 while True:
   try:
     settings = Recovery.load_dict_from_json(filename)
-    algorithm = Recovery.create_algorithm_from_settings_dict(settings)
-    iterationId, population = Recovery.load_latest_population_from_settings_dict(
+    algorithm = Recovery.create_algorithm_from_settings(settings)
+    iterationId, population = Recovery.load_latest_population_from_settings(
       settings)
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:
     filename = algorithm.workspace.settings_filename
     if e == 'ESMFold API max requests reached' or e == 'Forbidden': 
-      print(f'Interrupted.\n' +
+      print(f'INTERRUPTED.\n' +
             f'Run `python -m evodesign {filename}` to resume later.')
       break
     continue
-print(f'Completed.\n' +
-      f'Best sequence: {algorithm.best_solution.sequence}\n' + 
+print(f'COMPLETED.\n' +
+      f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
       f'Fitness: {algorithm.best_solution.fitness:0.4f}')

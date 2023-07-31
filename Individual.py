@@ -30,5 +30,5 @@ class Individual:
   
 
 
-  def get_pdb_filepath(self, dir: str = str()) -> str:
-    return os.path.join(dir, f'prot_{self.sequence}.pdb')
+  def get_pdb_filepath(self, parentFolder: str = str()) -> str:
+    return os.path.join(parentFolder, f'prot_{self.sequence}.pdb')

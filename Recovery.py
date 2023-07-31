@@ -29,7 +29,7 @@ def load_dict_from_json(filename: str) -> dict:
 
 
 
-def create_algorithm_from_settings_dict(settings: dict) -> Algorithm:
+def create_algorithm_from_settings(settings: dict) -> Algorithm:
   """Usa los datos contenidos en el diccionario especificado por `memento` para 
   construir una instancia del algoritmo evolutivo indicado en ese mismo 
   diccionario.
@@ -67,8 +67,8 @@ def create_algorithm_from_settings_dict(settings: dict) -> Algorithm:
 
 
 
-def load_latest_population_from_settings_dict(settings: dict
-                                              ) -> Tuple[int, List[Individual]]:
+def load_latest_population_from_settings(settings: dict
+                                         ) -> Tuple[int, List[Individual]]:
   """Carga la colección de individuos del archivo JSON más reciente descrito en 
   el diccionario de datos de respaldo especificado por `memento`.
   """
