@@ -170,7 +170,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     for individual in population:
       if individual.fitness is None:
         was_some_fitness_computed = True
-        filename = self._get_pdb_filename(individual)
+        filename = individual.get_pdb_filepath(self.workspace.pdbs_folder)
         self._fitness_fn.apply(individual, 
                                self._predictor, 
                                self._reference_backbone,
