@@ -57,6 +57,7 @@ def filter_backbone_atoms_in_chain(structure: Structure,
   """
   backbone = []
   for atom in structure[modelId][chainId].get_atoms():
-    if atom.get_name() in BACKBONE_ATOM_NAMES:
-      backbone.append(atom)
+    if atom.get_name() not in BACKBONE_ATOM_NAMES:
+      continue
+    backbone.append(atom)
   return backbone
