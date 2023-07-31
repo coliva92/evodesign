@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field, asdict
 import evodesign.Sequence as Sequence
+import os
 
 
 
@@ -26,3 +27,8 @@ class Individual:
 
   def get_memento(self) -> dict:
     return asdict(self)
+  
+
+
+  def get_pdb_filepath(self, dir: str = str()) -> str:
+    return os.path.join(dir, f'prot_{self.sequence}.pdb')
