@@ -41,7 +41,7 @@ class FitnessFunction(ABC):
                ) -> Tuple[Dict[str, float], float]:
     metrics = { 
       key: calc(modelBackbone, referenceBackbone) \
-        for key, calc in self._metric_calculators 
+        for key, calc in self._metric_calculators.items() 
     }
     fitness = self._compute_fitness(metrics)
     return metrics, fitness
