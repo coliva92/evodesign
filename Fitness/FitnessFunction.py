@@ -43,5 +43,5 @@ class FitnessFunction(ABC):
       key: calc(modelBackbone, referenceBackbone) \
         for key, calc in self._metric_calculators.items() 
     }
-    fitness = self._compute_fitness(metrics)
+    fitness = self.compute_fitness(metrics)
     return metrics, fitness
