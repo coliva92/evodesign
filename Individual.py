@@ -8,10 +8,6 @@ import os
 
 @dataclass(order=True)
 class Individual:
-  """
-  La representación de un individuo (i.e., una secuencia de aminoácidos) en la 
-  población del algoritmo evolutivo.
-  """
 
   sequence: str = field(compare=False)
   fitness: float = field(default=None)
@@ -20,12 +16,12 @@ class Individual:
 
 
   @classmethod
-  def random(cls, sequenceLength: int):
+  def new_random(cls, sequenceLength: int):
     return cls(Sequence.create_random_sequence(sequenceLength))
   
 
 
-  def get_memento(self) -> dict:
+  def as_dict(self) -> dict:
     return asdict(self)
   
 

@@ -51,7 +51,7 @@ class Workspace:
     - `population`: la colección de individuos que van a respaldarse. 
     """
     os.makedirs(self.populations_folder, exist_ok=True)
-    memento = [ individual.get_memento() for individual in population ]
+    memento = [ individual.as_dict() for individual in population ]
     filename = os.path.join(self.populations_folder, f'pop_{iterationId}.json')
     new_save_file = not os.path.isfile(filename)
     with open(filename, 'wt', encoding='utf-8') as the_file:
@@ -70,7 +70,7 @@ class Workspace:
     JSON localizado en `{self.name}/~children.tmp`.
     - `children`: la lista de secuencias hijas que van a respaldarse.
     """
-    memento = [ child.get_memento() for child in children ]
+    memento = [ child.as_dict() for child in children ]
     with open(self.children_filename, 'wt', encoding='utf-8') as json_file:
       json_file.write(json.dumps(memento, indent=2) + '\n')
 
