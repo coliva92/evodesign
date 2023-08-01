@@ -25,6 +25,11 @@ class Individual:
   
 
 
+  def __float__(self):
+    return self.fitness
+  
+
+  
   def as_dict(self) -> dict:
     return asdict(self)
   
