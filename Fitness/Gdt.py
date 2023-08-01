@@ -25,12 +25,5 @@ class Gdt(FitnessFunction):
   
 
 
-  def compute_fitness(self, 
-                      sequence: str, 
-                      metrics: Dict[str, float]
-                      ) -> float:
-    """
-    Calcula la aptitud de la secuencia especificada por `sequence`, utilizando
-    los valores especificados por `metrics`.
-    """
+  def compute_fitness(self, metrics: Dict[str, float]) -> float:
     return metrics['gdt_ts']

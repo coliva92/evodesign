@@ -13,21 +13,16 @@ class Null(Predictor):
     return 'Predictor_Null'
   
 
-  
-  def __init__(self) -> None:
-    super().__init__()
-  
 
-
-  def get_predicted_backbone(self, 
-                             id: str,
-                             sequence: str, 
-                             pdbFilename: str) -> List[Atom]:
-    return []
-  
-  
-    
   def predict_structure(self, 
                         sequence: str, 
                         pdbFilename: str) -> None:
-    return
+    pass
+
+
+
+  def __call__(self,
+               sequence: str, 
+               pdbFilename: str
+               ) -> List[Atom]:
+    return []

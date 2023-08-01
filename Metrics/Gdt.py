@@ -1,36 +1,28 @@
 from .Metric import Metric
-from typing import List, Optional
+from typing import List
 from Bio.PDB.Atom import Atom
+import statistics # no se confunda con evodesign.Statistics
 
 
 
 
 
 class Gdt(Metric):
-  """
-  El RMSD obtenido de una superposición de dos estructuras.
-  """
   
   def __init__(self, cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]) -> None:
     super().__init__()
-    self.cutoffs = cutoffs
+    self._cutoffs = cutoffs
   
 
 
-  def compute(self, 
-              model_backbone: List[Atom],
-              reference_backbone: Optional[List[Atom]]) -> float:
-    # suponemos que `model_backbone` ya fue superpuesto contra 
-    # `reference_backbone` en un paso anterior
-    n = len(reference_backbone)
-    distances = [
-      model_backbone[i] - reference_backbone[i] for i in range(n)
-    ]
-    ratios_sum = 0.0
-    for cutoff in self.cutoffs:
-      tally = 0
-      for d in distances:
-        tally += d <= cutoff
-      ratios_sum += tally / float(n)
-    return ratios_sum / 4.0
+  def __call__(self, 
+               modelBackbone: List[Atom], 
+               referenceBackbone: List[Atom]
+               ) -> float:
+    # suponemos que `modelBackbone` ya fue superpuesto contra 
+    # `referenceBackbone` en un paso anterior
+    distances = [ a - b for a, b in zip(modelBackbone, referenceBackbone) ]
+    n = len(referenceBackbone)
+    ratios = [ sum([ d <= c for d in distances ]) / n for c in self._cutoff ]
+    return statistics.fmean(ratios)
   

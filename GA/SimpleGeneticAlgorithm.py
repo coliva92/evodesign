@@ -171,10 +171,10 @@ class SimpleGeneticAlgorithm(Algorithm):
       if individual.fitness is None:
         was_some_fitness_computed = True
         filename = individual.get_pdb_filepath(self.workspace.pdbs_folder)
-        self._fitness_fn.apply(individual, 
-                               self._predictor, 
-                               self._reference_backbone,
-                               filename)
+        individual.update_fitness(self._fitness_fn, 
+                                  self._predictor, 
+                                  self._reference_backbone,
+                                  filename)
     return was_some_fitness_computed
 
 
