@@ -47,7 +47,7 @@ class SimpleGeneticAlgorithm(Algorithm):
 
   def initialize(self) -> List[Individual]:
     m, n = self._sequence_length, self._population_size
-    population = [ Individual.random(m) for _ in range(n) ]
+    population = [ Individual.new_random(m) for _ in range(n) ]
     self.workspace.save_population(0, population)
     try:
       self._compute_population_fitness(population)

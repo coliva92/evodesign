@@ -73,7 +73,7 @@ class Recombination(ABC):
         sister, brother = Individual(sequences[0]), Individual(sequences[1])
       else:
         n = len(parents[i].sequence)
-        sister, brother = Individual.random(n), Individual.random(n)
+        sister, brother = Individual.new_random(n), Individual.new_random(n)
       children.append(sister)
       children.append(brother)
       i += 2
