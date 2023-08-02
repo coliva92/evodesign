@@ -141,7 +141,6 @@ class SimpleGeneticAlgorithm(Algorithm):
 
   def _get_params_memento(self) -> dict:
     params = super()._get_params_memento()
-    params['fitnessFunction'] = self._fitness_fn.get_name()
     params['populationSize'] = self._population_size
     params['numIterations'] = self._num_iterations
     params['selection'] = self._selection.get_name()

@@ -63,5 +63,6 @@ class Algorithm(ABC):
     return {
       'workspaceName': self.workspace.name,
       'targetPdbFilename': self.workspace.reference_filename,
-      'predictor': self._predictor.get_name()
+      'predictor': self._predictor.get_name(),
+      'fitnessFunction': self._fitness_fn.get_name()
     }
