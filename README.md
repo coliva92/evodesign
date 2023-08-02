@@ -71,8 +71,7 @@ Para lograr esto, el archivo de configuración `settings.json` debe contener lo 
       "probability": 0.1,
       "numSwitches": 1
     },
-    "replacement": "GA_Replacement_WorseOut",
-    "replacementParams": {}
+    "replacement": "GA_Replacement_WorseOut"
   }
 }
 ```
@@ -96,15 +95,13 @@ Una vez escrita la configuración en el archivo `settings.json`, el programa se 
 python -m evodesign example/settings.json
 ```
 
-**Durante la ejecución del programa, no se despliega ningún mensaje en la consola a menos que haya ocurrido un error.** Sin embargo, uno puede verificar que el programa está corriendo correctamente al inspeccionar el contenido de la carpeta _workspace_—nuevos archivos deberían crearse dentro de dicha carpeta periódicamente.
-
 Al finalizar la ejecución del programa, la carpeta _workspace_ debería contener la siguiente estructura:
 
 ```
 .
 ├─ example/
 |  ├─ pdbs/
-|  |  ├─ prot_0.pdb
+|  |  ├─ prot_ABC.pdb
 |  |  ├─ ...
 |  ├─ populations/
 |  |  ├─ pop_0.json
@@ -117,13 +114,12 @@ Al finalizar la ejecución del programa, la carpeta _workspace_ debería contene
 
 - La carpeta `pdbs` contiene los archivos PDB de las estructuras predichas para todas las secuencias producidas durante la ejecución del programa (y que cuya aptitud fue evaluada).
 - La carpeta `populations` contiene las poblaciones (esto es, el conjunto de secuencias) producidas en cada iteración del algoritmo evolutivo. En cada uno de estos archivos se registra la aptitud y demás métricas de cada secuencia.
-- El archivo `~children.bkp` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
+- El archivo `~children.tmp` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
 - El archivo `fitness.png` contiene la gráfica que muestra la aptitud de la población en cada iteración del algoritmo.
 - El archivo `settings.json` es el mismo archivo de configuración que se mencionó anteriormente. No se modifica durante la ejecución del algoritmo. 
 - El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Estos datos son los siguientes:
   - La aptitud mínima, promedio y máxima de la población.
-  - El identificador, el valor de aptitudo, y los valores individuales de las demás métricas correspondientes al individuo de mayor aptitud.
-  - La secuencia de aminoácidos correspondiente al individuo de mayor aptitud.
+  - El valor de aptitud y la secuencia correspondiente al individuo de mayor aptitud encontrado por el algoritmo.
 
 <!--
 <a name="opciones-catalogo"></a>
