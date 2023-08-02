@@ -49,8 +49,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
 
-  def _get_params_memento(self) -> dict:
-    params = super()._get_params_memento()
+  def _get_params_dict(self) -> dict:
+    params = super()._get_params_dict()
     params['replacement'] = self._replacement.get_name()
     params['replacementParams'] = self._replacement.get_params_memento()
     return params
@@ -62,5 +62,5 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                          ) -> List[Individual]:
     parents = self._selection.apply(population)
     children = self._recombination.apply(parents)
-    self._mutation.apply(children)
+    self._mutation(children)
     return children

@@ -142,8 +142,8 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
-  def _get_params_memento(self) -> dict:
-    params = super()._get_params_memento()
+  def _get_params_dict(self) -> dict:
+    params = super()._get_params_dict()
     params['populationSize'] = self._population_size
     params['numIterations'] = self._num_iterations
     params['selection'] = self._selection.get_name()
@@ -151,7 +151,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     params['recombination'] = self._recombination.get_name()
     params['recombinationParams'] = self._recombination.get_params_memento()
     params['mutation'] = self._mutation.get_name()
-    params['mutationParams'] = self._mutation.get_params_memento()
+    params['mutationParams'] = self._mutation.as_dict()
     return params
   
 
@@ -163,7 +163,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     while len(next_population) < len(population):
       parents = self._selection.apply(population)
       children = self._recombination.apply(parents)
-      self._mutation.apply(children)
+      self._mutation(children)
       next_population += children
     return next_population
   

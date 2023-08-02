@@ -36,7 +36,7 @@ class Algorithm(ABC):
     self.workspace = Workspace(workspaceName, 
                                targetPdbFilename, 
                                populationFilenames)
-    self.workspace.memento = self.create_memento()
+    self.workspace.memento = self.as_dict()
     self.best_solution = None
 
 
@@ -50,16 +50,16 @@ class Algorithm(ABC):
 
 
 
-  def create_memento(self) -> dict:
+  def as_dict(self) -> dict:
     return {
       'algorithmType': self.get_name(),
-      'algorithmParams': self._get_params_memento(),
+      'algorithmParams': self._get_params_dict(),
       '__savedPopulations': self.workspace.population_filenames
     }
   
 
 
-  def _get_params_memento(self) -> dict:
+  def _get_params_dict(self) -> dict:
     return {
       'workspaceName': self.workspace.name,
       'targetPdbFilename': self.workspace.reference_filename,

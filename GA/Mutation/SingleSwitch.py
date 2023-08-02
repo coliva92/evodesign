@@ -7,36 +7,17 @@ from evodesign.Sequence import AMINOACIDS
 
 
 class SingleSwitch(Mutation):
-  """
-  Operación de mutación donde se elige aleatoriamente un residuo en la 
-  secuencia y se cambia por otro aminoácido aleatorio.
-  """
 
   @classmethod
   def get_name(cls) -> str:
     return 'GA_Mutation_SingleSwitch'
-  
-  
-
-  def __init__(self, probability: float = 1.0) -> None:
-    """
-    Constructor.
-    - `probability`: la probabilidad con la que se aplicará la mutación sobre 
-      un individuo.
-    """
-    super().__init__(probability)
 
 
 
   def mutate_sequence(self, sequence: str) -> str:
-    """
-    Muta la secuencia especificada por `sequence` y retorna la nueva secuencia.
-    """
     i = random.randint(0, len(sequence) - 1)
-    letter = sequence[i]
-    while sequence[i] == letter:
-      letter = random.choice(AMINOACIDS)
-    # en Python, las cadenas son inmutables
-    temp = list(sequence)
-    temp[i] = letter
-    return ''.join(temp)
+    seq_list = list(sequence)
+    original_letter = seq_list[i]
+    while sequence[i] == original_letter:
+      seq_list[i] = random.choice(AMINOACIDS)
+    return ''.join(seq_list)
