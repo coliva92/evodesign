@@ -6,6 +6,7 @@ from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import Replacement
+from .Termination import MeanFitnessStagnation
 from ..Individual import Individual
 
 
@@ -44,7 +45,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      mutation,
                      populationFilenames)
     self._replacement = replacement
-    self._avg_fitnesses = []
+    self._terminators = [ MeanFitnessStagnation(self.workspace.stats_filename) ]
 
 
 
@@ -63,11 +64,3 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
     children = self._recombination.apply(parents)
     self._mutation.apply(children)
     return children
-
-
-
-  def _additional_termination_conditions(self, iterationId: int) -> bool:
-    if iterationId >= 10:
-      older_avg = self._statistics[iterationId - 10].fitness_mean
-      newer_avg = self._statistics[iterationId].fitness_mean
-      return newer_avg - older_avg < 0.0001

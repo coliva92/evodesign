@@ -45,7 +45,8 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._recombination = recombination
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
-    self._statistics = []
+    self._terminators = []
+    # self._statistics = []
 
   
 
@@ -91,7 +92,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       iterationId = 0
       population = self.initialize()
       stats = Statistics.compute_statistics(population)
-      self._statistics.append(stats)
+      # self._statistics.append(stats)
       self.workspace.save_population(iterationId, population)
       Statistics.save_statistics_to_csv(stats, 
                                         iterationId,
@@ -106,7 +107,7 @@ class SimpleGeneticAlgorithm(Algorithm):
         population = sorted(population)
         self.best_solution = population[-1]
         stats = Statistics.compute_statistics(population)
-        self._statistics.append(stats)
+        # self._statistics.append(stats)
         self.workspace.save_population(iterationId, population)
         Statistics.save_statistics_to_csv(stats, 
                                           iterationId, 
@@ -115,19 +116,21 @@ class SimpleGeneticAlgorithm(Algorithm):
         self.best_solution = population[-1]
     else:
       self.best_solution = population[-1]
-      self._statistics = Statistics.load_statistics_from_csv(
-        self.workspace.stats_filename)
+      # self._statistics = Statistics.load_statistics_from_csv(
+      #   self.workspace.stats_filename)
     while True:
       if iterationId == self._num_iterations - 1:
         break
       if population[-1].fitness == self._fitness_fn.upper_bound():
         break
-      if self._additional_termination_conditions(iterationId):
+      conditions = [ terminator(iterationId, population) \
+                    for terminator in self._terminators ]
+      if sum(conditions):
         break
       population = self.create_next_population(population)
       iterationId += 1
       stats = Statistics.compute_statistics(population)
-      self._statistics.append(stats)
+      # self._statistics.append(stats)
       population, stats = self._update_best_solution(population, stats)
       self.workspace.save_population(iterationId, population)
       Statistics.save_statistics_to_csv(stats, 
@@ -193,8 +196,3 @@ class SimpleGeneticAlgorithm(Algorithm):
     stats.best_sequence_fitness = self.best_solution.fitness
     stats.best_sequence = f'"{self.best_solution.sequence}"'
     return population, stats
-
-
-
-  def _additional_termination_conditions(self, iterationId: int) -> bool:
-    return False
