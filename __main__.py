@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import evodesign.Recovery as Recovery
+import evodesign.Settings as Settings
 
 
 
@@ -16,7 +16,7 @@ args = parser.parse_args()
 filename = args.settings_filename
 while True:
   try:
-    algorithm = Recovery.load_algorithm_from_settings(filename)
+    algorithm = Settings.load_algorithm_from_settings(filename)
     iterationId, population = algorithm.workspace.load_latest_population()
     algorithm.run(iterationId, population)
     break
