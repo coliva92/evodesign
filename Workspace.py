@@ -51,7 +51,7 @@ class Workspace:
 
 
 
-  def load_latest_population(self) ->Tuple[int, List[Individual]]:
+  def load_latest_population(self) -> Tuple[int, List[Individual]]:
     if not self.population_filenames:
       return 0, []
     filename = self.population_filenames[-1]
