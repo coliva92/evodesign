@@ -34,7 +34,8 @@ class MultipleSwitches(Mutation):
     positions = random.sample(list(range(len(sequence))), self._num_switches)
     # en Python, las cadenas son inmutables; hay que convertirlas a una lista
     seq_list = list(sequence)
-    for i, original_letter in zip(positions, seq_list):
+    for i in positions:
+      original_letter = seq_list[i]
       while seq_list[i] == original_letter: 
         seq_list[i] = random.choice(AMINOACIDS)
     return ''.join(seq_list)
