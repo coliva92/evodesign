@@ -40,5 +40,5 @@ class Predictor(ABC):
       # archivo PDB
       self.predict_structure(sequence, pdbFilename)
     parser = PDBParser()
-    structure = parser.get_structure(f'{time.time_ns()}', pdbFilename)
+    structure = parser.get_structure(time.time_ns(), pdbFilename)
     return Chain.filter_backbone_atoms_in_chain(structure)
