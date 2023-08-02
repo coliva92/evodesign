@@ -1,5 +1,5 @@
 from .SimpleGeneticAlgorithm import SimpleGeneticAlgorithm
-from typing import List
+from typing import List, Optional
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -30,7 +30,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
-               replacement: Replacement
+               replacement: Replacement,
+               populationFilenames: Optional[List[str]] = None
                ) -> None:
     super().__init__(workspaceName, 
                      targetPdbFilename, 
@@ -40,7 +41,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      numIterations, 
                      selection, 
                      recombination, 
-                     mutation)
+                     mutation,
+                     populationFilenames)
     self._replacement = replacement
     self._avg_fitnesses = []
 

@@ -16,10 +16,8 @@ args = parser.parse_args()
 filename = args.settings_filename
 while True:
   try:
-    settings = Recovery.load_dict_from_json(filename)
-    algorithm = Recovery.create_algorithm_from_settings(settings)
-    iterationId, population = Recovery.load_latest_population_from_settings(
-      settings)
+    algorithm = Recovery.load_algorithm_from_settings(filename)
+    iterationId, population = algorithm.workspace.load_latest_population()
     algorithm.run(iterationId, population)
     break
   except RuntimeError as e:

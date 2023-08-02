@@ -31,12 +31,16 @@ class SimpleGeneticAlgorithm(Algorithm):
                numIterations: int,
                selection: Selection,
                recombination: Recombination,
-               mutation: Mutation
+               mutation: Mutation,
+               populationFilenames: Optional[List[str]] = None
                ) -> None:
-    super().__init__(workspaceName, targetPdbFilename, predictor)
+    super().__init__(workspaceName, 
+                     targetPdbFilename, 
+                     predictor, 
+                     fitnessFunction,
+                     populationFilenames)
     self._population_size = populationSize
     self._num_iterations = numIterations
-    self._fitness_fn = fitnessFunction
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
