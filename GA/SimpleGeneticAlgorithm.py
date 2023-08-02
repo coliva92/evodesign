@@ -68,7 +68,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                              population: List[Individual]
                              ) -> List[Individual]:
     children = self.workspace.restore_children_from_backup()
-    if len(children) == 0:
+    if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
     try:
@@ -87,7 +87,7 @@ class SimpleGeneticAlgorithm(Algorithm):
           iterationId: int = 0, 
           population: Optional[List[Individual]] = None) -> None:
     if population is None: population = []
-    if len(population) == 0:
+    if not population:
       iterationId = 0
       population = self.initialize()
       stats = Statistics.compute_statistics(population)
