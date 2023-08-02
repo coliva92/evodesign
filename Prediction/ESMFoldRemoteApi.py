@@ -36,4 +36,4 @@ class ESMFoldRemoteApi(Predictor):
     elif response.status_code != 200:
       raise RuntimeError('Unknown HTTP error')
     with open(pdbFilename, 'wt', encoding='utf-8') as pdb_file:
-        pdb_file.write(response.content.decode())
+      pdb_file.write(response.content.decode())
