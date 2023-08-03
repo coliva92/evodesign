@@ -41,15 +41,6 @@ class Algorithm(ABC):
 
 
 
-  @abstractmethod
-  def run(self, 
-          iterationId: int, 
-          population: List[Individual]
-          ) -> None:
-    raise NotImplementedError
-
-
-
   def as_dict(self) -> dict:
     return {
       'algorithmType': self.get_name(),
@@ -66,3 +57,12 @@ class Algorithm(ABC):
       'predictor': self._predictor.get_name(),
       'fitnessFunction': self._fitness_fn.get_name()
     }
+  
+
+
+  @abstractmethod
+  def run(self, 
+          iterationId: int, 
+          population: List[Individual]
+          ) -> None:
+    raise NotImplementedError
