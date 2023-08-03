@@ -121,10 +121,12 @@ class SimpleGeneticAlgorithm(Algorithm):
     while True:
       if iterationId == self._num_iterations - 1:
         break
-      if population[-1].fitness == self._fitness_fn.upper_bound():
+      if self.best_solution.fitness == self._fitness_fn.upper_bound():
         break
-      conditions = [ terminator(iterationId, population) \
-                    for terminator in self._terminators ]
+      conditions = [ 
+        terminator(iterationId, population) \
+          for terminator in self._terminators 
+      ]
       if sum(conditions):
         break
       population = self.create_next_population(population)

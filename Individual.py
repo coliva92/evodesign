@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field, asdict
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 import evodesign.Sequence as Sequence
 from evodesign.Fitness import FitnessFunction
@@ -40,8 +40,9 @@ class Individual:
   
 
 
-  def get_pdb_filepath(self, parentFolder: str = str()) -> str:
-    return os.path.join(parentFolder, f'prot_{self.sequence}.pdb')
+  def get_pdb_filename(self, pdbsFolder: Optional[str] = None) -> str:
+    if pdbsFolder is None: pdbsFolder = ''
+    return os.path.join(pdbsFolder, f'prot_{self.sequence}.pdb')
   
 
 
