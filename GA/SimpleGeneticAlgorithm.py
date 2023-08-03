@@ -147,7 +147,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     params['populationSize'] = self._population_size
     params['numIterations'] = self._num_iterations
     params['selection'] = self._selection.get_name()
-    params['selectionParams'] = self._selection.get_params_memento()
+    params['selectionParams'] = self._selection.as_dict()
     params['recombination'] = self._recombination.get_name()
     params['recombinationParams'] = self._recombination.as_dict()
     params['mutation'] = self._mutation.get_name()
@@ -161,7 +161,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                          ) -> List[Individual]:
     next_population = []
     while len(next_population) < len(population):
-      parents = self._selection.apply(population)
+      parents = self._selection(population)
       children = self._recombination(parents)
       self._mutation(children)
       next_population += children
