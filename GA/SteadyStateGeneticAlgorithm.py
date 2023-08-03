@@ -61,6 +61,6 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                          population: List[Individual]
                          ) -> List[Individual]:
     parents = self._selection.apply(population)
-    children = self._recombination.apply(parents)
+    children = self._recombination(parents)
     self._mutation(children)
     return children

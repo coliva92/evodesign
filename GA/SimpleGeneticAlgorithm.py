@@ -162,7 +162,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     next_population = []
     while len(next_population) < len(population):
       parents = self._selection.apply(population)
-      children = self._recombination.apply(parents)
+      children = self._recombination(parents)
       self._mutation(children)
       next_population += children
     return next_population
