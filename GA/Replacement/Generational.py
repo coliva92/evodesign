@@ -13,13 +13,9 @@ class Generational(Replacement):
     return 'GA_Replacement_Generational'
   
 
-  
-  def __init__(self) -> None:
-    super().__init__()
 
-
-
-  def apply(self, 
-            population: List[Individual],
-            children: List[Individual]) -> List[Individual]:
+  def __call__(self, 
+               population: List[Individual],
+               children: List[Individual]
+               ) -> List[Individual]:
     return sorted(children)
