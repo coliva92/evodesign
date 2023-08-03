@@ -78,7 +78,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.backup_children(children)
       raise e
     self.workspace.delete_children_backup()
-    return self._replacement.apply(population, children)
+    return self._replacement(population, children)
 
 
 
