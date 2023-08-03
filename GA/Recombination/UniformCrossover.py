@@ -1,5 +1,5 @@
 from .Recombination import Recombination
-from typing import List
+from typing import Tuple
 import random
 
 
@@ -7,12 +7,6 @@ import random
 
 
 class UniformCrossover(Recombination):
-  """
-  Operación de recombinación donde los hijos se obtienen al combinar un 
-  segmento intermedio de un padre con los segmentos extremos del otro padre. 
-  Los dos puntos intermedios que separan las secuencias de cada padre en tres 
-  segmentos se eligen de manera aleatoria. 
-  """
   
   _options = [ 0, 1 ]
 
@@ -33,28 +27,25 @@ class UniformCrossover(Recombination):
   
 
 
-  def get_params_memento(self) -> dict:
-    params = super().get_params_memento()
+  def as_dict(self) -> dict:
+    params = super().as_dict()
     params['bias'] = self._bias
     return params
 
 
 
-  def create_children(self, 
-                      mother: str,
-                      father: str) -> List[str]:
-    """
-    Combina las secuencias especificadas por `mother` y `father` para generar 
-    nuevas secuencias.
-    """
+  def create_offspring_sequences(self, 
+                                 mother: str,
+                                 father: str
+                                 ) -> Tuple[str]:
     # suponemos que ambos padres son de la misma longitud y que vienen 
     # ordenados por aptitud de manera ascendente
     selections = random.choices(UniformCrossover._options, 
                                 self._weights, 
                                 k=len(mother))
-    temp = [ mother, father ]
+    temp = ( mother, father )
     sister = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
-    temp[0], temp[1] = father, mother
+    temp = ( father, mother )
     brother = ''.join(
       [ temp[parent][i] for i, parent in enumerate(selections) ])
-    return [ sister, brother ]
+    return ( sister, brother )

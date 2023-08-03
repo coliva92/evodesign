@@ -29,6 +29,11 @@ class Individual:
     return self.fitness
   
 
+
+  def __len__(self):
+    return len(self.sequence)
+  
+
   
   def as_dict(self) -> dict:
     return asdict(self)
