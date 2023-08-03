@@ -149,7 +149,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     params['selection'] = self._selection.get_name()
     params['selectionParams'] = self._selection.get_params_memento()
     params['recombination'] = self._recombination.get_name()
-    params['recombinationParams'] = self._recombination.get_params_memento()
+    params['recombinationParams'] = self._recombination.as_dict()
     params['mutation'] = self._mutation.get_name()
     params['mutationParams'] = self._mutation.as_dict()
     return params
