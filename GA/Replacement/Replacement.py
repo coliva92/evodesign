@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
-from evodesign import Individual
+from evodesign.Population import Population
 
 
 
@@ -17,7 +16,7 @@ class Replacement(ABC):
 
   @abstractmethod
   def __call__(self, 
-               population: List[Individual],
-               children: List[Individual]
-               ) -> List[Individual]:
+               population: Population,
+               children: Population
+               ) -> Population:
     raise NotImplementedError

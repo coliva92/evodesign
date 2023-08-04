@@ -29,6 +29,8 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
   def is_non_class_key(key: str) -> bool:
     if key.endswith('Params'):
       return False
+    if type(settings[key]) != str:
+      return True
     return not settings[key].startswith('Predictor') and \
            not settings[key].startswith('Fitness') and \
            not settings[key].startswith(algorithm_name)
@@ -43,8 +45,8 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
   }
   class_params = {
     key: the_class(**settings[f'{key}Params']) \
-      if f'{key}Params' in settings else the_class() \
-        for key, the_class in classes.items()
+         if f'{key}Params' in settings else the_class() \
+         for key, the_class in classes.items()
   }
 
   if '__savedPopulations' in settings:

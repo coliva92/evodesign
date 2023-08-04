@@ -24,17 +24,18 @@ class RandomResetting(Mutation):
   
 
 
-  def as_dict(self) -> dict:
-    params = super().as_dict()
+  def as_json(self) -> dict:
+    params = super().as_json()
     params['residueProbability'] = self._residue_prob
     return params
 
 
 
   def mutate_sequence(self, sequence: str) -> str:
-    seq_list = list(sequence)
-    for i, original_letter in enumerate(seq_list):
+    def mutate_residue(residue: str) -> str:
+      result = residue
       if random.choices(Mutation._options, self._weights)[0]:
-        while seq_list[i] == original_letter: 
-          seq_list[i] = random.choice(AMINOACIDS)
-    return ''.join(seq_list)
+        while result == residue:
+          result = random.choice(AMINOACIDS)
+      return result
+    return ''.join(map(mutate_residue, sequence))

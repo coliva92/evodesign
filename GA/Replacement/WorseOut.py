@@ -1,6 +1,5 @@
 from .Replacement import Replacement
-from typing import List
-from evodesign import Individual
+from evodesign.Population import Population
 
 
 
@@ -15,13 +14,14 @@ class WorseOut(Replacement):
 
 
   def __call__(self, 
-               population: List[Individual],
-               children: List[Individual]
-               ) -> List[Individual]:
+               population: Population,
+               children: Population
+               ) -> Population:
+    next_population = population.individuals.copy()
     for child in children:
-      for i, individual in enumerate(population):
-        if child > individual:
-          continue
-        population.insert(i, child)
-        break
-    return population[len(children):]
+      for i, individual in enumerate(next_population):
+        if child <= individual:
+          next_population.insert(i, child)
+          break
+    return Population(population.iterationId + 1, 
+                      next_population[len(children):])

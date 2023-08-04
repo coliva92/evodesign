@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from .Workspace import Workspace
-from .Individual import Individual
+from .Population import Population
 import evodesign.Chain as Chain
 from .Prediction import Predictor
 from .Fitness import FitnessFunction
@@ -36,21 +36,21 @@ class Algorithm(ABC):
     self.workspace = Workspace(workspaceName, 
                                targetPdbFilename, 
                                populationFilenames)
-    self.workspace.memento = self.as_dict()
+    self.workspace.memento = self.as_json()
     self.best_solution = None
 
 
 
-  def as_dict(self) -> dict:
+  def as_json(self) -> dict:
     return {
       'algorithmType': self.get_name(),
-      'algorithmParams': self._get_params_dict(),
+      'algorithmParams': self._get_params_json(),
       '__savedPopulations': self.workspace.population_filenames
     }
   
 
 
-  def _get_params_dict(self) -> dict:
+  def _get_params_json(self) -> dict:
     return {
       'workspaceName': self.workspace.name,
       'targetPdbFilename': self.workspace.reference_filename,
@@ -61,8 +61,5 @@ class Algorithm(ABC):
 
 
   @abstractmethod
-  def run(self, 
-          iterationId: int, 
-          population: List[Individual]
-          ) -> None:
+  def __call__(self, population: Optional[Population] = None) -> None:
     raise NotImplementedError

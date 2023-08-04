@@ -23,15 +23,15 @@ class MultipleSwitches(Mutation):
   
 
 
-  def as_dict(self) -> dict:
-    params = super().as_dict()
+  def as_json(self) -> dict:
+    params = super().as_json()
     params['numSwitches'] = self._num_switches
     return params
 
 
 
   def mutate_sequence(self, sequence: str) -> str:
-    positions = random.sample(list(range(len(sequence))), self._num_switches)
+    positions = random.sample(range(len(sequence)), self._num_switches)
     # en Python, las cadenas son inmutables; hay que convertirlas a una lista
     seq_list = list(sequence)
     for i in positions:

@@ -21,7 +21,7 @@ class Selection(ABC):
 
 
 
-  def as_dict(self) -> dict:
+  def as_json(self) -> dict:
     return {
       'selectionSize': self._selection_size
     }
@@ -29,5 +29,5 @@ class Selection(ABC):
 
 
   @abstractmethod
-  def __call__(self, population: List[Individual]) -> List[Individual]:
+  def __call__(self, individuals: List[Individual]) -> List[Individual]:
     raise NotImplementedError

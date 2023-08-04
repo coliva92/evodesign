@@ -6,8 +6,8 @@ from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import Replacement
-from .Termination import MeanFitnessStagnation
-from ..Individual import Individual
+from .Termination import StagnantMeanFitness
+from ..Population import Population
 
 
 
@@ -45,21 +45,19 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      mutation,
                      populationFilenames)
     self._replacement = replacement
-    self._terminators = [ MeanFitnessStagnation(self.workspace.stats_filename) ]
+    self._terminators = [ StagnantMeanFitness(self.workspace.stats_filename) ]
 
 
 
-  def _get_params_dict(self) -> dict:
-    params = super()._get_params_dict()
+  def _get_params_json(self) -> dict:
+    params = super()._get_params_json()
     params['replacement'] = self._replacement.get_name()
     return params
 
 
 
-  def _evolutionary_step(self, 
-                         population: List[Individual]
-                         ) -> List[Individual]:
+  def _evolutionary_step(self, population: Population) -> Population:
     parents = self._selection(population)
     children = self._recombination(parents)
     self._mutation(children)
-    return children
+    return Population(individuals=children)

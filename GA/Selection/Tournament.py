@@ -23,23 +23,20 @@ class Tournament(Selection):
   
 
 
-  def as_dict(self) -> dict:
-    params = super().as_dict()
+  def as_json(self) -> dict:
+    params = super().as_json()
     params['tournamentSize'] = self._tournament_size
     return params
 
 
 
-  def __call__(self, population: List[Individual]) -> List[Individual]:
+  def __call__(self, individuals: List[Individual]) -> List[Individual]:
     selected_parents = []
     for i in range(self._selection_size):
-      candidates = random.sample(population, self._tournament_size)
-      winner = sorted(candidates)[-1]
+      winner = sorted(random.sample(individuals, self._tournament_size))[-1]
       # garantizamos que dos padres consecutivos siempre sean diferentes
-      if i % 2 != 0:
-        while selected_parents[i - 1].sequence == winner.sequence:
-          candidates = random.sample(population, self._tournament_size)
-          winner = sorted(candidates)[-1]
+      while i % 2 != 0 and selected_parents[i - 1].sequence == winner.sequence:
+        winner = sorted(random.sample(individuals, self._tournament_size))[-1]
       selected_parents.append(winner)
     return selected_parents
     

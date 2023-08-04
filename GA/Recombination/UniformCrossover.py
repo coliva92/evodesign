@@ -27,8 +27,8 @@ class UniformCrossover(Recombination):
   
 
 
-  def as_dict(self) -> dict:
-    params = super().as_dict()
+  def as_json(self) -> dict:
+    params = super().as_json()
     params['bias'] = self._bias
     return params
 
@@ -43,9 +43,8 @@ class UniformCrossover(Recombination):
     selections = random.choices(UniformCrossover._options, 
                                 self._weights, 
                                 k=len(mother))
-    temp = ( mother, father )
-    sister = ''.join([ temp[parent][i] for i, parent in enumerate(selections) ])
-    temp = ( father, mother )
-    brother = ''.join(
-      [ temp[parent][i] for i, parent in enumerate(selections) ])
+    parents = ( mother, father )
+    sister = ''.join([ parents[p][i] for i, p in enumerate(selections) ])
+    parents = ( father, mother )
+    brother = ''.join([ parents[p][i] for i, p in enumerate(selections) ])
     return ( sister, brother )

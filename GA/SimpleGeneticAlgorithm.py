@@ -1,5 +1,5 @@
 from ..Algorithm import Algorithm
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Tuple
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -7,8 +7,8 @@ from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
 from ..Individual import Individual
-from evodesign.Statistics import Statistics as Stats
-import evodesign.Statistics as Statistics
+from ..Population import Population
+from ..Statistics import Statistics
 
 
 
@@ -46,34 +46,44 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
     self._terminators = []
-    # self._statistics = []
-
   
 
-  def initialize(self) -> List[Individual]:
-    m, n = self._sequence_length, self._population_size
-    population = [ Individual.new_random(m) for _ in range(n) ]
-    self.workspace.save_population(0, population)
-    try:
-      self._compute_population_fitness(population)
-    except RuntimeError as e:
-      self.workspace.save_population(0, population)
-      raise e
-    population = sorted(population)
-    self.best_solution = population[-1]
-    return population
+
+  def _get_params_json(self) -> dict:
+    params = super()._get_params_json()
+    params['populationSize'] = self._population_size
+    params['numIterations'] = self._num_iterations
+    params['selection'] = self._selection.get_name()
+    params['selectionParams'] = self._selection.as_json()
+    params['recombination'] = self._recombination.get_name()
+    params['recombinationParams'] = self._recombination.as_json()
+    params['mutation'] = self._mutation.get_name()
+    params['mutationParams'] = self._mutation.as_json()
+    return params
+  
+
+
+  def _evolutionary_step(self, population: Population) -> Population:
+    new_individuals = []
+    while len(new_individuals) < len(population):
+      parents = self._selection(population)
+      children = self._recombination(parents)
+      self._mutation(children)
+      new_individuals += children
+    return Population(individuals=new_individuals)
 
 
 
-  def create_next_population(self, 
-                             population: List[Individual]
-                             ) -> List[Individual]:
+  def next_population(self, population: Population) -> Population:
     children = self.workspace.restore_children_from_backup()
     if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
     try:
-      self._compute_population_fitness(children)
+      children.update_fitness(self._fitness_fn, 
+                              self._predictor, 
+                              self._reference_backbone, 
+                              self.workspace.pdbs_folder)
     except RuntimeError as e:
       self.workspace.backup_children(children)
       raise e
@@ -82,119 +92,42 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
-  # TODO: esta funcion, o parte de ella, probablemente se debe mover a la clase 
-  # padre
-  def run(self, 
-          iterationId: int = 0, 
-          population: Optional[List[Individual]] = None) -> None:
-    if population is None: population = []
+  def __call__(self, population: Optional[Population] = None) -> None:
+    if population is None: population = Population()
     if not population:
-      iterationId = 0
-      population = self.initialize()
-      stats = Statistics.compute_statistics(population)
-      # self._statistics.append(stats)
-      self.workspace.save_population(iterationId, population)
-      Statistics.save_statistics_to_csv(stats, 
-                                        iterationId,
-                                        self.workspace.stats_filename)
-    if iterationId == 0:
-      try:
-        is_recovering = self._compute_population_fitness(population)
-      except RuntimeError as e:
-        self.workspace.save_population(0, population)
-        raise e
-      if is_recovering:
-        population = sorted(population)
-        self.best_solution = population[-1]
-        stats = Statistics.compute_statistics(population)
-        # self._statistics.append(stats)
-        self.workspace.save_population(iterationId, population)
-        Statistics.save_statistics_to_csv(stats, 
-                                          iterationId, 
-                                          self.workspace.stats_filename)
-      else:
-        self.best_solution = population[-1]
-    else:
-      self.best_solution = population[-1]
-      # self._statistics = Statistics.load_statistics_from_csv(
-      #   self.workspace.stats_filename)
+      population = Population.new_random(0, 
+                                         self._population_size, 
+                                         self._sequence_length)
+    try:
+      is_recovering = population.update_fitness(self._fitness_fn,
+                                                self._predictor,
+                                                self._reference_backbone,
+                                                self.workspace.pdbs_folder)
+    except RuntimeError as e:
+      self.workspace.save_population(population)
+      raise e
+    self.best_solution = population[-1]
+    if is_recovering:
+      stats = Statistics.new_from_population(population)
+      self.workspace.save_population(population)
+      self.workspace.save_statistics(stats)
     while True:
-      if iterationId == self._num_iterations - 1:
+      if population.iterationId == self._num_iterations - 1:
         break
       if self.best_solution.fitness == self._fitness_fn.upper_bound():
         break
-      conditions = [ 
-        terminator(iterationId, population) \
-          for terminator in self._terminators 
-      ]
-      if sum(conditions):
+      if sum([ term(population, stats) for term in self._terminators ]):
         break
-      population = self.create_next_population(population)
-      iterationId += 1
-      stats = Statistics.compute_statistics(population)
-      # self._statistics.append(stats)
-      population, stats = self._update_best_solution(population, stats)
-      self.workspace.save_population(iterationId, population)
-      Statistics.save_statistics_to_csv(stats, 
-                                        iterationId, 
-                                        self.workspace.stats_filename)
-    Statistics.plot_fitness(self.workspace.stats_filename, 
-                            self.workspace.graph_filename,
-                            self.workspace.name)
+      population = self.next_population(population)
+      stats = Statistics.new_from_population(population)
+      self._update_best_solution(population)
+      self.workspace.save_population(population)
+      self.workspace.save_statistics(stats, self.best_solution)
 
 
 
-  def _get_params_dict(self) -> dict:
-    params = super()._get_params_dict()
-    params['populationSize'] = self._population_size
-    params['numIterations'] = self._num_iterations
-    params['selection'] = self._selection.get_name()
-    params['selectionParams'] = self._selection.as_dict()
-    params['recombination'] = self._recombination.get_name()
-    params['recombinationParams'] = self._recombination.as_dict()
-    params['mutation'] = self._mutation.get_name()
-    params['mutationParams'] = self._mutation.as_dict()
-    return params
-  
-
-
-  def _evolutionary_step(self, 
-                         population: List[Individual]
-                         ) -> List[Individual]:
-    next_population = []
-    while len(next_population) < len(population):
-      parents = self._selection(population)
-      children = self._recombination(parents)
-      self._mutation(children)
-      next_population += children
-    return next_population
-  
-
-  
-  def _compute_population_fitness(self, 
-                                  population: List[Individual]
-                                  ) -> bool:
-    was_some_fitness_computed = False
-    for individual in population:
-      if individual.fitness is None:
-        was_some_fitness_computed = True
-        filename = individual.get_pdb_filepath(self.workspace.pdbs_folder)
-        individual.update_fitness(self._fitness_fn, 
-                                  self._predictor, 
-                                  self._reference_backbone,
-                                  filename)
-    return was_some_fitness_computed
-
-
-
-  def _update_best_solution(self, 
-                            population: List[Individual], 
-                            stats: Stats
-                            ) -> Tuple[List[Individual], Stats]:
+  def _update_best_solution(self, population: Population) -> None:
     if population[-1] > self.best_solution: 
       self.best_solution = population[-1]
-    if population[-1] < self.best_solution:
-      population = population[1:] + [ self.best_solution ]
-    stats.best_sequence_fitness = self.best_solution.fitness
-    stats.best_sequence = f'"{self.best_solution.sequence}"'
-    return population, stats
+    else:
+      population.individuals = population[1:] + [ self.best_solution ]

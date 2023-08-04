@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import evodesign.Settings as Settings
+import sys
 
 
 
@@ -17,16 +18,20 @@ filename = args.settings_filename
 while True:
   try:
     algorithm = Settings.load_algorithm_from_settings(filename)
-    iterationId, population = algorithm.workspace.load_latest_population()
-    algorithm.run(iterationId, population)
-    break
-  except RuntimeError as e:
     filename = algorithm.workspace.settings_filename
+    population = algorithm.workspace.load_latest_population()
+    algorithm(population)
+    print(f'COMPLETED.\n' +
+          f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
+          f'Fitness: {algorithm.best_solution.fitness:0.4f}')
+  except RuntimeError as e:
     if e == 'ESMFold API max requests reached' or e == 'Forbidden': 
       print(f'INTERRUPTED.\n' +
             f'Run `python -m evodesign {filename}` to resume later.')
-      break
-    continue
-print(f'COMPLETED.\n' +
-      f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
-      f'Fitness: {algorithm.best_solution.fitness:0.4f}')
+  except KeyboardInterrupt:
+    print(f'INTERRUPTED (by user).\n' +
+          f'Run `python -m evodesign {filename}` to resume later.')
+    sys.exit(130)
+  finally:
+    algorithm.workspace.plot_fitness()
+    break

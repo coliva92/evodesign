@@ -30,15 +30,15 @@ class Overselection(Selection):
   
 
 
-  def as_dict(self) -> dict:
-    params = super().as_dict()
+  def as_json(self) -> dict:
+    params = super().as_json()
     params['topSize'] = self._top_size
     params['topProbability'] = self._top_probability
     return params
   
 
 
-  def __call__(self, population: List[Individual]) -> List[Individual]:
+  def __call__(self, individuals: List[Individual]) -> List[Individual]:
     if random.choices(Overselection._options, self._weights, k=1)[0]:
-      return random.sample(population[-self._top_size:], self._selection_size)
-    return random.sample(population[0:-self._top_size], self._selection_size)
+      return random.sample(individuals[-self._top_size:], self._selection_size)
+    return random.sample(individuals[0:-self._top_size], self._selection_size)

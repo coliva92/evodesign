@@ -28,7 +28,7 @@ class Recombination(ABC):
   
 
 
-  def as_dict(self) -> dict:
+  def as_json(self) -> dict:
     return {
       'probability': self._probability
     }
@@ -50,17 +50,16 @@ class Recombination(ABC):
     if len(parents) % 2 != 0:
       parents = parents[:-1]
     
-    n = len(parents[0])
     def discriminate(flag: bool, 
                      mother: str, 
                      father: str
                      ) -> Tuple[str]:
       return self.create_offspring_sequences(mother.sequence, father.sequence) \
-        if flag else ( random_seq(n), random_seq(n) )
+        if flag else ( random_seq(len(mother)), random_seq(len(father)) )
     
     flags = random.choices(Recombination._options, 
                            self._weights, 
-                           k=n / 2)
+                           k=len(parents) / 2)
     return [
       Individual(seq) \
       for flag, mother, father in zip(flags, parents[0::2], parents[1::2]) \

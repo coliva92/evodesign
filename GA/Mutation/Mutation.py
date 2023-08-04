@@ -27,7 +27,7 @@ class Mutation(ABC):
 
 
 
-  def as_dict(self) -> dict:
+  def as_json(self) -> dict:
     return {
       'probability': self._probability
     }
