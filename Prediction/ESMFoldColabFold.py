@@ -26,4 +26,4 @@ class ESMFoldColabFold(Predictor):
                                  num_recycles=3,
                                  residue_index_offset=512)
     with open(pdbFilename, 'wt', encoding='utf-8') as pdb_file:
-      pdb_file.write(model.output_to_pdb(prediction)[0])
+      pdb_file.write(prediction)
