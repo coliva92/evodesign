@@ -32,11 +32,13 @@ class Workspace:
                                                              'populations')
     self.pdbs_folder = self.settings_filename.replace('settings.json', 'pdbs')
     self.population_filenames = populationFilenames
-    self.memento = {}
 
 
 
-  def save_population(self, population: Population) -> None:
+  def save_population(self, 
+                      population: Population,
+                      algorithmJson: dict
+                      ) -> None:
     os.makedirs(self.populations_folder, exist_ok=True)
     filename = population.get_json_filename(self.populations_folder)
     is_new_file = not os.path.isfile(filename)
@@ -45,7 +47,7 @@ class Workspace:
     if is_new_file:
       self.population_filenames.append(filename)
       with open(self.settings_filename, 'wt', encoding='utf-8') as the_file:
-        the_file.write(json.dumps(self.memento, indent=2) + '\n')
+        the_file.write(json.dumps(algorithmJson, indent=2) + '\n')
 
 
 

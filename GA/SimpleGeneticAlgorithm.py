@@ -104,12 +104,12 @@ class SimpleGeneticAlgorithm(Algorithm):
                                                 self._reference_backbone,
                                                 self.workspace.pdbs_folder)
     except RuntimeError as e:
-      self.workspace.save_population(population)
+      self.workspace.save_population(population, self.as_json())
       raise e
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
-      self.workspace.save_population(population)
+      self.workspace.save_population(population, self.as_json())
       self.workspace.save_statistics(stats)
     while True:
       if population.iterationId == self._num_iterations - 1:
@@ -121,7 +121,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = self.next_population(population)
       stats = Statistics.new_from_population(population)
       self._update_best_solution(population)
-      self.workspace.save_population(population)
+      self.workspace.save_population(population, self.as_json)
       self.workspace.save_statistics(stats, self.best_solution)
 
 

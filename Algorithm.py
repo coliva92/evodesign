@@ -36,7 +36,6 @@ class Algorithm(ABC):
     self.workspace = Workspace(workspaceName, 
                                targetPdbFilename, 
                                populationFilenames)
-    self.workspace.memento = self.as_json()
     self.best_solution = None
 
 
