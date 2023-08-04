@@ -29,6 +29,6 @@ class ESMFoldColabFold(Predictor):
     prediction = ESMFoldColabFold._model.infer_pdb(sequence)
     with open(pdbFilename, 'wt', encoding='utf-8') as pdb_file:
       pdb_file.write(prediction)
-    from numba import cuda
-    cuda.select_device(0) 
-    cuda.close()
+    # from numba import cuda
+    # cuda.select_device(0) 
+    # cuda.close()
