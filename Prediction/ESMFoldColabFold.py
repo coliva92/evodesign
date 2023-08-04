@@ -16,9 +16,10 @@ class ESMFoldColabFold(Predictor):
                         sequence: str, 
                         pdbFilename: str
                         ) -> None:
-    import torch
-    model = torch.load("esmfold.model")
-    model = model.eval().cuda().requires_grad_(False)
+    if 'model' not in dir():
+      import torch
+      model = torch.load("esmfold.model")
+      model = model.eval().cuda().requires_grad_(False)
     model.set_chunk_size(128)
     torch.cuda.empty_cache()
     prediction = model.infer_pdb(sequence, 
