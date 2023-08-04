@@ -32,7 +32,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                recombination: Recombination,
                mutation: Mutation,
                replacement: Replacement,
-               populationFilenames: Optional[List[str]] = None
+               populationFilenames: Optional[List[str]] = None,
+               seed: Optional[int] = None
                ) -> None:
     super().__init__(workspaceName, 
                      targetPdbFilename, 
@@ -43,7 +44,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      selection, 
                      recombination, 
                      mutation,
-                     populationFilenames)
+                     populationFilenames,
+                     seed)
     self._replacement = replacement
     self._terminators = [ StagnantMeanFitness(self.workspace.stats_filename) ]
 

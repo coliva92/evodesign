@@ -1,5 +1,9 @@
 from argparse import ArgumentParser
 import evodesign.Settings as Settings
+from evodesign import (HttpForbidden, 
+                       HttpInternalServerError, 
+                       HttpGatewayTimeout, 
+                       RemoteApiRequestsExceeded)
 import sys
 
 
@@ -21,10 +25,12 @@ while True:
     filename = algorithm.workspace.settings_filename
     population = algorithm.workspace.load_latest_population()
     algorithm(population)
+    algorithm.workspace.plot_fitness()
     print(f'COMPLETED.\n' +
           f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
           f'Fitness: {algorithm.best_solution.fitness:0.4f}')
-  except RuntimeError:
+    break
+  except (HttpForbidden, RemoteApiRequestsExceeded):
     print(f'INTERRUPTED.\n' +
           f'Run `python -m evodesign {filename}` to resume later.')
     algorithm.workspace.plot_fitness()
@@ -34,3 +40,6 @@ while True:
           f'Run `python -m evodesign {filename}` to resume later.')
     algorithm.workspace.plot_fitness()
     sys.exit(130)
+  except (HttpInternalServerError, HttpGatewayTimeout) as e:
+    pass
+  

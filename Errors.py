@@ -3,7 +3,7 @@ class HttpForbidden(RuntimeError):
 
 
 
-class HttpRequestTimeout(RuntimeError):
+class HttpGatewayTimeout(RuntimeError):
   pass
 
 

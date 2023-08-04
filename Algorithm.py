@@ -5,6 +5,7 @@ from .Population import Population
 import evodesign.Chain as Chain
 from .Prediction import Predictor
 from .Fitness import FitnessFunction
+import random
 
 
 
@@ -24,10 +25,14 @@ class Algorithm(ABC):
                targetPdbFilename: str,
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
-               populationFilenames: Optional[List[str]] = None
+               populationFilenames: Optional[List[str]] = None,
+               seed: Optional[int] = None
                ) -> None:
     super().__init__()
     if populationFilenames is None: populationFilenames = []
+    if seed: 
+      random.seed(seed)
+      self._seed = seed
     self._predictor = predictor
     self._fitness_fn = fitnessFunction
     reference = Chain.load_structure_from_pdb(targetPdbFilename)
@@ -52,6 +57,7 @@ class Algorithm(ABC):
   def _get_params_json(self) -> dict:
     return {
       'workspaceName': self.workspace.name,
+      'seed': self._seed,
       'targetPdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.get_name(),
       'fitnessFunction': self._fitness_fn.get_name()

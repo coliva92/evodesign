@@ -68,16 +68,15 @@ class Population:
                      predictor: Predictor, 
                      referenceBackbone: List[Atom],
                      pdbsFolder: Optional[str] = None) -> bool:
-    missing_fitness = filter(lambda ind: ind.fitness is None, self.individuals)
-    computed_some_fitnesses = False
+    missing_fitness = list(filter(lambda ind: ind.fitness is None, 
+                                  self.individuals))
     for individual in missing_fitness:
-      computed_some_fitnesses = True
       filename = individual.get_pdb_filename(pdbsFolder)
       individual.update_fitness(fitnessFn, 
                                 predictor, 
                                 referenceBackbone,
                                 filename)
-    if computed_some_fitnesses:
+    if missing_fitness:
       self.individuals = sorted(self.individuals)
       return True
     return False

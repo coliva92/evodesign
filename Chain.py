@@ -31,5 +31,5 @@ def filter_backbone_atoms_in_chain(structure: Structure,
                                    modelId: int = 0, 
                                    chainId: str = 'A'
                                    ) -> List[Atom]:
-  return filter(lambda atom: atom.get_name() in BACKBONE_ATOM_NAMES, 
-                structure[modelId][chainId].get_atoms())
+  return list(filter(lambda atom: atom.get_name() in BACKBONE_ATOM_NAMES, 
+                     structure[modelId][chainId].get_atoms()))
