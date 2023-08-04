@@ -100,6 +100,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = Population.new_random(0, 
                                          self._population_size, 
                                          self._sequence_length)
+      self.workspace.save_population(population, self.as_json())
     try:
       is_recovering = population.update_fitness(self._fitness_fn,
                                                 self._predictor,
