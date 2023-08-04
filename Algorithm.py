@@ -6,6 +6,7 @@ import evodesign.Chain as Chain
 from .Prediction import Predictor
 from .Fitness import FitnessFunction
 import random
+import time
 
 
 
@@ -30,9 +31,9 @@ class Algorithm(ABC):
                ) -> None:
     super().__init__()
     if populationFilenames is None: populationFilenames = []
-    if seed: 
-      random.seed(seed)
-      self._seed = seed
+    if seed is None: seed = time.time()
+    random.seed(seed)
+    self._seed = seed
     self._predictor = predictor
     self._fitness_fn = fitnessFunction
     reference = Chain.load_structure_from_pdb(targetPdbFilename)
