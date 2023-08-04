@@ -24,14 +24,13 @@ while True:
     print(f'COMPLETED.\n' +
           f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
           f'Fitness: {algorithm.best_solution.fitness:0.4f}')
-  except RuntimeError as e:
-    if e == 'ESMFold API max requests reached' or e == 'Forbidden': 
-      print(f'INTERRUPTED.\n' +
-            f'Run `python -m evodesign {filename}` to resume later.')
+  except RuntimeError:
+    print(f'INTERRUPTED.\n' +
+          f'Run `python -m evodesign {filename}` to resume later.')
+    algorithm.workspace.plot_fitness()
+    break
   except KeyboardInterrupt:
     print(f'INTERRUPTED (by user).\n' +
           f'Run `python -m evodesign {filename}` to resume later.')
-    sys.exit(130)
-  finally:
     algorithm.workspace.plot_fitness()
-    break
+    sys.exit(130)

@@ -18,34 +18,34 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
     settings = json.load(json_file)
   i = settings['algorithmType'].find('_')
   algorithm_name = settings['algorithmType'][:i]
+  params = settings['algorithmParams']
 
   def is_class_key(key: str) -> bool:
-    if key.endswith('Params') or type(settings[key]) != str:
+    if key.endswith('Params') or type(params[key]) != str:
       return False
-    return settings[key].startswith('Predictor') or \
-           settings[key].startswith('Fitness') or \
-           settings[key].startswith(algorithm_name)
+    return params[key].startswith('Predictor') or \
+           params[key].startswith('Fitness') or \
+           params[key].startswith(algorithm_name)
   
   def is_non_class_key(key: str) -> bool:
     if key.endswith('Params'):
       return False
-    if type(settings[key]) != str:
+    if type(params[key]) != str:
       return True
-    return not settings[key].startswith('Predictor') and \
-           not settings[key].startswith('Fitness') and \
-           not settings[key].startswith(algorithm_name)
+    return not params[key].startswith('Predictor') and \
+           not params[key].startswith('Fitness') and \
+           not params[key].startswith(algorithm_name)
 
   non_class_params = {
-    key: settings[key] for key in filter(is_non_class_key, 
-                                         settings['algorithmParams'])
+    key: params[key] for key in filter(is_non_class_key, params)
   }
   classes = {
-    key: getattr(sys.modules[__name__], settings[key]) \
-      for key in filter(is_class_key, settings['algorithmParams'])
+    key: getattr(sys.modules[__name__], params[key]) \
+         for key in filter(is_class_key, params)
   }
   class_params = {
-    key: the_class(**settings[f'{key}Params']) \
-         if f'{key}Params' in settings else the_class() \
+    key: the_class(**params[f'{key}Params']) \
+         if f'{key}Params' in params else the_class() \
          for key, the_class in classes.items()
   }
 

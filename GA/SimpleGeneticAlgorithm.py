@@ -66,7 +66,7 @@ class SimpleGeneticAlgorithm(Algorithm):
   def _evolutionary_step(self, population: Population) -> Population:
     new_individuals = []
     while len(new_individuals) < len(population):
-      parents = self._selection(population)
+      parents = self._selection(population.individuals)
       children = self._recombination(parents)
       self._mutation(children)
       new_individuals += children
@@ -110,7 +110,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     if is_recovering:
       stats = Statistics.new_from_population(population)
       self.workspace.save_population(population, self.as_json())
-      self.workspace.save_statistics(stats)
+      self.workspace.save_statistics(stats, self.best_solution)
     while True:
       if population.iterationId == self._num_iterations - 1:
         break
@@ -121,7 +121,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = self.next_population(population)
       stats = Statistics.new_from_population(population)
       self._update_best_solution(population)
-      self.workspace.save_population(population, self.as_json)
+      self.workspace.save_population(population, self.as_json())
       self.workspace.save_statistics(stats, self.best_solution)
 
 

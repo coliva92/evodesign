@@ -59,7 +59,7 @@ class Recombination(ABC):
     
     flags = random.choices(Recombination._options, 
                            self._weights, 
-                           k=len(parents) / 2)
+                           k=int(len(parents) / 2))
     return [
       Individual(seq) \
       for flag, mother, father in zip(flags, parents[0::2], parents[1::2]) \

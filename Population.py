@@ -32,7 +32,7 @@ class Population:
 
 
   def as_json(self) -> list:
-    return [ individual.as_json for individual in self.individuals ]
+    return [ individual.as_json() for individual in self.individuals ]
   
 
 
@@ -69,14 +69,16 @@ class Population:
                      referenceBackbone: List[Atom],
                      pdbsFolder: Optional[str] = None) -> bool:
     missing_fitness = filter(lambda ind: ind.fitness is None, self.individuals)
+    computed_some_fitnesses = False
     for individual in missing_fitness:
+      computed_some_fitnesses = True
       filename = individual.get_pdb_filename(pdbsFolder)
       individual.update_fitness(fitnessFn, 
                                 predictor, 
                                 referenceBackbone,
                                 filename)
-    if missing_fitness:
-      sorted(self.individuals)
+    if computed_some_fitnesses:
+      self.individuals = sorted(self.individuals)
       return True
     return False
   

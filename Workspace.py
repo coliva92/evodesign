@@ -94,21 +94,27 @@ class Workspace:
       writer = csv.DictWriter(csv_file, 
                               data.keys(), 
                               dialect='unix', 
-                              quoting=csv.QUOTE_NONE)
+                              quotechar="'",
+                              quoting=csv.QUOTE_NONE,
+                              escapechar='|')
       if not file_exists: 
         writer.writeheader()
       writer.writerow(data)
+    return
   
 
 
   def plot_fitness(self) -> None:
+    if not os.path.isfile(self.stats_filename):
+      return
+    iterations, minimums, averages, maximums, best_solutions = [],[],[],[],[]
     with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
-      reader = csv.DictReader(csv_file, dialect='unix')
-      iterations = [ int(row['iteration_id']) for row in reader ]
-      minimums = [ float(row['min_fitness']) for row in reader ]
-      averages = [ float(row['fitness_mean']) for row in reader ]
-      maximums = [ float(row['max_fitness']) for row in reader ]
-      best_solutions = [ float(row['best_sequence_fitness']) for row in reader ]
+      for row in csv.DictReader(csv_file, dialect='unix'):
+        iterations.append(int(row['iteration_id']))
+        minimums.append(float(row['min_fitness']))
+        averages.append(float(row['fitness_mean']))
+        maximums.append(float(row['max_fitness']))
+        best_solutions.append(float(row['best_sequence_fitness']))
     fig, ax = plt.subplots(1)
     ax.plot(iterations, averages, label='Fitness mean')
     ax.fill_between(iterations, minimums, maximums, alpha=0.3)
