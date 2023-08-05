@@ -117,7 +117,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     while True:
       if population.iterationId == self._num_iterations - 1:
         break
-      if self.best_solution.fitness == self._fitness_fn.upper_bound():
+      if self.best_solution.fitness >= self._fitness_fn.upper_bound():
         break
       if sum([ term(population, stats) for term in self._terminators ]):
         break
