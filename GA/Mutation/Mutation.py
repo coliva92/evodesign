@@ -1,17 +1,14 @@
 from abc import ABC, abstractmethod
 import random
 from typing import List
-from evodesign import Individual
+from evodesign.Individual import Individual
+import evodesign.Choice as Choice
 
 
 
 
 
 class Mutation(ABC):
-  
-  _options = [ True, False ]
-
-
 
   @classmethod
   @abstractmethod
@@ -42,5 +39,5 @@ class Mutation(ABC):
 
   def __call__(self, children: List[Individual]) -> None:
     for i, child in enumerate(children):
-      if random.choices(Mutation._options, self._weights, k=1)[0]:
+      if Choice.flip_coin(self._weights):
         children[i] = Individual(self.mutate_sequence(child.sequence))

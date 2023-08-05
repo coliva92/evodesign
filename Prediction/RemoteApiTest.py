@@ -1,19 +1,14 @@
 from .Predictor import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
-import random
 from ..Exceptions import RemoteApiRequestsExceeded
+import evodesign.Choice as Choice
 
 
 
 
 
 class RemoteApiTest(Predictor):
-
-  _options = [ True, False ]
-  _weights = [ 0.05, 0.95 ]
-
-
 
   @classmethod
   def get_name(cls) -> str:
@@ -25,7 +20,7 @@ class RemoteApiTest(Predictor):
                         sequence: str, 
                         pdbFilename: str
                         ) -> None:
-    if random.choices(RemoteApiTest._options, k=1)[0]:
+    if Choice.flip_coin(( 0.05, 0.95 )):
       raise RemoteApiRequestsExceeded
   
 

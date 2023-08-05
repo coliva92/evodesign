@@ -2,16 +2,13 @@ from .Selection import Selection
 from typing import List
 from evodesign import Individual
 import random
+import evodesign.Choice as Choice
 
 
 
 
 
 class Overselection(Selection):
-
-  _options = [ True, False ]
-
-
 
   @classmethod
   def get_name(cls) -> str:
@@ -25,7 +22,7 @@ class Overselection(Selection):
                topProbability: float = 0.8) -> None:
     super().__init__(selectionSize)
     self._top_size = topSize
-    self._weights = [ topProbability, 1.0 - topProbability ]
+    self._weights = ( topProbability, 1.0 - topProbability )
     self._top_probability = topProbability
   
 
@@ -39,6 +36,6 @@ class Overselection(Selection):
 
 
   def __call__(self, individuals: List[Individual]) -> List[Individual]:
-    if random.choices(Overselection._options, self._weights, k=1)[0]:
+    if Choice.flip_coin(self._weights):
       return random.sample(individuals[-self._top_size:], self._selection_size)
     return random.sample(individuals[0:-self._top_size], self._selection_size)

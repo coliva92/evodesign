@@ -1,6 +1,7 @@
 from .Mutation import Mutation
 import random
 from evodesign.Sequence import AMINOACIDS
+import evodesign.Choice as Choice
 
 
 
@@ -32,10 +33,12 @@ class RandomResetting(Mutation):
 
 
   def mutate_sequence(self, sequence: str) -> str:
-    def mutate_residue(residue: str) -> str:
-      result = residue
-      if random.choices(Mutation._options, self._weights)[0]:
-        while result == residue:
-          result = random.choice(AMINOACIDS)
-      return result
-    return ''.join(map(mutate_residue, sequence))
+    def switch(old_letter: str) -> str:
+      if not Choice.flip_coin(self._weights):
+        return old_letter
+      new_letter = random.choice(AMINOACIDS)
+      while new_letter == old_letter:
+        new_letter = random.choice(AMINOACIDS)
+      return new_letter
+    
+    return ''.join(map(switch, sequence))
