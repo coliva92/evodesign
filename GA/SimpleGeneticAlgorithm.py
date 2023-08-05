@@ -100,19 +100,19 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = Population.new_random(0, 
                                          self._population_size, 
                                          self._sequence_length)
-      self.workspace.save_population(population, self.as_json())
+      self.workspace.save_population(population)
     try:
       is_recovering = population.update_fitness(self._fitness_fn,
                                                 self._predictor,
                                                 self._reference_backbone,
                                                 self.workspace.pdbs_folder)
     except RuntimeError as e:
-      self.workspace.save_population(population, self.as_json())
+      self.workspace.save_population(population)
       raise e
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
-      self.workspace.save_population(population, self.as_json())
+      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
     while True:
       if population.iterationId == self._num_iterations - 1:
@@ -124,7 +124,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = self.next_population(population)
       stats = Statistics.new_from_population(population)
       self._update_best_solution(population)
-      self.workspace.save_population(population, self.as_json())
+      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
 
 
