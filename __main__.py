@@ -1,9 +1,6 @@
 from argparse import ArgumentParser
-import evodesign.Settings as Settings
-from evodesign import (HttpForbidden, 
-                       HttpInternalServerError, 
-                       HttpGatewayTimeout, 
-                       RemoteApiRequestsExceeded)
+import Settings
+from Exceptions import *
 import sys
 
 
@@ -42,4 +39,3 @@ while True:
     sys.exit(130)
   except (HttpInternalServerError, HttpGatewayTimeout) as e:
     pass
-  
