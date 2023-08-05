@@ -44,6 +44,7 @@ class Workspace:
     is_new_file = not os.path.isfile(filename)
     with open(filename, 'wt', encoding='utf-8') as the_file:
       the_file.write(json.dumps(population.as_json(), indent=2) + '\n')
+    algorithmJson['__savedPopulations'] = self.population_filenames
     if is_new_file:
       self.population_filenames.append(filename)
       with open(self.settings_filename, 'wt', encoding='utf-8') as the_file:

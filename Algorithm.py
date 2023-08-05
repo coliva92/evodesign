@@ -50,7 +50,6 @@ class Algorithm(ABC):
     return {
       'algorithmType': self.get_name(),
       'algorithmParams': self._get_params_json(),
-      '__savedPopulations': self.workspace.population_filenames
     }
   
 
