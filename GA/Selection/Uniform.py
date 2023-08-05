@@ -1,6 +1,7 @@
 from .Selection import Selection
 from typing import List
-from evodesign import Individual
+from evodesign.Population import Population
+from evodesign.Individual import Individual
 import random
 
 
@@ -15,5 +16,5 @@ class Uniform(Selection):
 
 
 
-  def __call__(self, individual: List[Individual]) -> List[Individual]:
-    return random.sample(individual, self._selection_size)
+  def __call__(self, population: Population) -> List[Individual]:
+    return random.sample(population.individual, self._selection_size)

@@ -1,6 +1,7 @@
 from .Selection import Selection
 from typing import List
-from evodesign import Individual
+from evodesign.Individual import Individual
+from evodesign.Population import Population
 import random
 import evodesign.Choice as Choice
 
@@ -35,7 +36,7 @@ class Overselection(Selection):
   
 
 
-  def __call__(self, individuals: List[Individual]) -> List[Individual]:
+  def __call__(self, population: Population) -> List[Individual]:
     if Choice.flip_coin(self._weights):
-      return random.sample(individuals[-self._top_size:], self._selection_size)
-    return random.sample(individuals[0:-self._top_size], self._selection_size)
+      return random.sample(population[-self._top_size:], self._selection_size)
+    return random.sample(population[0:-self._top_size], self._selection_size)

@@ -1,6 +1,7 @@
 from .Selection import Selection
 from typing import List
-from evodesign import Individual
+from evodesign.Population import Population
+from evodesign.Individual import Individual
 import random
 
 
@@ -30,13 +31,15 @@ class Tournament(Selection):
 
 
 
-  def __call__(self, individuals: List[Individual]) -> List[Individual]:
+  def __call__(self, population: Population) -> List[Individual]:
     selected_parents = []
     for i in range(self._selection_size):
-      winner = sorted(random.sample(individuals, self._tournament_size))[-1]
+      winner = sorted(random.sample(population.individuals, 
+                                    self._tournament_size))[-1]
       # garantizamos que dos padres consecutivos siempre sean diferentes
       while i % 2 != 0 and selected_parents[i - 1].sequence == winner.sequence:
-        winner = sorted(random.sample(individuals, self._tournament_size))[-1]
+        winner = sorted(random.sample(population.individuals, 
+                                      self._tournament_size))[-1]
       selected_parents.append(winner)
     return selected_parents
     

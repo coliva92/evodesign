@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
-from evodesign import Individual
+from evodesign.Individual import Individual
+from evodesign.Population import Population
 
 
 
@@ -29,5 +30,5 @@ class Selection(ABC):
 
 
   @abstractmethod
-  def __call__(self, individuals: List[Individual]) -> List[Individual]:
+  def __call__(self, population: Population) -> List[Individual]:
     raise NotImplementedError
