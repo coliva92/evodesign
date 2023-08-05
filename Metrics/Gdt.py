@@ -22,7 +22,9 @@ class Gdt(Metric):
     # suponemos que `modelBackbone` ya fue superpuesto contra 
     # `referenceBackbone` en un paso anterior
     distances = [ a - b for a, b in zip(modelBackbone, referenceBackbone) ]
-    ratios = [ sum([ d <= c for d in distances ]) / len(distances) \
-                   for c in self._cutoffs ]
+    ratios = [ 
+      sum([ d <= c for d in distances ]) / len(distances)
+      for c in self._cutoffs 
+    ]
     return statistics.fmean(ratios)
   
