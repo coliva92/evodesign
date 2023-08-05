@@ -1,6 +1,6 @@
 from .Mutation import Mutation
 import random
-from evodesign.Sequence import AMINOACIDS
+import evodesign.Sequence as Sequence
 
 
 
@@ -35,7 +35,5 @@ class MultipleSwitches(Mutation):
     # en Python, las cadenas son inmutables; hay que convertirlas a una lista
     seq_list = list(sequence)
     for i in positions:
-      original_letter = seq_list[i]
-      while seq_list[i] == original_letter: 
-        seq_list[i] = random.choice(AMINOACIDS)
+      seq_list[i] = Sequence.switch_residue(seq_list[i])
     return ''.join(seq_list)

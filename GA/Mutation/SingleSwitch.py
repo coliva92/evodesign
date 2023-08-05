@@ -1,6 +1,6 @@
 from .Mutation import Mutation
 import random
-from evodesign.Sequence import AMINOACIDS
+import evodesign.Sequence as Sequence
 
 
 
@@ -16,8 +16,7 @@ class SingleSwitch(Mutation):
 
   def mutate_sequence(self, sequence: str) -> str:
     i = random.randint(0, len(sequence) - 1)
+    # en Python, las cadenas son inmutables; hay que convertirlas a una lista 
     seq_list = list(sequence)
-    original_letter = seq_list[i]
-    while sequence[i] == original_letter:
-      seq_list[i] = random.choice(AMINOACIDS)
+    seq_list[i] = Sequence.switch_residue(seq_list[i])
     return ''.join(seq_list)
