@@ -65,14 +65,14 @@ class SimpleGeneticAlgorithm(Algorithm):
   
 
 
-  def _evolutionary_step(self, population: Population) -> Population:
+  def _evolutionary_step(self, population: Population) -> List[Individual]:
     new_individuals = []
     while len(new_individuals) < len(population):
-      parents = self._selection(population.individuals)
+      parents = self._selection(population)
       children = self._recombination(parents)
       self._mutation(children)
       new_individuals += children
-    return Population(individuals=new_individuals)
+    return new_individuals
 
 
 
