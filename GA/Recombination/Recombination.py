@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 from evodesign import Individual
-from evodesign.Sequence import create_random_sequence
-import random
+import evodesign.Choice as Choice
 
 
 
@@ -46,19 +45,14 @@ class Recombination(ABC):
     if len(parents) % 2 != 0:
       parents = parents[:-1]
     
-    def offspring(flag: bool, 
-                  mother: str, 
-                  father: str
-                  ) -> Tuple[str]:
-      return self.create_offspring_sequences(mother.sequence, father.sequence) \
-        if flag else ( create_random_sequence(len(mother)), 
-                       create_random_sequence(len(mother)) )
-    
-    flags = random.choices([ True, False ], 
-                           self._weights, 
-                           k=int(len(parents) / 2))
-    return [
-      Individual(sequence)
-      for flag, mother, father in zip(flags, parents[0::2], parents[1::2])
-      for sequence in offspring(flag, mother, father)
-    ]
+    children = []
+    for mother, father in zip(parents[0::2], parents[1::2]):
+      if Choice.flip_coin(self._weights):
+        sister, brother = self.create_offspring_sequences(mother.sequence,
+                                                          father.sequence)
+        children.append(sister)
+        children.append(brother)
+        continue
+      children.append(Individual.new_random(len(mother)))
+      children.append(Individual.new_random(len(mother)))
+    return children
