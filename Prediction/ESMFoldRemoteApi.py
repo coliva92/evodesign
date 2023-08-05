@@ -1,5 +1,5 @@
 from .Predictor import Predictor
-from ..Errors import (HttpForbidden, 
+from ..Exceptions import (HttpForbidden, 
                       HttpInternalServerError, 
                       HttpGatewayTimeout, 
                       RemoteApiRequestsExceeded)

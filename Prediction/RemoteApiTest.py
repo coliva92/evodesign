@@ -2,7 +2,7 @@ from .Predictor import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
 import random
-from ..Errors import RemoteApiRequestsExceeded
+from ..Exceptions import RemoteApiRequestsExceeded
 
 
 
