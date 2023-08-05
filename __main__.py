@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
-import Settings
-from Exceptions import *
+import evodesign.Settings as Settings
+from .Exceptions import *
 import sys
 
 
