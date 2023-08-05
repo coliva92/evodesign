@@ -40,13 +40,13 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
     key: params[key] for key in filter(is_non_class_key, params)
   }
   classes = {
-    key: getattr(sys.modules[__name__], params[key]) \
-         for key in filter(is_class_key, params)
+    key: getattr(sys.modules[__name__], params[key])
+    for key in filter(is_class_key, params)
   }
   class_params = {
-    key: the_class(**params[f'{key}Params']) \
-         if f'{key}Params' in params else the_class() \
-         for key, the_class in classes.items()
+    key: the_class(**params[f'{key}Params'])
+    if f'{key}Params' in params else the_class()
+    for key, the_class in classes.items()
   }
 
   if '__savedPopulations' in settings:
