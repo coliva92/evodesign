@@ -57,8 +57,8 @@ class Workspace:
     filename = self.population_filenames[-1]
     with open(filename, 'rt', encoding='utf-8') as json_file:
       pop_data = json.load(json_file)
-    return Population(len(self.population_filenames) - 1,
-                      [ Individual(**params) for params in pop_data ])
+    return Population([ Individual(**params) for params in pop_data ],
+                      len(self.population_filenames))
 
 
 

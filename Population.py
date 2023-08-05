@@ -22,8 +22,8 @@ class Population:
 
 
   def __init__(self, 
+               individuals: Optional[List[Individual]] = None,
                iterationId: int = 0, 
-               individuals: Optional[List[Individual]] = None
                ) -> None:
     if individuals is None: individuals = []
     self.iterationId = iterationId

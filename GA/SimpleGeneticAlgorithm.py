@@ -79,7 +79,7 @@ class SimpleGeneticAlgorithm(Algorithm):
   def next_population(self, population: Population) -> Population:
     children = self.workspace.restore_children_from_backup()
     if not children:
-      children = self._evolutionary_step(population)
+      children = Population(self._evolutionary_step(population))
       self.workspace.backup_children(children)
     try:
       children.update_fitness(self._fitness_fn, 
@@ -90,14 +90,14 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.backup_children(children)
       raise e
     self.workspace.delete_children_backup()
-    return self._replacement(population, children)
+    return self._replacement(population, children.individuals)
 
 
 
   def __call__(self, population: Optional[Population] = None) -> None:
     if population is None: population = Population()
     if not population:
-      population = Population.new_random(0, 
+      population = Population.new_random(1, 
                                          self._population_size, 
                                          self._sequence_length)
       self.workspace.save_population(population)
@@ -115,7 +115,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
     while True:
-      if population.iterationId == self._num_iterations - 1:
+      if population.iterationId == self._num_iterations:
         break
       if self.best_solution.fitness >= self._fitness_fn.upper_bound():
         break
