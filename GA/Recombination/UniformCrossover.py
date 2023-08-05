@@ -7,10 +7,6 @@ import random
 
 
 class UniformCrossover(Recombination):
-  
-  _options = [ 0, 1 ]
-
-
 
   @classmethod
   def get_name(cls) -> str:
@@ -22,7 +18,7 @@ class UniformCrossover(Recombination):
                probability: float = 1.0, 
                bias: float = 0.5) -> None:
     super().__init__(probability)
-    self._weights = [ bias, 1.0 - bias ]
+    self._weights = ( bias, 1.0 - bias )
     self._bias = bias
   
 
@@ -40,9 +36,7 @@ class UniformCrossover(Recombination):
                                  ) -> Tuple[str]:
     # suponemos que ambos padres son de la misma longitud y que vienen 
     # ordenados por aptitud de manera ascendente
-    selections = random.choices(UniformCrossover._options, 
-                                self._weights, 
-                                k=len(mother))
+    selections = random.choices(( 0, 1 ), self._weights, k=len(mother))
     parents = ( mother, father )
     sister = ''.join([ parents[p][i] for i, p in enumerate(selections) ])
     parents = ( father, mother )

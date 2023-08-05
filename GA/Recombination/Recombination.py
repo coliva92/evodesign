@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 from evodesign import Individual
-from evodesign.Sequence import create_random_sequence as random_seq
+from evodesign.Sequence import create_random_sequence
 import random
 
 
@@ -9,10 +9,6 @@ import random
 
 
 class Recombination(ABC):
-
-  _options = [ True, False ]
-
-
 
   @classmethod
   @abstractmethod
@@ -50,18 +46,19 @@ class Recombination(ABC):
     if len(parents) % 2 != 0:
       parents = parents[:-1]
     
-    def discriminate(flag: bool, 
-                     mother: str, 
-                     father: str
-                     ) -> Tuple[str]:
+    def offspring(flag: bool, 
+                  mother: str, 
+                  father: str
+                  ) -> Tuple[str]:
       return self.create_offspring_sequences(mother.sequence, father.sequence) \
-        if flag else ( random_seq(len(mother)), random_seq(len(father)) )
+        if flag else ( create_random_sequence(len(mother)), 
+                       create_random_sequence(len(mother)) )
     
-    flags = random.choices(Recombination._options, 
+    flags = random.choices([ True, False ], 
                            self._weights, 
                            k=int(len(parents) / 2))
     return [
-      Individual(seq) \
-      for flag, mother, father in zip(flags, parents[0::2], parents[1::2]) \
-      for seq in discriminate(flag, mother, father)
+      Individual(sequence)
+      for flag, mother, father in zip(flags, parents[0::2], parents[1::2])
+      for sequence in offspring(flag, mother, father)
     ]
