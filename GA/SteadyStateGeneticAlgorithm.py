@@ -59,7 +59,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
   def _evolutionary_step(self, population: Population) -> Population:
-    parents = self._selection(population)
+    parents = self._selection(population.individuals)
     children = self._recombination(parents)
     self._mutation(children)
     return Population(individuals=children)
