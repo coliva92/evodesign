@@ -1,5 +1,7 @@
 from .Replacement import Replacement
+from typing import List
 from evodesign.Population import Population
+from evodesign.Individual import Individual
 
 
 
@@ -15,7 +17,7 @@ class WorseOut(Replacement):
 
   def __call__(self, 
                population: Population,
-               children: Population
+               children: List[Individual]
                ) -> Population:
     next_population = population.individuals.copy()
     for child in children:

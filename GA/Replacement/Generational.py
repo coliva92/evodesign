@@ -1,5 +1,7 @@
 from .Replacement import Replacement
+from typing import List
 from evodesign.Population import Population
+from evodesign.Individual import Individual
 
 
 
@@ -15,7 +17,7 @@ class Generational(Replacement):
 
   def __call__(self, 
                population: Population,
-               children: Population
+               children: List[Individual]
                ) -> Population:
     children.iterationId = population.iterationId + 1
-    return children
+    return Population(population.iterationId + 1, children)
