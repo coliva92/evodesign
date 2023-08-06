@@ -151,6 +151,7 @@ algorithm = GA_Steady(workspaceName='example',
                       mutation=GA_Mutation_SingleSwitch(probability=0.1),
                       replacement=GA_Replacement_WorseOut())
 algorithm() # iniciamos la ejecución del algoritmo
+print(algorithm.best_solution)
 ```
 
 Alternativamente, es posible replicar la ejecución del algoritmo anterior utilizando las clases individuales, como se muestra en el siguiente ejemplo:
