@@ -176,9 +176,9 @@ target_structure = Chain.load_structure_from_pdb('example/1Y32.pdb')
 sequence_length = Chain.count_chain_residues(target_structure)
 target_backbone = Chain.filter_backbone_atoms_in_chain(target_structure)
 
-population = Population.new_random(iterationId=1, 
-                                   size=10, 
-                                   sequenceLength=sequence_length)
+population = Population.new_random(size=10, 
+                                   sequenceLength=sequence_length,
+                                   iterationId=1)
 population.update_fitness(fitnessFn, predictor, target_backbone)
 # después de calcular la aptitud, la población se ordena de manera ascendente
 print(Statistics.new_from_population(population))
@@ -190,7 +190,7 @@ while True:
   parents = selection(population)
   children = recombination(parents)
   mutation(children)
-  Population(children).update_fitness(fitnessFn, predictor, target_backbone)
+  children.update_fitness(fitnessFn, predictor, target_backbone)
   population = replacement(population, children)
   print(Statistics.new_from_population(population))
 print(population[-1]) # mejor solución

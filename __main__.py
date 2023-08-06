@@ -33,7 +33,7 @@ while True:
     algorithm.workspace.plot_fitness()
     break
   except KeyboardInterrupt:
-    print(f'INTERRUPTED (by user).\n' +
+    print(f'\nINTERRUPTED (by user).\n' +
           f'Run `python -m evodesign {filename}` to resume later.')
     algorithm.workspace.plot_fitness()
     sys.exit(130)
