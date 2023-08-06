@@ -130,5 +130,5 @@ class SimpleGeneticAlgorithm(Algorithm):
   def _update_best_solution(self, population: Population) -> None:
     if population[-1] > self.best_solution: 
       self.best_solution = population[-1]
-    else:
+    elif population[-1].sequence != self.best_solution.sequence:
       population.individuals = population[1:] + [ self.best_solution ]
