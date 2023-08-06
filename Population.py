@@ -47,7 +47,7 @@ class Population:
   
 
 
-  def __getitem__(self, i: int):
+  def __getitem__(self, i: int) -> Individual:
     return self.individuals[i]
   
 
@@ -60,6 +60,17 @@ class Population:
   def __iter__(self):
     for individual in self.individuals:
       yield individual
+  
+
+
+  def __iadd__(self, other):
+    if isinstance(other, list):
+      self.individuals += other
+      return self
+    if isinstance(other, Population):
+      self.individuals += other.individuals
+      return self
+    raise NotImplementedError
 
 
 

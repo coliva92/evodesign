@@ -31,7 +31,7 @@ class Tournament(Selection):
 
 
 
-  def __call__(self, population: Population) -> List[Individual]:
+  def select_parents(self, population: Population) -> List[Individual]:
     selected_parents = []
     for i in range(self._selection_size):
       winner = sorted(random.sample(population.individuals, 

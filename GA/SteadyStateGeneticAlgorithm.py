@@ -8,7 +8,6 @@ from .Mutation import Mutation
 from .Replacement import Replacement
 from .Termination import StagnantMeanFitness
 from ..Population import Population
-from ..Individual import Individual
 
 
 
@@ -59,7 +58,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
 
-  def _evolutionary_step(self, population: Population) -> List[Individual]:
+  def _evolutionary_step(self, population: Population) -> Population:
     parents = self._selection(population)
     children = self._recombination(parents)
     self._mutation(children)

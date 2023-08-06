@@ -36,7 +36,7 @@ class Overselection(Selection):
   
 
 
-  def __call__(self, population: Population) -> List[Individual]:
+  def select_parents(self, population: Population) -> List[Individual]:
     if Choice.flip_coin(self._weights):
       return random.sample(population[-self._top_size:], self._selection_size)
     return random.sample(population[0:-self._top_size], self._selection_size)

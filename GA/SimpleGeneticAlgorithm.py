@@ -1,12 +1,11 @@
 from ..Algorithm import Algorithm
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
-from ..Individual import Individual
 from ..Population import Population
 from ..Statistics import Statistics
 
@@ -65,21 +64,21 @@ class SimpleGeneticAlgorithm(Algorithm):
   
 
 
-  def _evolutionary_step(self, population: Population) -> List[Individual]:
-    new_individuals = []
-    while len(new_individuals) < len(population):
+  def _evolutionary_step(self, population: Population) -> Population:
+    next_population = Population()
+    while len(next_population) < len(population):
       parents = self._selection(population)
       children = self._recombination(parents)
       self._mutation(children)
-      new_individuals += children
-    return new_individuals
+      next_population += children
+    return next_population
 
 
 
   def next_population(self, population: Population) -> Population:
     children = self.workspace.restore_children_from_backup()
     if not children:
-      children = Population(self._evolutionary_step(population))
+      children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
     try:
       children.update_fitness(self._fitness_fn, 
@@ -90,15 +89,14 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.backup_children(children)
       raise e
     self.workspace.delete_children_backup()
-    return self._replacement(population, children.individuals)
+    return self._replacement(population, children)
 
 
 
   def __call__(self, population: Optional[Population] = None) -> None:
     if population is None: population = Population()
     if not population:
-      population = Population.new_random(1, 
-                                         self._population_size, 
+      population = Population.new_random(self._population_size, 
                                          self._sequence_length)
       self.workspace.save_population(population)
     try:
