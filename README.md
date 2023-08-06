@@ -1,6 +1,6 @@
 # EvoDesign
 
-Este es un programa y un _framework_ rudimentario, escrito en Python 3.8, para implementar diferentes algoritmos evolutivos para el _diseño de proteínas_. 
+Este es un programa y un _framework_ rudimentario, escrito en Python 3.8, para implementar diferentes [algoritmos evolutivos](https://en.wikipedia.org/wiki/Evolutionary_algorithm) para el _diseño de proteínas_. 
 En el diseño de proteínas, el objetivo es encontrar la secuencia de aminoácidos que se pliega en una estructura objetivo determinada. 
 Para verificar que una secuencia particular se pliega en la estructura objetivo, los algoritmos evolutivos implementados con EvoDesign utilizan un algoritmo de _predicción de la estructura de una proteína_, como por ejemplo, [ESMFold](https://github.com/facebookresearch/esm).
 
@@ -151,6 +151,7 @@ algorithm = GA_Steady(workspaceName='example',
                       mutation=GA_Mutation_SingleSwitch(probability=0.1),
                       replacement=GA_Replacement_WorseOut())
 algorithm() # iniciamos la ejecución del algoritmo
+print(algorithm.best_solution)
 ```
 
 Alternativamente, es posible replicar la ejecución del algoritmo anterior utilizando las clases individuales, como se muestra en el siguiente ejemplo:
