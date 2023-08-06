@@ -17,4 +17,4 @@ class Uniform(Selection):
 
 
   def __call__(self, population: Population) -> List[Individual]:
-    return random.sample(population.individual, self._selection_size)
+    return random.sample(population.individuals, self._selection_size)
