@@ -1,7 +1,7 @@
 from .Predictor import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
-from ..Exceptions import RemoteApiRequestsExceeded
+from ..Exceptions import HttpInternalServerError
 import evodesign.Choice as Choice
 
 
@@ -21,7 +21,7 @@ class RemoteApiTest(Predictor):
                         pdbFilename: str
                         ) -> None:
     if Choice.flip_coin(( 0.05, 0.95 )):
-      raise RemoteApiRequestsExceeded
+      raise HttpInternalServerError
   
 
 

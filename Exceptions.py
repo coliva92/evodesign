@@ -13,5 +13,5 @@ class HttpInternalServerError(RuntimeError):
 
 
 
-class RemoteApiRequestsExceeded(RuntimeError):
+class HttpUnknownError(RuntimeError):
   pass

@@ -27,15 +27,10 @@ while True:
           f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
           f'Fitness: {algorithm.best_solution.fitness:0.4f}')
     break
-  except (HttpForbidden, RemoteApiRequestsExceeded):
-    print(f'INTERRUPTED.\n' +
-          f'Run `python -m evodesign {filename}` to resume later.')
-    algorithm.workspace.plot_fitness()
-    break
-  except KeyboardInterrupt:
-    print(f'\nINTERRUPTED (by user).\n' +
+  except (KeyboardInterrupt, HttpUnknownError):
+    print(f'\nINTERRUPTED.\n' +
           f'Run `python -m evodesign {filename}` to resume later.')
     algorithm.workspace.plot_fitness()
     sys.exit(130)
-  except (HttpInternalServerError, HttpGatewayTimeout) as e:
+  except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden) as e:
     pass
