@@ -20,7 +20,8 @@ class TwoPointsCrossover(Recombination):
                                  ) -> Tuple[str]:
     # suponemos que ambos padres son de la misma longitud
     n = len(mother)
-    i, j = random.randint(0, n - 1), random.randint(i, n - 1)
+    i = random.randint(0, n - 1) 
+    j = random.randint(i, n - 1)
     sister = mother[0:i] + father[i:j] + mother[j:]
     brother = father[0:i] + mother[i:j] + father[j:]
     return ( sister, brother )
