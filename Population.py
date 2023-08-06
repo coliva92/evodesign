@@ -13,11 +13,11 @@ class Population:
   
   @classmethod
   def new_random(cls,
-                 iterationId: int, 
                  size: int, 
-                 sequenceLength: int):
-    return cls(iterationId,
-               [ Individual.new_random(sequenceLength) for _ in range(size) ])
+                 sequenceLength: int,
+                 iterationId: int = 1):
+    return cls([ Individual.new_random(sequenceLength) for _ in range(size) ], 
+               iterationId)
 
 
 

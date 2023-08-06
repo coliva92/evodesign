@@ -39,8 +39,8 @@ class Algorithm(ABC):
     reference = Chain.load_structure_from_pdb(targetPdbFilename)
     self._sequence_length = Chain.count_chain_residues(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_in_chain(reference)
-    self.workspace = Workspace(workspaceName, 
-                               self.as_json(),
+    self.workspace = Workspace(workspaceName,
+                               self.as_json,
                                targetPdbFilename, 
                                populationFilenames)
     self.best_solution = None

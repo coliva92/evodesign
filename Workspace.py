@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Callable
 from .Individual import Individual
 from .Population import Population
 from .Statistics import Statistics
@@ -15,7 +15,7 @@ class Workspace:
   
   def __init__(self, 
                name: str, 
-               settingsJson: dict,
+               jsonFactory: Callable[[], dict],
                targetPdbFilename: str,
                populationFilenames: Optional[List[str]] = None
                ) -> None:
@@ -33,9 +33,8 @@ class Workspace:
                                                              'populations')
     self.pdbs_folder = self.settings_filename.replace('settings.json', 'pdbs')
     self.population_filenames = populationFilenames
-    self.settings_json = settingsJson
-    self.settings_json['__savedPopulations'] = self.population_filenames
-
+    self.json_factory = jsonFactory
+  
 
 
   def save_population(self, population: Population) -> None:
@@ -45,9 +44,11 @@ class Workspace:
     with open(filename, 'wt', encoding='utf-8') as the_file:
       the_file.write(json.dumps(population.as_json(), indent=2) + '\n')
     if is_new_file:
+      settings_json = self.json_factory()
       self.population_filenames.append(filename)
+      settings_json['__savedPopulations'] = self.population_filenames
       with open(self.settings_filename, 'wt', encoding='utf-8') as the_file:
-        the_file.write(json.dumps(self.settings_json, indent=2) + '\n')
+        the_file.write(json.dumps(settings_json, indent=2) + '\n')
 
 
 
@@ -73,7 +74,7 @@ class Workspace:
       return Population()
     with open(self.children_filename, 'rt', encoding='utf-8') as json_file:
       backup = json.load(json_file)
-    return Population(individuals=[ Individual(**params) for params in backup ])
+    return Population([ Individual(**params) for params in backup ])
   
 
 
