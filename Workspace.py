@@ -190,3 +190,10 @@ class Workspace:
     ax.legend(loc='best')
     ax.grid()
     fig.savefig(self.graph_filename)
+
+
+
+save_population_json = Workspace.save_population_json
+load_population_json = Workspace.load_population_json
+save_population_csv = Workspace.save_population_csv
+load_population_csv = Workspace.load_population_csv
