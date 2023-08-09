@@ -36,9 +36,9 @@ class Population:
   
 
 
-  def get_json_filename(self, populationsFolder: Optional[str] = None) -> str:
+  def get_filename(self, populationsFolder: Optional[str] = None) -> str:
     if populationsFolder is None: populationsFolder = ''
-    return os.path.join(populationsFolder, f'pop_{self.iterationId}.json')
+    return os.path.join(populationsFolder, f'pop_{self.iterationId}.csv')
   
 
 
