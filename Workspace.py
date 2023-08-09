@@ -2,6 +2,7 @@ from typing import List, Optional, Callable
 from .Individual import Individual
 from .Population import Population
 from .Statistics import Statistics
+import evodesign.FileIO as FileIO
 import matplotlib.pyplot as plt
 import json
 import csv
@@ -30,85 +31,13 @@ class Workspace:
     self.pdbs_folder = self.settings_filename.replace('settings.json', 'pdbs')
     self.population_filenames = populationFilenames
     self.json_factory = jsonFactory
-  
-
-
-  @classmethod
-  def save_population_csv(cls, 
-                          population: Population, 
-                          filename: str
-                          ) -> bool:
-    def serialize_metrics(jsonData: dict) -> dict:
-      a = { key: value for key, value in jsonData.items() if key != 'metrics' }
-      b = { key: value for key, value in jsonData['metrics'].items() }
-      return { **a, **b }
-    
-    is_new_file = not os.path.isfile(filename)
-    with open(filename, 'wt', encoding='utf-8') as csv_file:
-      json_data = population.as_json()
-      rows = list(map(serialize_metrics, json_data))
-      writer = csv.DictWriter(csv_file, 
-                              rows[0].keys(), 
-                              dialect='unix', 
-                              quoting=csv.QUOTE_NONE)
-      if is_new_file:
-        writer.writeheader()
-      for row in rows:
-        writer.writerow(row)
-    return is_new_file
-  
-
-
-  @classmethod
-  def load_population_csv(cls, 
-                          filename: str, 
-                          iterationId: int = 0
-                          ) -> Population:
-    def deserialize_metrics(csv_row: dict) -> Individual:
-      a = {
-        'sequence': csv_row['sequence'], 
-        'fitness': float(csv_row['fitness'])
-      }
-      b = {
-        'metrics': { 
-          key: float(value) 
-          for key, value in csv_row.items()
-          if key != 'sequence' and key != 'fitness' 
-        }
-      }
-      return Individual(**{ **a, **b })
-  
-    with open(filename, 'rt', encoding='utf-8') as csv_file:
-      rows = csv.DictReader(csv_file, dialect='unix')
-      individuals = list(map(deserialize_metrics, rows))
-    return Population(individuals, iterationId)
-  
-
-
-  @classmethod
-  def save_population_json(cls, 
-                           population: Population, 
-                           filename: str
-                           ) -> bool:
-    is_new_file = not os.path.isfile(filename)
-    with open(filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write(json.dumps(population.as_json(), indent=2) + '\n')
-    return is_new_file
-  
-
-
-  @classmethod
-  def load_population_json(cls, filename: str) -> Population:
-    with open(filename, 'rt', encoding='utf-8') as json_file:
-      pop_data = json.load(json_file)
-    return Population([ Individual(**params) for params in pop_data ])
 
 
 
   def save_population_and_update_settings(self, population: Population) -> None:
     os.makedirs(self.populations_folder, exist_ok=True)
     filename = population.get_filename(self.populations_folder)
-    if self.save_population_csv(population, filename):
+    if FileIO.save_population_csv(population, filename):
       settings_json = self.json_factory()
       self.population_filenames.append(filename)
       settings_json['__savedPopulations'] = self.population_filenames
@@ -121,19 +50,19 @@ class Workspace:
     if not self.population_filenames:
       return Population()
     filename = self.population_filenames[-1]
-    return self.load_population_csv(filename, len(self.population_filenames))
+    return FileIO.load_population_csv(filename, len(self.population_filenames))
 
 
 
   def backup_children(self, children: Population) -> None:
-    self.save_population_json(children, self.children_filename)
+    FileIO.save_population_json(children, self.children_filename)
 
 
 
   def restore_children_from_backup(self) -> Population:
     if not os.path.isfile(self.children_filename):
       return Population()
-    return self.load_population_json(self.children_filename)
+    return FileIO.load_population_json(self.children_filename)
   
 
 
@@ -190,10 +119,3 @@ class Workspace:
     ax.legend(loc='best')
     ax.grid()
     fig.savefig(self.graph_filename)
-
-
-
-save_population_json = Workspace.save_population_json
-load_population_json = Workspace.load_population_json
-save_population_csv = Workspace.save_population_csv
-load_population_csv = Workspace.load_population_csv
