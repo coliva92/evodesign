@@ -33,14 +33,16 @@ class Workspace:
   
 
 
-  def save_population(self, population: Population) -> None:
+  @classmethod
+  def save_population_csv(cls, 
+                          population: Population, 
+                          filename: str
+                          ) -> bool:
     def serialize_metrics(jsonData: dict) -> dict:
       a = { key: value for key, value in jsonData.items() if key != 'metrics' }
       b = { key: value for key, value in jsonData['metrics'].items() }
       return { **a, **b }
     
-    os.makedirs(self.populations_folder, exist_ok=True)
-    filename = population.get_filename(self.populations_folder)
     is_new_file = not os.path.isfile(filename)
     with open(filename, 'wt', encoding='utf-8') as csv_file:
       json_data = population.as_json()
@@ -53,16 +55,15 @@ class Workspace:
         writer.writeheader()
       for row in rows:
         writer.writerow(row)
-    if is_new_file:
-      settings_json = self.json_factory()
-      self.population_filenames.append(filename)
-      settings_json['__savedPopulations'] = self.population_filenames
-      with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
-        json_file.write(json.dumps(settings_json, indent=2) + '\n')
+    return is_new_file
+  
 
 
-
-  def load_latest_population(self) -> Population:
+  @classmethod
+  def load_population_csv(cls, 
+                          filename: str, 
+                          iterationId: int = 0
+                          ) -> Population:
     def deserialize_metrics(csv_row: dict) -> Individual:
       a = {
         'sequence': csv_row['sequence'], 
@@ -76,29 +77,63 @@ class Workspace:
         }
       }
       return Individual(**{ **a, **b })
-    
-    if not self.population_filenames:
-      return Population()
-    filename = self.population_filenames[-1]
+  
     with open(filename, 'rt', encoding='utf-8') as csv_file:
       rows = csv.DictReader(csv_file, dialect='unix')
       individuals = list(map(deserialize_metrics, rows))
-    return Population(individuals, len(self.population_filenames))
+    return Population(individuals, iterationId)
+  
+
+
+  @classmethod
+  def save_population_json(cls, 
+                           population: Population, 
+                           filename: str
+                           ) -> bool:
+    is_new_file = not os.path.isfile(filename)
+    with open(filename, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(population.as_json(), indent=2) + '\n')
+    return is_new_file
+  
+
+
+  @classmethod
+  def load_population_json(cls, filename: str) -> Population:
+    with open(filename, 'rt', encoding='utf-8') as json_file:
+      pop_data = json.load(json_file)
+    return Population([ Individual(**params) for params in pop_data ])
+
+
+
+  def save_population_and_update_settings(self, population: Population) -> None:
+    os.makedirs(self.populations_folder, exist_ok=True)
+    filename = population.get_filename(self.populations_folder)
+    if self.save_population_csv(population, filename):
+      settings_json = self.json_factory()
+      self.population_filenames.append(filename)
+      settings_json['__savedPopulations'] = self.population_filenames
+      with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
+        json_file.write(json.dumps(settings_json, indent=2) + '\n')
+
+
+
+  def load_latest_population(self) -> Population:
+    if not self.population_filenames:
+      return Population()
+    filename = self.population_filenames[-1]
+    return self.load_population_csv(filename, len(self.population_filenames))
 
 
 
   def backup_children(self, children: Population) -> None:
-    with open(self.children_filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write(json.dumps(children.as_json(), indent=2) + '\n')
+    self.save_population_json(children, self.children_filename)
 
 
 
   def restore_children_from_backup(self) -> Population:
     if not os.path.isfile(self.children_filename):
       return Population()
-    with open(self.children_filename, 'rt', encoding='utf-8') as json_file:
-      backup = json.load(json_file)
-    return Population([ Individual(**params) for params in backup ])
+    return self.load_population_json(self.children_filename)
   
 
 
