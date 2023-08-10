@@ -37,6 +37,22 @@ class Individual:
   
 
 
+  def __iter__(self):
+    for letter in self.sequence:
+      yield letter
+  
+
+
+  def __getitem__(self, i: int) -> str:
+    return self.sequence[i]
+  
+
+
+  def __setitem__(self, i: int, _) -> None:
+    raise TypeError
+  
+
+
   def __eq__(self, other):
     if not isinstance(other, self.__class__):
       return NotImplemented
@@ -51,15 +67,13 @@ class Individual:
   def __lt__(self, other):
     if not isinstance(other, self.__class__):
       return NotImplemented
-    if self.fitness < other.fitness:
-      return True
-    if self.fitness > other.fitness:
-      return False
-    if not 'rmsd' in self.metrics or not 'rmsd' in other.metrics:
-      return False
-    return self.metrics['rmsd'] > other.metrics['rmsd']
+    if self.fitness == other.fitness:
+      if not 'rmsd' in self.metrics or not 'rmsd' in other.metrics:
+        return False
+      return self.metrics['rmsd'] > other.metrics['rmsd']
+    return self.fitness < other.fitness
+    
   
-
   
   def as_json(self) -> dict:
     return asdict(self)
