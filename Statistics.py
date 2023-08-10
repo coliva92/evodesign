@@ -24,7 +24,7 @@ class Statistics:
                min(population).fitness,
                statistics.fmean(population),
                max(population).fitness,
-               cls._compute_string_diversity(population))
+               cls.compute_string_diversity(population))
   
 
 
@@ -35,10 +35,8 @@ class Statistics:
 
   @classmethod
   def compute_string_diversity(cls, population: Population) -> float:
-    n = len(AMINOACIDS) if len(population) >= len(AMINOACIDS) \
-                        else len(population)
-    ratios = []
+    counts = []
     for i in range(len(population[0])):
       uniques = { individual[i] for individual in population }
-      ratios.append(len(uniques) / n)
-    return statistics.fmean(ratios)
+      counts.append(len(uniques))
+    return statistics.fmean(counts)
