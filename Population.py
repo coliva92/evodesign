@@ -52,8 +52,10 @@ class Population:
   
 
 
-  def __setitem__(self, i: int, individual: Individual) -> None:
-    self.individuals[i] = individual
+  def __setitem__(self, i: int, value) -> None:
+    if not isinstance(value, Individual):
+      raise NotImplementedError
+    self.individuals[i] = value
   
 
 
