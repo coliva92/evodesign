@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field, asdict
 from .Population import Population
 import statistics
-from Sequence import AMINOACIDS
+from .Sequence import AMINOACIDS
 
 
 
@@ -34,7 +34,7 @@ class Statistics:
 
 
   @classmethod
-  def _compute_string_diversity(cls, population: Population) -> float:
+  def compute_string_diversity(cls, population: Population) -> float:
     n = len(AMINOACIDS) if len(population) >= len(AMINOACIDS) \
                         else len(population)
     ratios = []
