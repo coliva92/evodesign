@@ -109,7 +109,7 @@ class Workspace:
     ax.fill_between(data['iteration_id'], 
                     data['min_fitness'], 
                     data['max_fitness'], 
-                    alpha=0.2)
+                    alpha=0.1)
     ax.plot(data['iteration_id'], 
             data['best_sequence_fitness'], 
             label='Best solution found')
@@ -117,5 +117,4 @@ class Workspace:
     ax.set_xlabel('Iterations')
     ax.set_ylabel('Fitness')
     ax.legend(loc='best')
-    ax.grid()
     fig.savefig(self.graph_filename)
