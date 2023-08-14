@@ -24,6 +24,20 @@ Alternativamente, las dependencias pueden instalarse de manera individual:
 - [Instrucciones de instalación de BioPython](https://biopython.org/wiki/Download).
 - [Instrucciones de instalación de Matplotlib](https://matplotlib.org/stable/users/getting_started/index.html#installation-quick-start).
 
+Después de instalar las dependencias, el siguiente paso es clonar este repositorio, lo que se logra ingresando el siguiente comando en la consola: 
+
+```
+git clone https://github.com/coliva92/evodesign.git
+```
+
+Finalmente, se registra la carpeta de `evodesign` en la variable de entorno `PYTHONPATH`, utilizando el siguiente comando en la consola:
+
+```
+export PYTHONPATH=${PYTHONPATH}:path/to/evodesign
+```
+
+Este registro permite importar el módulo `evodesign` desde cualquier _script_ de Python, sin importar su locación en el sistema de archivos. 
+
 <a name="instrucciones-consola"></a>
 ## Instrucciones de uso desde la consola
 
