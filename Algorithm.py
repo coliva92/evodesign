@@ -13,7 +13,7 @@ import time
 
 
 class Algorithm(ABC):
-  
+
   @classmethod
   @abstractmethod
   def get_name(cls) -> str:
@@ -27,13 +27,16 @@ class Algorithm(ABC):
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
                populationFilenames: Optional[List[str]] = None,
-               seed: Optional[int] = None
+               rngSeed: Optional[float] = None,
+               rngState: Optional[tuple] = None
                ) -> None:
     super().__init__()
     if populationFilenames is None: populationFilenames = []
-    if seed is None: seed = time.time()
-    random.seed(seed)
-    self._seed = seed
+    if rngSeed is None: rngSeed = time.time()
+    random.seed(rngSeed)
+    self._assigned_seed = rngSeed
+    if rngState:
+      random.setstate(rngState)
     self._predictor = predictor
     self._fitness_fn = fitnessFunction
     reference = Chain.load_structure_from_pdb(targetPdbFilename)
@@ -48,9 +51,13 @@ class Algorithm(ABC):
 
 
   def as_json(self) -> dict:
+    state = random.getstate()
     return {
       'algorithmType': self.get_name(),
       'algorithmParams': self._get_params_json(),
+      '__rngSeed': self._assigned_seed,
+      '__savedPopulations': [],
+      '__rngState': [ item for item in state ]
     }
   
 
@@ -58,7 +65,6 @@ class Algorithm(ABC):
   def _get_params_json(self) -> dict:
     return {
       'workspaceName': self.workspace.name,
-      'seed': self._seed,
       'targetPdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.get_name(),
       'fitnessFunction': self._fitness_fn.get_name()

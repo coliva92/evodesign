@@ -32,14 +32,16 @@ class SimpleGeneticAlgorithm(Algorithm):
                recombination: Recombination,
                mutation: Mutation,
                populationFilenames: Optional[List[str]] = None,
-               seed: Optional[int] = None
+               rngSeed: Optional[float] = None,
+               rngState: Optional[tuple] = None
                ) -> None:
     super().__init__(workspaceName, 
                      targetPdbFilename, 
                      predictor, 
                      fitnessFunction,
                      populationFilenames,
-                     seed)
+                     rngSeed,
+                     rngState)
     self._population_size = populationSize
     self._num_iterations = numIterations
     self._selection = selection
@@ -51,16 +53,18 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
   def _get_params_json(self) -> dict:
-    params = super()._get_params_json()
-    params['populationSize'] = self._population_size
-    params['numIterations'] = self._num_iterations
-    params['selection'] = self._selection.get_name()
-    params['selectionParams'] = self._selection.as_json()
-    params['recombination'] = self._recombination.get_name()
-    params['recombinationParams'] = self._recombination.as_json()
-    params['mutation'] = self._mutation.get_name()
-    params['mutationParams'] = self._mutation.as_json()
-    return params
+    a = super()._get_params_json()
+    b = {
+      'populationSize': self._population_size,
+      'numIterations': self._num_iterations,
+      'selection': self._selection.get_name(),
+      'selectionParams': self._selection.as_json(),
+      'recombination': self._recombination.get_name(),
+      'recombinationParams': self._recombination.as_json(),
+      'mutation': self._mutation.get_name(),
+      'mutationParams': self._mutation.as_json()
+    }
+    return { **a, **b }
   
 
 
