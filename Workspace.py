@@ -98,7 +98,8 @@ class Workspace:
       'iteration_id': [],
       'min_fitness': [],
       'fitness_mean': [],
-      'max_fitness': []
+      'max_fitness': [],
+      'best_sequence_fitness': []
     }
     with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
       for row in csv.DictReader(csv_file, dialect='unix'):
