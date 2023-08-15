@@ -29,8 +29,8 @@ class Workspace:
     self.graph_filename = os.path.join(self.name, 'fitness.png')
     self.populations_folder = os.path.join(self.name, 'populations')
     self.pdbs_folder = self.settings_filename.replace('settings.json', 'pdbs')
-    self.population_filenames = populationFilenames
-    self.json_factory = jsonFactory
+    self._population_filenames = populationFilenames
+    self._json_factory = jsonFactory
 
 
 
@@ -38,19 +38,19 @@ class Workspace:
     os.makedirs(self.populations_folder, exist_ok=True)
     filename = population.get_filename(self.populations_folder)
     if FileIO.save_population_csv(population, filename):
-      settings_json = self.json_factory()
-      self.population_filenames.append(filename)
-      settings_json['__savedPopulations'] = self.population_filenames
-      with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
-        json_file.write(json.dumps(settings_json, indent=2) + '\n')
+      self._population_filenames.append(filename)
+    settings_json = self._json_factory()
+    settings_json['__savedPopulations'] = self._population_filenames
+    with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(settings_json, indent=2) + '\n')
 
 
 
   def load_latest_population(self) -> Population:
-    if not self.population_filenames:
+    if not self._population_filenames:
       return Population()
-    filename = self.population_filenames[-1]
-    return FileIO.load_population_csv(filename, len(self.population_filenames))
+    filename = self._population_filenames[-1]
+    return FileIO.load_population_csv(filename, len(self._population_filenames))
 
 
 
