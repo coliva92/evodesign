@@ -22,8 +22,7 @@ def save_population_csv(population: Population, filename: str) -> bool:
                             rows[0].keys(), 
                             dialect='unix', 
                             quoting=csv.QUOTE_NONE)
-    if is_new_file:
-      writer.writeheader()
+    writer.writeheader()
     for row in rows:
       writer.writerow(row)
   return is_new_file
@@ -34,11 +33,11 @@ def load_population_csv(filename: str, iterationId: int = 0) -> Population:
   def deserialize_metrics(csv_row: dict) -> Individual:
     a = {
       'sequence': csv_row['sequence'], 
-      'fitness': float(csv_row['fitness'])
+      'fitness': float(csv_row['fitness']) if csv_row['fitness'] else None
     }
     b = {
       'metrics': { 
-        key: float(value) 
+        key: float(value) if len(value) > 0 else None
         for key, value in csv_row.items()
         if key != 'sequence' and key != 'fitness' 
       }
