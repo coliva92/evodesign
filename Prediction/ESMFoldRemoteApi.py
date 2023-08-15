@@ -27,7 +27,7 @@ class ESMFoldRemoteApi(Predictor):
     # print(response.status_code)
     if response.status_code == 403:
       raise HttpForbidden
-    elif response.status_code == 504 or requests.exceptions.ConnectTimeout:
+    elif response.status_code == 504:
       raise HttpGatewayTimeout
     elif response.status_code == 500:
       raise HttpInternalServerError

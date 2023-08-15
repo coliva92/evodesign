@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 import evodesign.Settings as Settings
 from .Exceptions import *
 import sys
+from requests.exceptions import ConnectTimeout
 
 
 
@@ -32,5 +33,9 @@ while True:
           f'Run `python -m evodesign {filename}` to resume later.')
     algorithm.workspace.plot_fitness()
     sys.exit(130)
-  except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden) as e:
+  except (HttpInternalServerError, 
+          HttpGatewayTimeout, 
+          HttpForbidden, 
+          ConnectTimeout
+          ) as e:
     pass
