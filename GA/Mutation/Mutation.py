@@ -18,7 +18,7 @@ class Mutation(ABC):
 
   def __init__(self, probability: float = 1.0) -> None:
     super().__init__()
-    self._weights = [ probability, 1.0 - probability ]
+    self._activation_weights = ( probability, 1.0 - probability )
     self._probability = probability
 
 
@@ -38,5 +38,5 @@ class Mutation(ABC):
 
   def __call__(self, children: Population) -> None:
     for i, child in enumerate(children):
-      if Choice.flip_coin(self._weights):
+      if Choice.flip_coin(self._activation_weights):
         children[i] = Individual(self.mutate_sequence(child.sequence))

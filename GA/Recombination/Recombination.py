@@ -19,7 +19,7 @@ class Recombination(ABC):
 
   def __init__(self, probability: float = 1.0) -> None:
     super().__init__()
-    self._weights = [ probability, 1.0 - probability ]
+    self._activation_weights = ( probability, 1.0 - probability )
     self._probability = probability
   
 
@@ -48,7 +48,7 @@ class Recombination(ABC):
     
     children = []
     for mother, father in zip(parents[0::2], parents[1::2]):
-      if Choice.flip_coin(self._weights):
+      if Choice.flip_coin(self._activation_weights):
         sister, brother = self.create_offspring_sequences(mother.sequence,
                                                           father.sequence)
         children.append(Individual(sister))

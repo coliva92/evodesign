@@ -20,7 +20,7 @@ class RandomResetting(Mutation):
                ) -> None:
     super().__init__(probability)
     self._residue_prob = residueProbability
-    self._weights = [ residueProbability, 1.0 - residueProbability ]
+    self._weights = ( residueProbability, 1.0 - residueProbability )
   
 
 
