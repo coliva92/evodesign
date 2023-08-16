@@ -84,12 +84,13 @@ class SimpleGeneticAlgorithm(Algorithm):
     if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
+      self.workspace.save_population_and_update_settings(population)
     try:
       children.update_fitness(self._fitness_fn, 
                               self._predictor, 
                               self._reference_backbone, 
                               self.workspace.pdbs_folder)
-    except RuntimeError as e:
+    except BaseException as e:
       self.workspace.backup_children(children)
       raise e
     self.workspace.delete_children_backup()
@@ -108,7 +109,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                                                 self._predictor,
                                                 self._reference_backbone,
                                                 self.workspace.pdbs_folder)
-    except RuntimeError as e:
+    except BaseException as e:
       self.workspace.save_population_and_update_settings(population)
       raise e
     self.best_solution = population[-1]
