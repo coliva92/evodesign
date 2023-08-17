@@ -20,9 +20,10 @@ filename = args.settings_filename
 while True:
   try:
     algorithm = Settings.load_algorithm_from_settings(filename)
+    algorithm.workspace.save_algorithm_settings(algorithm.as_json())
+    algorithm.workspace.load_rng_settings()
     filename = algorithm.workspace.settings_filename
     population = algorithm.workspace.load_latest_population()
-    algorithm.workspace.load_rng_settings()
     algorithm(population)
     algorithm.workspace.plot()
     print(f'COMPLETED.\n' +

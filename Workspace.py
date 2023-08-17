@@ -28,17 +28,18 @@ class Workspace:
     self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
     self.populations_folder = os.path.join(rootFolder, 'populations')
     self.pdbs_folder = os.path.join(rootFolder, 'pdbs')
-    self.algorithm_settings = None
 
 
 
-  def save_algorithm_settings(self) -> None:
+  def save_algorithm_settings(self, settings: dict) -> None:
+    os.makedirs(self.root_folder, exist_ok=True)
     with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write(json.dumps(self.algorithm_settings, indent=2) + '\n')
+      json_file.write(json.dumps(settings, indent=2) + '\n')
   
 
 
   def save_rng_settings(self, state: tuple) -> None:
+    os.makedirs(self.root_folder, exist_ok=True)
     state = ( state[0], list(state[1]), state[2])
     with open(self.rng_settings_filename, 'wt', encoding='utf-8') as json_file:
       json.dump(state, json_file)
@@ -64,10 +65,12 @@ class Workspace:
 
 
   def load_latest_population(self) -> Population:
+    if not os.path.isdir(self.populations_folder):
+      return Population()
     filenames = os.listdir(self.populations_folder)
     if not filenames:
       return Population()
-    filename = sorted(filenames)[-1]
+    filename = os.path.join(self.populations_folder, sorted(filenames)[-1])
     return FileIO.load_population_csv(filename, len(filenames))
 
 
@@ -123,21 +126,20 @@ class Workspace:
       for row in csv.DictReader(csv_file, dialect='unix'):
         for key in data:
           data[key].append(float(row[key]))
-    fig, ax = plt.subplots(1, 2, 1)
-    ax.plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
-    ax.fill_between(data['iteration_id'], 
-                    data['min_fitness'], 
-                    data['max_fitness'], 
-                    alpha=0.1)
-    ax.plot(data['iteration_id'], 
-            data['best_sequence_fitness'], 
-            label='Best solution found')
-    ax.set_title(self.root_folder)
-    ax.set_xlabel('Iterations')
-    ax.set_ylabel('Fitness')
-    ax.legend(loc='best')
-    fig, ax = plt.subplots(1, 2, 2)
-    ax.plot(data['iteration_id'], data['diversity'])
-    ax.set_xlabel('Iterations')
-    ax.set_ylabel('Population diversity')
+    fig, ax = plt.subplots(ncols=2, figsize=(10, 4))
+    fig.suptitle(self.root_folder)
+    ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
+    ax[0].fill_between(data['iteration_id'], 
+                       data['min_fitness'], 
+                       data['max_fitness'], 
+                       alpha=0.1)
+    ax[0].plot(data['iteration_id'], 
+               data['best_sequence_fitness'], 
+               label='Best solution found')
+    ax[0].set_xlabel('Iterations')
+    ax[0].set_ylabel('Fitness')
+    ax[0].legend(loc='best')
+    ax[1].plot(data['iteration_id'], data['diversity'])
+    ax[1].set_xlabel('Iterations')
+    ax[1].set_ylabel('Mean pairwise Hamming distance')
     fig.savefig(self.graph_filename)

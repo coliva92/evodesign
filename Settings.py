@@ -50,4 +50,6 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
   }
   
   algorithm_class = getattr(sys.modules[__name__], settings['algorithmType'])
-  return algorithm_class(**{ **non_class_params, **class_params })
+  algorithm = algorithm_class(**{ **non_class_params, **class_params })
+  algorithm.workspace.algorithm_settings = algorithm.as_json()
+  return algorithm

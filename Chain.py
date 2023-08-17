@@ -8,7 +8,7 @@ import os
 
 
 
-BACKBONE_ATOM_NAMES = set('N', 'CA', 'C', 'O')
+BACKBONE_ATOM_NAMES = { 'N', 'CA', 'C', 'O' }
 
 
 
