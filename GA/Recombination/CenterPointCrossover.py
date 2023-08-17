@@ -13,10 +13,10 @@ class CenterPointCrossover(Recombination):
 
 
 
-  def create_offspring_sequences(self, 
-                                 mother: str,
-                                 father: str
-                                 ) -> Tuple[str]:
+  def offspring_sequences(self, 
+                          mother: str,
+                          father: str
+                          ) -> Tuple[str]:
     # suponemos que ambos padres son de la misma longitud
     n = len(mother)
     i = n / 2 if n % 2 == 0 else (n - 1) / 2

@@ -30,10 +30,10 @@ class UniformCrossover(Recombination):
 
 
 
-  def create_offspring_sequences(self, 
-                                 mother: str,
-                                 father: str
-                                 ) -> Tuple[str]:
+  def offspring_sequences(self, 
+                          mother: str,
+                          father: str
+                          ) -> Tuple[str]:
     # suponemos que ambos padres son de la misma longitud y que vienen 
     # ordenados por aptitud de manera ascendente
     selections = random.choices(( 0, 1 ), self._weights, k=len(mother))

@@ -32,10 +32,10 @@ class Recombination(ABC):
 
   
   @abstractmethod
-  def create_offspring_sequences(self, 
-                                 mother: str,
-                                 father: str
-                                 ) -> Tuple[str]:
+  def offspring_sequences(self, 
+                          mother: str,
+                          father: str
+                          ) -> Tuple[str]:
     raise NotImplementedError
 
 
@@ -49,7 +49,7 @@ class Recombination(ABC):
     children = []
     for mother, father in zip(parents[0::2], parents[1::2]):
       if Choice.flip_coin(self._activation_weights):
-        sister, brother = self.create_offspring_sequences(mother.sequence,
+        sister, brother = self.offspring_sequences(mother.sequence,
                                                           father.sequence)
         children.append(Individual(sister))
         children.append(Individual(brother))
