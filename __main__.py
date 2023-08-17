@@ -24,7 +24,7 @@ while True:
     population = algorithm.workspace.load_latest_population()
     algorithm.workspace.load_rng_settings()
     algorithm(population)
-    algorithm.workspace.plot_fitness()
+    algorithm.workspace.plot()
     print(f'COMPLETED.\n' +
           f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
           f'Fitness: {algorithm.best_solution.fitness:0.4f}')
@@ -32,7 +32,7 @@ while True:
   except (KeyboardInterrupt, HttpUnknownError):
     print(f'\nINTERRUPTED.\n' +
           f'Run `python -m evodesign {filename}` to resume later.')
-    algorithm.workspace.plot_fitness()
+    algorithm.workspace.plot()
     sys.exit(130)
   except (HttpInternalServerError, 
           HttpGatewayTimeout, 

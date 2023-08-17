@@ -25,7 +25,7 @@ class Workspace:
     self.rng_settings_filename = os.path.join(rootFolder, 'rng.json')
     self.stats_filename = os.path.join(rootFolder, 'statistics.csv')
     self.children_filename = os.path.join(rootFolder, '~children.tmp')
-    self.graphs_filename = os.path.join(rootFolder, 'fitness_diversity.png')
+    self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
     self.populations_folder = os.path.join(rootFolder, 'populations')
     self.pdbs_folder = os.path.join(rootFolder, 'pdbs')
     self.algorithm_settings = None
@@ -108,7 +108,7 @@ class Workspace:
   
 
 
-  def plot_fitness(self) -> None:
+  def plot(self) -> None:
     if not os.path.isfile(self.stats_filename):
       return
     data = {
@@ -116,13 +116,14 @@ class Workspace:
       'min_fitness': [],
       'fitness_mean': [],
       'max_fitness': [],
+      'diversity': [],
       'best_sequence_fitness': []
     }
     with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
       for row in csv.DictReader(csv_file, dialect='unix'):
         for key in data:
           data[key].append(float(row[key]))
-    fig, ax = plt.subplots(1)
+    fig, ax = plt.subplots(1, 2, 1)
     ax.plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
     ax.fill_between(data['iteration_id'], 
                     data['min_fitness'], 
@@ -135,4 +136,8 @@ class Workspace:
     ax.set_xlabel('Iterations')
     ax.set_ylabel('Fitness')
     ax.legend(loc='best')
+    fig, ax = plt.subplots(1, 2, 2)
+    ax.plot(data['iteration_id'], data['diversity'])
+    ax.set_xlabel('Iterations')
+    ax.set_ylabel('Population diversity')
     fig.savefig(self.graph_filename)
