@@ -23,7 +23,7 @@ class Statistics:
   def new_from_population(cls, population: Population):
     smallest, largest, average = cls.min_max_mean(population)
     diversity = cls.average_hamming_distance(population)
-    return cls(population.iterationId,
+    return cls(population.iteration_id,
                smallest,
                average,
                largest,

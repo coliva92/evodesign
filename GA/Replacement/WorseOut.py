@@ -26,4 +26,4 @@ class WorseOut(Replacement):
           next_population.insert(i, child)
           break
     return Population(next_population[len(children):],
-                      population.iterationId + 1)
+                      population.iteration_id + 1)

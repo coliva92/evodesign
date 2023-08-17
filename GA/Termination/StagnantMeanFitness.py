@@ -26,8 +26,8 @@ class StagnantMeanFitness(Terminator):
                stats: Statistics
                ) -> bool:
     self._avg_fitnesses.append(stats.fitness_mean)
-    if population.iterationId >= 10:
-      older_avg = self._avg_fitnesses[population.iterationId - 10]
-      newer_avg = self._avg_fitnesses[population.iterationId]
+    if population.iteration_id >= 10:
+      older_avg = self._avg_fitnesses[population.iteration_id - 10]
+      newer_avg = self._avg_fitnesses[population.iteration_id]
       return newer_avg - older_avg < 0.0001
     return False

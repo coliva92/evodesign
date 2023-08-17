@@ -198,7 +198,7 @@ population.update_fitness(fitnessFn, predictor, target_backbone)
 # después de calcular la aptitud, la población se ordena de manera ascendente
 print(Statistics.new_from_population(population))
 while True:
-  if population.iterationId == 20: # max. 20 iteraciones
+  if population.iteration_id == 20: # max. 20 iteraciones
     break
   if population[-1].fitness >= fitnessFn.upper_bound():
     break

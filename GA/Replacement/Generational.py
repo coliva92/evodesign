@@ -18,5 +18,5 @@ class Generational(Replacement):
                population: Population,
                children: Population
                ) -> Population:
-    children.iterationId = population.iterationId + 1
+    children.iteration_id = population.iteration_id + 1
     return children

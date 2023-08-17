@@ -73,7 +73,7 @@ def save_population_fasta(population: Population, filename: str) -> bool:
       f'{key}={value:0.5f}' 
       for key, value in jsonData['metrics'].items() 
     ]
-    return f'>I{population.iterationId}P{idx} ' + \
+    return f'>I{population.iteration_id}P{idx} ' + \
       f'fitness={jsonData["fitness"]:0.5f} ' + \
       ' '.join(metrics) + \
       f'\n{jsonData["sequence"]}'

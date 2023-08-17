@@ -118,7 +118,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_population_and_update_settings(population)
       self.workspace.save_statistics(stats, self.best_solution)
     while True:
-      if population.iterationId == self._num_iterations:
+      if population.iteration_id == self._num_iterations:
         break
       if self.best_solution.fitness >= self._fitness_fn.upper_bound():
         break
