@@ -71,7 +71,7 @@ Todas estas características pueden alimentarse a EvoDesign por medio de un arch
 {
   "algorithmType": "GA_Steady",
   "algorithmParams": {
-    "workspaceName": "example",
+    "workspaceRoot": "example",
     "targetPdbFilename": "example/1Y32.pdb",
     "predictor": "Predictor_ESMFold_RemoteApi",
     "fitnessFunction": "Fitness_GDT",
@@ -153,7 +153,7 @@ from evodesign.GA.Recombination import GA_Recombination_TwoPointsCrossover
 from evodesign.GA.Mutation import GA_Mutation_SingleSwitch
 from evodesign.GA.Replacement import GA_Replacement_WorseOut
 
-algorithm = GA_Steady(workspaceName='example',
+algorithm = GA_Steady(workspaceRoot='example',
                       targetPdbFilename='example/1Y32.pdb',
                       predictor=Predictor_ESMFold_RemoteApi(),
                       fitnessFunction=Fitness_GDT(),

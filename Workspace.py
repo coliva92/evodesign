@@ -1,4 +1,4 @@
-from typing import List, Optional, Callable
+from typing import List, Optional
 from .Individual import Individual
 from .Population import Population
 from .Statistics import Statistics
@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import json
 import csv
 import os
+import random
 
 
 
@@ -15,42 +16,59 @@ import os
 class Workspace:
   
   def __init__(self, 
-               name: str, 
-               jsonFactory: Callable[[], dict],
-               targetPdbFilename: str,
-               populationFilenames: Optional[List[str]] = None
+               rootFolder: str,
+               targetPdbFilename: str
                ) -> None:
-    if populationFilenames is None: populationFilenames = []
     self.reference_filename = targetPdbFilename
-    self.name = name
-    self.settings_filename = os.path.join(self.name, 'settings.json')
-    self.stats_filename = os.path.join(self.name, 'statistics.csv')
-    self.children_filename = os.path.join(self.name, '~children.tmp')
-    self.graph_filename = os.path.join(self.name, 'fitness.png')
-    self.populations_folder = os.path.join(self.name, 'populations')
-    self.pdbs_folder = self.settings_filename.replace('settings.json', 'pdbs')
-    self._population_filenames = populationFilenames
-    self._json_factory = jsonFactory
+    self.root_folder = rootFolder
+    self.settings_filename = os.path.join(rootFolder, 'settings.json')
+    self.rng_settings_filename = os.path.join(rootFolder, 'rng.json')
+    self.stats_filename = os.path.join(rootFolder, 'statistics.csv')
+    self.children_filename = os.path.join(rootFolder, '~children.tmp')
+    self.graphs_filename = os.path.join(rootFolder, 'fitness_diversity.png')
+    self.populations_folder = os.path.join(rootFolder, 'populations')
+    self.pdbs_folder = os.path.join(rootFolder, 'pdbs')
+    self.algorithm_settings = None
 
 
 
-  def save_population_and_update_settings(self, population: Population) -> None:
+  def save_algorithm_settings(self) -> None:
+    with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(self.algorithm_settings, indent=2) + '\n')
+  
+
+
+  def save_rng_settings(self, state: tuple) -> None:
+    state = ( state[0], list(state[1]), state[2])
+    with open(self.rng_settings_filename, 'wt', encoding='utf-8') as json_file:
+      json.dump(state, json_file)
+  
+
+
+  def load_rng_settings(self) -> bool:
+    if not os.path.isfile(self.rng_settings_filename):
+      return False
+    with open(self.rng_settings_filename, 'rt', encoding='utf-8') as json_file:
+      state = json.load(json_file)
+    state[1] = tuple(state[1])
+    random.setstate(tuple(state))
+    return True
+
+
+
+  def save_population(self, population: Population) -> None:
     os.makedirs(self.populations_folder, exist_ok=True)
     filename = population.get_filename(self.populations_folder)
-    if FileIO.save_population_csv(population, filename):
-      self._population_filenames.append(filename)
-    settings_json = self._json_factory()
-    settings_json['__savedPopulations'] = self._population_filenames
-    with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write(json.dumps(settings_json, indent=2) + '\n')
+    FileIO.save_population_csv(population, filename)
 
 
 
   def load_latest_population(self) -> Population:
-    if not self._population_filenames:
+    filenames = os.listdir(self.populations_folder)
+    if not filenames:
       return Population()
-    filename = self._population_filenames[-1]
-    return FileIO.load_population_csv(filename, len(self._population_filenames))
+    filename = sorted(filenames)[-1]
+    return FileIO.load_population_csv(filename, len(filenames))
 
 
 
@@ -87,7 +105,6 @@ class Workspace:
       if not file_exists: 
         writer.writeheader()
       writer.writerow(data)
-    return
   
 
 
@@ -114,7 +131,7 @@ class Workspace:
     ax.plot(data['iteration_id'], 
             data['best_sequence_fitness'], 
             label='Best solution found')
-    ax.set_title(self.name)
+    ax.set_title(self.root_folder)
     ax.set_xlabel('Iterations')
     ax.set_ylabel('Fitness')
     ax.legend(loc='best')

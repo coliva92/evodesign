@@ -22,6 +22,7 @@ while True:
     algorithm = Settings.load_algorithm_from_settings(filename)
     filename = algorithm.workspace.settings_filename
     population = algorithm.workspace.load_latest_population()
+    algorithm.workspace.load_rng_settings()
     algorithm(population)
     algorithm.workspace.plot_fitness()
     print(f'COMPLETED.\n' +

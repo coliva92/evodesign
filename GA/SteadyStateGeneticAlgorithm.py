@@ -22,7 +22,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
   
   def __init__(self,
-               workspaceName: str,
+               workspaceRoot: str,
                targetPdbFilename: str,
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
@@ -31,12 +31,9 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
-               replacement: Replacement,
-               populationFilenames: Optional[List[str]] = None,
-               rngSeed: Optional[float] = None,
-               rngState: Optional[tuple] = None
+               replacement: Replacement
                ) -> None:
-    super().__init__(workspaceName, 
+    super().__init__(workspaceRoot, 
                      targetPdbFilename, 
                      predictor, 
                      fitnessFunction, 
@@ -44,10 +41,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      numIterations, 
                      selection, 
                      recombination, 
-                     mutation,
-                     populationFilenames,
-                     rngSeed,
-                     rngState)
+                     mutation)
     self._replacement = replacement
     self._terminators = [ StagnantMeanFitness(self.workspace.stats_filename) ]
 

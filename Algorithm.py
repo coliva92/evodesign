@@ -22,49 +22,35 @@ class Algorithm(ABC):
 
 
   def __init__(self,
-               workspaceName: str,
+               workspaceRoot: str,
                targetPdbFilename: str,
                predictor: Predictor,
-               fitnessFunction: FitnessFunction,
-               populationFilenames: Optional[List[str]] = None,
-               rngSeed: Optional[float] = None,
-               rngState: Optional[tuple] = None
+               fitnessFunction: FitnessFunction
                ) -> None:
     super().__init__()
-    if populationFilenames is None: populationFilenames = []
-    if rngSeed is None: rngSeed = time.time()
-    random.seed(rngSeed)
-    self._assigned_seed = rngSeed
-    if rngState:
-      random.setstate(rngState)
     self._predictor = predictor
     self._fitness_fn = fitnessFunction
     reference = Chain.load_structure_from_pdb(targetPdbFilename)
     self._sequence_length = Chain.count_chain_residues(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_in_chain(reference)
-    self.workspace = Workspace(workspaceName,
-                               self.as_json,
-                               targetPdbFilename, 
-                               populationFilenames)
     self.best_solution = None
+    self.workspace = Workspace(workspaceRoot,
+                               targetPdbFilename)
+    self.workspace.algorithm_settings = self.as_json()
 
 
 
   def as_json(self) -> dict:
-    state = random.getstate()
     return {
       'algorithmType': self.get_name(),
-      'algorithmParams': self._get_params_json(),
-      '__rngSeed': self._assigned_seed,
-      '__savedPopulations': [],
-      '__rngState': [ item for item in state ]
+      'algorithmParams': self._get_params_json()
     }
   
 
 
   def _get_params_json(self) -> dict:
     return {
-      'workspaceName': self.workspace.name,
+      'workspaceRoot': self.workspace.root_folder,
       'targetPdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.get_name(),
       'fitnessFunction': self._fitness_fn.get_name()

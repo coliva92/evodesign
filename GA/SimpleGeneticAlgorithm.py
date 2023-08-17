@@ -8,6 +8,7 @@ from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
 from ..Population import Population
 from ..Statistics import Statistics
+import random
 
 
 
@@ -22,7 +23,7 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
   def __init__(self,
-               workspaceName: str,
+               workspaceRoot: str,
                targetPdbFilename: str,
                predictor: Predictor,
                fitnessFunction: FitnessFunction,
@@ -30,18 +31,12 @@ class SimpleGeneticAlgorithm(Algorithm):
                numIterations: int,
                selection: Selection,
                recombination: Recombination,
-               mutation: Mutation,
-               populationFilenames: Optional[List[str]] = None,
-               rngSeed: Optional[float] = None,
-               rngState: Optional[tuple] = None
+               mutation: Mutation
                ) -> None:
-    super().__init__(workspaceName, 
+    super().__init__(workspaceRoot, 
                      targetPdbFilename, 
                      predictor, 
-                     fitnessFunction,
-                     populationFilenames,
-                     rngSeed,
-                     rngState)
+                     fitnessFunction)
     self._population_size = populationSize
     self._num_iterations = numIterations
     self._selection = selection
@@ -84,7 +79,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
-      self.workspace.save_population_and_update_settings(population)
+      self.workspace.save_rng_settings(random.getstate())
     try:
       children.update_fitness(self._fitness_fn, 
                               self._predictor, 
@@ -92,8 +87,10 @@ class SimpleGeneticAlgorithm(Algorithm):
                               self.workspace.pdbs_folder)
     except BaseException as e:
       self.workspace.backup_children(children)
+      self.workspace.save_rng_settings(random.getstate())
       raise e
     self.workspace.delete_children_backup()
+    self.workspace.save_rng_settings(random.getstate())
     return self._replacement(population, children)
 
 
@@ -103,20 +100,23 @@ class SimpleGeneticAlgorithm(Algorithm):
     if not population:
       population = Population.new_random(self._population_size, 
                                          self._sequence_length)
-      self.workspace.save_population_and_update_settings(population)
+      self.workspace.save_population(population)
+      self.workspace.save_rng_settings(random.getstate())
     try:
       is_recovering = population.update_fitness(self._fitness_fn,
                                                 self._predictor,
                                                 self._reference_backbone,
                                                 self.workspace.pdbs_folder)
     except BaseException as e:
-      self.workspace.save_population_and_update_settings(population)
+      self.workspace.save_population(population)
+      self.workspace.save_rng_settings(random.getstate())
       raise e
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
-      self.workspace.save_population_and_update_settings(population)
+      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
+      self.workspace.save_rng_settings(random.getstate())
     while True:
       if population.iteration_id == self._num_iterations:
         break
@@ -127,7 +127,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = self.next_population(population)
       stats = Statistics.new_from_population(population)
       self._update_best_solution(population)
-      self.workspace.save_population_and_update_settings(population)
+      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
 
 

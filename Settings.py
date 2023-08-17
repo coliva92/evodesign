@@ -48,16 +48,6 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
     if f'{key}Params' in params else the_class()
     for key, the_class in classes.items()
   }
-
-  if '__savedPopulations' in settings:
-    non_class_params['populationFilenames'] = settings['__savedPopulations']
-  
-  if '__rngSeed' in settings:
-    non_class_params['rngSeed'] = settings['__rngSeed']
-
-  if '__rngState' in settings:
-    settings['__rngState'][1] = tuple(settings['__rngState'][1])
-    non_class_params['rngState'] = tuple(settings['__rngState'])
   
   algorithm_class = getattr(sys.modules[__name__], settings['algorithmType'])
   return algorithm_class(**{ **non_class_params, **class_params })
