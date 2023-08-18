@@ -60,8 +60,8 @@ class Statistics:
       for other in population[i + 1:]:
         counts.append(sum(map(lambda pair: pair[0] != pair[1], 
                               zip(current, other))))
-      averages.append(statistics.fmean(counts) / len(population[:-1]))
-    return sum(averages)
+      averages.append(statistics.fmean(counts))
+    return statistics.fmean(averages)
   
 
 
