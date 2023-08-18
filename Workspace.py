@@ -136,20 +136,21 @@ class Workspace:
       for row in csv.DictReader(csv_file, dialect='unix'):
         for key in data:
           data[key].append(float(row[key]))
-    fig, ax = plt.subplots(ncols=2, figsize=(10, 4))
+    fig, ax = plt.subplots(ncols=2, figsize=(10, 6))
     fig.suptitle(self.root_folder)
-    ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
+    ax[0].plot('iteration_id', 'fitness_mean', data, label='Fitness mean')
     ax[0].fill_between(data['iteration_id'], 
                        data['min_fitness'], 
                        data['max_fitness'], 
                        alpha=0.1)
-    ax[0].plot(data['iteration_id'], 
-               data['best_sequence_fitness'], 
+    ax[0].plot('iteration_id', 
+               'best_sequence_fitness',
+               data, 
                label='Best solution found')
     ax[0].set_xlabel('Iterations')
     ax[0].set_ylabel('Fitness')
     ax[0].legend(loc='best')
-    ax[1].plot(data['iteration_id'], data['diversity'])
+    ax[1].plot('iteration_id', 'diversity', data, color='C2')
     ax[1].set_xlabel('Iterations')
-    ax[1].set_ylabel('Mean pairwise Hamming distance')
+    ax[1].set_ylabel('Population diversity')
     fig.savefig(self.graph_filename)
