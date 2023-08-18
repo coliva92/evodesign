@@ -61,9 +61,10 @@ class Workspace:
     with open(self.rng_settings_filename, 'rt', encoding='utf-8') as json_file:
       settings = json.load(json_file)
     self._seed = settings['seed']
-    settings['state'][1] = tuple(settings['state'][1])
     random.seed(self._seed)
-    random.setstate(tuple(settings['state']))
+    if 'state' in settings and settings['state'] is not None:
+      settings['state'][1] = tuple(settings['state'][1])
+      random.setstate(tuple(settings['state']))
 
 
 
@@ -138,19 +139,18 @@ class Workspace:
           data[key].append(float(row[key]))
     fig, ax = plt.subplots(ncols=2, figsize=(10, 6))
     fig.suptitle(self.root_folder)
-    ax[0].plot('iteration_id', 'fitness_mean', data, label='Fitness mean')
+    ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
     ax[0].fill_between(data['iteration_id'], 
                        data['min_fitness'], 
                        data['max_fitness'], 
                        alpha=0.1)
-    ax[0].plot('iteration_id', 
-               'best_sequence_fitness',
-               data, 
+    ax[0].plot(data['iteration_id'], 
+               data['best_sequence_fitness'],
                label='Best solution found')
     ax[0].set_xlabel('Iterations')
     ax[0].set_ylabel('Fitness')
     ax[0].legend(loc='best')
-    ax[1].plot('iteration_id', 'diversity', data, color='C2')
+    ax[1].plot(data['iteration_id'], data['diversity'], color='C2')
     ax[1].set_xlabel('Iterations')
     ax[1].set_ylabel('Population diversity')
     fig.savefig(self.graph_filename)
