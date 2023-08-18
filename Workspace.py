@@ -8,6 +8,7 @@ import json
 import csv
 import os
 import random
+import time
 
 
 
@@ -28,6 +29,8 @@ class Workspace:
     self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
     self.populations_folder = os.path.join(rootFolder, 'populations')
     self.pdbs_folder = os.path.join(rootFolder, 'pdbs')
+    self._seed = time.time()
+    random.seed(self._seed)
 
 
 
@@ -38,22 +41,29 @@ class Workspace:
   
 
 
-  def save_rng_settings(self, state: tuple) -> None:
+  def save_rng_settings(self) -> None:
     os.makedirs(self.root_folder, exist_ok=True)
-    state = ( state[0], list(state[1]), state[2])
+    state = random.getstate()
+    settings = {
+      'seed': self._seed,
+      'state': ( state[0], list(state[1]), state[2])
+    }
     with open(self.rng_settings_filename, 'wt', encoding='utf-8') as json_file:
-      json.dump(state, json_file)
+      json.dump(settings, json_file)
   
 
 
-  def load_rng_settings(self) -> bool:
+  def load_rng_settings(self) -> None:
     if not os.path.isfile(self.rng_settings_filename):
-      return False
+      self._seed = time.time()
+      random.seed(self._seed)
+      return
     with open(self.rng_settings_filename, 'rt', encoding='utf-8') as json_file:
-      state = json.load(json_file)
-    state[1] = tuple(state[1])
-    random.setstate(tuple(state))
-    return True
+      settings = json.load(json_file)
+    self._seed = settings['seed']
+    settings['state'][1] = tuple(settings['state'][1])
+    random.seed(self._seed)
+    random.setstate(tuple(settings['state']))
 
 
 

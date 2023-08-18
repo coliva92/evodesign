@@ -8,7 +8,6 @@ from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
 from ..Population import Population
 from ..Statistics import Statistics
-import random
 
 
 
@@ -79,7 +78,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
-      self.workspace.save_rng_settings(random.getstate())
+      self.workspace.save_rng_settings()
     try:
       children.update_fitness(self._fitness_fn, 
                               self._predictor, 
@@ -87,10 +86,10 @@ class SimpleGeneticAlgorithm(Algorithm):
                               self.workspace.pdbs_folder)
     except BaseException as e:
       self.workspace.backup_children(children)
-      self.workspace.save_rng_settings(random.getstate())
+      self.workspace.save_rng_settings()
       raise e
     self.workspace.delete_children_backup()
-    self.workspace.save_rng_settings(random.getstate())
+    self.workspace.save_rng_settings()
     return self._replacement(population, children)
 
 
@@ -101,7 +100,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = Population.new_random(self._population_size, 
                                          self._sequence_length)
       self.workspace.save_population(population)
-      self.workspace.save_rng_settings(random.getstate())
+      self.workspace.save_rng_settings()
     try:
       is_recovering = population.update_fitness(self._fitness_fn,
                                                 self._predictor,
@@ -109,14 +108,14 @@ class SimpleGeneticAlgorithm(Algorithm):
                                                 self.workspace.pdbs_folder)
     except BaseException as e:
       self.workspace.save_population(population)
-      self.workspace.save_rng_settings(random.getstate())
+      self.workspace.save_rng_settings()
       raise e
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
-      self.workspace.save_rng_settings(random.getstate())
+      self.workspace.save_rng_settings()
     while True:
       if population.iteration_id == self._num_iterations:
         break
