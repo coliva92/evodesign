@@ -37,7 +37,4 @@ class RandomResetting(Mutation):
         return old_letter
       return Sequence.switch_residue(old_letter)
     
-    result = ''.join(map(switch, sequence))
-    if len(result) != len(sequence):
-      raise RuntimeError
-    return result
+    return ''.join(map(switch, sequence))
