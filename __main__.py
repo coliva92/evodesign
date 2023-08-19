@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 import evodesign.Settings as Settings
 from .Exceptions import *
-import sys
 from requests.exceptions import ConnectTimeout
+import sys
 
 
 
@@ -37,8 +37,8 @@ while True:
     algorithm.workspace.plot()
     sys.exit(130)
   except (HttpInternalServerError, 
-          HttpGatewayTimeout, 
-          HttpForbidden, 
+          HttpGatewayTimeout,
+          HttpForbidden,
           ConnectTimeout
           ) as e:
     pass
