@@ -38,7 +38,7 @@ class Population:
 
   def get_filename(self, populationsFolder: Optional[str] = None) -> str:
     if populationsFolder is None: populationsFolder = ''
-    return os.path.join(populationsFolder, f'pop_{self.iteration_id}.csv')
+    return os.path.join(populationsFolder, f'pop_{self.iteration_id:04d}.csv')
   
 
 
