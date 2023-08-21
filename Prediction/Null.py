@@ -1,7 +1,6 @@
 from .Predictor import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
-import os
 
 
 
@@ -26,7 +25,4 @@ class Null(Predictor):
                sequence: str, 
                pdbFilename: str
                ) -> List[Atom]:
-    print('\n\n\n\nCreated pdbs folder\n\n\n\n')
-    if not os.path.isfile(pdbFilename):
-      os.makedirs(os.path.dirname(os.path.abspath(pdbFilename)), exist_ok=True)
     return []
