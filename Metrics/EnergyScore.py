@@ -32,7 +32,7 @@ class EnergyScore(Metric):
       '-i', referencePdbFilename,
       '-o', None,
       '-s', self._sequence_filename,
-      '-h', '-t'
+      '-h'
     ]
 
   
