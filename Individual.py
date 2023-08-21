@@ -58,7 +58,7 @@ class Individual:
       return NotImplemented
     if self.fitness != other.fitness:
       return False
-    if not 'rmsd' in self.metrics or not 'rmsd' in other.metrics:
+    if 'rmsd' not in self.metrics or 'rmsd' not in other.metrics:
       return True
     return self.metrics['rmsd'] == other.metrics['rmsd']
   
@@ -68,7 +68,7 @@ class Individual:
     if not isinstance(other, self.__class__):
       return NotImplemented
     if self.fitness == other.fitness:
-      if not 'rmsd' in self.metrics or not 'rmsd' in other.metrics:
+      if 'rmsd' not in self.metrics or 'rmsd' not in other.metrics:
         return False
       return self.metrics['rmsd'] > other.metrics['rmsd']
     return self.fitness < other.fitness
