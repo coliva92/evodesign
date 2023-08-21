@@ -48,8 +48,9 @@ class EnergyScore(Metric):
                                                f'scwrl_{sequence}.pdb')
     self._scwrl_command[4] = side_chain_packing_filename
     subprocess.run(self._scwrl_command,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL)
+                   stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL)
+    print(f'\n\n{self._scwrl_command}\n\n')
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(side_chain_packing_filename)
     return self._score_fn(pose)
