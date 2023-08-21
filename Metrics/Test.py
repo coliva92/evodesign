@@ -11,6 +11,7 @@ class Test(Metric):
   
   def __call__(self, 
                modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom]
+               referenceBackbone: List[Atom],
+               sequence: str
                ) -> float:
     return random.random()

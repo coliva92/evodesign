@@ -1,6 +1,6 @@
 from .SimpleGeneticAlgorithm import SimpleGeneticAlgorithm
 from typing import Callable
-from ..Fitness import FitnessFunction
+from ..Fitness import FitnessFunction, InverseEnergyScore
 from ..Prediction import Predictor, Predictor_Null
 from .Selection import Selection
 from .Recombination import Recombination
@@ -47,6 +47,10 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
                      mutation)
     self._num_predictions = numPredictions
     self._surrogate_fitness_fn = surrogateFitnessFunction
+    # TODO: buscar una manera más limpia de realizar esta inicializacion
+    if isinstance(fitnessFunction, InverseEnergyScore):
+      temp = fitnessFunction._metric_calculators['energy_score']
+      temp.initialize(self.workspace)
   
 
 

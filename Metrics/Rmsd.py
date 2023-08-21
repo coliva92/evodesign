@@ -11,7 +11,8 @@ class Rmsd(Metric):
   
   def __call__(self, 
                modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom]
+               referenceBackbone: List[Atom],
+               sequence: str
                ) -> float:
     superimposer = Superimposer()
     superimposer.set_atoms(referenceBackbone, modelBackbone)

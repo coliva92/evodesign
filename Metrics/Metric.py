@@ -11,6 +11,7 @@ class Metric(ABC):
   @abstractmethod
   def __call__(self, 
                modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom]
+               referenceBackbone: List[Atom],
+               sequence: str
                ) -> float:
     raise NotImplementedError

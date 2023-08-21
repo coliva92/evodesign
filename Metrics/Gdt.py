@@ -26,7 +26,8 @@ class Gdt(Metric):
 
   def __call__(self, 
                modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom]
+               referenceBackbone: List[Atom],
+               sequence: str
                ) -> float:
     # suponemos que `modelBackbone` ya fue superpuesto contra 
     # `referenceBackbone` en un paso anterior
