@@ -82,5 +82,6 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
       raise e
     population.individuals = population[:-self._num_predictions] + \
                              top.individuals
+    saveFunction(population)
     return result
   
