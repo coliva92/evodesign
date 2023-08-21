@@ -37,7 +37,7 @@ class FitnessFunction(ABC):
 
   def __call__(self,
                modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom],
+               referenceBackbone: List[Atom]
                ) -> Tuple[Dict[str, float], float]:
     metrics = { 
       key: calc(modelBackbone, referenceBackbone) \
