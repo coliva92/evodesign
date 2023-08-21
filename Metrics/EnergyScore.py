@@ -20,13 +20,17 @@ class EnergyScore(Metric):
   
 
 
-  def initialize(self, workspace: Workspace) -> None:
-    self._pdbs_folder = workspace.pdbs_folder
-    self._sequence_filename = os.path.join(workspace.root_folder, 
+  def initialize(self, 
+                 referencePdbFilename: str,
+                 workspaceRoot: str,
+                 pdbsFolder: str
+                 ) -> None:
+    self._pdbs_folder = pdbsFolder
+    self._sequence_filename = os.path.join(workspaceRoot, 
                                            '~sequence.tmp')
     self._scwrl_command = [
       os.path.join('scwrl', 'Scwrl4'),
-      '-i', workspace.reference_filename,
+      '-i', referencePdbFilename,
       '-o', None,
       '-s', self._sequence_filename,
       '-h', '-t'

@@ -50,7 +50,9 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
     # TODO: buscar una manera más limpia de realizar esta inicializacion
     if isinstance(fitnessFunction, InverseEnergyScore):
       temp = fitnessFunction._metric_calculators['energy_score']
-      temp.initialize(self.workspace)
+      temp.initialize(self.workspace.reference_filename,
+                      self.workspace.root_folder,
+                      self.workspace.pdbs_folder)
   
 
 
