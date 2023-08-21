@@ -1,2 +1,2 @@
 from .Terminator import Terminator
-from .StagnantMeanFitness import StagnantMeanFitness
+from .StagnatingMeanFitness import StagnatingMeanFitness

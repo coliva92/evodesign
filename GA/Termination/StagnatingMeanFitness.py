@@ -9,7 +9,7 @@ import csv
 
 
 
-class StagnantMeanFitness(Terminator):
+class StagnatingMeanFitness(Terminator):
   
   def __init__(self, statsFilename: Optional[str] = None) -> None:
     super().__init__()
