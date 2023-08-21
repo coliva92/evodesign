@@ -1,5 +1,5 @@
 from ..Algorithm import Algorithm
-from typing import List, Optional
+from typing import Optional, Callable
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -79,15 +79,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
       self.workspace.save_rng_settings()
-    try:
-      children.update_fitness(self._fitness_fn, 
-                              self._predictor, 
-                              self._reference_backbone, 
-                              self.workspace.pdbs_folder)
-    except BaseException as e:
-      self.workspace.backup_children(children)
-      self.workspace.save_rng_settings()
-      raise e
+    self._update_fitness(children, self.workspace.backup_children)
     self.workspace.delete_children_backup()
     self.workspace.save_rng_settings()
     return self._replacement(population, children)
@@ -101,15 +93,8 @@ class SimpleGeneticAlgorithm(Algorithm):
                                          self._sequence_length)
       self.workspace.save_population(population)
       self.workspace.save_rng_settings()
-    try:
-      is_recovering = population.update_fitness(self._fitness_fn,
-                                                self._predictor,
-                                                self._reference_backbone,
-                                                self.workspace.pdbs_folder)
-    except BaseException as e:
-      self.workspace.save_population(population)
-      self.workspace.save_rng_settings()
-      raise e
+    is_recovering = self._update_fitness(population, 
+                                         self.workspace.save_population)
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
@@ -136,3 +121,21 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.best_solution = population[-1]
     elif population[-1].sequence != self.best_solution.sequence:
       population.individuals = population[1:] + [ self.best_solution ]
+  
+
+
+  def _update_fitness(self, 
+                      population: Population, 
+                      saveFunction: Callable[[Population], None]
+                      ) -> bool:
+    try:
+      result = population.update_fitness(self._fitness_fn, 
+                                         self._predictor, 
+                                         self._reference_backbone, 
+                                         self.workspace.pdbs_folder)
+    except BaseException as e:
+      saveFunction(population)
+      self.workspace.save_rng_settings()
+      raise e
+    return result
+    
