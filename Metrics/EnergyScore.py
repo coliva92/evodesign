@@ -28,7 +28,7 @@ class EnergyScore(Metric):
     self._sequence_filename = os.path.join(workspaceRoot, 
                                            '~sequence.tmp')
     self._scwrl_command = [
-      os.path.join('scwrl', 'Scwrl4'),
+      os.path.join('./scwrl', 'Scwrl4'),
       '-i', referencePdbFilename,
       '-o', None,
       '-s', self._sequence_filename,
