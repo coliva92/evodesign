@@ -46,7 +46,7 @@ class EnergyScore(Metric):
       seq_file.write(f'{sequence}\n')
     side_chain_packing_filename = os.path.join(self._pdbs_folder, 
                                                f'scwrl_{sequence}.pdb')
-    self._scwrl_command[2] = side_chain_packing_filename
+    self._scwrl_command[4] = side_chain_packing_filename
     subprocess.run(self._scwrl_command,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL)
