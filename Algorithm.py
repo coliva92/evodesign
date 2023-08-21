@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Optional
 from .Workspace import Workspace
 from .Population import Population
 import evodesign.Chain as Chain
 from .Prediction import Predictor
 from .Fitness import FitnessFunction
-import random
-import time
 
 
 
