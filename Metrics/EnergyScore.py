@@ -47,8 +47,9 @@ class EnergyScore(Metric):
     side_chain_packing_filename = os.path.join(self._pdbs_folder, 
                                                f'scwrl_{sequence}.pdb')
     self._scwrl_command[4] = side_chain_packing_filename
+    os.makedirs(self._pdbs_folder, exist_ok=True)
     subprocess.run(self._scwrl_command,
-                  #  stdout=subprocess.DEVNULL,
+                   stdout=subprocess.DEVNULL,
                    stderr=subprocess.DEVNULL)
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(side_chain_packing_filename)
