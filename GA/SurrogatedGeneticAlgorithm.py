@@ -72,7 +72,7 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
       top = Population(list(filter(lambda ind: 'rmsd' not in ind.metrics or \
                                                'lddt' not in ind.metrics, 
                                    population[:-self._num_predictions])))
-      print(len(top))
+      print(f'\n\n\n{len(top)}\n\n\n') # debug
       result = top.update_fitness(self._fitness_fn, 
                                   self._predictor, 
                                   self._reference_backbone, 
