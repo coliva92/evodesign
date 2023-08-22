@@ -52,11 +52,11 @@ class SimpleGeneticAlgorithm(Algorithm):
       'populationSize': self._population_size,
       'numIterations': self._num_iterations,
       'selection': self._selection.name(),
-      'selectionParams': self._selection.as_json(),
+      'selectionParams': self._selection.params_json(),
       'recombination': self._recombination.name(),
-      'recombinationParams': self._recombination.as_json(),
+      'recombinationParams': self._recombination.params_json(),
       'mutation': self._mutation.name(),
-      'mutationParams': self._mutation.as_json()
+      'mutationParams': self._mutation.params_json()
     }
     return { **a, **b }
   

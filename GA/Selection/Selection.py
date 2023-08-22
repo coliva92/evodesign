@@ -22,7 +22,7 @@ class Selection(ABC):
 
 
 
-  def as_json(self) -> dict:
+  def params_json(self) -> dict:
     return {
       'selectionSize': self._selection_size
     }

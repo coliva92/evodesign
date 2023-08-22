@@ -24,8 +24,8 @@ class RandomResetting(Mutation):
   
 
 
-  def as_json(self) -> dict:
-    params = super().as_json()
+  def params_json(self) -> dict:
+    params = super().params_json()
     params['residueProbability'] = self._residue_prob
     return params
 
