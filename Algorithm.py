@@ -49,7 +49,8 @@ class Algorithm(ABC):
       'workspaceRoot': self.workspace.root_folder,
       'targetPdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.name(),
-      'fitnessFunction': self._fitness_fn.name()
+      'fitnessFunction': self._fitness_fn.name(),
+      'fitnessFunctionParams': self._fitness_fn.params_json()
     }
   
 

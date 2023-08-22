@@ -26,6 +26,11 @@ class FitnessFunction(ABC):
   def __init__(self, metrics: Dict[str, Metric]) -> None:
     super().__init__()
     self._metric_calculators = metrics
+  
+
+
+  def params_json(self) -> dict:
+    return dict()
 
 
   
