@@ -1,5 +1,5 @@
 from .FitnessFunction import FitnessFunction
-from typing import Dict
+from typing import Dict, List
 from ..Metrics import Rmsd, Gdt as GdtMetric
 
 
@@ -20,8 +20,23 @@ class Gdt(FitnessFunction):
   
 
   
-  def __init__(self) -> None:
-    super().__init__({ 'rmsd': Rmsd(), 'gdt_ts': GdtMetric() })
+  def __init__(self,
+               cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ],
+               alphaCarbonOnly: bool = True
+               ) -> None:
+    metrics = {
+      'rmsd': Rmsd(),
+      'gdt_ts': GdtMetric(cutoffs, alphaCarbonOnly)
+    }
+    super().__init__(metrics)
+  
+
+
+  def params_json(self) -> dict:
+    return {
+      'cutoffs': self._metric_calculators['gdt_ts']._cutoffs,
+      'alphaCarbonOnly': self._metric_calculators['gdt_ts']._alpha_carbon_only
+    }
   
 
 
