@@ -63,7 +63,6 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
     population.update_fitness(self._surrogate_fitness_fn, 
                               SurrogatedGeneticAlgorithm._null_predictor, 
                               self._reference_backbone)
-    saveFunction(population)
     try:
       # deberíamos definir aquí un criterio para seleccionar los
       # individuos a quienes se les predecirá la estructura, en base al fitness
@@ -71,8 +70,12 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
       # es una característica inmediatamente necesaria, se omitirá por ahora
       top = Population(list(filter(lambda ind: 'rmsd' not in ind.metrics or \
                                                'lddt' not in ind.metrics, 
-                                   population[:-self._num_predictions])))
-      print(f'\n\n\n{len(top)}\n\n\n') # debug
+                                   population[-self._num_predictions:])))
+      for individual in top:
+        if 'surrogate_fitness' not in individual.metrics:
+          individual.metrics['surrogate_fitness'] = individual.fitness
+          individual.fitness = None
+      saveFunction(population)
       result = top.update_fitness(self._fitness_fn, 
                                   self._predictor, 
                                   self._reference_backbone, 

@@ -128,7 +128,6 @@ class SimpleGeneticAlgorithm(Algorithm):
                       population: Population, 
                       saveFunction: Callable[[Population], None]
                       ) -> bool:
-    print('\n\n\nPARENT FUNTION CALLED\n\n\n') # debug
     try:
       result = population.update_fitness(self._fitness_fn, 
                                          self._predictor, 
