@@ -9,7 +9,7 @@ import random
 class UniformCrossover(Recombination):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Recombination_UniformCrossover'
   
   

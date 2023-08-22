@@ -16,7 +16,7 @@ from ..Statistics import Statistics
 class SimpleGeneticAlgorithm(Algorithm):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Simple'
 
 
@@ -51,11 +51,11 @@ class SimpleGeneticAlgorithm(Algorithm):
     b = {
       'populationSize': self._population_size,
       'numIterations': self._num_iterations,
-      'selection': self._selection.get_name(),
+      'selection': self._selection.name(),
       'selectionParams': self._selection.as_json(),
-      'recombination': self._recombination.get_name(),
+      'recombination': self._recombination.name(),
       'recombinationParams': self._recombination.as_json(),
-      'mutation': self._mutation.get_name(),
+      'mutation': self._mutation.name(),
       'mutationParams': self._mutation.as_json()
     }
     return { **a, **b }

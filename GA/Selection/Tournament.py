@@ -11,7 +11,7 @@ import random
 class Tournament(Selection):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Selection_Tournament'
   
   

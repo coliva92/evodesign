@@ -11,7 +11,7 @@ import evodesign.Choice as Choice
 class RemoteApiTest(Predictor):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Predictor_RemoteApiTest'
   
 

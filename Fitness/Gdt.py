@@ -9,7 +9,7 @@ from ..Metrics import Rmsd, Gdt as GdtMetric
 class Gdt(FitnessFunction):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Fitness_GDT'
   
 

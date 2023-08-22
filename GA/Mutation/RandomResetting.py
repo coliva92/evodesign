@@ -9,7 +9,7 @@ import evodesign.Choice as Choice
 class RandomResetting(Mutation):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Mutation_RandomResetting'
   
   

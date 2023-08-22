@@ -18,7 +18,7 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Simple_Surrogated'
   
 
@@ -59,7 +59,7 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
   def _params_json(self) -> dict:
     params = super()._params_json()
     params['numPredictions'] = self._num_predictions
-    params['surrogateFitnessFunction'] = self._surrogate_fitness_fn.get_name()
+    params['surrogateFitnessFunction'] = self._surrogate_fitness_fn.name()
   
 
 

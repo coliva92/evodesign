@@ -9,7 +9,7 @@ import evodesign.Sequence as Sequence
 class SingleSwitch(Mutation):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Mutation_SingleSwitch'
 
 
