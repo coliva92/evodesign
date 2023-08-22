@@ -93,7 +93,8 @@ class Individual:
                      pdbFilename: str
                      ) -> None:
     model_backbone = predictor(self.sequence, pdbFilename)
-    self.metrics, self.fitness = fitnessFn(model_backbone, 
-                                           referenceBackbone, 
-                                           self.sequence)
+    metrics, self.fitness = fitnessFn(model_backbone, 
+                                      referenceBackbone, 
+                                      self.sequence)
+    self.metrics = { **self.metrics, **metrics }
   
