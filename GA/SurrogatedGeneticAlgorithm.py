@@ -56,6 +56,13 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
   
 
 
+  def _get_params_json(self) -> dict:
+    params = super()._get_params_json()
+    params['numPredictions'] = self._num_predictions
+    params['surrogateFitnessFunction'] = self._surrogate_fitness_fn.get_name()
+  
+
+
   def _update_fitness(self, 
                       population: Population, 
                       saveFunction: Callable[[Population], None]
