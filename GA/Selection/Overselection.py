@@ -39,9 +39,8 @@ class Overselection(Selection):
   def select_parents(self, population: Population) -> List[Individual]:
     selected_parents = []
     for i in range(self._selection_size):
-      if i % 2 == 0:
-        pool = population[-self._top_size:] if Choice.flip_coin(self._weights) \
-                                            else population[0:-self._top_size]
+      pool = population[-self._top_size:] if Choice.flip_coin(self._weights) \
+                                          else population[:-self._top_size]
       parent = random.choice(pool)
       # garantizamos que dos padres consecutivos siempre sean diferentes
       while i % 2 != 0 and selected_parents[i - 1].sequence == parent.sequence:
