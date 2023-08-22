@@ -1,6 +1,7 @@
 from .Metric import Metric
 from typing import List
 from Bio.PDB.Atom import Atom
+import evodesign.Chain as Chain
 import statistics
 
 
@@ -19,11 +20,6 @@ class Gdt(Metric):
   
 
 
-  def _filter_alpha_carbon_atoms(self, backbone: List[Atom]) -> List[Atom]:
-    return filter(lambda atom: atom.get_name() == 'CA', backbone)
-  
-
-
   def __call__(self, 
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom],
@@ -32,8 +28,9 @@ class Gdt(Metric):
     # suponemos que `modelBackbone` ya fue superpuesto contra 
     # `referenceBackbone` en un paso anterior
     if self._alpha_carbon_only:
-      modelBackbone = self._filter_alpha_carbon_atoms(modelBackbone)
-      referenceBackbone = self._filter_alpha_carbon_atoms(referenceBackbone)
+      modelBackbone = Chain.filter_alpha_carbons_in_backbone(modelBackbone)
+      referenceBackbone = Chain.filter_alpha_carbons_in_backbone(
+        referenceBackbone)
     distances = [ a - b for a, b in zip(modelBackbone, referenceBackbone) ]
     return statistics.fmean([
       sum([ d <= c for d in distances ]) / len(distances)
