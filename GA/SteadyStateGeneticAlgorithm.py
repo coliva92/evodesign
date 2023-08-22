@@ -46,8 +46,8 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
 
-  def _get_params_json(self) -> dict:
-    params = super()._get_params_json()
+  def _params_json(self) -> dict:
+    params = super()._params_json()
     params['replacement'] = self._replacement.get_name()
     return params
 

@@ -46,8 +46,8 @@ class SimpleGeneticAlgorithm(Algorithm):
   
 
 
-  def _get_params_json(self) -> dict:
-    a = super()._get_params_json()
+  def _params_json(self) -> dict:
+    a = super()._params_json()
     b = {
       'populationSize': self._population_size,
       'numIterations': self._num_iterations,

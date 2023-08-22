@@ -39,12 +39,12 @@ class Algorithm(ABC):
   def as_json(self) -> dict:
     return {
       'algorithmType': self.get_name(),
-      'algorithmParams': self._get_params_json()
+      'algorithmParams': self._params_json()
     }
   
 
 
-  def _get_params_json(self) -> dict:
+  def _params_json(self) -> dict:
     return {
       'workspaceRoot': self.workspace.root_folder,
       'targetPdbFilename': self.workspace.reference_filename,
