@@ -18,8 +18,10 @@ def save_population_csv(population: Population, filename: str) -> bool:
   is_new_file = not os.path.isfile(filename)
   with open(filename, 'wt', encoding='utf-8') as csv_file:
     rows = list(map(serialize_metrics, population.as_json()))
+    a, b = rows[-1].keys(), rows[0].keys()
+    fieldnames = a if len(a) > len(b) else b
     writer = csv.DictWriter(csv_file, 
-                            rows[-1].keys(), 
+                            fieldnames, 
                             dialect='unix', 
                             quoting=csv.QUOTE_NONE)
     writer.writeheader()
