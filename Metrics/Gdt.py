@@ -12,7 +12,7 @@ class Gdt(Metric):
   
   def __init__(self, 
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ],
-               alphaCarbonOnly: bool = False
+               alphaCarbonOnly: bool = True
                ) -> None:
     super().__init__()
     self._cutoffs = cutoffs
