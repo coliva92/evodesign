@@ -13,4 +13,4 @@ class DiversityLowerBoundReached(Terminator):
                population: Population,
                stats: Statistics
                ) -> bool:
-    return stats.diversity < math.floor(0.1 * len(population[0]))
+    return stats.diversity < math.ceil(0.1 * len(population[0]))

@@ -43,7 +43,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._recombination = recombination
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
-    self._terminators = [ DiversityLowerBoundReached(self.workspace.stats_filename) ]
+    self._terminators = [ DiversityLowerBoundReached() ]
   
 
 
