@@ -102,6 +102,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       self.workspace.save_rng_settings()
+    stats = None  
     while True:
       if population.iteration_id == self._num_iterations:
         break
