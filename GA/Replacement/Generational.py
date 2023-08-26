@@ -9,7 +9,7 @@ from evodesign.Population import Population
 class Generational(Replacement):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Replacement_Generational'
   
 

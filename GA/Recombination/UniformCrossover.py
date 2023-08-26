@@ -9,7 +9,7 @@ import random
 class UniformCrossover(Recombination):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Recombination_UniformCrossover'
   
   
@@ -23,8 +23,8 @@ class UniformCrossover(Recombination):
   
 
 
-  def as_json(self) -> dict:
-    params = super().as_json()
+  def params_json(self) -> dict:
+    params = super().params_json()
     params['bias'] = self._bias
     return params
 

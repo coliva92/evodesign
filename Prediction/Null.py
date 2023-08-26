@@ -9,7 +9,7 @@ from Bio.PDB.Atom import Atom
 class Null(Predictor):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Predictor_Null'
   
 

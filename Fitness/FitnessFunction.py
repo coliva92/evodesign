@@ -11,7 +11,7 @@ class FitnessFunction(ABC):
 
   @classmethod
   @abstractmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     raise NotImplementedError
 
   
@@ -26,6 +26,11 @@ class FitnessFunction(ABC):
   def __init__(self, metrics: Dict[str, Metric]) -> None:
     super().__init__()
     self._metric_calculators = metrics
+  
+
+
+  def params_json(self) -> dict:
+    return dict()
 
 
   

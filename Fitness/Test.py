@@ -9,7 +9,7 @@ from ..Metrics import Test as TestMetric
 class Test(FitnessFunction):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Fitness_Test'
   
 

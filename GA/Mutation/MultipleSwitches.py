@@ -9,7 +9,7 @@ import evodesign.Sequence as Sequence
 class MultipleSwitches(Mutation):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Mutation_MultipleSwitches'
   
   
@@ -23,8 +23,8 @@ class MultipleSwitches(Mutation):
   
 
 
-  def as_json(self) -> dict:
-    params = super().as_json()
+  def params_json(self) -> dict:
+    params = super().params_json()
     params['numSwitches'] = self._num_switches
     return params
 

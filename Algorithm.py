@@ -14,7 +14,7 @@ class Algorithm(ABC):
 
   @classmethod
   @abstractmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     raise NotImplementedError
   
 
@@ -38,18 +38,19 @@ class Algorithm(ABC):
 
   def as_json(self) -> dict:
     return {
-      'algorithmType': self.get_name(),
-      'algorithmParams': self._get_params_json()
+      'algorithmType': self.name(),
+      'algorithmParams': self._params_json()
     }
   
 
 
-  def _get_params_json(self) -> dict:
+  def _params_json(self) -> dict:
     return {
       'workspaceRoot': self.workspace.root_folder,
       'targetPdbFilename': self.workspace.reference_filename,
-      'predictor': self._predictor.get_name(),
-      'fitnessFunction': self._fitness_fn.get_name()
+      'predictor': self._predictor.name(),
+      'fitnessFunction': self._fitness_fn.name(),
+      'fitnessFunctionParams': self._fitness_fn.params_json()
     }
   
 

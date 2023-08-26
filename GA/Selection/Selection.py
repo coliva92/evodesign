@@ -11,7 +11,7 @@ class Selection(ABC):
 
   @classmethod
   @abstractmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     raise NotImplementedError
   
   
@@ -22,7 +22,7 @@ class Selection(ABC):
 
 
 
-  def as_json(self) -> dict:
+  def params_json(self) -> dict:
     return {
       'selectionSize': self._selection_size
     }

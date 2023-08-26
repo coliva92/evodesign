@@ -11,7 +11,7 @@ import random
 class Tournament(Selection):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Selection_Tournament'
   
   
@@ -24,8 +24,8 @@ class Tournament(Selection):
   
 
 
-  def as_json(self) -> dict:
-    params = super().as_json()
+  def params_json(self) -> dict:
+    params = super().params_json()
     params['tournamentSize'] = self._tournament_size
     return params
 

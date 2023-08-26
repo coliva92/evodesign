@@ -14,7 +14,7 @@ class Predictor(ABC):
 
   @classmethod
   @abstractmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     raise NotImplementedError
 
 

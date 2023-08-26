@@ -12,7 +12,7 @@ import evodesign.Choice as Choice
 class Overselection(Selection):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Selection_Overselection'
   
 
@@ -28,8 +28,8 @@ class Overselection(Selection):
   
 
 
-  def as_json(self) -> dict:
-    params = super().as_json()
+  def params_json(self) -> dict:
+    params = super().params_json()
     params['topSize'] = self._top_size
     params['topProbability'] = self._top_probability
     return params

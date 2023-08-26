@@ -9,7 +9,7 @@ from ..Metrics import Rmsd
 class NegativeRmsd(FitnessFunction):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Fitness_NegativeRMSD'
   
 

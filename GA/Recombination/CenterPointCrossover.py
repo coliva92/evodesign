@@ -8,7 +8,7 @@ from typing import Tuple
 class CenterPointCrossover(Recombination):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Recombination_CenterPointCrossover'
 
 

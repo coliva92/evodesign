@@ -15,7 +15,7 @@ from ..Population import Population
 class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'GA_Steady'
   
 
@@ -46,9 +46,9 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
 
-  def _get_params_json(self) -> dict:
-    params = super()._get_params_json()
-    params['replacement'] = self._replacement.get_name()
+  def _params_json(self) -> dict:
+    params = super()._params_json()
+    params['replacement'] = self._replacement.name()
     return params
 
 

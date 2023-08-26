@@ -9,7 +9,7 @@ from ..Metrics import EnergyScore
 class InverseEnergyScore(FitnessFunction):
   
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Fitness_InverseEnergyScore'
   
 

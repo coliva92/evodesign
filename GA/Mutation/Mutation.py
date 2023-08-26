@@ -11,7 +11,7 @@ class Mutation(ABC):
 
   @classmethod
   @abstractmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     raise NotImplementedError
 
 
@@ -23,7 +23,7 @@ class Mutation(ABC):
 
 
 
-  def as_json(self) -> dict:
+  def params_json(self) -> dict:
     return {
       'probability': self._probability
     }

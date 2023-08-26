@@ -12,7 +12,7 @@ import requests
 class ESMFoldRemoteApi(Predictor):
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Predictor_ESMFold_RemoteApi'
   
 
