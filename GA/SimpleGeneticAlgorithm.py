@@ -8,6 +8,7 @@ from .Mutation import Mutation
 from .Replacement import GA_Replacement_Generational
 from ..Population import Population
 from ..Statistics import Statistics
+from .Termination import DiversityLowerBoundReached
 
 
 
@@ -42,7 +43,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._recombination = recombination
     self._mutation = mutation
     self._replacement = GA_Replacement_Generational()
-    self._terminators = []
+    self._terminators = [ DiversityLowerBoundReached(self.workspace.stats_filename) ]
   
 
 
