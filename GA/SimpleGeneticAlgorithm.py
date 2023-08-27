@@ -103,12 +103,12 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       self.workspace.save_rng_settings()
-    while True:
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
             f'{stats.diversity:0.5f}',
             end='\r',
             flush=True)
+    while True:
       if population.iteration_id == self._num_iterations:
         break
       if self.best_solution.fitness >= self._fitness_fn.upper_bound():
@@ -120,6 +120,11 @@ class SimpleGeneticAlgorithm(Algorithm):
       self._update_best_solution(population)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
+      print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
+            f'{self.best_solution.fitness:.5f} ' + \
+            f'{stats.diversity:0.5f}',
+            end='\r',
+            flush=True)
 
 
 
