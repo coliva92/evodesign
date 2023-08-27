@@ -89,6 +89,7 @@ class SimpleGeneticAlgorithm(Algorithm):
 
   def __call__(self, population: Optional[Population] = None) -> None:
     if population is None: population = Population()
+    stats = None
     if not population:
       population = Population.new_random(self._population_size, 
                                          self._sequence_length)
@@ -102,8 +103,10 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       self.workspace.save_rng_settings()
-    stats = None  
     while True:
+      print(f'{population.iteration_id:04d}/{self._num_iterations:04d} ' + \
+            f'best_solution_fitness: {self.best_solution.fitness:.5f} ' + \
+            f'diversity: {stats.diversity:0.5f}')
       if population.iteration_id == self._num_iterations:
         break
       if self.best_solution.fitness >= self._fitness_fn.upper_bound():
