@@ -106,7 +106,9 @@ class SimpleGeneticAlgorithm(Algorithm):
     while True:
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
-            f'{stats.diversity:0.5f}')
+            f'{stats.diversity:0.5f}',
+            end='\r',
+            flush=True)
       if population.iteration_id == self._num_iterations:
         break
       if self.best_solution.fitness >= self._fitness_fn.upper_bound():

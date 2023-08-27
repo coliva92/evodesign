@@ -27,7 +27,7 @@ while True:
     population = algorithm.workspace.load_latest_population()
     algorithm(population)
     algorithm.workspace.plot()
-    print(f'COMPLETED.\n' +
+    print(f'\nCOMPLETED.\n' +
           f'Best sequence found: {algorithm.best_solution.sequence}\n' + 
           f'Fitness: {algorithm.best_solution.fitness:0.4f}')
     break
