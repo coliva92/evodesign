@@ -10,7 +10,7 @@ import os
 
 
 
-@dataclass
+@dataclass(order=True)
 class Individual:
 
   sequence: str = field(compare=False)
