@@ -4,7 +4,7 @@ from .Predictor import Predictor
 
 
 
-class ESMFoldColabFold(Predictor):
+class ESMFoldColab(Predictor):
 
   _model = None
   
@@ -12,7 +12,7 @@ class ESMFoldColabFold(Predictor):
 
   @classmethod
   def name(cls) -> str:
-    return 'Predictor_ESMFold_ColabFold'
+    return 'Predictor_ESMFold_Colab'
   
 
 
@@ -21,11 +21,11 @@ class ESMFoldColabFold(Predictor):
                         pdbFilename: str
                         ) -> None:
     import torch
-    if not ESMFoldColabFold._model:
-      ESMFoldColabFold._model = torch.load("esmfold.model")
-      ESMFoldColabFold._model.eval().cuda().requires_grad_(False)
-      ESMFoldColabFold._model.set_chunk_size(128)
+    if not ESMFoldColab._model:
+      ESMFoldColab._model = torch.load("esmfold.model")
+      ESMFoldColab._model.eval().cuda().requires_grad_(False)
+      ESMFoldColab._model.set_chunk_size(128)
     torch.cuda.empty_cache()
-    prediction = ESMFoldColabFold._model.infer_pdb(sequence)
+    prediction = ESMFoldColab._model.infer_pdb(sequence)
     with open(pdbFilename, 'wt', encoding='utf-8') as pdb_file:
       pdb_file.write(prediction)
