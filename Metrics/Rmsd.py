@@ -1,5 +1,5 @@
 from .Metric import Metric
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 from Bio.PDB import Superimposer
 
@@ -12,7 +12,7 @@ class Rmsd(Metric):
   def __call__(self, 
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom],
-               sequence: str
+               _ = None
                ) -> float:
     superimposer = Superimposer()
     superimposer.set_atoms(referenceBackbone, modelBackbone)

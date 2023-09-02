@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from Bio.PDB.Atom import Atom
 from ..Metrics import Metric
 
@@ -43,7 +43,7 @@ class FitnessFunction(ABC):
   def __call__(self,
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom],
-               sequence: str
+               sequence: Optional[str] = None
                ) -> Tuple[Dict[str, float], float]:
     metrics = { 
       key: calc(modelBackbone, referenceBackbone, sequence) \
