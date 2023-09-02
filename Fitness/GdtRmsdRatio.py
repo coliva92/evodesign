@@ -35,7 +35,7 @@ class GdtRmsdRatio(FitnessFunction):
   def params_json(self) -> dict:
     return {
       'cutoffs': self._metric_calculators['gdt']._cutoffs,
-      'alphaCarbonOnly': self._metric_calculators['gdt']._carbon_alpha_only
+      'carbonAlphaOnly': self._metric_calculators['gdt']._carbon_alpha_only
     }
   
 
