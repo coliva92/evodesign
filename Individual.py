@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field, asdict
+from functools import total_ordering
 from typing import List, Optional
 from Bio.PDB.Atom import Atom
 import evodesign.Sequence as Sequence
@@ -10,12 +11,13 @@ import os
 
 
 
-@dataclass(order=True)
+@total_ordering
+@dataclass
 class Individual:
 
-  sequence: str = field(compare=False)
-  fitness: float = field(default=None, compare=True)
-  metrics: dict = field(default_factory=dict, compare=False)
+  sequence: str
+  fitness: float = field(default=None)
+  metrics: dict = field(default_factory=dict)
 
 
 
@@ -48,6 +50,28 @@ class Individual:
 
   def __setitem__(self, i: int, _) -> None:
     raise TypeError
+  
+
+
+  def __eq__(self, other):
+    if not isinstance(other, self.__class__):
+      return NotImplemented
+    if self.fitness != other.fitness:
+      return False
+    if 'rmsd' not in self.metrics or 'rmsd' not in other.metrics:
+      return True
+    return self.metrics['rmsd'] == other.metrics['rmsd']
+
+
+
+  def __lt__(self, other):
+    if not isinstance(other, self.__class__):
+      return NotImplemented
+    if self.fitness == other.fitness:
+      if 'rmsd' not in self.metrics or 'rmsd' not in other.metrics:
+        return False
+      return self.metrics['rmsd'] > other.metrics['rmsd']
+    return self.fitness < other.fitness
     
   
   
