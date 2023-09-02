@@ -84,7 +84,7 @@ class Population:
     missing_fitness = list(filter(lambda ind: ind.fitness is None, 
                                   self.individuals))
     for individual in missing_fitness:
-      filename = individual.get_pdb_filename(pdbsFolder)
+      filename = individual.pdb_filename(pdbsFolder)
       individual.update_fitness(fitnessFn, 
                                 predictor, 
                                 referenceBackbone,
