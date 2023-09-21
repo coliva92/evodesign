@@ -30,7 +30,7 @@ class BlosumSwitches(Mutation):
       __class__._shifts = {}
       for residue in Sequence.AMINOACIDS:
         positives = filter(lambda x: x[1] > 0, 
-                           [ (k, v) for k, v in __class__._matrix[residue].values() ])
+                           [ (k, v) for k, v in __class__._matrix[residue].items() ])
         __class__._shifts[residue] = [ x[0] for x in positives ]
   
 
