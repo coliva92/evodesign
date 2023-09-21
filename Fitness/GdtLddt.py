@@ -10,7 +10,7 @@ class GdtLddt(FitnessFunction):
 
   @classmethod
   def name(cls) -> str:
-    return 'Fitness_GdtRmsdRatio'
+    return 'Fitness_GdtLddt'
   
 
 
