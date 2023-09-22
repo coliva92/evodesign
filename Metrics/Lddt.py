@@ -37,15 +37,15 @@ class Lddt(Metric):
       for j, b in enumerate(referenceBackbone)
       if a - b > 0 and a - b <= self._radius
     }
-    model_distances = [
-        ( i, j )
+    model_set = {
+        frozenset([ i, j ])
         for i, a in enumerate(modelBackbone)
         for j, b in enumerate(modelBackbone)
-        if a - b > 0 and a - b <= self._radius and { i, j } in reference_set
-    ]
+        if a - b <= self._radius and frozenset([ i, j ]) in reference_set
+    }
     
     n = len(reference_set)
     return statistics.fmean([
-      sum([ preserved(x[0], x[1], c) for x in model_distances ]) / n
+      sum([ preserved(next(iter(x)), next(iter(x)), c) for x in model_set ]) / n
       for c in self._cutoffs
     ])
