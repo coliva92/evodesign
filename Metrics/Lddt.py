@@ -32,7 +32,7 @@ class Lddt(Metric):
       return abs((x - y) - (a - b)) <= cutoff
     
     reference_set = {
-      frozenset( i, j )
+      frozenset([ i, j ])
       for i, a in enumerate(referenceBackbone)
       for j, b in enumerate(referenceBackbone)
       if a - b > 0 and a - b <= self._radius
