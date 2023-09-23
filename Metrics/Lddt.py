@@ -1,6 +1,6 @@
 from Bio.PDB.Atom import Atom
 from .Metric import Metric
-from typing import List, Optional, Tuple
+from typing import List, Optional
 import statistics
 
 
@@ -46,6 +46,6 @@ class Lddt(Metric):
     
     n = len(reference_set)
     return statistics.fmean([
-      sum([ preserved(next(iter(x)), next(iter(x)), c) for x in model_set ]) / n
+      sum([ preserved(list(x)[0], list(x)[1], c) for x in model_set ]) / n
       for c in self._cutoffs
     ])
