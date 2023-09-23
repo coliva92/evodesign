@@ -6,28 +6,29 @@ from ..Metrics import Rmsd, Gdt, Lddt
 
 
 
-class GdtLddt(FitnessFunction):
+class RmsdGdtLddt(FitnessFunction):
 
   @classmethod
   def name(cls) -> str:
-    return 'Fitness_GdtLddt'
+    return 'Fitness_RmsdGdtLddt'
   
 
 
   @classmethod
   def upper_bound(cls) -> float:
-    return 1.9
+    return 0.95
   
 
 
   def __init__(self,
                gdtCutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ],
-               lddtCutoffs: List[float] = [ 0.5, 1.0, 2.0, 4.0 ]
+               lddtCutoffs: List[float] = [ 0.5, 1.0, 2.0, 4.0 ],
+               inclusionRadius: float = 15
                ) -> None:
     metrics = {
       'rmsd': Rmsd(),
       'gdt': Gdt(gdtCutoffs),
-      'lddt': Lddt(lddtCutoffs)
+      'lddt': Lddt(lddtCutoffs, inclusionRadius)
     }
     super().__init__(metrics)
   
@@ -42,4 +43,4 @@ class GdtLddt(FitnessFunction):
 
 
   def compute_fitness(self, metrics: Dict[str, float]) -> float:
-    return metrics['gdt'] + metrics['lddt']
+    return ((1.95 / metrics['rmsd']) + metrics['gdt'] + metrics['lddt']) / 3

@@ -1,2 +1,3 @@
 from .FitnessFunction import FitnessFunction
-from .GdtLddt import GdtLddt as Fitness_GdtLddt
+from .Gdt import Gdt as Fitness_Gdt
+from .RmsdGdtLddt import RmsdGdtLddt as Fitness_RmsdGdtLddt
