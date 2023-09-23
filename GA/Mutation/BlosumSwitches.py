@@ -29,9 +29,9 @@ class BlosumSwitches(Mutation):
     if not __class__._shifts:
       __class__._shifts = {}
       for residue in Sequence.AMINOACIDS:
-        positives = filter(lambda x: x[1] > 0 and x[0] not in { 'B', 'J', 'O', 'U', 'X', 'Z' }, 
+        negatives = filter(lambda x: x[1] < 0 and x[0] not in { 'B', 'J', 'O', 'U', 'X', 'Z' }, 
                            [ (k, v) for k, v in __class__._matrix[residue].items() ])
-        __class__._shifts[residue] = [ x[0] for x in positives ]
+        __class__._shifts[residue] = [ x[0] for x in negatives ]
   
 
 
