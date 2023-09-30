@@ -25,6 +25,6 @@ class Generational(Replacement):
                children: Population
                ) -> Population:
     children.iteration_id = population.iteration_id + 1
-    children.individuals = children.individuals[:-self._elitismSize] + \
+    children.individuals = children.individuals[self._elitismSize:] + \
       population.individuals[-self._elitismSize:]
     return children
