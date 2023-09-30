@@ -7,7 +7,7 @@ import math
 
 
 
-class RmsdGdtLddt(FitnessFunction):
+class RmsdGdtEnergyScore(FitnessFunction):
 
   @classmethod
   def name(cls) -> str:
