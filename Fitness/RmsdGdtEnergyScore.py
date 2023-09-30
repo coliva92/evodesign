@@ -41,8 +41,8 @@ class RmsdGdtEnergyScore(FitnessFunction):
 
 
   def compute_fitness(self, metrics: Dict[str, float]) -> float:
-    return -2.0 * metrics['gdt'] / metrics['rmsd'] + \
-      (1 / metrics['energyScore'])
+    return 2.0 * metrics['gdt'] / metrics['rmsd'] + \
+      (1.0 / metrics['energyScore'])
 
 
 
