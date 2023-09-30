@@ -1,6 +1,6 @@
 from ..Algorithm import Algorithm
 from typing import Optional, Callable
-from ..Fitness import FitnessFunction
+from ..Fitness import FitnessFunction, Fitness_RmsdGdtEnergyScore
 from ..Prediction import Predictor
 from .Selection import Selection
 from .Recombination import Recombination
@@ -46,6 +46,9 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._elitismSize = elitismSize
     self._replacement = GA_Replacement_Generational(elitismSize)
     self._terminators = [ DiversityLowerBoundReached() ]
+    if isinstance(self._fitness_fn, Fitness_RmsdGdtEnergyScore):
+      self._fitness_fn._metric_calculators['energyScore'].set_pdbs_folder(
+        self.workspace.pdbs_folder)
   
 
 

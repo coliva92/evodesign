@@ -1,6 +1,7 @@
 from .Metric import Metric
 from typing import List
 from Bio.PDB.Atom import Atom
+import os
 
 
 
@@ -17,12 +18,17 @@ class EnergyScore(Metric):
 
   
 
+  def set_pdbs_folder(self, folder: str) -> None:
+    self._folder = folder
+  
+
+
   def __call__(self, 
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom],
                sequence: str
                ) -> float:
-    filename = f'ColabTest_8hjc_20230930191715/pdbs/prot_{sequence}.pdb'
+    filename = os.path.join(self._folder, f'prot_{sequence}.pdb')
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(filename)
     return self._score_fn(pose)
