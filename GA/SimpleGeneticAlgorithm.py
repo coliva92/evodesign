@@ -31,7 +31,8 @@ class SimpleGeneticAlgorithm(Algorithm):
                numIterations: int,
                selection: Selection,
                recombination: Recombination,
-               mutation: Mutation
+               mutation: Mutation,
+               elitismSize: int
                ) -> None:
     super().__init__(workspaceRoot, 
                      targetPdbFilename, 
@@ -42,7 +43,8 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
-    self._replacement = GA_Replacement_Generational()
+    self._elitismSize = elitismSize
+    self._replacement = GA_Replacement_Generational(elitismSize)
     self._terminators = [ DiversityLowerBoundReached() ]
   
 
@@ -52,6 +54,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     b = {
       'populationSize': self._population_size,
       'numIterations': self._num_iterations,
+      'elitismSize': self._elitismSize,
       'selection': self._selection.name(),
       'selectionParams': self._selection.params_json(),
       'recombination': self._recombination.name(),

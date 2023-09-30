@@ -14,9 +14,17 @@ class Generational(Replacement):
   
 
 
+  def __init__(self, elitismSize: int) -> None:
+    super().__init__()
+    self._elitismSize: elitismSize
+  
+
+
   def __call__(self, 
                population: Population,
                children: Population
                ) -> Population:
     children.iteration_id = population.iteration_id + 1
+    children.individuals = children.individuals[:-self._elitismSize] + \
+      population.individuals[-self._elitismSize:]
     return children
