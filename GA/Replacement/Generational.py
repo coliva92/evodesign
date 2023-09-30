@@ -16,7 +16,7 @@ class Generational(Replacement):
 
   def __init__(self, elitismSize: int) -> None:
     super().__init__()
-    self._elitismSize: elitismSize
+    self._elitismSize = elitismSize
   
 
 
