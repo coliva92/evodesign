@@ -22,7 +22,7 @@ class EnergyScore(Metric):
                referenceBackbone: List[Atom],
                sequence: str
                ) -> float:
-    filename = f'test/pdbs/prot_{sequence}.pdb'
+    filename = f'fitness_test1/pdbs/prot_{sequence}.pdb'
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(filename)
     return self._score_fn(pose)
