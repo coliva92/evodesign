@@ -17,7 +17,7 @@ class RmsdGdtEnergyScore(FitnessFunction):
 
   @classmethod
   def upper_bound(cls) -> float:
-    return 1.95
+    return 3.5
   
 
 
@@ -41,8 +41,8 @@ class RmsdGdtEnergyScore(FitnessFunction):
 
 
   def compute_fitness(self, metrics: Dict[str, float]) -> float:
-    return self._sigmoid(-2.0 * metrics['gdt'] / metrics['rmsd']) + \
-      self._sigmoid(-metrics['energyScore'])
+    return -2.0 * metrics['gdt'] / metrics['rmsd'] + \
+      (1 / metrics['energyScore'])
 
 
 
