@@ -10,13 +10,7 @@ class Generational(Replacement):
   @classmethod
   def name(cls) -> str:
     return 'GA_Replacement_Generational'
-  
 
-
-  def __init__(self, elitismSize: int) -> None:
-    super().__init__()
-    self._elitismSize = elitismSize
-  
 
 
   def __call__(self, 
