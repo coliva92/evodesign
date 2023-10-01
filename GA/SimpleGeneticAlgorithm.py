@@ -1,5 +1,5 @@
 from ..Algorithm import Algorithm
-from typing import Optional, Callable
+from typing import Optional, Callable, List
 from ..Fitness import FitnessFunction, Fitness_RmsdGdtEnergyScore
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -9,6 +9,7 @@ from .Replacement import GA_Replacement_Generational
 from ..Population import Population
 from ..Statistics import Statistics
 from .Termination import DiversityLowerBoundReached
+from ..Individual import Individual
 
 
 
@@ -44,7 +45,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._recombination = recombination
     self._mutation = mutation
     self._elitismSize = elitismSize
-    self._replacement = GA_Replacement_Generational(elitismSize)
+    self._replacement = GA_Replacement_Generational()
     self._terminators = [ DiversityLowerBoundReached() ]
     if isinstance(self._fitness_fn, Fitness_RmsdGdtEnergyScore):
       self._fitness_fn._metric_calculators['energyScore'].set_pdbs_folder(
@@ -120,9 +121,10 @@ class SimpleGeneticAlgorithm(Algorithm):
         break
       if sum([ term(population, stats) for term in self._terminators ]):
         break
-      population = self.next_population(population)
-      stats = Statistics.new_from_population(population)
-      self._update_best_solution(population)
+      next_population = self.next_population(population)
+      stats = Statistics.new_from_population(next_population)
+      self._update_best_solution(next_population, population)
+      population = next_population
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
@@ -132,11 +134,14 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
-  def _update_best_solution(self, population: Population) -> None:
-    if population[-1] > self.best_solution: 
-      self.best_solution = population[-1]
-    elif population[-1].sequence != self.best_solution.sequence:
-      population.individuals = population[1:] + [ self.best_solution ]
+  def _update_best_solution(self, 
+                            next_population: Population,
+                            old_population: Population
+                            ) -> None:
+    top = self._merge(next_population[-self._elitismSize:],
+                      old_population[-self._elitismSize:])
+    if top[-1] > self.best_solution: 
+      self.best_solution = top[-1]
   
 
 
@@ -154,4 +159,26 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_rng_settings()
       raise e
     return result
+  
+
+
+  def _merge(self, 
+             a: List[Individual], 
+             b: List[Individual]
+             ) -> List[Individual]:
+    merged, i, j = [], 0, 0
+    while True:
+      if i == len(a):
+        merged += b[j:]
+        break
+      if j == len(b):
+        merged += a[i:]
+        break
+      if a[i] <= b[j]:
+        merged.append(a[i])
+        i += 1
+      else:
+        merged.append(b[j])
+        j += 1
+    return merged
     
