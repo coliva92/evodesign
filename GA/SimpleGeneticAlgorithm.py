@@ -122,10 +122,9 @@ class SimpleGeneticAlgorithm(Algorithm):
       if sum([ term(population, stats) for term in self._terminators ]):
         break
       next_population = self.next_population(population)
-      self.workspace.save_population(population)
       stats = Statistics.new_from_population(next_population)
-      self._update_best_solution(next_population, population)
-      population = next_population
+      population = self._update_best_solution(next_population, population)
+      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
@@ -137,11 +136,15 @@ class SimpleGeneticAlgorithm(Algorithm):
   def _update_best_solution(self, 
                             next_population: Population,
                             old_population: Population
-                            ) -> None:
+                            ) -> Population:
+    # TODO buscar una manera de que esto se haga en el reemplazo y no aquí
     top = self._merge(next_population[-self._elitismSize:],
                       old_population[-self._elitismSize:])
     if top[-1] > self.best_solution: 
       self.best_solution = top[-1]
+    return Population(next_population.individuals[len(top):] + \
+                        top[:-self._elitismSize],
+                      next_population.iteration_id)
   
 
 
