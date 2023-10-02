@@ -122,10 +122,10 @@ class SimpleGeneticAlgorithm(Algorithm):
       if sum([ term(population, stats) for term in self._terminators ]):
         break
       next_population = self.next_population(population)
+      self.workspace.save_population(population)
       stats = Statistics.new_from_population(next_population)
       self._update_best_solution(next_population, population)
       population = next_population
-      self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
