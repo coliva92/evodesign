@@ -33,7 +33,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
-               elitismSize: int
+               elitismSize: int = 1
                ) -> None:
     super().__init__(workspaceRoot, 
                      targetPdbFilename, 
