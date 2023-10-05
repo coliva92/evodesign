@@ -87,6 +87,16 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.backup_children(children)
       self.workspace.save_rng_settings()
     self._update_fitness(children, self.workspace.backup_children)
+    # TODO esto se hace para quedarnos solo con el mejor hijo por cada par de 
+    # padres post-recombinación; averiguar si es posible generalizar este 
+    # código y abstraerlo en la recombinación o alguna otra clase
+    children.individuals = [ 
+      children.individuals[i]
+      if children.individuals[i] > children.individuals[i + 1] 
+      else children.individuals[i + 1]
+      for i in range(0, len(children), 2) 
+    ]
+    children.individuals = sorted(children.individuals)
     self.workspace.delete_children_backup()
     self.workspace.save_rng_settings()
     return self._replacement(population, children)
@@ -103,6 +113,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_rng_settings()
     is_recovering = self._update_fitness(population, 
                                          self.workspace.save_population)
+    if is_recovering: population.individuals = sorted(population.individuals)
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
@@ -132,22 +143,22 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
-  def _update_best_solution(self, 
-                            next_population: Population,
-                            old_population: Population
-                            ) -> Population:
-    # TODO buscar una manera de que esto se haga en el reemplazo y no aquí
-    # TODO cuando topSize = 1, se tiene que eliminar la peor solucion e 
-    # integrar la solución elitista; cuando topSize > 1, se tiene que sustituir
-    # por completo el grupo top, pero el resto de la población permanece sin
-    # cambios
-    top = self._merge(next_population[-self._elitismSize:],
-                      old_population[-self._elitismSize:])
-    if top[-1] > self.best_solution: 
-      self.best_solution = top[-1]
-    return Population(next_population.individuals[len(top):] + \
-                        top[-self._elitismSize:],
-                      next_population.iteration_id)
+  # def _update_best_solution(self, 
+  #                           next_population: Population,
+  #                           old_population: Population
+  #                           ) -> Population:
+  #   # TODO buscar una manera de que esto se haga en el reemplazo y no aquí
+  #   # TODO cuando topSize = 1, se tiene que eliminar la peor solucion e 
+  #   # integrar la solución elitista; cuando topSize > 1, se tiene que sustituir
+  #   # por completo el grupo top, pero el resto de la población permanece sin
+  #   # cambios
+  #   top = self._merge(next_population[-self._elitismSize:],
+  #                     old_population[-self._elitismSize:])
+  #   if top[-1] > self.best_solution: 
+  #     self.best_solution = top[-1]
+  #   return Population(next_population.individuals[len(top):] + \
+  #                       top[-self._elitismSize:],
+  #                     next_population.iteration_id)
   
 
 

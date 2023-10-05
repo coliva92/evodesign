@@ -90,7 +90,10 @@ class Population:
                                 referenceBackbone,
                                 filename)
     if missing_fitness:
-      self.individuals = sorted(self.individuals)
+      # TODO esto se hizo para permitir quedarse con solo 1 hijo por cada par 
+      # de padres post-recombinación; averiguar si hay una manera de mantener 
+      # esta línea
+      # self.individuals = sorted(self.individuals)
       return True
     return False
   
