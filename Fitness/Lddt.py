@@ -1,6 +1,6 @@
 from .FitnessFunction import FitnessFunction
 from typing import Dict, List
-from ..Metrics import Lddt
+from ..Metrics import Lddt as Lddt_Metric
 
 
 
@@ -25,7 +25,7 @@ class Lddt(FitnessFunction):
                inclusionRadius: float = 1
                ) -> None:
     metrics = {
-      'lddt': Lddt(cutoffs, inclusionRadius)
+      'lddt': Lddt_Metric(cutoffs, inclusionRadius)
     }
     super().__init__(metrics)
   
