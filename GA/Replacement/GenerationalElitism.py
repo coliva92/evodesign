@@ -41,7 +41,7 @@ class GenerationalElitism(Replacement):
       if a[i] <= b[j]:
         merged.append(a[i])
         i += 1
-        break
+        continue
       merged.append(b[j])
       j += 1
     return merged
@@ -58,6 +58,7 @@ class GenerationalElitism(Replacement):
     if self._elitismSize > 1:
       top = self._merge(population[-self._elitismSize:],
                         children[-self._elitismSize:])
-      children.individuals = children[:-self._elitismSize] + top
+      children.individuals = children[:-self._elitismSize] + \
+                             top[-self._elitismSize:]
     return children
   
