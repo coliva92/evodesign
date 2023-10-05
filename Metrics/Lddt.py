@@ -23,7 +23,6 @@ class Lddt(Metric):
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom], 
                _: Optional[str] = None) -> float:
-    
     def preserved(i: int, j: int, cutoff: float) -> bool:
       a = modelBackbone[i]
       b = modelBackbone[j]
@@ -35,7 +34,7 @@ class Lddt(Metric):
       frozenset([ i, j ])
       for i, a in enumerate(referenceBackbone)
       for j, b in enumerate(referenceBackbone)
-      if a - b > 0 and a - b <= self._radius
+      if a - b > 0 and i // 3 != j // 3 and a - b <= self._radius
     }
     model_set = {
         frozenset([ i, j ])
