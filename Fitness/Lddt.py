@@ -22,7 +22,7 @@ class Lddt(FitnessFunction):
 
   def __init__(self,
                cutoffs: List[float] = [ 0.5, 1.0, 2.0, 4.0 ],
-               inclusionRadius: float = 1
+               inclusionRadius: float = 15
                ) -> None:
     metrics = {
       'lddt': Lddt_Metric(cutoffs, inclusionRadius)
