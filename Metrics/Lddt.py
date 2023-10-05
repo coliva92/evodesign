@@ -23,7 +23,7 @@ class Lddt(Metric):
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom], 
                _: Optional[str] = None) -> float:
-    def preserved(i: int, j: int, cutoff: float) -> bool:
+    def is_preserved(i: int, j: int, cutoff: float) -> bool:
       a = modelBackbone[i]
       b = modelBackbone[j]
       x = referenceBackbone[i]
@@ -45,6 +45,6 @@ class Lddt(Metric):
     
     n = len(reference_set)
     return statistics.fmean([
-      sum([ preserved(list(x)[0], list(x)[1], c) for x in model_set ]) / n
+      sum([ is_preserved(list(x)[0], list(x)[1], c) for x in model_set ]) / n
       for c in self._cutoffs
     ])
