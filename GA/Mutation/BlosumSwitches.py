@@ -9,6 +9,7 @@ import blosum as bl
 
 class BlosumSwitches(Mutation):
 
+  _NON_CODIFYING = { 'B', 'J', 'O', 'U', 'X', 'Z' }
   _matrix = bl.BLOSUM(62)
   _shifts = None
 
@@ -28,8 +29,8 @@ class BlosumSwitches(Mutation):
     self._num_switches = numSwitches
     if not __class__._shifts:
       __class__._shifts = {}
-      for residue in Sequence.AMINOACIDS:
-        negatives = filter(lambda x: x[1] < 0 and x[0] not in { 'B', 'J', 'O', 'U', 'X', 'Z' }, 
+      for residue in Sequence.AMINO_ACIDS:
+        negatives = filter(lambda x: x[1] < 0 and x[0] not in __class__._NON_CODIFYING, 
                            [ (k, v) for k, v in __class__._matrix[residue].items() ])
         __class__._shifts[residue] = [ x[0] for x in negatives ]
   
