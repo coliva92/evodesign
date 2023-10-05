@@ -129,14 +129,15 @@ class Workspace:
       'min_fitness': [],
       'fitness_mean': [],
       'max_fitness': [],
-      'diversity': [],
+      'sequence_diversity': [],
+      'residue_diversity': [],
       'best_sequence_fitness': []
     }
     with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
       for row in csv.DictReader(csv_file, dialect='unix'):
         for key in data:
           data[key].append(float(row[key]))
-    fig, ax = plt.subplots(ncols=2, figsize=(12, 5))
+    fig, ax = plt.subplots(ncols=3, figsize=(12, 8))
     fig.suptitle(self.root_folder)
     ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
     ax[0].fill_between(data['iteration_id'], 
@@ -149,7 +150,10 @@ class Workspace:
     ax[0].set_xlabel('Iterations')
     ax[0].set_ylabel('Fitness')
     ax[0].legend(loc='best')
-    ax[1].plot(data['iteration_id'], data['diversity'], color='C2')
+    ax[1].plot(data['iteration_id'], data['sequence_diversity'], color='C2')
     ax[1].set_xlabel('Iterations')
     ax[1].set_ylabel('Population diversity')
+    ax[2].plot(data['iteration_id'], data['residue_diversity'], color='C3')
+    ax[1].set_xlabel('Iterations')
+    ax[1].set_ylabel('Amino acid diversity')
     fig.savefig(self.graph_filename)

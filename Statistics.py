@@ -15,19 +15,22 @@ class Statistics:
   min_fitness: float = field(default=None)
   fitness_mean: float = field(default=None)
   max_fitness: float = field(default=None)
-  diversity: float = field(default=None)
+  sequence_diversity: float = field(default=None)
+  residue_diversity: float = field(default=None)
 
 
 
   @classmethod
   def new_from_population(cls, population: Population):
     smallest, largest, average = cls.min_max_mean(population)
-    diversity = cls.average_hamming_distance(population)
+    seq_diversity = cls.average_hamming_distance(population)
+    res_diversity = cls.average_residue_diversity(population)
     return cls(population.iteration_id,
                smallest,
                average,
                largest,
-               diversity)
+               seq_diversity,
+               res_diversity)
   
 
 
@@ -62,6 +65,18 @@ class Statistics:
                               zip(current, other))))
       averages.append(statistics.fmean(counts))
     return statistics.fmean(averages)
+  
+
+
+  @classmethod
+  def average_residue_diversity(cls, population: Population) -> float:
+    return statistics.fmean([
+      len({
+        sequence[i]
+        for sequence in population
+      })
+      for i in range(len(population[0]))
+    ])
   
 
 
