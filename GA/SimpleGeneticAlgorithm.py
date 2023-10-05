@@ -5,7 +5,7 @@ from ..Prediction import Predictor
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
-from .Replacement import GA_Replacement_Generational
+from .Replacement import GA_Replacement_GenerationalElitism
 from ..Population import Population
 from ..Statistics import Statistics
 from .Termination import DiversityLowerBoundReached
@@ -44,8 +44,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
-    self._elitismSize = elitismSize
-    self._replacement = GA_Replacement_Generational()
+    self._replacement = GA_Replacement_GenerationalElitism(elitismSize)
     self._terminators = [ DiversityLowerBoundReached() ]
     if isinstance(self._fitness_fn, Fitness_RmsdGdtEnergyScore):
       self._fitness_fn._metric_calculators['energyScore'].set_pdbs_folder(
@@ -58,7 +57,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     b = {
       'populationSize': self._population_size,
       'numIterations': self._num_iterations,
-      'elitismSize': self._elitismSize,
+      'elitismSize': self._replacement.elitism_size(),
       'selection': self._selection.name(),
       'selectionParams': self._selection.params_json(),
       'recombination': self._recombination.name(),
@@ -121,8 +120,8 @@ class SimpleGeneticAlgorithm(Algorithm):
         break
       if sum([ term(population, stats) for term in self._terminators ]):
         break
-      next_population = self.next_population(population)
-      population = self._update_best_solution(next_population, population)
+      population = self.next_population(population)
+      self.best_solution = population[-1]
       stats = Statistics.new_from_population(population)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
@@ -138,6 +137,10 @@ class SimpleGeneticAlgorithm(Algorithm):
                             old_population: Population
                             ) -> Population:
     # TODO buscar una manera de que esto se haga en el reemplazo y no aquí
+    # TODO cuando topSize = 1, se tiene que eliminar la peor solucion e 
+    # integrar la solución elitista; cuando topSize > 1, se tiene que sustituir
+    # por completo el grupo top, pero el resto de la población permanece sin
+    # cambios
     top = self._merge(next_population[-self._elitismSize:],
                       old_population[-self._elitismSize:])
     if top[-1] > self.best_solution: 
