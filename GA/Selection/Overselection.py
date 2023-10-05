@@ -20,30 +20,47 @@ class Overselection(Selection):
   def __init__(self, 
                selectionSize: int,
                topSize: int,
-               topProbability: float = 0.8) -> None:
+               topTopProbability: float = 0.8,
+               topBottomProbability: float = 0.0,
+               bottomBottomProbability: float = 0.2) -> None:
     super().__init__(selectionSize)
     self._top_size = topSize
-    self._weights = ( topProbability, 1.0 - topProbability )
-    self._top_probability = topProbability
+    self._top_top_probability = topTopProbability
+    self._top_bot_probability = topBottomProbability
+    self._bot_bot_probability = bottomBottomProbability
+    self._weights = [
+      topTopProbability,
+      topBottomProbability,
+      bottomBottomProbability
+    ]
   
 
 
   def params_json(self) -> dict:
     params = super().params_json()
     params['topSize'] = self._top_size
-    params['topProbability'] = self._top_probability
+    params['topTopProbability'] = self._top_top_probability
+    params['topBottomProbability'] = self._top_bot_probability
+    params['bottomBottomProbability'] = self._bot_bot_probability
     return params
   
 
 
   def select_parents(self, population: Population) -> List[Individual]:
     selected_parents = []
-    for i in range(self._selection_size):
-      pool = population[-self._top_size:] if Choice.flip_coin(self._weights) \
-                                          else population[:-self._top_size]
-      parent = random.choice(pool)
-      # garantizamos que dos padres consecutivos siempre sean diferentes
-      while i % 2 != 0 and selected_parents[i - 1].sequence == parent.sequence:
-        parent = random.choice(pool)
-      selected_parents.append(parent)
+    top = population[-self._top_size:]
+    bottom = population[:-self._top_size]
+    while len(selected_parents) < self._selection_size:
+      option = random.choices([ 0, 1, 2 ], self._weights)[0]
+      if option == 0:
+        mother, father = random.choices(top, k=2)
+      if option == 1:
+        mother = random.choice(top)
+        father = random.choice(bottom)
+      if option == 2:
+        mother, father = random.choices(bottom, k=2)
+      while mother.sequence == father.sequence:
+        father = random.choice(top) if option == 0 else random.choice(bottom)
+      selected_parents.append(mother)
+      selected_parents.append(father)
     return selected_parents
