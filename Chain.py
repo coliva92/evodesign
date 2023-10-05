@@ -9,7 +9,7 @@ import os
 
 
 # omitimos los átomos 'O' para que la búsqueda sea menos estricta
-BACKBONE_ATOM_NAMES = { 'N', 'CA', 'C' }
+BACKBONE_ATOM_NAMES = { 'N', 'CA', 'C', 'O' }
 
 
 
