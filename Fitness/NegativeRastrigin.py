@@ -34,7 +34,7 @@ class NegativeRastrigin(FitnessFunction):
 
 
   @classmethod
-  def get_name(cls) -> str:
+  def name(cls) -> str:
     return 'Fitness_NegativeRastrigin'
 
 
@@ -45,9 +45,9 @@ class NegativeRastrigin(FitnessFunction):
 
 
 
-  def compute_fitness(self, 
-                      sequence: str, 
-                      _: Dict[str, float]
+  def compute_fitness(self,
+                      _: Dict[str, float],
+                      sequence: str
                       ) -> float:
     x = self._to_rastrigin_domain(sequence)
     sigma = sum([ 

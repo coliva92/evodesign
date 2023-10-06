@@ -35,7 +35,9 @@ class FitnessFunction(ABC):
 
   
   @abstractmethod
-  def compute_fitness(self, metrics: Dict[str, float]) -> float:
+  def compute_fitness(self, 
+                      metrics: Dict[str, float],
+                      sequence: Optional[str] = None) -> float:
     raise NotImplementedError
 
 
@@ -49,5 +51,5 @@ class FitnessFunction(ABC):
       key: calc(modelBackbone, referenceBackbone, sequence) \
         for key, calc in self._metric_calculators.items() 
     }
-    fitness = self.compute_fitness(metrics)
+    fitness = self.compute_fitness(metrics, sequence)
     return metrics, fitness

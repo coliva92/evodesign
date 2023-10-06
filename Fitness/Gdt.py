@@ -1,5 +1,5 @@
 from .FitnessFunction import FitnessFunction
-from typing import Dict, List
+from typing import Dict, List, Optional
 from ..Metrics import Rmsd, Gdt as GdtMetric
 
 
@@ -38,5 +38,7 @@ class Gdt(FitnessFunction):
   
 
 
-  def compute_fitness(self, metrics: Dict[str, float]) -> float:
+  def compute_fitness(self, 
+                      metrics: Dict[str, float],
+                      _: Optional[str] = None) -> float:
     return metrics['gdt']
