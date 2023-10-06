@@ -137,7 +137,7 @@ class Workspace:
       for row in csv.DictReader(csv_file, dialect='unix'):
         for key in data:
           data[key].append(float(row[key]))
-    fig, ax = plt.subplots(ncols=3, figsize=(12, 8))
+    fig, ax = plt.subplots(ncols=3, figsize=(21, 6))
     fig.suptitle(self.root_folder)
     ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
     ax[0].fill_between(data['iteration_id'], 
