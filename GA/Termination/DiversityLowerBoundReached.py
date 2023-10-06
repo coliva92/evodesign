@@ -15,4 +15,4 @@ class DiversityLowerBoundReached(Terminator):
                ) -> bool:
     if not stats:
       stats = Statistics.new_from_population(population)
-    return stats.diversity < math.ceil(0.1 * len(population[0]))
+    return stats.sequence_diversity < math.floor(0.1 * len(population[0]))
