@@ -50,7 +50,7 @@ class Overselection(Selection):
     selected_parents = []
     top = population[-self._top_size:]
     bottom = population[:-self._top_size]
-    while len(selected_parents) < self._selection_size:
+    while len(selected_parents) < self._num_individual_selections:
       option = random.choices([ 0, 1, 2 ], self._weights)[0]
       if option == 0:
         mother, father = random.choices(top, k=2)

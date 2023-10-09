@@ -17,4 +17,4 @@ class Uniform(Selection):
 
 
   def select_parents(self, population: Population) -> List[Individual]:
-    return random.sample(population.individuals, self._selection_size)
+    return random.sample(population.individuals, self._num_individual_selections)
