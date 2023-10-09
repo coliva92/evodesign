@@ -1,5 +1,5 @@
 from ..Algorithm import Algorithm
-from typing import Optional, Callable, List
+from typing import Optional, Callable, List, Tuple
 from ..Fitness import FitnessFunction, Fitness_RmsdGdtEnergyScore
 from ..Prediction import Predictor
 from .Selection import Selection
@@ -80,7 +80,9 @@ class SimpleGeneticAlgorithm(Algorithm):
 
 
 
-  def next_population(self, population: Population) -> Population:
+  def next_population(self, 
+                      population: Population
+                      ) -> Tuple[Population, Statistics]:
     children = self.workspace.restore_children_from_backup()
     if not children:
       children = self._evolutionary_step(population)
@@ -97,9 +99,10 @@ class SimpleGeneticAlgorithm(Algorithm):
       for i in range(0, len(children), 2) 
     ]
     children.individuals = sorted(children.individuals)
+    stats = Statistics.new_from_population(population)
     self.workspace.delete_children_backup()
     self.workspace.save_rng_settings()
-    return self._replacement(population, children)
+    return self._replacement(population, children), stats
 
 
 
@@ -132,9 +135,8 @@ class SimpleGeneticAlgorithm(Algorithm):
         break
       if sum([ term(population, stats) for term in self._terminators ]):
         break
-      population = self.next_population(population)
+      population, stats = self.next_population(population)
       self.best_solution = population[-1]
-      stats = Statistics.new_from_population(population)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
@@ -142,25 +144,6 @@ class SimpleGeneticAlgorithm(Algorithm):
             f'{stats.sequence_diversity:0.5f} ' + \
             f'{stats.residue_diversity:0.5f}',
             flush=True)
-
-
-
-  # def _update_best_solution(self, 
-  #                           next_population: Population,
-  #                           old_population: Population
-  #                           ) -> Population:
-  #   # TODO buscar una manera de que esto se haga en el reemplazo y no aquí
-  #   # TODO cuando topSize = 1, se tiene que eliminar la peor solucion e 
-  #   # integrar la solución elitista; cuando topSize > 1, se tiene que sustituir
-  #   # por completo el grupo top, pero el resto de la población permanece sin
-  #   # cambios
-  #   top = self._merge(next_population[-self._elitismSize:],
-  #                     old_population[-self._elitismSize:])
-  #   if top[-1] > self.best_solution: 
-  #     self.best_solution = top[-1]
-  #   return Population(next_population.individuals[len(top):] + \
-  #                       top[-self._elitismSize:],
-  #                     next_population.iteration_id)
   
 
 
