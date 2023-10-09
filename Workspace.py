@@ -154,6 +154,6 @@ class Workspace:
     ax[1].set_xlabel('Iterations')
     ax[1].set_ylabel('Population diversity')
     ax[2].plot(data['iteration_id'], data['residue_diversity'], color='C3')
-    ax[1].set_xlabel('Iterations')
-    ax[1].set_ylabel('Amino acid diversity')
+    ax[2].set_xlabel('Iterations')
+    ax[2].set_ylabel('Amino acid diversity')
     fig.savefig(self.graph_filename)
