@@ -17,19 +17,22 @@ class NegativeRastrigin(FitnessFunction):
   """
 
   _blosum_matrix = bl.BLOSUM(62)
-  _domain_values = [ 
-    -5.12, 5.12, -4.608, 4.5504, -4.096, 3.9816, -3.584, 3.4128, -3.072, 2.844,
-    -2.56, 2.2752, -2.048, 1.7064, -1.536, 1.1376, -1.024, 0.5688, -0.512,
-    0.0
-  ]
 
 
 
-  def __init__(self, targetSequence: str) -> None:
+  def __init__(self, 
+               targetSequence: str,
+               windowSize: int = 3,
+               distance: int = 1) -> None:
     super().__init__({})
+    if windowSize % 2 == 0:
+      raise RuntimeError('window size must be an odd integer')
     self._target_sequence = targetSequence
+    self._window_size = windowSize
+    self._distance = distance
     self._sequence_length = len(targetSequence)
-    self._residue_scores = self._compute_residue_scores()
+    self._residue_ordinals = self._compute_residue_ordinals()
+    self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_size
 
 
 
@@ -42,6 +45,15 @@ class NegativeRastrigin(FitnessFunction):
   @classmethod
   def upper_bound(cls) -> float:
     return 0.0
+  
+
+
+  def params_json(self) -> dict:
+    return {
+      'targetSequence': self._target_sequence,
+      'windowSize': self._window_size,
+      'distance': self._distance
+    }
 
 
 
@@ -58,20 +70,20 @@ class NegativeRastrigin(FitnessFunction):
   
 
 
-  def _compute_residue_scores(self) -> List[Dict[str, float]]:
-    residue_scores = []
+  def _compute_residue_ordinals(self) -> List[Dict[str, float]]:
+    residue_ordinals = []
     for res in self._target_sequence:
-      temp = [
+      amino_acid_scores = [
         (key, __class__._blosum_matrix[res][key])
         for key in __class__._blosum_matrix[res].keys()
         if key in AMINO_ACIDS_SET
       ]
-      temp = sorted(temp, key=operator.itemgetter(1))
-      residue_scores.append({
-        item[0]: __class__._domain_values[i]
-        for i, item in enumerate(temp)
+      amino_acid_scores = sorted(amino_acid_scores, key=operator.itemgetter(1))
+      residue_ordinals.append({
+        item[0]: i
+        for i, item in enumerate(amino_acid_scores)
       })
-    return residue_scores
+    return residue_ordinals
 
 
 
@@ -84,4 +96,37 @@ class NegativeRastrigin(FitnessFunction):
     # aminoácidos a un vector de números reales para la función de Rastrigin, 
     # de tal manera que el vector para el óptimo global corresponda con la 
     # secuencia de la estructura objetivo.
-    return [ self._residue_scores[i][res] for i, res in enumerate(sequence) ]
+    return [ 
+      self._to_real(self._to_decimal(sequence, i)) 
+      for i in range(len(sequence)) 
+    ]
+  
+
+
+  def _to_decimal(self, sequence: str, pivot: int) -> int:
+    half_window = (self._window_size - 1) // 2
+    indexes = []
+    for i in reversed(range(1, half_window + 1)):
+      idx = int((pivot - (self._distance * i)) % len(sequence))
+      indexes.append(idx)
+    indexes.append(pivot)
+    for i in range(1, half_window + 1):
+      idx = int((pivot + (self._distance * i)) % len(sequence))
+      indexes.append(idx)
+    return sum([
+      self._residue_ordinals[indexes[i]][sequence[indexes[i]]] * 20 ** (len(indexes) - 1 - i)
+      for i in range(len(indexes))
+    ])
+    # TODO borrar este codigo:
+    r = (pivot - 1) % len(sequence)
+    s = (pivot + 1) % len(sequence)
+    return self._residue_ordinals[r][sequence[r]] * 20 ** 2 + \
+      self._residue_ordinals[pivot][sequence[pivot]] * 20 ** 1 + \
+      self._residue_ordinals[s][sequence[s]]
+  
+
+
+  def _to_real(self, decimal_residue: int) -> float:
+    if decimal_residue % 2 == 0:
+      return decimal_residue / 2 * self._STEP_SIZE
+    return (decimal_residue + 1) / 2 * -self._STEP_SIZE
