@@ -82,7 +82,7 @@ class SimpleGeneticAlgorithm(Algorithm):
 
   def next_population(self, 
                       population: Population
-                      ) -> Tuple[Population, Statistics]:
+                      ) -> Tuple[Population, Tuple[float, float, float]]:
     children = self.workspace.restore_children_from_backup()
     if not children:
       children = self._evolutionary_step(population)
@@ -98,11 +98,12 @@ class SimpleGeneticAlgorithm(Algorithm):
       else children.individuals[i + 1]
       for i in range(0, len(children), 2) 
     ]
+    ###
     children.individuals = sorted(children.individuals)
-    stats = Statistics.new_from_population(population)
+    fitness_stats = Statistics.min_max_mean(children)
     self.workspace.delete_children_backup()
     self.workspace.save_rng_settings()
-    return self._replacement(population, children), stats
+    return self._replacement(population, children), fitness_stats
 
 
 
@@ -135,8 +136,16 @@ class SimpleGeneticAlgorithm(Algorithm):
         break
       if sum([ term(population, stats) for term in self._terminators ]):
         break
-      population, stats = self.next_population(population)
+      population, fitness_stats = self.next_population(population)
       self.best_solution = population[-1]
+      sequence_diversity = Statistics.average_hamming_distance(population)
+      residue_diversity = Statistics.average_residue_diversity(population)
+      stats = Statistics(population.iteration_id,
+                         fitness_stats[0],
+                         fitness_stats[2],
+                         fitness_stats[1],
+                         sequence_diversity,
+                         residue_diversity)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
