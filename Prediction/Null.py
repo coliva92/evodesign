@@ -10,7 +10,7 @@ class Null(Predictor):
   
   @classmethod
   def name(cls) -> str:
-    return 'Predictor_Null'
+    return 'Predictor_None'
   
 
 
