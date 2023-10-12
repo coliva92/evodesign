@@ -77,7 +77,7 @@ class Population:
 
 
   def sort(self, reverse: bool = False) -> None:
-    self.individuals.sort(reverse)
+    self.individuals.sort(reverse=reverse)
 
 
 
