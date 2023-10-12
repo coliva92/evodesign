@@ -15,12 +15,15 @@ from .GA.Replacement import *
 
 
 def _set_auto_params_GA(params: dict, 
-                          nonClassParams: dict, 
-                          classes: dict) -> dict:
+                        nonClassParams: dict, 
+                        classes: dict) -> dict:
   population_size = nonClassParams['populationSize']
   numOffspringsPerPair = 1 \
                          if isinstance(classes['recombination'], list) \
                          else 2
+  if 'childrenSelection' not in params:
+    params['childrenSelection'] = 'GA_ChildrenSelection_SingleBest'
+    classes['childrenSelection'] = GA_ChildrenSelection_SingleBest
   params['childrenSelectionParams'] = {}
   params['selectionParams']['selectionSize'] = \
     params['childrenSelectionParams']['maxInputSize'] = \
