@@ -77,10 +77,10 @@ class Workspace:
   def load_latest_population(self) -> Population:
     if not os.path.isdir(self.populations_folder):
       return Population()
-    filenames = os.listdir(self.populations_folder)
+    filenames = sorted(os.listdir(self.populations_folder))
     if not filenames:
       return Population()
-    filename = os.path.join(self.populations_folder, sorted(filenames)[-1])
+    filename = os.path.join(self.populations_folder, filenames[-1])
     return FileIO.load_population_csv(filename, len(filenames))
 
 

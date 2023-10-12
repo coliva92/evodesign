@@ -99,7 +99,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       for i in range(0, len(children), 2) 
     ]
     ###
-    children.individuals = sorted(children.individuals)
+    children.sort()
     fitness_stats = Statistics.min_max_mean(children)
     self.workspace.delete_children_backup()
     self.workspace.save_rng_settings()
@@ -117,7 +117,8 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_rng_settings()
     is_recovering = self._update_fitness(population, 
                                          self.workspace.save_population)
-    if is_recovering: population.individuals = sorted(population.individuals)
+    if is_recovering: 
+      population.sort()
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)

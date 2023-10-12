@@ -73,6 +73,11 @@ class Population:
       self.individuals += other.individuals
       return self
     raise NotImplementedError
+  
+
+
+  def sort(self, reverse: bool = False) -> None:
+    self.individuals.sort(reverse)
 
 
 
@@ -93,7 +98,7 @@ class Population:
       # TODO esto se hizo para permitir quedarse con solo 1 hijo por cada par 
       # de padres post-recombinación; averiguar si hay una manera de mantener 
       # esta línea
-      # self.individuals = sorted(self.individuals)
+      # self.individuals.sort()
       return True
     return False
   

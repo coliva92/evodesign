@@ -78,7 +78,7 @@ class NegativeRastrigin(FitnessFunction):
         for key in __class__._blosum_matrix[res].keys()
         if key in AMINO_ACIDS_SET
       ]
-      amino_acid_scores = sorted(amino_acid_scores, key=operator.itemgetter(1))
+      amino_acid_scores.sort(key=operator.itemgetter(1))
       residue_ordinals.append({
         item[0]: i
         for i, item in enumerate(amino_acid_scores)
@@ -117,12 +117,6 @@ class NegativeRastrigin(FitnessFunction):
       self._residue_ordinals[indexes[i]][sequence[indexes[i]]] * 20 ** (len(indexes) - 1 - i)
       for i in range(len(indexes))
     ])
-    # TODO borrar este codigo:
-    r = (pivot - 1) % len(sequence)
-    s = (pivot + 1) % len(sequence)
-    return self._residue_ordinals[r][sequence[r]] * 20 ** 2 + \
-      self._residue_ordinals[pivot][sequence[pivot]] * 20 ** 1 + \
-      self._residue_ordinals[s][sequence[s]]
   
 
 
