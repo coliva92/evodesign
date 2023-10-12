@@ -10,7 +10,7 @@ class RandomChild(ChildSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildSelection_SingleRandom'
+    return 'GA_ChildrenSelection_SingleRandom'
   
 
 

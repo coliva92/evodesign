@@ -9,7 +9,7 @@ class Null(ChildSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildSelection_None'
+    return 'GA_ChildrenSelection_None'
 
 
 

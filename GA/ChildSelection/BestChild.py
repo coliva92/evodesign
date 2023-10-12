@@ -9,7 +9,7 @@ class BestChild(ChildSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildSelection_SingleBest'
+    return 'GA_ChildrenSelection_SingleBest'
   
 
   
