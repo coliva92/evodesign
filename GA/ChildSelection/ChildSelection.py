@@ -30,7 +30,7 @@ class ChildSelection(ABC):
     children.individuals = children.individuals \
                            if len(children) <= self._max_input_size \
                            else children[:self._max_input_size]
-    return self._select_children(children)
+    return self.select_children(children)
   
 
 

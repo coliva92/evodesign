@@ -38,17 +38,20 @@ class Recombination(ABC):
     if len(parents) % 2 != 0:
       parents = parents[:-1]
     
-    children_sequences = []
+    children = []
     for mother, father in zip(parents[0::2], parents[1::2]):
       if Choice.flip_coin(self._activation_weights):
-        children_sequences += self.offspring_sequences(mother.sequence,
-                                             father.sequence)
+        children += [
+          Individual(sequence) 
+          for sequence in self.offspring_sequences(mother.sequence,
+                                                   father.sequence)
+        ]
         continue
-      children_sequences += [ 
+      children += [ 
         Individual.new_random(len(mother)) \
         for _ in range(self._num_offsprings) 
       ]
-    return Population([ sequence for sequence in children_sequences ])
+    return Population(children)
 
 
 
