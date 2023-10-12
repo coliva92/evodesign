@@ -5,6 +5,7 @@ from ..Prediction import Predictor
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
+from .ChildSelection import ChildSelection
 from .Replacement import GA_Replacement_GenerationalElitism
 from ..Population import Population
 from ..Statistics import Statistics
@@ -33,6 +34,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
+               childrenSelection: ChildSelection,
                elitismSize: int = 1
                ) -> None:
     super().__init__(workspaceRoot, 
@@ -44,6 +46,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
+    self.child_selection = childrenSelection
     self._replacement = GA_Replacement_GenerationalElitism(elitismSize)
     self._terminators = [ DiversityLowerBoundReached() ]
     if isinstance(self._fitness_fn, Fitness_RmsdGdtEnergyScore):
@@ -63,47 +66,11 @@ class SimpleGeneticAlgorithm(Algorithm):
       'recombination': self._recombination.name(),
       'recombinationParams': self._recombination.params_json(),
       'mutation': self._mutation.name(),
-      'mutationParams': self._mutation.params_json()
+      'mutationParams': self._mutation.params_json(),
+      'childrenSelection': self.child_selection.name(),
+      'childSelectionParams': self.child_selection.params_json()
     }
     return { **a, **b }
-  
-
-
-  def _evolutionary_step(self, population: Population) -> Population:
-    next_population = Population()
-    while len(next_population) < len(population):
-      parents = self._selection(population)
-      children = self._recombination(parents)
-      self._mutation(children)
-      next_population += children
-    return next_population
-
-
-
-  def next_population(self, 
-                      population: Population
-                      ) -> Tuple[Population, Tuple[float, float, float]]:
-    children = self.workspace.restore_children_from_backup()
-    if not children:
-      children = self._evolutionary_step(population)
-      self.workspace.backup_children(children)
-      self.workspace.save_rng_settings()
-    self._update_fitness(children, self.workspace.backup_children)
-    # TODO esto se hace para quedarnos solo con el mejor hijo por cada par de 
-    # padres post-recombinación; averiguar si es posible generalizar este 
-    # código y abstraerlo en la recombinación o alguna otra clase
-    children.individuals = [ 
-      children.individuals[i]
-      if children.individuals[i] > children.individuals[i + 1] 
-      else children.individuals[i + 1]
-      for i in range(0, len(children), 2) 
-    ]
-    ###
-    children.sort()
-    fitness_stats = Statistics.min_max_mean(children)
-    self.workspace.delete_children_backup()
-    self.workspace.save_rng_settings()
-    return self._replacement(population, children), fitness_stats
 
 
 
@@ -127,8 +94,8 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_rng_settings()
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
-            f'{stats.sequence_diversity:0.5f} ' + \
-            f'{stats.residue_diversity:0.5f} ',
+            f'{stats.sequence_diversity:.5f} ' + \
+            f'{stats.residue_diversity:.5f} ',
             flush=True)
     while True:
       if population.iteration_id == self._num_iterations:
@@ -151,9 +118,38 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
-            f'{stats.sequence_diversity:0.5f} ' + \
-            f'{stats.residue_diversity:0.5f}',
+            f'{stats.sequence_diversity:.5f} ' + \
+            f'{stats.residue_diversity:.5f}',
             flush=True)
+  
+
+
+  def next_population(self, 
+                      population: Population
+                      ) -> Tuple[Population, Tuple[float, float, float]]:
+    children = self.workspace.restore_children_from_backup()
+    if not children:
+      children = self._evolutionary_step(population)
+      self.workspace.backup_children(children)
+      self.workspace.save_rng_settings()
+    self._update_fitness(children, self.workspace.backup_children)
+    children = self.child_selection(children)
+    children.sort()
+    fitness_stats = Statistics.min_max_mean(children)
+    self.workspace.delete_children_backup()
+    self.workspace.save_rng_settings()
+    return self._replacement(population, children), fitness_stats
+  
+
+
+  def _evolutionary_step(self, population: Population) -> Population:
+    next_population = Population()
+    while len(next_population) < len(population):
+      parents = self._selection(population)
+      children = self._recombination(parents)
+      self._mutation(children)
+      next_population += children
+    return next_population
   
 
 

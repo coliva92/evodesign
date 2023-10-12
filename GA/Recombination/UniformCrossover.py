@@ -17,7 +17,7 @@ class UniformCrossover(Recombination):
   def __init__(self, 
                probability: float = 1.0, 
                bias: float = 0.5) -> None:
-    super().__init__(probability)
+    super().__init__(2, probability)
     self._weights = ( bias, 1.0 - bias )
     self._bias = bias
   

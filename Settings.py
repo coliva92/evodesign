@@ -7,9 +7,31 @@ from .GA import *
 from .GA.Selection import *
 from .GA.Recombination import *
 from .GA.Mutation import *
+from .GA.ChildSelection import *
 from .GA.Replacement import *
 
 
+
+
+
+def _set_auto_params_GA(params: dict, 
+                          nonClassParams: dict, 
+                          classes: dict) -> dict:
+  population_size = nonClassParams['populationSize']
+  numOffspringsPerPair = 1 \
+                         if isinstance(classes['recombination'], list) \
+                         else 2
+  params['childrenSelectionParams'] = {}
+  params['selectionParams']['selectionSize'] = \
+    params['childrenSelectionParams']['maxInputSize'] = \
+    numOffspringsPerPair * population_size
+  return params
+
+
+
+_AUTO_PARAMS_SETTER = {
+  'GA_Simple': _set_auto_params_GA
+}
 
 
 
@@ -45,6 +67,8 @@ def load_algorithm_from_settings(filename: str,
     key: getattr(sys.modules[__name__], params[key])
     for key in filter(is_class_key, params)
   }
+  set_auto_params = _AUTO_PARAMS_SETTER[settings['algorithmType']]
+  params = set_auto_params(params, non_class_params, classes)
   class_params = {
     key: the_class(**params[f'{key}Params'])
     if f'{key}Params' in params else the_class()

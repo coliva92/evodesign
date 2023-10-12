@@ -33,7 +33,7 @@ class Tournament(Selection):
 
   def select_parents(self, population: Population) -> List[Individual]:
     selected_parents = []
-    for i in range(self._num_individual_selections):
+    for i in range(self._selection_size):
       winner = sorted(random.sample(population.individuals, 
                                     self._tournament_size))[-1]
       # garantizamos que dos padres consecutivos siempre sean diferentes

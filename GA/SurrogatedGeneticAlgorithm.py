@@ -1,7 +1,7 @@
 from .SimpleGeneticAlgorithm import SimpleGeneticAlgorithm
 from typing import Callable
 from ..Fitness import FitnessFunction
-from ..Prediction import Predictor, Predictor_Null
+from ..Prediction import Predictor, Predictor_None
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
@@ -13,7 +13,7 @@ from ..Population import Population
 
 class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
 
-  _null_predictor = Predictor_Null()
+  _null_predictor = Predictor_None()
 
 
 
