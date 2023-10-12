@@ -13,7 +13,9 @@ from .GA.Replacement import *
 
 
 
-def load_algorithm_from_settings(filename: str) -> Algorithm:  
+def load_algorithm_from_settings(filename: str, 
+                                 additionalIterations: int = 0 
+                                 ) -> Algorithm:  
   with open(filename, 'rt', encoding='utf-8') as json_file:
     settings = json.load(json_file)
   i = settings['algorithmType'].find('_')
@@ -49,7 +51,7 @@ def load_algorithm_from_settings(filename: str) -> Algorithm:
     for key, the_class in classes.items()
   }
   
+  algorithm_params = { **non_class_params, **class_params }
+  algorithm_params['numIterations'] += additionalIterations
   algorithm_class = getattr(sys.modules[__name__], settings['algorithmType'])
-  algorithm = algorithm_class(**{ **non_class_params, **class_params })
-  algorithm.workspace.algorithm_settings = algorithm.as_json()
-  return algorithm
+  return algorithm_class(**algorithm_params)

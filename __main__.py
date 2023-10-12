@@ -15,11 +15,16 @@ parser = ArgumentParser(prog='evodesign',
 parser.add_argument('settings_filename', 
                     help='name or path for the JSON configuration file for '+ 
                     'the evolutionary algorithm to be ran.')
+parser.add_argument('-a', '--add-iterations', type=int, default=0,
+                    help='runs the algorithm for a number of iterations that ' +
+                    'is added to the value specified in the `numIterations` ' +
+                    'field in the specified settings file.')
 args = parser.parse_args()
 filename = args.settings_filename
 while True:
   try:
-    algorithm = Settings.load_algorithm_from_settings(filename)
+    algorithm = Settings.load_algorithm_from_settings(filename, 
+                                                      args.add_iterations)
     if filename != algorithm.workspace.settings_filename:
       algorithm.workspace.save_algorithm_settings(algorithm.as_json())
       filename = algorithm.workspace.settings_filename
