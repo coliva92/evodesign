@@ -3,6 +3,7 @@ from typing import Optional
 from .Workspace import Workspace
 from .Population import Population
 import evodesign.Chain as Chain
+import evodesign.FileIO as FileIO
 from .Prediction import Predictor
 from .Fitness import FitnessFunction
 
@@ -28,7 +29,7 @@ class Algorithm(ABC):
     super().__init__()
     self._predictor = predictor
     self._fitness_fn = fitnessFunction
-    reference = Chain.load_structure_from_pdb(targetPdbFilename)
+    reference = FileIO.load_structure_from_pdb(targetPdbFilename)
     self._sequence_length = Chain.count_chain_residues(reference)
     self._reference_backbone = Chain.filter_backbone_atoms_in_chain(reference)
     self.best_solution = None

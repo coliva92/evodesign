@@ -177,6 +177,7 @@ from evodesign.GA.Selection import GA_Selection_Tournament
 from evodesign.GA.Recombination import GA_Recombination_TwoPointsCrossover
 from evodesign.GA.Mutation import GA_Mutation_SingleSwitch
 from evodesign.GA.Replacement import GA_Replacement_WorseOut
+import evodesign.FileIO as FileIO
 import evodesign.Chain as Chain
 from evodesign import Population, Statistics
 
@@ -187,7 +188,7 @@ recombination = GA_Recombination_TwoPointsCrossover()
 mutation = GA_Mutation_SingleSwitch(probability=0.1)
 replacement = GA_Replacement_WorseOut()
 
-target_structure = Chain.load_structure_from_pdb('example/1Y32.pdb')
+target_structure = FileIO.load_structure_from_pdb('example/1Y32.pdb')
 sequence_length = Chain.count_chain_residues(target_structure)
 target_backbone = Chain.filter_backbone_atoms_in_chain(target_structure)
 
