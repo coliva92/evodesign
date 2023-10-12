@@ -27,6 +27,7 @@ class RandomChild(ChildSelection):
   def params_json(self) -> dict:
     params = super().params_json()
     params['sisterProbability'] = self._sister_probability
+    return params
   
 
 
