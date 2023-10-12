@@ -45,7 +45,7 @@ class Workspace:
     state = random.getstate()
     settings = {
       'seed': self._seed,
-      'state': ( state[0], list(state[1]), state[2])
+      'state': ( state[0], list(state[1]), state[2] )
     }
     with open(self.rng_settings_filename, 'wt', encoding='utf-8') as json_file:
       json.dump(settings, json_file)
