@@ -16,8 +16,6 @@ class NegativeRastrigin(FitnessFunction):
   con `Predictor_Null`
   """
 
-  # TODO Revisar por que no coincide el optimo global con la secuencia objetivo
-
   _blosum_matrix = bl.BLOSUM(62)
 
 
@@ -93,7 +91,7 @@ class NegativeRastrigin(FitnessFunction):
         for key in __class__._blosum_matrix[res].keys()
         if key in AMINO_ACIDS_SET
       ]
-      amino_acid_scores.sort(key=operator.itemgetter(1))
+      amino_acid_scores.sort(key=operator.itemgetter(1), reverse=True)
       residue_ordinals.append({
         item[0]: i
         for i, item in enumerate(amino_acid_scores)
