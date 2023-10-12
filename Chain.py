@@ -1,22 +1,12 @@
 from typing import List
 from Bio.PDB.Structure import Structure
 from Bio.PDB.Atom import Atom
-from Bio.PDB import PDBParser
-import os
 
 
 
 
 
-# omitimos los átomos 'O' para que la búsqueda sea menos estricta
 BACKBONE_ATOM_NAMES = { 'N', 'CA', 'C', 'O' }
-
-
-
-def load_structure_from_pdb(filename: str) -> Structure:
-  structure_id = os.path.splitext(os.path.basename(filename))[0]
-  parser = PDBParser()
-  return parser.get_structure(structure_id, filename)
 
 
 

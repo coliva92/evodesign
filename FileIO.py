@@ -1,11 +1,20 @@
 from typing import Tuple
 from .Population import Population 
 from .Individual import Individual
+from Bio.PDB import PDBParser
+from Bio.PDB.Structure import Structure
 import json
 import csv
 import os
 
 
+
+
+
+def load_structure_from_pdb(filename: str) -> Structure:
+  structure_id = os.path.splitext(os.path.basename(filename))[0]
+  parser = PDBParser()
+  return parser.get_structure(structure_id, filename)
 
 
 
@@ -72,12 +81,12 @@ def save_population_fasta(population: Population, filename: str) -> bool:
   def serialize_metrics(item: Tuple[int, dict]) -> str:
     idx, jsonData = item
     metrics = [ 
-      f'{key}={value:0.5f}' 
-      for key, value in jsonData['metrics'].items() 
+      f'{value}' 
+      for _, value in jsonData['metrics'].items() 
     ]
-    return f'>I{population.iteration_id}P{idx} ' + \
-      f'fitness={jsonData["fitness"]:0.5f} ' + \
-      ' '.join(metrics) + \
+    return f'>{idx}|{population.iteration_id}|' + \
+      f'{jsonData["fitness"]}|' + \
+      '|'.join(metrics) + \
       f'\n{jsonData["sequence"]}'
   
   is_new_file = not os.path.isfile(filename)
