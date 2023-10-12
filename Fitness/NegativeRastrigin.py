@@ -16,22 +16,30 @@ class NegativeRastrigin(FitnessFunction):
   con `Predictor_Null`
   """
 
+  # TODO Revisar por que no coincide el optimo global con la secuencia objetivo
+
   _blosum_matrix = bl.BLOSUM(62)
 
 
 
   def __init__(self, 
                targetSequence: str,
-               windowSize: int = 3,
-               distance: int = 1) -> None:
+               wingLength: int = 1,
+               separation: int = 0) -> None:
     super().__init__({})
-    if windowSize % 2 == 0:
-      raise RuntimeError('window size must be an odd integer')
+
+    if wingLength < 1: wingLength = 1
+    if wingLength > 4: wingLength = 4
+    if separation < 0: separation = 0
+    if separation > 2: separation = 2
+
     self._target_sequence = targetSequence
-    self._window_size = windowSize
-    self._distance = distance
+    self._wing_length = wingLength
+    self._separation = separation
+    self._window_size = 2 * wingLength + 1
     self._sequence_length = len(targetSequence)
     self._residue_ordinals = self._compute_residue_ordinals()
+    self._residue_window_indices = self._compute_residue_window_indices(targetSequence)
     self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_size
 
 
@@ -51,8 +59,8 @@ class NegativeRastrigin(FitnessFunction):
   def params_json(self) -> dict:
     return {
       'targetSequence': self._target_sequence,
-      'windowSize': self._window_size,
-      'distance': self._distance
+      'wingLength': self._wing_length,
+      'separation': self._separation
     }
 
 
@@ -71,6 +79,13 @@ class NegativeRastrigin(FitnessFunction):
 
 
   def _compute_residue_ordinals(self) -> List[Dict[str, float]]:
+    # para convertir una secuencia de aminoácidos a un vector de la misma
+    # longitud que contiene números en el intervalo [-5.12, 5.12], vamos a 
+    # apoyarnos de la matriz BLOSUM. El objetivo es lograr que, entre más se 
+    # parezca una secuencia a la secuencia objetivo, mayor sea su aptitud. 
+    # Entonces, por cada posición en la secuencia, vamos a ordenar los 
+    # aminoácidos de manera ascendente según su score BLOSUM62, usando
+    # como referencia el aminoácido correspondiente en la secuencia objetivo 
     residue_ordinals = []
     for res in self._target_sequence:
       amino_acid_scores = [
@@ -84,6 +99,29 @@ class NegativeRastrigin(FitnessFunction):
         for i, item in enumerate(amino_acid_scores)
       })
     return residue_ordinals
+  
+
+
+  def _compute_residue_window_indices(self, sequence: str) -> List[int]:
+    # Al convertir un residue a un número real en el intervalo [-5.12, 5.12],
+    # inevitablemente habrá una reducción de dimensionalidad, ya que el número
+    # de posibles aminoácidos en cada residuo es finito. Este problema se 
+    # amortigua al usar una subsecuencia o ventana (en lugar de un solo 
+    # aminoácido) por cada residuo en la secuencia. Los índices de estas 
+    # ventanas se precalculan con esta función
+    distance = self._separation + 1
+    residue_window_indices = []
+    for pivot in range(len(sequence)):
+      left_indices = [
+        int((pivot - (distance * i)) % len(sequence))
+        for i in reversed(range(1, self._wing_length + 1))
+      ]
+      right_indices = [
+        int((pivot + (distance * i)) % len(sequence))
+        for i in range(1, self._wing_length + 1)
+      ]
+      residue_window_indices.append(left_indices + [ pivot ] + right_indices)
+    return residue_window_indices
 
 
 
@@ -104,21 +142,13 @@ class NegativeRastrigin(FitnessFunction):
 
 
   def _to_decimal(self, sequence: str, pivot: int) -> int:
-    half_window = (self._window_size - 1) // 2
-    indexes = []
-    for i in reversed(range(1, half_window + 1)):
-      idx = int((pivot - (self._distance * i)) % len(sequence))
-      indexes.append(idx)
-    indexes.append(pivot)
-    for i in range(1, half_window + 1):
-      idx = int((pivot + (self._distance * i)) % len(sequence))
-      indexes.append(idx)
+    ind = self._residue_window_indices[pivot]
     return sum([
-      self._residue_ordinals[indexes[i]][sequence[indexes[i]]] * 20 ** (len(indexes) - 1 - i)
-      for i in range(len(indexes))
+      self._residue_ordinals[ind[i]][sequence[ind[i]]] * 20**(len(ind) - 1 - i)
+      for i in range(len(ind))
     ])
-  
 
+  
 
   def _to_real(self, decimal_residue: int) -> float:
     if decimal_residue % 2 == 0:
