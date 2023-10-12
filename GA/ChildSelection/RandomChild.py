@@ -16,17 +16,17 @@ class RandomChild(ChildSelection):
 
   def __init__(self, 
                maxInputSize: int,
-               sisterProbability: float = 0.5
+               bias: float = 0.5
                ) -> None:
     super().__init__(maxInputSize)
-    self._sister_probability = sisterProbability
-    self._weights = ( sisterProbability, 1.0 - sisterProbability )
+    self._bias = bias
+    self._weights = ( bias, 1.0 - bias )
   
 
 
   def params_json(self) -> dict:
     params = super().params_json()
-    params['sisterProbability'] = self._sister_probability
+    params['bias'] = self._bias
     return params
   
 
