@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import List
+from abc import ABC, abstractmethod, abstractclassmethod
 from evodesign.Population import Population
 
 
@@ -8,8 +7,7 @@ from evodesign.Population import Population
 
 class Replacement(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
 

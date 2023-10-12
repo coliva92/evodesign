@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from evodesign.Population import Population
 from evodesign.Individual import Individual
@@ -9,8 +9,7 @@ from evodesign.Individual import Individual
 
 class Selection(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
   

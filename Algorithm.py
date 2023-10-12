@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from typing import Optional
 from .Workspace import Workspace
 from .Population import Population
@@ -13,8 +13,7 @@ from .Fitness import FitnessFunction
 
 class Algorithm(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
   

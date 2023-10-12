@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from Bio.PDB.Atom import Atom
 from Bio.PDB import PDBParser
@@ -12,8 +12,7 @@ import time
 
 class Predictor(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
 

@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from evodesign.Individual import Individual
 from evodesign.Population import Population
 import evodesign.Choice as Choice
@@ -9,8 +9,7 @@ import evodesign.Choice as Choice
 
 class Mutation(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
 

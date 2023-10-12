@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractclassmethod
 from typing import Dict, List, Tuple, Optional
 from Bio.PDB.Atom import Atom
 from ..Metrics import Metric
@@ -9,15 +9,13 @@ from ..Metrics import Metric
 
 class FitnessFunction(ABC):
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def name(cls) -> str:
     raise NotImplementedError
 
   
 
-  @classmethod
-  @abstractmethod
+  @abstractclassmethod
   def upper_bound(cls) -> float:
     raise NotImplementedError
   
