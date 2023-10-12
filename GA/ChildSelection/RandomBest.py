@@ -6,11 +6,11 @@ import evodesign.Choice as Choice
 
 
 
-class BestChild(ChildSelection):
+class RandomBest(ChildSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildrenSelection_SingleBest'
+    return 'GA_ChildrenSelection_RandomBest'
   
 
 
@@ -33,8 +33,8 @@ class BestChild(ChildSelection):
     temp_children = []
     for sister, brother in zip(children[0::2], children[1::2]):
       if Choice.flip_coin(self._weights):
-        temp_children.append(sister if sister > brother else brother)
+        temp_children.append(sister if sister >= brother else brother)
       else:
-        temp_children.append(sister if Choice.flip_coin() else brother)
+        temp_children.append(sister if sister < brother else brother)
     children.individuals = temp_children
     return children
