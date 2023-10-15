@@ -28,7 +28,7 @@ while True:
     if filename != algorithm.workspace.settings_filename:
       algorithm.workspace.save_algorithm_settings(algorithm.as_json())
       filename = algorithm.workspace.settings_filename
-    algorithm.workspace.load_rng_settings()
+    algorithm.workspace.load_rng_json()
     population = algorithm.workspace.load_latest_population()
     algorithm(population)
     algorithm.workspace.plot()

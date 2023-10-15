@@ -81,7 +81,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       population = Population.new_random(self._population_size, 
                                          self._sequence_length)
       self.workspace.save_population(population)
-      self.workspace.save_rng_settings()
+      self.workspace.save_rng_json()
     is_recovering = self._update_fitness(population, 
                                          self.workspace.save_population)
     if is_recovering: 
@@ -92,7 +92,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       stats = Statistics.new_from_population(population)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
-      self.workspace.save_rng_settings()
+      self.workspace.save_rng_json()
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
             f'{stats.sequence_diversity:.5f} ' + \
@@ -132,13 +132,13 @@ class SimpleGeneticAlgorithm(Algorithm):
     if not children:
       children = self._evolutionary_step(population)
       self.workspace.backup_children(children)
-      self.workspace.save_rng_settings()
+      self.workspace.save_rng_json()
     self._update_fitness(children, self.workspace.backup_children)
     children = self.child_selection(children)
     children.sort()
     fitness_stats = Statistics.min_max_mean(children)
     self.workspace.delete_children_backup()
-    self.workspace.save_rng_settings()
+    self.workspace.save_rng_json()
     return self._replacement(population, children), fitness_stats
   
 
@@ -165,7 +165,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                                          self.workspace.pdbs_folder)
     except BaseException as e:
       saveFunction(population)
-      self.workspace.save_rng_settings()
+      self.workspace.save_rng_json()
       raise e
     return result
   

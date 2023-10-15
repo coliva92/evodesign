@@ -89,7 +89,7 @@ class SurrogatedGeneticAlgorithm(SimpleGeneticAlgorithm):
                                   self.workspace.pdbs_folder)
     except BaseException as e:
       saveFunction(population)
-      self.workspace.save_rng_settings()
+      self.workspace.save_rng_json()
       raise e
     population.individuals = population[:-self._num_predictions] + \
                              top.individuals
