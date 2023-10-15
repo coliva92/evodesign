@@ -94,5 +94,5 @@ class Population:
                                 predictor, 
                                 referenceBackbone,
                                 filename)
-    return missing_fitness is None
+    return len(missing_fitness) > 0
   
