@@ -68,7 +68,7 @@ class SimpleGeneticAlgorithm(Algorithm):
       'mutation': self._mutation.name(),
       'mutationParams': self._mutation.params_json(),
       'childrenSelection': self.child_selection.name(),
-      'childSelectionParams': self.child_selection.params_json()
+      'childrenSelectionParams': self.child_selection.params_json()
     }
     return { **a, **b }
 
