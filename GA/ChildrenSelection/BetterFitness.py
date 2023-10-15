@@ -32,9 +32,9 @@ class BetterFitness(ChildrenSelection):
     # suponemos que la recombinación produjo dos hijos por cada par de padres
     temp_children = []
     for sister, brother in zip(children[0::2], children[1::2]):
-      if Choice.flip_coin(self._weights):
-        temp_children.append(sister if sister >= brother else brother)
-      else:
-        temp_children.append(sister if sister < brother else brother)
+      better, worse = sister, brother
+      if brother > sister: better, worse = brother, sister
+      selected_child = better if Choice.flip_coin(self._weights) else worse
+      temp_children.append(selected_child)
     children.individuals = temp_children
     return children
