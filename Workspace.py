@@ -22,7 +22,7 @@ class Workspace:
     self.reference_filename = targetPdbFilename
     self.root_folder = rootFolder
     self.settings_filename = os.path.join(rootFolder, 'settings.json')
-    self.rng_settings_filename = os.path.join(rootFolder, 'rng.json')
+    self.rng_settings_filename = os.path.join(rootFolder, 'rng_last.json')
     self.stats_filename = os.path.join(rootFolder, 'statistics.csv')
     self.children_filename = os.path.join(rootFolder, '~children.tmp')
     self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
@@ -40,14 +40,17 @@ class Workspace:
   
 
 
-  def save_rng_settings(self) -> None:
+  def save_rng_settings(self, beginningFile: bool = False) -> None:
     os.makedirs(self.root_folder, exist_ok=True)
     state = random.getstate()
     settings = {
       'seed': self._seed,
       'state': ( state[0], list(state[1]), state[2] )
     }
-    with open(self.rng_settings_filename, 'wt', encoding='utf-8') as json_file:
+    filename = os.path.join(self.root_folder, 'rng_beginning.json') \
+               if beginningFile \
+               else self.rng_settings_filename
+    with open(filename, 'wt', encoding='utf-8') as json_file:
       json.dump(settings, json_file)
   
 
@@ -56,6 +59,7 @@ class Workspace:
     if not os.path.isfile(self.rng_settings_filename):
       self._seed = time.time()
       random.seed(self._seed)
+      self.save_rng_settings(beginningFile=True)
       return
     with open(self.rng_settings_filename, 'rt', encoding='utf-8') as json_file:
       settings = json.load(json_file)
