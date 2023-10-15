@@ -86,6 +86,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                                          self.workspace.save_population)
     if is_recovering: 
       population.sort()
+      self.workspace.save_population(population)
     self.best_solution = population[-1]
     if is_recovering:
       stats = Statistics.new_from_population(population)
