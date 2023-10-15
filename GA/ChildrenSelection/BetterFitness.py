@@ -1,4 +1,4 @@
-from .ChildSelection import ChildSelection
+from .ChildrenSelection import ChildrenSelection
 from evodesign import Population
 import evodesign.Choice as Choice
 
@@ -6,11 +6,11 @@ import evodesign.Choice as Choice
 
 
 
-class RandomBest(ChildSelection):
+class BetterFitness(ChildrenSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildrenSelection_RandomBest'
+    return 'GA_ChildrenSelection_BetterFitness'
   
 
 

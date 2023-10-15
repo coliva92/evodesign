@@ -5,7 +5,7 @@ from evodesign import Population
 
 
 
-class ChildSelection(ABC):
+class ChildrenSelection(ABC):
 
   @abstractclassmethod
   def name(cls) -> str:

@@ -5,7 +5,7 @@ from ..Prediction import Predictor
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
-from .ChildSelection import ChildSelection
+from .ChildrenSelection import ChildrenSelection
 from .Replacement import GA_Replacement_GenerationalElitism
 from ..Population import Population
 from ..Statistics import Statistics
@@ -34,7 +34,7 @@ class SimpleGeneticAlgorithm(Algorithm):
                selection: Selection,
                recombination: Recombination,
                mutation: Mutation,
-               childrenSelection: ChildSelection,
+               childrenSelection: ChildrenSelection,
                elitismSize: int = 1
                ) -> None:
     super().__init__(workspaceRoot, 

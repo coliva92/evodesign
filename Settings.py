@@ -7,7 +7,7 @@ from .GA import *
 from .GA.Selection import *
 from .GA.Recombination import *
 from .GA.Mutation import *
-from .GA.ChildSelection import *
+from .GA.ChildrenSelection import *
 from .GA.Replacement import *
 
 
@@ -22,8 +22,8 @@ def _set_auto_params_GA(params: dict,
                          if isinstance(classes['recombination'], list) \
                          else 2
   if 'childrenSelection' not in params:
-    params['childrenSelection'] = 'GA_ChildrenSelection_RandomBest'
-    classes['childrenSelection'] = GA_ChildrenSelection_RandomBest
+    params['childrenSelection'] = 'GA_ChildrenSelection_BetterFitness'
+    classes['childrenSelection'] = GA_ChildrenSelection_BetterFitness
   if 'childrenSelectionParams' not in params:
     params['childrenSelectionParams'] = {}
   params['selectionParams']['selectionSize'] = \

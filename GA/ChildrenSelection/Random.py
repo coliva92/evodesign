@@ -1,4 +1,4 @@
-from .ChildSelection import ChildSelection
+from .ChildrenSelection import ChildrenSelection
 from evodesign import Population
 import evodesign.Choice as Choice
 
@@ -6,11 +6,11 @@ import evodesign.Choice as Choice
 
 
 
-class RandomChild(ChildSelection):
+class Random(ChildrenSelection):
 
   @classmethod
   def name(cls) -> str:
-    return 'GA_ChildrenSelection_SingleRandom'
+    return 'GA_ChildrenSelection_Random'
   
 
 

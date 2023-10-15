@@ -1,11 +1,11 @@
-from .ChildSelection import ChildSelection
+from .ChildrenSelection import ChildrenSelection
 from evodesign import Population
 
 
 
 
 
-class Null(ChildSelection):
+class Null(ChildrenSelection):
 
   @classmethod
   def name(cls) -> str:
