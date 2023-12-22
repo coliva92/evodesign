@@ -1,3 +1,3 @@
 from .Terminator import Terminator
-from .StagnatingMeanFitness import StagnatingMeanFitness
-from .DiversityLowerBoundReached import DiversityLowerBoundReached
+from .FitnessMeanConvergence import FitnessMeanConvergence
+from .SequenceIdentityConvergence import SequenceIdentityConvergence

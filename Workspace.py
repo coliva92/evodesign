@@ -139,8 +139,8 @@ class Workspace:
       'min_fitness': [],
       'fitness_mean': [],
       'max_fitness': [],
-      'sequence_diversity': [],
-      'residue_diversity': [],
+      'sequence_identity': [],
+      'residue_identity': [],
       'best_sequence_fitness': []
     }
     with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
@@ -160,10 +160,10 @@ class Workspace:
     ax[0].set_xlabel('Iterations')
     ax[0].set_ylabel('Fitness')
     ax[0].legend(loc='best')
-    ax[1].plot(data['iteration_id'], data['sequence_diversity'], color='C2')
+    ax[1].plot(data['iteration_id'], data['sequence_identity'], color='C2')
     ax[1].set_xlabel('Iterations')
     ax[1].set_ylabel('Population diversity')
-    ax[2].plot(data['iteration_id'], data['residue_diversity'], color='C3')
+    ax[2].plot(data['iteration_id'], data['residue_identity'], color='C3')
     ax[2].set_xlabel('Iterations')
     ax[2].set_ylabel('Amino acid diversity')
     fig.savefig(self.graph_filename)

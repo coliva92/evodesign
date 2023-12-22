@@ -15,16 +15,16 @@ class Statistics:
   min_fitness: float = field(default=None)
   fitness_mean: float = field(default=None)
   max_fitness: float = field(default=None)
-  sequence_diversity: float = field(default=None)
-  residue_diversity: float = field(default=None)
+  sequence_identity: float = field(default=None)
+  residue_identity: float = field(default=None)
 
 
 
   @classmethod
   def new_from_population(cls, population: Population):
     smallest, largest, average = cls.min_max_mean(population)
-    seq_diversity = cls.average_hamming_distance(population)
-    res_diversity = cls.average_residue_diversity(population)
+    seq_diversity = cls.average_sequence_identity(population)
+    res_diversity = cls.average_per_residue_identity(population)
     return cls(population.iteration_id,
                smallest,
                average,
@@ -52,30 +52,22 @@ class Statistics:
 
 
   @classmethod
-  def average_hamming_distance(cls, population: Population) -> float:
-    # una prueba con una población de 1K secuencias de longitud 1K mostró que 
-    # no hay diferencia relevante en tiempo de ejecución entre usar list 
-    # comprehensions y usar bucles for; usamos bucles for para hacer el código 
-    # más legible
-    averages = []
-    for i, current in enumerate(population[:-1]):
-      counts = []
-      for other in population[i + 1:]:
-        counts.append(sum(map(lambda pair: pair[0] != pair[1], 
-                              zip(current, other))))
-      averages.append(statistics.fmean(counts))
-    return statistics.fmean(averages)
+  def average_per_residue_identity(cls, population: Population) -> float:
+    return statistics.fmean([
+      len({ sequence[i] for sequence in population }) - 20
+      for i in range(len(population[0]))
+    ])
   
 
 
   @classmethod
-  def average_residue_diversity(cls, population: Population) -> float:
+  def average_sequence_identity(cls, population: Population) -> float:
     return statistics.fmean([
-      len({
-        sequence[i]
-        for sequence in population
-      })
-      for i in range(len(population[0]))
+      statistics.fmean([
+        sum(map(lambda pair: pair[0] == pair[1], zip(current, other)))
+        for other in population[i + 1:]
+      ])
+      for i, current in enumerate(population[:-1])
     ])
   
 

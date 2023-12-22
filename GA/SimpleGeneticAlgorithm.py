@@ -9,7 +9,7 @@ from .ChildrenSelection import ChildrenSelection
 from .Replacement import GA_Replacement_GenerationalElitism
 from ..Population import Population
 from ..Statistics import Statistics
-from .Termination import DiversityLowerBoundReached
+from .Termination import SequenceIdentityConvergence
 from ..Individual import Individual
 
 
@@ -48,7 +48,7 @@ class SimpleGeneticAlgorithm(Algorithm):
     self._mutation = mutation
     self.child_selection = childrenSelection
     self._replacement = GA_Replacement_GenerationalElitism(elitismSize)
-    self._terminators = [ DiversityLowerBoundReached() ]
+    self._terminators = [ SequenceIdentityConvergence() ]
     if isinstance(self._fitness_fn, Fitness_RmsdGdtEnergyScore):
       self._fitness_fn._metric_calculators['energyScore'].set_pdbs_folder(
         self.workspace.pdbs_folder)
@@ -95,8 +95,8 @@ class SimpleGeneticAlgorithm(Algorithm):
       self.workspace.save_rng_json()
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
-            f'{stats.sequence_diversity:.5f} ' + \
-            f'{stats.residue_diversity:.5f} ',
+            f'{stats.sequence_identity:.5f} ' + \
+            f'{stats.residue_identity:.5f} ',
             flush=True)
     while True:
       if population.iteration_id == self._num_iterations:
@@ -107,20 +107,20 @@ class SimpleGeneticAlgorithm(Algorithm):
         break
       population, fitness_stats = self.next_population(population)
       self.best_solution = population[-1]
-      sequence_diversity = Statistics.average_hamming_distance(population)
-      residue_diversity = Statistics.average_residue_diversity(population)
+      sequence_identity = Statistics.average_sequence_identity(population)
+      residue_identity = Statistics.average_per_residue_identity(population)
       stats = Statistics(population.iteration_id,
                          fitness_stats[0],
                          fitness_stats[2],
                          fitness_stats[1],
-                         sequence_diversity,
-                         residue_diversity)
+                         sequence_identity,
+                         residue_identity)
       self.workspace.save_population(population)
       self.workspace.save_statistics(stats, self.best_solution)
       print(f'{population.iteration_id:04d} / {self._num_iterations:04d} ' + \
             f'{self.best_solution.fitness:.5f} ' + \
-            f'{stats.sequence_diversity:.5f} ' + \
-            f'{stats.residue_diversity:.5f}',
+            f'{stats.sequence_identity:.5f} ' + \
+            f'{stats.residue_identity:.5f}',
             flush=True)
   
 

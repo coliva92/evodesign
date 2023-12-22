@@ -5,7 +5,7 @@ from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import Replacement
-from .Termination import StagnatingMeanFitness
+from .Termination import FitnessMeanConvergence
 from ..Population import Population
 
 
@@ -42,7 +42,7 @@ class SteadyStateGeneticAlgorithm(SimpleGeneticAlgorithm):
                      recombination, 
                      mutation)
     self._replacement = replacement
-    self._terminators = [ StagnatingMeanFitness(self.workspace.stats_filename) ]
+    self._terminators = [ FitnessMeanConvergence(self.workspace.stats_filename) ]
 
 
 
