@@ -4,3 +4,4 @@ from .RmsdGdtLddt import RmsdGdtLddt as Fitness_RmsdGdtLddt
 from .RmsdGdtEnergyScore import RmsdGdtEnergyScore as Fitness_RmsdGdtEnergyScore
 from .Lddt import Lddt as Fitness_Lddt
 from .NegativeRastrigin import NegativeRastrigin as Fitness_NegativeRastrigin
+from .SideChainPackingNegativeEnergyScore import SideChainPackingNegativeEnergyScore as Fitness_SideChainPackingNegativeEnergyScore
