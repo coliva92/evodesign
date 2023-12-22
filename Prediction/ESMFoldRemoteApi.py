@@ -25,7 +25,8 @@ class ESMFoldRemoteApi(Predictor):
     time.sleep(1.5)
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence, 
-                             timeout=30)
+                             timeout=30, 
+                             verify=False)
     if response.status_code == 403:
       raise HttpForbidden
     elif response.status_code == 504:
