@@ -79,19 +79,16 @@ def load_population_json(filename: str) -> Population:
 
 def save_population_fasta(population: Population, filename: str) -> bool:
   def serialize_metrics(item: Tuple[int, dict]) -> str:
-    idx, jsonData = item
-    metrics = [ 
-      f'{value}' 
-      for _, value in jsonData['metrics'].items() 
-    ]
+    idx, data = item
+    metrics = [ f'{value}' for _, value in data['metrics'].items() ]
     return f'>{idx}|{population.iteration_id}|' + \
-      f'{jsonData["fitness"]}|' + \
+      f'{data["fitness"]}|' + \
       '|'.join(metrics) + \
-      f'\n{jsonData["sequence"]}'
+      f'\n{data["sequence"]}'
   
   is_new_file = not os.path.isfile(filename)
   json_data = population.as_json()
   content = '\n'.join(list(map(serialize_metrics, enumerate(json_data))))
   with open(filename, 'wt', encoding='utf-8') as fasta_file:
-    fasta_file.write(content + '\n')
+    fasta_file.write(f'{content}\n')
   return is_new_file
