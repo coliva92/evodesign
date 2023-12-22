@@ -1,7 +1,6 @@
 from .Terminator import Terminator
 from evodesign.Statistics import Statistics
 from evodesign.Population import Population
-import math
 
 
 
@@ -15,4 +14,4 @@ class SequenceIdentityConvergence(Terminator):
                ) -> bool:
     if not stats:
       stats = Statistics.new_from_population(population)
-    return stats.sequence_identity < math.floor(0.1 * len(population[0]))
+    return stats.sequence_identity > 0.9
