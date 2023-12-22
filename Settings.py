@@ -15,8 +15,8 @@ from .GA.Replacement import *
 
 
 def _set_default_params_GA(params: dict, 
-                        nonClassParams: dict, 
-                        classes: dict) -> dict:
+                           nonClassParams: dict, 
+                           classes: dict) -> dict:
   population_size = nonClassParams['populationSize']
   numOffspringsPerPair = 1 \
                          if isinstance(classes['recombination'], list) \
@@ -33,7 +33,7 @@ def _set_default_params_GA(params: dict,
 
 
 
-_DEFAULT_PARAMS_SETTER = {
+_DEFAULT_ALGORITHM_PARAMS_SETTERS = {
   'GA_Simple': _set_default_params_GA
 }
 
@@ -71,7 +71,8 @@ def load_algorithm_from_settings(filename: str,
     key: getattr(sys.modules[__name__], params[key])
     for key in filter(is_class_key, params)
   }
-  set_default_params = _DEFAULT_PARAMS_SETTER[settings['algorithmType']]
+  set_default_params = \
+    _DEFAULT_ALGORITHM_PARAMS_SETTERS[settings['algorithmType']]
   params = set_default_params(params, non_class_params, classes)
   class_params = {
     key: the_class(**params[f'{key}Params'])
