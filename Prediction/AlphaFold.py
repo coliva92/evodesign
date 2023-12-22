@@ -68,8 +68,8 @@ class AlphaFold(Predictor):
       '--model_preset=monomer_casp14',
       '--db_preset=reduced_dbs',
       f'--output_dir={self.pdbs_folder}',
-      '--mgnify_database_path=/media/biocomp/My\\ Passport/mgnify/mgy_clusters_2018_12.fa',
-      '--data_dir=/media/biocomp/My\\ Passport/reduced_dbs'
+      '--mgnify_database_path=/media/biocomp/My Passport/mgnify/mgy_clusters_2018_12.fa',
+      '--data_dir=/media/biocomp/My Passport/reduced_dbs'
     ]
     popen = subprocess.Popen(cmd, 
                              stdout=subprocess.PIPE, 
