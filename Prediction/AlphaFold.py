@@ -43,6 +43,7 @@ class AlphaFold(Predictor):
       fasta_file.write(f'>prot_{sequence}\n{sequence}\n')
     # ejecutamos el script para crear el MSA vacío
     subprocess.call([
+      'python3',
       self.empty_msa_filename,
       f'--fasta_paths={fasta_filename}',
       f'--output_dir={self.pdbs_folder}'
