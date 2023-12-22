@@ -14,7 +14,7 @@ from .GA.Replacement import *
 
 
 
-def _set_auto_params_GA(params: dict, 
+def _set_default_params_GA(params: dict, 
                         nonClassParams: dict, 
                         classes: dict) -> dict:
   population_size = nonClassParams['populationSize']
@@ -33,8 +33,8 @@ def _set_auto_params_GA(params: dict,
 
 
 
-_AUTO_PARAMS_SETTER = {
-  'GA_Simple': _set_auto_params_GA
+_DEFAULT_PARAMS_SETTER = {
+  'GA_Simple': _set_default_params_GA
 }
 
 
@@ -71,8 +71,8 @@ def load_algorithm_from_settings(filename: str,
     key: getattr(sys.modules[__name__], params[key])
     for key in filter(is_class_key, params)
   }
-  set_auto_params = _AUTO_PARAMS_SETTER[settings['algorithmType']]
-  params = set_auto_params(params, non_class_params, classes)
+  set_default_params = _DEFAULT_PARAMS_SETTER[settings['algorithmType']]
+  params = set_default_params(params, non_class_params, classes)
   class_params = {
     key: the_class(**params[f'{key}Params'])
     if f'{key}Params' in params else the_class()
