@@ -27,7 +27,7 @@ class Workspace:
     self.rng_checkpoint_filename = os.path.join(rootFolder, 
                                                 'rng_checkpoint.json')
     self.stats_filename = os.path.join(rootFolder, 'statistics.csv')
-    self.children_filename = os.path.join(rootFolder, '~children.tmp')
+    self.children_filename = os.path.join(rootFolder, '.children')
     self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
     self.populations_folder = os.path.join(rootFolder, 'populations')
     self.pdbs_folder = os.path.join(rootFolder, 'pdbs')

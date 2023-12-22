@@ -17,7 +17,7 @@ class SideChainPackingEnergyScore(Metric):
                ) -> None:
     super().__init__()
     self._scwrl_outputs_folder = os.path.join(workspaceRoot, 'scwrl_outputs')
-    self._scwrl_sequence_filename = os.path.join(workspaceRoot, '~scwrl4.in')
+    self._scwrl_sequence_filename = os.path.join(workspaceRoot, '.scwrl4.in')
     self._scwrl_input_pdb_filename = targetPdbFilename
     self._scwrl_executable = scwrlExecutablePath
     self._root_folder = workspaceRoot

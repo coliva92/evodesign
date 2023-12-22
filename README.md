@@ -117,7 +117,7 @@ Al finalizar la ejecución del programa, la carpeta _workspace_ debería contene
 
 - La carpeta `pdbs` contiene los archivos PDB de las estructuras que fueron predichas para todas las secuencias producidas durante la ejecución del programa (y que cuya aptitud fue evaluada).
 - La carpeta `populations` contiene las poblaciones (esto es, el conjunto de secuencias) producidas en cada iteración del algoritmo evolutivo. En cada uno de estos archivos se registra la aptitud y demás métricas de cada secuencia.
-- El archivo `~children.tmp` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
+- El archivo `.children` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
 - El archivo `fitness.png` contiene la gráfica que muestra la aptitud de la población en cada iteración del algoritmo.
 - El archivo `settings.json` es el mismo archivo de configuración que se mencionó anteriormente. No se modifica durante la ejecución del algoritmo. 
 - El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Estos datos son los siguientes:
