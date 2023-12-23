@@ -34,6 +34,7 @@ Finalmente, se registra la carpeta de `evodesign` en la variable de entorno `PYT
 
 ```
 export PYTHONPATH=${PYTHONPATH}:path/to/evodesign
+source ~/.bashrc
 ```
 
 Este registro permite importar el módulo `evodesign` desde cualquier _script_ de Python, sin importar su locación en el sistema de archivos. 
