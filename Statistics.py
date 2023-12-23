@@ -37,7 +37,7 @@ class Statistics:
   @classmethod
   def min_max_mean(cls, population: Population) -> Tuple[float, float, float]:
     # una prueba empírica con una población de 1M de secuencias mostró que usar
-    # las funciones min, max y statistics.fmean es aprox. siete veces más lento
+    # las funciones min, max y statistics.mean es aprox. siete veces más lento
     # que calcular estos valores en un solo bucle
     summation, smallest, largest = 0.0, math.inf, -math.inf
     for individual in population:
@@ -53,7 +53,7 @@ class Statistics:
 
   @classmethod
   def average_per_residue_identity(cls, population: Population) -> float:
-    return statistics.fmean([
+    return statistics.mean([
       len({ sequence[i] for sequence in population }) - 20
       for i in range(len(population[0]))
     ])
@@ -62,8 +62,8 @@ class Statistics:
 
   @classmethod
   def average_sequence_identity(cls, population: Population) -> float:
-    return statistics.fmean([
-      statistics.fmean([
+    return statistics.mean([
+      statistics.mean([
         sum(map(lambda pair: pair[0] == pair[1], zip(current, other)))
         for other in population[i + 1:]
       ])

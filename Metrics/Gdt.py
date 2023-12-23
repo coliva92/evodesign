@@ -26,7 +26,7 @@ class Gdt(Metric):
     # `referenceBackbone` en un paso anterior
     distances = [ a - b for a, b in zip(modelBackbone, referenceBackbone) ]
     # tradicionalmente, el GDT se reporta en centésimas
-    return statistics.fmean([
+    return statistics.mean([
       sum([ d <= c for d in distances ]) / len(distances)
       for c in self._cutoffs
     ])

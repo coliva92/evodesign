@@ -44,7 +44,7 @@ class Lddt(Metric):
     }
     
     n = len(reference_set)
-    return statistics.fmean([
+    return statistics.mean([
       sum([ is_preserved(list(x)[0], list(x)[1], c) for x in model_set ]) / n
       for c in self._cutoffs
     ])
