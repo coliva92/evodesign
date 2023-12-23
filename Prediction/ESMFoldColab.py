@@ -26,11 +26,6 @@ class ESMFoldColab(Predictor):
       ESMFoldColab._model.eval().cuda().requires_grad_(False)
       ESMFoldColab._model.set_chunk_size(128)
     prediction = ESMFoldColab._model.infer_pdb(sequence)
+    torch.cuda.empty_cache()
     with open(pdbFilename, 'wt', encoding='utf-8') as pdb_file:
       pdb_file.write(prediction)
-  
-
-
-  def __del__(self) -> None:
-    import torch
-    torch.cuda.empty_cache()
