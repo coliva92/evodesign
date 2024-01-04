@@ -54,7 +54,7 @@ class Statistics:
   @classmethod
   def average_per_residue_identity(cls, population: Population) -> float:
     return statistics.mean([
-      len({ sequence[i] for sequence in population }) - 20
+      20 - len({ sequence[i] for sequence in population })
       for i in range(len(population[0]))
     ])
   
