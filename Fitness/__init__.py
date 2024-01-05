@@ -5,3 +5,4 @@ from .RmsdGdtEnergyScore import RmsdGdtEnergyScore as Fitness_RmsdGdtEnergyScore
 from .Lddt import Lddt as Fitness_Lddt
 from .NegativeRastrigin import NegativeRastrigin as Fitness_NegativeRastrigin
 from .SideChainPackingNegativeEnergyScore import SideChainPackingNegativeEnergyScore as Fitness_SideChainPackingNegativeEnergyScore
+from .NegativeCyclization import NegativeCyclization as Fitness_NegativeCyclization
