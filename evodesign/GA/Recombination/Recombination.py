@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from ... import Individual, Population
-import evodesign.Choice as Choice
+import Choice
 
 
 
@@ -22,7 +22,7 @@ class Recombination(ABC):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'probability': self._probability
     }

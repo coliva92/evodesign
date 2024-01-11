@@ -1,6 +1,6 @@
-from .ChildrenSelection import ChildrenSelection
-from evodesign import Population
-import evodesign.Choice as Choice
+from ChildrenSelection import ChildrenSelection
+from ... import Population
+import Choice
 
 
 
@@ -21,8 +21,8 @@ class BetterFitness(ChildrenSelection):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['probability'] = self._probability
     return params
   

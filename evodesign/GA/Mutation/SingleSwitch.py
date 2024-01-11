@@ -1,6 +1,6 @@
-from .Mutation import Mutation
+from . import Mutation
 import random
-import evodesign.Sequence as Sequence
+import Sequence
 
 
 

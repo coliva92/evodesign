@@ -1,6 +1,6 @@
-from .Replacement import Replacement
-from evodesign.Population import Population
-from evodesign.Individual import Individual
+from . import Replacement
+from ... import Population
+from ... import Individual
 from typing import List
 
 

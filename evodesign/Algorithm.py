@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import Optional
-from .Workspace import Workspace
-from .Population import Population
-import evodesign.Chain as Chain
-import evodesign.FileIO as FileIO
-from .Prediction import Predictor
-from .Fitness import FitnessFunction
+from Workspace import Workspace
+from Population import Population
+import Chain
+import FileIO
+from Prediction import Predictor
+from Fitness import FitnessFunction
 
 
 
@@ -36,21 +36,21 @@ class Algorithm(ABC):
 
 
 
-  def as_json(self) -> dict:
+  def settings(self) -> dict:
     return {
       'algorithmType': self.name(),
-      'algorithmParams': self._params_json()
+      'algorithmParams': self.params_as_dict()
     }
   
 
 
-  def _params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'workspaceRoot': self.workspace.root_folder,
       'targetPdbFilename': self.workspace.reference_filename,
       'predictor': self._predictor.name(),
       'fitnessFunction': self._fitness_fn.name(),
-      'fitnessFunctionParams': self._fitness_fn.params_json()
+      'fitnessFunctionParams': self._fitness_fn.params_as_dict()
     }
   
 

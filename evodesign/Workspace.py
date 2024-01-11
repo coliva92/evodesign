@@ -1,7 +1,7 @@
-from .Individual import Individual
-from .Population import Population
-from .Statistics import Statistics
-import evodesign.FileIO as FileIO
+from Individual import Individual
+from Population import Population
+from Statistics import Statistics
+import FileIO
 import matplotlib.pyplot as plt
 import json
 import csv

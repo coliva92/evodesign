@@ -1,4 +1,4 @@
-from .Metric import Metric
+from . import Metric
 from .Rmsd import Rmsd
 from .Gdt import Gdt
 from .Lddt import Lddt

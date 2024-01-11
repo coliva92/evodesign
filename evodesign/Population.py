@@ -1,8 +1,8 @@
 from typing import List, Optional
 from Bio.PDB.Atom import Atom
-from .Individual import Individual
-from .Fitness import FitnessFunction
-from .Prediction import Predictor
+from Individual import Individual
+from Fitness import FitnessFunction
+from Prediction import Predictor
 import os
 
 
@@ -31,8 +31,8 @@ class Population:
   
 
 
-  def as_json(self) -> list:
-    return [ individual.as_json() for individual in self.individuals ]
+  def as_dict(self) -> list:
+    return [ individual.as_dict() for individual in self.individuals ]
   
 
 

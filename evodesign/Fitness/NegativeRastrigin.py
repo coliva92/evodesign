@@ -1,4 +1,4 @@
-from .FitnessFunction import FitnessFunction
+from . import FitnessFunction
 from ..Sequence import AMINO_ACIDS_SET
 import blosum as bl
 from typing import Dict, List
@@ -10,6 +10,7 @@ import operator
 
 
 class NegativeRastrigin(FitnessFunction):
+
   """[Función de Rastrigin](https://www.sfu.ca/~ssurjano/rastr.html) para 
   realizar pruebas sin utilizar directamente el predictor de la estructura de 
   una proteína al calcular la aptitud. Esta función debe utilizarse en conjunto 
@@ -48,7 +49,7 @@ class NegativeRastrigin(FitnessFunction):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'targetSequence': self._target_sequence,
       'windowWidth': self._window_width

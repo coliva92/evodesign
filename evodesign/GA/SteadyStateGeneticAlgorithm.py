@@ -6,7 +6,7 @@ from .Recombination import Recombination
 from .Mutation import Mutation
 from .Replacement import Replacement
 from .Termination import FitnessMeanConvergence
-from ..Population import Population
+from .. import Population
 
 
 

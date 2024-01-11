@@ -27,7 +27,7 @@ class FitnessFunction(ABC):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return dict()
 
 

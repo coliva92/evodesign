@@ -1,9 +1,8 @@
-from .Selection import Selection
+from . import Selection
 from typing import List
-from evodesign.Individual import Individual
-from evodesign.Population import Population
+from ... import Individual
+from ... import Population
 import random
-import evodesign.Choice as Choice
 
 
 
@@ -36,8 +35,8 @@ class Overselection(Selection):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['topSize'] = self._top_size
     params['topTopProbability'] = self._top_top_probability
     params['topBottomProbability'] = self._top_bot_probability

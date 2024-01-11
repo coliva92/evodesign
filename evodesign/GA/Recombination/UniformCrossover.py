@@ -1,4 +1,4 @@
-from .Recombination import Recombination
+from . import Recombination
 from typing import List
 import random
 
@@ -23,8 +23,8 @@ class UniformCrossover(Recombination):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['bias'] = self._bias
     return params
 

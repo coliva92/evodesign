@@ -1,5 +1,5 @@
-from .ChildrenSelection import ChildrenSelection
-from evodesign import Population
+from ChildrenSelection import ChildrenSelection
+from ... import Population
 
 
 

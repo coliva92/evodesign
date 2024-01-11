@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, asdict
 from typing import Tuple
-from .Population import Population
+from Population import Population
 import statistics
 import math
 

@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
-import evodesign.Settings as Settings
-from .Exceptions import *
+import Settings
+from Exceptions import *
 from requests.exceptions import ConnectTimeout
 import sys
 
@@ -26,7 +26,7 @@ while True:
     algorithm = Settings.load_algorithm_from_settings(filename, 
                                                       args.add_iterations)
     if filename != algorithm.workspace.settings_filename:
-      algorithm.workspace.save_algorithm_settings(algorithm.as_json())
+      algorithm.workspace.save_algorithm_settings(algorithm.settings())
       filename = algorithm.workspace.settings_filename
     algorithm.workspace.load_rng_json()
     population = algorithm.workspace.load_latest_population()

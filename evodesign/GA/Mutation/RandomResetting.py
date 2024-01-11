@@ -1,6 +1,6 @@
-from .Mutation import Mutation
-import evodesign.Sequence as Sequence
-import evodesign.Choice as Choice
+from . import Mutation
+import Sequence
+import Choice
 
 
 
@@ -24,8 +24,8 @@ class RandomResetting(Mutation):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['residueProbability'] = self._residue_prob
     return params
 

@@ -1,4 +1,4 @@
-from .FitnessFunction import FitnessFunction
+from . import FitnessFunction
 from typing import Dict, List, Optional
 from ..Metrics import Rmsd, Gdt as GdtMetric
 
@@ -31,7 +31,7 @@ class Gdt(FitnessFunction):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'cutoffs': self._metric_calculators['gdt']._cutoffs
     }

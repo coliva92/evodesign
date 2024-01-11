@@ -1,4 +1,4 @@
-from .Predictor import Predictor
+from . import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
 

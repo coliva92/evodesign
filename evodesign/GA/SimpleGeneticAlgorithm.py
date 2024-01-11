@@ -1,4 +1,4 @@
-from ..Algorithm import Algorithm
+from .. import Algorithm
 from typing import Optional, Callable, List, Tuple
 from ..Fitness import FitnessFunction, Fitness_RmsdGdtEnergyScore
 from ..Prediction import Predictor
@@ -7,10 +7,10 @@ from .Recombination import Recombination
 from .Mutation import Mutation
 from .ChildrenSelection import ChildrenSelection
 from .Replacement import GA_Replacement_GenerationalElitism
-from ..Population import Population
-from ..Statistics import Statistics
+from .. import Population
+from .. import Statistics
 from .Termination import SequenceIdentityConvergence
-from ..Individual import Individual
+from .. import Individual
 
 
 
@@ -62,13 +62,13 @@ class SimpleGeneticAlgorithm(Algorithm):
       'numIterations': self._num_iterations,
       'elitismSize': self._replacement.elitism_size(),
       'selection': self._selection.name(),
-      'selectionParams': self._selection.params_json(),
+      'selectionParams': self._selection.params_as_dict(),
       'recombination': self._recombination.name(),
-      'recombinationParams': self._recombination.params_json(),
+      'recombinationParams': self._recombination.params_as_dict(),
       'mutation': self._mutation.name(),
-      'mutationParams': self._mutation.params_json(),
+      'mutationParams': self._mutation.params_as_dict(),
       'childrenSelection': self.child_selection.name(),
-      'childrenSelectionParams': self.child_selection.params_json()
+      'childrenSelectionParams': self.child_selection.params_as_dict()
     }
     return { **a, **b }
 

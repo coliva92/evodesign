@@ -1,4 +1,4 @@
-from .Recombination import Recombination
+from . import Recombination
 from .SinglePointCrossover import SinglePointCrossover as GA_Recombination_SinglePointCrossover
 from .TwoPointsCrossover import TwoPointsCrossover as GA_Recombination_TwoPointsCrossover
 from .CenterPointCrossover import CenterPointCrossover as GA_Recombination_CenterPointCrossover

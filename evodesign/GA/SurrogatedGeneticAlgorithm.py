@@ -1,11 +1,11 @@
-from .SimpleGeneticAlgorithm import SimpleGeneticAlgorithm
+from . import SimpleGeneticAlgorithm
 from typing import Callable
 from ..Fitness import FitnessFunction
 from ..Prediction import Predictor, Predictor_None
 from .Selection import Selection
 from .Recombination import Recombination
 from .Mutation import Mutation
-from ..Population import Population
+from .. import Population
 
 
 

@@ -2,9 +2,10 @@ from dataclasses import dataclass, field, asdict
 from functools import total_ordering
 from typing import List, Optional
 from Bio.PDB.Atom import Atom
-import evodesign.Sequence as Sequence
-from evodesign.Fitness import FitnessFunction
-from evodesign.Prediction import Predictor
+import Sequence
+from Fitness import FitnessFunction
+from Prediction import Predictor
+from AsDict import AsDict
 import os
 
 
@@ -13,7 +14,7 @@ import os
 
 @total_ordering
 @dataclass
-class Individual:
+class Individual(AsDict):
 
   sequence: str
   fitness: float = field(default=None)
@@ -72,11 +73,6 @@ class Individual:
         return False
       return self.metrics['rmsd'] > other.metrics['rmsd']
     return self.fitness < other.fitness
-    
-  
-  
-  def as_json(self) -> dict:
-    return asdict(self)
   
 
 

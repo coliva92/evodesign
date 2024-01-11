@@ -1,4 +1,4 @@
-from .FitnessFunction import FitnessFunction
+from . import FitnessFunction
 from typing import Dict, List, Optional
 from ..Metrics import Lddt as Lddt_Metric
 
@@ -31,7 +31,7 @@ class Lddt(FitnessFunction):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'cutoffs': self._metric_calculators['lddt']._cutoffs,
       'inclusionRadius': self._metric_calculators['lddt']._radius

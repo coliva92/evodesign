@@ -1,7 +1,7 @@
-from .Terminator import Terminator
+from . import Terminator
 from typing import Optional
-from evodesign.Statistics import Statistics
-from evodesign.Population import Population
+from ... import Statistics
+from ... import Population
 import os
 import csv
 

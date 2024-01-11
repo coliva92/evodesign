@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from evodesign import Population
+from ... import Population
 
 
 
@@ -19,7 +19,7 @@ class ChildrenSelection(ABC):
   
 
   
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {}
   
 

@@ -1,4 +1,4 @@
-from .FitnessFunction import FitnessFunction
+from . import FitnessFunction
 from typing import Dict, Optional
 from ..Metrics import SideChainPackingEnergyScore as EnergyMetric
 import math
@@ -35,7 +35,7 @@ class SideChainPackingNegativeEnergyScore(FitnessFunction):
 
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     metric = self._metric_calculators['sideChainPackingEnergy']
     return {
       'workspaceRoot': metric._root_folder,

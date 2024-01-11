@@ -1,6 +1,6 @@
-from .Terminator import Terminator
-from evodesign.Statistics import Statistics
-from evodesign.Population import Population
+from . import Terminator
+from ... import Statistics
+from ... import Population
 import math
 
 

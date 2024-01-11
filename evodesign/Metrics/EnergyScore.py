@@ -1,4 +1,4 @@
-from .Metric import Metric
+from . import Metric
 from typing import List
 from Bio.PDB.Atom import Atom
 import os

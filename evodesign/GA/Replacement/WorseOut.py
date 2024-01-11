@@ -1,6 +1,5 @@
-from .Replacement import Replacement
-from typing import List
-from evodesign.Population import Population
+from . import Replacement
+from ... import Population
 
 
 

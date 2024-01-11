@@ -1,8 +1,8 @@
-from .Predictor import Predictor
+from . import Predictor
 from ..Exceptions import (HttpForbidden, 
-                          HttpInternalServerError, 
-                          HttpGatewayTimeout,
-                          HttpUnknownError)
+                        HttpInternalServerError, 
+                        HttpGatewayTimeout,
+                        HttpUnknownError)
 import requests
 import time
 

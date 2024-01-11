@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from Bio.PDB.Atom import Atom
 from Bio.PDB import PDBParser
-import evodesign.Chain as Chain
+import Chain
 import os
 import time
 

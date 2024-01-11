@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from evodesign.Population import Population
+from ... import Population
 
 
 

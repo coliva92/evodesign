@@ -1,4 +1,4 @@
-from .Recombination import Recombination
+from . import Recombination
 from typing import List
 import random
 

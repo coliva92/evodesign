@@ -1,7 +1,7 @@
-from .Selection import Selection
+from . import Selection
 from typing import List
-from evodesign.Population import Population
-from evodesign.Individual import Individual
+from ... import Population
+from ... import Individual
 import random
 
 
@@ -24,8 +24,8 @@ class Tournament(Selection):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['tournamentSize'] = self._tournament_size
     return params
 

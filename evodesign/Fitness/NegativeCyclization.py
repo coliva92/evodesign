@@ -1,6 +1,6 @@
 from typing import Dict, Optional
-from evodesign.Metrics import TerminalsDistance
-from .FitnessFunction import FitnessFunction
+from ..Metrics import TerminalsDistance
+from . import FitnessFunction
 
 
 
@@ -27,7 +27,7 @@ class NegativeCyclization(FitnessFunction):
   
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {}
   
 

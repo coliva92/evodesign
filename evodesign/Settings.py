@@ -1,14 +1,14 @@
 import sys
 import json
-from .Algorithm import Algorithm
-from .Prediction import *
-from .Fitness import *
-from .GA import *
-from .GA.Selection import *
-from .GA.Recombination import *
-from .GA.Mutation import *
-from .GA.ChildrenSelection import *
-from .GA.Replacement import *
+from Algorithm import Algorithm
+from Prediction import *
+from Fitness import *
+from GA import *
+from GA.Selection import *
+from GA.Recombination import *
+from GA.Mutation import *
+from GA.ChildrenSelection import *
+from GA.Replacement import *
 
 
 

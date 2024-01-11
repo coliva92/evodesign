@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from evodesign.Individual import Individual
-from evodesign.Population import Population
-import evodesign.Choice as Choice
+from Individual import Individual
+from Population import Population
+import Choice
 
 
 
@@ -22,7 +22,7 @@ class Mutation(ABC):
 
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {
       'probability': self._probability
     }

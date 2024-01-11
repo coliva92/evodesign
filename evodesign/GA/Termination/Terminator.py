@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from evodesign.Statistics import Statistics
-from evodesign.Population import Population
+from ... import Statistics
+from ... import Population
 
 
 

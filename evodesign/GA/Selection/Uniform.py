@@ -1,7 +1,7 @@
-from .Selection import Selection
+from . import Selection
 from typing import List
-from evodesign.Population import Population
-from evodesign.Individual import Individual
+from ... import Population
+from ... import Individual
 import random
 
 

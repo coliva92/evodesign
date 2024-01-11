@@ -1,6 +1,6 @@
-from .Mutation import Mutation
+from . import Mutation
 import random
-import evodesign.Sequence as Sequence
+import Sequence
 
 
 
@@ -23,8 +23,8 @@ class MultipleSwitches(Mutation):
   
 
 
-  def params_json(self) -> dict:
-    params = super().params_json()
+  def params_as_dict(self) -> dict:
+    params = super().params_as_dict()
     params['numSwitches'] = self._num_switches
     return params
 

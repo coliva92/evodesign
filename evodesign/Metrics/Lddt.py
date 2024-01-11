@@ -1,5 +1,5 @@
 from Bio.PDB.Atom import Atom
-from .Metric import Metric
+from . import Metric
 from typing import List, Optional
 import statistics
 
@@ -23,6 +23,7 @@ class Lddt(Metric):
                modelBackbone: List[Atom], 
                referenceBackbone: List[Atom], 
                _: Optional[str] = None) -> float:
+    
     def is_preserved(i: int, j: int, cutoff: float) -> bool:
       a = modelBackbone[i]
       b = modelBackbone[j]

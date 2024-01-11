@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
-from evodesign.Population import Population
-from evodesign.Individual import Individual
+from ... import Population
+from ... import Individual
 
 
 
@@ -21,7 +21,7 @@ class Selection(ABC):
 
 
 
-  def params_json(self) -> dict:
+  def params_as_dict(self) -> dict:
     return {}
 
 
