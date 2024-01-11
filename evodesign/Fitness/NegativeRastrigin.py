@@ -16,29 +16,23 @@ class NegativeRastrigin(FitnessFunction):
   con `Predictor_Null`
   """
 
-  _blosum_matrix = bl.BLOSUM(62)
-
 
 
   def __init__(self, 
                targetSequence: str,
-               wingLength: int = 1,
-               separation: int = 0) -> None:
+               windowWidth: int = 3
+               ) -> None:
     super().__init__({})
 
-    if wingLength < 1: wingLength = 1
-    if wingLength > 4: wingLength = 4
-    if separation < 0: separation = 0
-    if separation > 2: separation = 2
+    # acotamos los valores permitidos para la variable `windowWidth`...
+    if windowWidth < 3: windowWidth = 3
+    if windowWidth > 9: windowWidth = 9
 
     self._target_sequence = targetSequence
-    self._wing_length = wingLength
-    self._separation = separation
-    self._window_size = 2 * wingLength + 1
-    self._sequence_length = len(targetSequence)
-    self._residue_ordinals = self._compute_residue_ordinals()
-    self._residue_window_indices = self._compute_residue_window_indices(targetSequence)
-    self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_size
+    self._window_width = windowWidth
+    self._wing_length = (windowWidth - 1) // 2
+    self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
+    self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_width
 
 
 
@@ -57,8 +51,7 @@ class NegativeRastrigin(FitnessFunction):
   def params_json(self) -> dict:
     return {
       'targetSequence': self._target_sequence,
-      'wingLength': self._wing_length,
-      'separation': self._separation
+      'windowWidth': self._window_width
     }
 
 
@@ -72,54 +65,33 @@ class NegativeRastrigin(FitnessFunction):
       x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
       for x_i in x 
     ])
-    return -10.0 * self._sequence_length - sigma # queremos el valor negativo
+    return -10.0 * len(sequence) - sigma # queremos el valor negativo
   
 
 
-  def _compute_residue_ordinals(self) -> List[Dict[str, float]]:
-    # para convertir una secuencia de aminoácidos a un vector de la misma
+  def _compute_residue_ordinals(self, 
+                                blosum_matrix: bl.BLOSUM
+                                ) -> List[Dict[str, float]]:
+    # Para convertir una secuencia de aminoácidos a un vector de la misma
     # longitud que contiene números en el intervalo [-5.12, 5.12], vamos a 
     # apoyarnos de la matriz BLOSUM. El objetivo es lograr que, entre más se 
     # parezca una secuencia a la secuencia objetivo, mayor sea su aptitud. 
     # Entonces, por cada posición en la secuencia, vamos a ordenar los 
     # aminoácidos de manera ascendente según su score BLOSUM62, usando
-    # como referencia el aminoácido correspondiente en la secuencia objetivo 
+    # como referencia el aminoácido correspondiente en la secuencia objetivo. 
     residue_ordinals = []
-    for res in self._target_sequence:
+    for residue in self._target_sequence:
       amino_acid_scores = [
-        (key, __class__._blosum_matrix[res][key])
-        for key in __class__._blosum_matrix[res].keys()
-        if key in AMINO_ACIDS_SET
+        (amino_acid, blosum_matrix[residue][amino_acid])
+        for amino_acid in blosum_matrix[residue].keys()
+        if amino_acid in AMINO_ACIDS_SET
       ]
       amino_acid_scores.sort(key=operator.itemgetter(1), reverse=True)
       residue_ordinals.append({
-        item[0]: i
-        for i, item in enumerate(amino_acid_scores)
+        score[0]: i # la clave es el aminoácido
+        for i, score in enumerate(amino_acid_scores)
       })
     return residue_ordinals
-  
-
-
-  def _compute_residue_window_indices(self, sequence: str) -> List[int]:
-    # Al convertir un residue a un número real en el intervalo [-5.12, 5.12],
-    # inevitablemente habrá una reducción de dimensionalidad, ya que el número
-    # de posibles aminoácidos en cada residuo es finito. Este problema se 
-    # amortigua al usar una subsecuencia o ventana (en lugar de un solo 
-    # aminoácido) por cada residuo en la secuencia. Los índices de estas 
-    # ventanas se precalculan con esta función
-    distance = self._separation + 1
-    residue_window_indices = []
-    for pivot in range(len(sequence)):
-      left_indices = [
-        int((pivot - (distance * i)) % len(sequence))
-        for i in reversed(range(1, self._wing_length + 1))
-      ]
-      right_indices = [
-        int((pivot + (distance * i)) % len(sequence))
-        for i in range(1, self._wing_length + 1)
-      ]
-      residue_window_indices.append(left_indices + [ pivot ] + right_indices)
-    return residue_window_indices
 
 
 
@@ -139,11 +111,24 @@ class NegativeRastrigin(FitnessFunction):
   
 
 
-  def _to_decimal(self, sequence: str, pivot: int) -> int:
-    ind = self._residue_window_indices[pivot]
+  def _to_decimal(self, 
+                  sequence: str, 
+                  pivot: int
+                  ) -> int:
+    # Dado que el conjunto de aminoácidos que se permiten en cada residuo es
+    # discreto y finito, si deseamos asociar cada aminoácido en dicho conjunto 
+    # con un número real en el intervalo [-5.12, 5.12], inevitablemente algunos 
+    # de los números en este intervalo no podrán ser representados (por la 
+    # discretización). Este problema se amortigua al usar una subsecuencia o 
+    # ventana (en lugar de un solo aminoácido) por cada posición o residuo en 
+    # la secuencia.
+    n = len(sequence)
+    a = pivot - self._wing_length
+    b = pivot + self._wing_length + 1
+    indices = [ i % n for i in range(a, b) ]
     return sum([
-      self._residue_ordinals[ind[i]][sequence[ind[i]]] * 20**(len(ind) - 1 - i)
-      for i in range(len(ind))
+      self._residue_ordinals[j][sequence[i]] * 20**(self._window_width - 1 - i)
+      for i, j in enumerate(indices)
     ])
 
   
