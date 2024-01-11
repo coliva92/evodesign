@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
-from evodesign import Individual, Population
+from ... import Individual, Population
 import evodesign.Choice as Choice
 
 
@@ -15,14 +15,10 @@ class Recombination(ABC):
 
 
 
-  def __init__(self, 
-               numOffspringsPerPair: int,
-               probability: float = 1.0
-               ) -> None:
+  def __init__(self, probability: float = 1.0) -> None:
     super().__init__()
     self._activation_weights = ( probability, 1.0 - probability )
     self._probability = probability
-    self._num_offsprings = numOffspringsPerPair
   
 
 
@@ -38,19 +34,20 @@ class Recombination(ABC):
     if len(parents) % 2 != 0:
       parents = parents[:-1]
     
+    n = len(parents[0])
+    
     children = []
     for mother, father in zip(parents[0::2], parents[1::2]):
       if Choice.flip_coin(self._activation_weights):
         children += [
           Individual(sequence) 
-          for sequence in self.offspring_sequences(mother.sequence,
+          for sequence in self.offspring_sequences(mother.sequence, 
                                                    father.sequence)
         ]
         continue
-      children += [ 
-        Individual.new_random(len(mother)) \
-        for _ in range(self._num_offsprings) 
-      ]
+
+      # suponemos que la recombinación siempre produce dos hijos
+      children += [ Individual.new_random(n), Individual.new_random(n) ]
     return Population(children)
 
 

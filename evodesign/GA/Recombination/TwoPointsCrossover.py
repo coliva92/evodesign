@@ -15,7 +15,7 @@ class TwoPointsCrossover(Recombination):
 
 
   def __init__(self, probability: float = 1) -> None:
-    super().__init__(2, probability)
+    super().__init__(probability)
 
 
 
