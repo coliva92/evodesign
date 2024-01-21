@@ -1,4 +1,4 @@
-from numpy.random import Generator
+from .Random import Random
 
 
 
@@ -8,17 +8,15 @@ AMINO_ACIDS = 'ACDEFGHIKLMNPQRSTVWY'
 
 
 
-def random_sequence(rng: Generator, 
-                    length: int
-                    ) -> str:
+def random_sequence(length: int) -> str:
+  rng = Random.get_rng()
   indices = rng.choice(len(AMINO_ACIDS), size=length)
   return ''.join([ AMINO_ACIDS[i] for i in indices ])
 
 
 
-def switch_residue(rng: Generator,
-                   residue: str
-                   ) -> str:
+def switch_residue(residue: str) -> str:
+  rng = Random.get_rng()
   while True:
     new_residue = AMINO_ACIDS[rng.choice(len(AMINO_ACIDS))]
     if new_residue != residue:
