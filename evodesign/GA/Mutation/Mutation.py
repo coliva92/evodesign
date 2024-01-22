@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from Individual import Individual
 from Population import Population
-import Choice
+from evodesign import Random as Choice
 
 
 
@@ -37,5 +37,5 @@ class Mutation(ABC):
 
   def __call__(self, children: Population) -> None:
     for i, child in enumerate(children):
-      if Choice.flip_coin(self._activation_weights):
+      if Choice.coin_toss(self._activation_weights):
         children[i] = Individual(self.mutate_sequence(child.sequence))

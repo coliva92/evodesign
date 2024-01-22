@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from ... import Individual, Population
-import Choice
+from evodesign import Random as Choice 
 
 
 
@@ -38,7 +38,7 @@ class Recombination(ABC):
     
     children = []
     for mother, father in zip(parents[0::2], parents[1::2]):
-      if Choice.flip_coin(self._activation_weights):
+      if Choice.coin_toss(self._activation_weights):
         children += [
           Individual(sequence) 
           for sequence in self.offspring_sequences(mother.sequence, 

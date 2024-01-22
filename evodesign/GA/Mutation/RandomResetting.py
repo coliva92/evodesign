@@ -1,6 +1,6 @@
 from . import Mutation
 import Sequence
-import Choice
+from evodesign import Random as Choice
 
 
 
@@ -33,7 +33,7 @@ class RandomResetting(Mutation):
 
   def mutate_sequence(self, sequence: str) -> str:
     def switch(old_letter: str) -> str:
-      if not Choice.flip_coin(self._weights):
+      if not Choice.coin_toss(self._weights):
         return old_letter
       return Sequence.switch_residue(old_letter)
     

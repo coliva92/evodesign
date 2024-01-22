@@ -1,6 +1,6 @@
 from ChildrenSelection import ChildrenSelection
 from ... import Population
-import Choice
+from evodesign import Random
 
 
 
@@ -34,7 +34,7 @@ class BetterFitness(ChildrenSelection):
     for sister, brother in zip(children[0::2], children[1::2]):
       better, worse = sister, brother
       if brother > sister: better, worse = brother, sister
-      selected_child = better if Choice.flip_coin(self._weights) else worse
+      selected_child = better if Random.coin_toss(self._weights) else worse
       temp_children.append(selected_child)
     children.individuals = temp_children
     return children

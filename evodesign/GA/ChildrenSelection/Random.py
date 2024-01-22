@@ -1,6 +1,6 @@
 from ChildrenSelection import ChildrenSelection
 from ... import Population
-import Choice
+from evodesign import Random as Choice
 
 
 
@@ -34,7 +34,7 @@ class Random(ChildrenSelection):
   def select_children(self, children: Population) -> Population:
     # suponemos que la recombinación produjo dos hijos por cada par de padres
     children.individuals = [
-      sister if Choice.flip_coin(self._weights) else brother
+      sister if Choice.coin_toss(self._weights) else brother
       for sister, brother in zip(children[0::2], children[1::2])
     ]
     return children
