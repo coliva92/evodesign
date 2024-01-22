@@ -39,12 +39,12 @@ class Workspace:
     self.target_pdb = targetPdb
     self.root = root
     self.settings = f'{self.root}/settings.json'
-    self.rng_init = f'{self.root}/rng_init.json'
+    self.rng_initial_state = f'{self.root}/rng_initial_state.json'
     self.rng_checkpoint = f'{self.root}/.rng_checkpoint'
     self.statistics = f'{self.root}/statistics.csv'
     self.generation_checkpoint = f'{self.root}/.generation_checkpoint'
     self.fitness_diversity = f'{self.root}/fitness_diversity.png'
-    self.populations = f'populations'
+    self.populations = f'{self.root}/populations'
     self.pdbs = f'{self.root}/pdbs'
     # ----
     self._seed = time.time()
