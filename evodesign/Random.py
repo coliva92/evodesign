@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Tuple
 
 
 
@@ -12,7 +11,7 @@ class Random:
 
 
   @classmethod
-  def get_rng(cls) -> np.random.Generator:
+  def generator(cls) -> np.random.Generator:
     """
     Returns
     -------
@@ -41,5 +40,5 @@ class Random:
     bool
         The produced value.
     """
-    rng = cls.get_rng()
+    rng = cls.generator()
     return rng.choice([ True, False ], [ bias, 1. - bias ])
