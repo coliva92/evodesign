@@ -1,4 +1,4 @@
-from . import Predictor
+from .Predictor import Predictor
 
 
 
@@ -20,6 +20,20 @@ class ESMFold(Predictor):
                         sequence: str, 
                         pdbFilename: str
                         ) -> None:
+    """
+    Predicts the 3D structure of a given amino acid sequence using the 
+    ESMFold model.
+
+    Parameters
+    ----------
+    sequence : str
+        The amino acid sequence which structure will be predicted. Each residue
+        must be represented with a single letter corresponding to one of the
+        20 essential amino acids.
+    pdbFilename : str
+        The path and name of the PDB file where the predicted structure will
+        be stored.
+    """
     import torch
     import esm
     if not ESMFold._model:

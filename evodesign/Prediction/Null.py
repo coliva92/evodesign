@@ -1,4 +1,4 @@
-from . import Predictor
+from .Predictor import Predictor
 from typing import List
 from Bio.PDB.Atom import Atom
 
@@ -17,6 +17,16 @@ class Null(Predictor):
   def predict_structure(self, 
                         sequence: str, 
                         pdbFilename: str) -> None:
+    """
+    Does nothing.
+
+    Parameters
+    ----------
+    sequence : str
+        Unused.
+    pdbFilename : str
+        Unused.
+    """
     pass
 
 
@@ -25,4 +35,19 @@ class Null(Predictor):
                sequence: str, 
                pdbFilename: str
                ) -> List[Atom]:
+    """
+    Does nothing.
+
+    Parameters
+    ----------
+    sequence : str
+        Unused.
+    pdbFilename : str
+        Unused.
+
+    Returns
+    -------
+    List[Atom]
+        An empty list.
+    """
     return []
