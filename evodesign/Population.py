@@ -17,6 +17,7 @@ class Population:
   def create_random(cls, 
                     size: int,
                     sequenceLength: int,
+                    generationId: int = 0
                     ) -> pd.DataFrame:
     """
     Creates a collection of randomly generated amino acid sequences. 
@@ -30,6 +31,9 @@ class Population:
         The size of the population.
     sequenceLength : int
         The length of each amino acid sequence in the population.
+    generationId : int, optional
+        The generation identifier for the population being created. 
+        The default value is 0.
 
     Returns
     -------
@@ -37,7 +41,19 @@ class Population:
         The generated population. Column `Sequence` contains the amino acid
         sequence of each individual in the population.
     """
+    def pad_zeroes(n: int) -> str:
+      if n < 1000:
+        result = f'{0}{n}'
+      if n < 100:
+        result = f'{0}{result}'
+      if n < 10:
+        result = f'{0}{result}'
+    
     data = {
+      'Sequence_Id': [
+        f'prot_{pad_zeroes(generationId)}_{pad_zeroes(i)}'
+        for i in range(size)
+      ],
       'Sequence': [
         Sequence.create_random(sequenceLength)
         for _ in range(size)
