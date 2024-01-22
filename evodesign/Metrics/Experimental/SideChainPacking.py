@@ -1,6 +1,7 @@
 from . import Metric
-from typing import List, Optional
+from typing import List
 from Bio.PDB.Atom import Atom
+from ...Workspace import Workspace
 import subprocess
 import os
 
@@ -8,42 +9,38 @@ import os
 
 
 
-class SideChainPackingEnergyScore(Metric):
+class SideChainPacking(Metric):
 
   def __init__(self,
-               workspaceRoot: str,
-               targetPdbFilename: str,
                scwrlExecutablePath: str = './scwrl4/Scwrl4'
                ) -> None:
     super().__init__()
-    self._scwrl_outputs_folder = os.path.join(workspaceRoot, 'scwrl_outputs')
-    self._scwrl_sequence_filename = os.path.join(workspaceRoot, '.scwrl4.in')
-    self._scwrl_input_pdb_filename = targetPdbFilename
+    workspace = Workspace.instance()
+    self._scwrl_outputs_folder = f'{workspace.root}/scwrl_outputs'
+    self._scwrl_sequence_filename = f'{workspace.root}/.scwrl4_in'
+    self._scwrl_input_pdb_filename = f'{workspace.target_pdb}'
     self._scwrl_executable = scwrlExecutablePath
-    self._root_folder = workspaceRoot
 
 
 
   def __call__(self, 
-               modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom],
-               sequence: Optional[str] = None
+               sequence: str,
+               model: List[Atom], 
+               reference: List[Atom]
                ) -> float:
     os.makedirs(self._scwrl_outputs_folder, exist_ok=True)
     with open(self._scwrl_sequence_filename, 'wt', encoding='utf-8') as seq_file:
       seq_file.write(f'{sequence}\n')
-    output_pdb_filename = os.path.join(self._scwrl_outputs_folder, 
-                                       f'prot_{sequence}.pdb')
-    output_filename = os.path.join(self._scwrl_outputs_folder,
-                                   f'scwrl4_output_{sequence}.txt')
+    output_pdb_filename = f'{self._scwrl_outputs_folder}/prot_{sequence}.pdb'
+    output_filename = f'{self._scwrl_outputs_folder}/scwrl4_output_{sequence}.txt'
     with open(output_filename, 'wt', encoding='utf-8') as output_file:
       args = [
         self._scwrl_executable,
         '-i', self._scwrl_input_pdb_filename,
         '-s', self._scwrl_sequence_filename,
         '-o', output_pdb_filename,
-        '-h', # no se escriben los átomos de H en el PDB resultante
-        '-t'  # no se escribe el átomo OXT en el PDB resultante
+        '-h', # do not write H atoms in the resulting PDB file
+        '-t'  # do not write the OXT atom in the resulting PDB file
       ]
       subprocess.run(args,
                      stdout=output_file,
