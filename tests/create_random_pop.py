@@ -1,6 +1,5 @@
-import evodesign.Population as Population
 import pandas as pd
-import evodesign.Sequence as Sequence
+from evodesign import Population, Sequence
 
 
 def valid_sequence(sequence):

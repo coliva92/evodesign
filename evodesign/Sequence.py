@@ -26,7 +26,7 @@ class Sequence:
         The generated sequence. Each residue is represented as a
         single letter corresponding to one of the 20 essential amino acids.
     """
-    rng = Random.generator(cls)
+    rng = Random.generator()
     indices = rng.choice(len(cls.AMINO_ACIDS), size=length)
     return ''.join([ cls.AMINO_ACIDS[i] for i in indices ])
 
