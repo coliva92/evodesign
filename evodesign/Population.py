@@ -32,7 +32,7 @@ class Population:
     sequenceLength : int
         The length of each amino acid sequence in the population.
     generationId : int, optional
-        The generation identifier for the population being created. 
+        The unique identifier for the population being created. 
         The default value is 0.
 
     Returns
