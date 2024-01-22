@@ -22,7 +22,7 @@ class ESMFold(Predictor):
                         ) -> None:
     """
     Predicts the 3D structure of a given amino acid sequence using the 
-    ESMFold model.
+    ESMFold v1 model.
 
     Parameters
     ----------
