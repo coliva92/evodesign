@@ -11,14 +11,7 @@ class Rmsd(Metric):
 
   _superimposer = None
 
-
-
-  def __init__(self) -> None:
-    super().__init__()
-    if not self._superimposer:
-      self._superimposer = Superimposer()
   
-
 
   def __call__(self, 
                sequence: str,
@@ -46,6 +39,8 @@ class Rmsd(Metric):
     float
         The computed RMSD measured in Angstroms.
     """
+    if not self._superimposer:
+      self._superimposer = Superimposer()
     self._superimposer.set_atoms(reference, model)
     self._superimposer.apply(model)
     return self._superimposer.rms
