@@ -21,6 +21,12 @@ class Workspace:
 
   @classmethod
   def instance(self):
+    """
+    Returns
+    -------
+    Workspace
+        The singleton instance for the Workspace object.
+    """
     return self._instance
 
 
@@ -36,6 +42,18 @@ class Workspace:
                root: str,
                targetPdb: str
                ) -> None:
+    """
+    Interface for managing the file system folder where all the output files 
+    will be stored.
+
+    Parameters
+    ----------
+    root : str
+        The folder where all the output files and folders will be stored.
+    targetPdb : str
+        The path to the PDB file containing the backbone for which an 
+        amino acid sequence will be designed.
+    """
     self.target_pdb = targetPdb
     self.root = root
     self.settings = f'{self.root}/settings.json'
