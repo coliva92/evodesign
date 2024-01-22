@@ -1,4 +1,5 @@
-from . import Predictor
+from .Predictor import Predictor
+from ..Workspace import Workspace
 import subprocess
 import os
 
@@ -14,22 +15,28 @@ class AlphaFold(Predictor):
   
 
 
-  def __init__(self, 
-               workspaceRoot: str,
-               emptyMsaScriptFolder: str,
-               alphafoldFolder: str) -> None:
+  def __init__(self,
+               fakeMsaScript: str,
+               alphafoldScript: str) -> None:
+    """
+    Interface for interacting with the AlphaFold 2 model for protein structure 
+    prediction.
+
+    Parameters
+    ----------
+    fakeMsaScript : str
+        The path and name for the script provided from https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py.
+        When doing "de novo" protein design with AlphaFold, we usually want
+        to skip the MSA procedure. In order to do this, we provide AlphaFold
+        with an empty MSA file. The aformentioned script allow us to create
+        such MSA file.
+    alphafoldScript : str
+        The path and name for the script that allow us to run AlphaFold.
+    """
     super().__init__()
-    # para ejecutar AF2 sin MSA, hay que ejecutar el script disponible en:
-    # https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py
-    # para crear un MSA vacío y alimentarlo a AF2; suponemos que este
-    # script ya está disponible
-    self.empty_msa_filename = os.path.join(emptyMsaScriptFolder, 
-                                           'create_fakemsa.py')
-    self.run_docker_filename = os.path.join(alphafoldFolder, 
-                                            'docker', 
-                                            'run_docker.py')
-    self.workspace_root = workspaceRoot
-    self.pdbs_folder = os.path.join(workspaceRoot, 'pdbs')
+    self.fake_msa_script = f'{fakeMsaScript}/create_fakemsa.py'
+    self.alphafold_script = f'{alphafoldScript}/docker/run_docker.py'
+    self.alphafold_outputs = f'{Workspace.instance().root}/alphafold_outputs'
 
 
 
@@ -37,37 +44,52 @@ class AlphaFold(Predictor):
                         sequence: str, 
                         pdbFilename: str
                         ) -> None:
-    name = f'prot_{sequence}'
-    fasta_filename = os.path.join(self.workspace_root, f'{name}.fasta')
+    """
+    Predicts the 3D structure of a given amino acid sequence using the 
+    AlphaFold 2 model.
+
+    Parameters
+    ----------
+    sequence : str
+        The amino acid sequence which structure will be predicted. Each residue
+        must be represented with a single letter corresponding to one of the
+        20 essential amino acids.
+    pdbFilename : str
+        The path and name of the PDB file where the predicted structure will
+        be stored.
+    """
+    os.makedirs(self.alphafold_outputs, exist_ok=True)
+    protein_id = os.path.splitext(os.path.basename(pdbFilename))[0]
+    workspace = Workspace.instance()
+    fasta_filename = f'{workspace.root}/{protein_id}.fasta'
     with open(fasta_filename, 'wt', encoding='utf-8') as fasta_file:
-      fasta_file.write(f'>prot_{sequence}\n{sequence}\n')
-    # ejecutamos el script para crear el MSA vacío
+      fasta_file.write(f'>{protein_id}\n{sequence}\n')
+    # run the script for creating an empty MSA
     subprocess.call([
       'python3',
       self.empty_msa_filename,
       f'--fasta_paths={fasta_filename}',
-      f'--output_dir={self.pdbs_folder}'
+      f'--output_dir={self.alphafold_outputs}'
     ])
-    for line in self.run_docker(fasta_filename):
+    for line in self._run_alphafold_docker(fasta_filename):
       print(line, end='')
-    os.remove(fasta_filename)
-    prediction_pdb = os.path.join(self.pdbs_folder, name, 'ranked_0.pdb')
+    prediction_pdb = f'{self.alphafold_outputs}/{protein_id}/ranked_0.pdb'
     os.symlink(prediction_pdb, pdbFilename)
+    os.remove(fasta_filename)
 
 
 
-  def run_docker(self, fastaFilename: str) -> None:
-    # ejecutamos AF2 a través de Docker
-    #TODO todas las opciones deben obtenerse desde `settings.json`
+  def _run_alphafold_docker(self, fastaFilename: str) -> None:
+    #TODO let these options be input from `settings.json`
     cmd = [
       'python3',
-      f'{self.run_docker_filename}',
+      f'{self.alphafold_script}',
       '--use_precomputed_msas=True',
       f'--fasta_paths={fastaFilename}',
       '--max_template_date=2020-05-14',
       '--model_preset=monomer_casp14',
       '--db_preset=reduced_dbs',
-      f'--output_dir={self.pdbs_folder}',
+      f'--output_dir={self.alphafold_outputs}',
       '--mgnify_database_path=/media/biocomp/My Passport/mgnify/mgy_clusters_2018_12.fa',
       '--data_dir=/media/biocomp/My Passport/reduced_dbs'
     ]
