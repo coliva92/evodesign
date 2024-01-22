@@ -39,7 +39,9 @@ class Population:
     -------
     pd.DataFrame
         The generated population. Column `Sequence` contains the amino acid
-        sequence of each individual in the population.
+        sequence of each individual in the population, while column 
+        `Sequence_Id` contains a unique identifier for each sequence in the
+        population.
     """
     def pad_zeroes(n: int) -> str:
       if n < 1000:
