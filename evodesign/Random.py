@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.random import Generator
 from typing import Tuple
 
 
@@ -13,7 +12,13 @@ class Random:
 
 
   @classmethod
-  def get_rng(cls) -> Generator:
+  def get_rng(cls) -> np.random.Generator:
+    """
+    Returns
+    -------
+    np.random.Generator
+        The singleton RNG instance.
+    """
     if not cls._rng:
       cls._rng = np.random.default_rng()
     return cls._rng
@@ -21,6 +26,20 @@ class Random:
 
 
   @classmethod
-  def coin_toss(cls, weights: Tuple[float] = (0.5, 0.5)) -> bool:
+  def coin_toss(cls, bias: float = 0.5) -> bool:
+    """
+    Randomly produce a boolean value.
+
+    Parameters
+    ----------
+    bias : float, optional
+        The probability for producing `True`; the default is 0.5. 
+        The probability for producing `False` will be computed as `1.0 - bias`.
+
+    Returns
+    -------
+    bool
+        The produced value.
+    """
     rng = cls.get_rng()
-    return rng.choice([ True, False ], weights)
+    return rng.choice([ True, False ], [ bias, 1. - bias ])
