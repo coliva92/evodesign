@@ -14,23 +14,39 @@ import time
 
 
 class Workspace:
-  
+
+  _instance = None
+
+
+
+  @classmethod
+  def instance(self):
+    return self._instance
+
+
+
+  def __new__(cls, *args, **kwargs):
+    if not cls._instance:
+      cls._instance = super(Workspace, cls).__new__(cls)
+    return cls._instance
+
+
+
   def __init__(self, 
-               rootFolder: str,
-               targetPdbFilename: str
+               root: str,
+               targetPdb: str
                ) -> None:
-    self.reference_filename = targetPdbFilename
-    self.root_folder = rootFolder
-    self.settings_filename = os.path.join(rootFolder, 'settings.json')
-    self.rng_settings_filename = os.path.join(rootFolder, 
-                                              'rng_settings.json') 
-    self.rng_checkpoint_filename = os.path.join(rootFolder, 
-                                                'rng_checkpoint.json')
-    self.stats_filename = os.path.join(rootFolder, 'statistics.csv')
-    self.children_filename = os.path.join(rootFolder, '.children')
-    self.graph_filename = os.path.join(rootFolder, 'fitness_diversity.png')
-    self.populations_folder = os.path.join(rootFolder, 'populations')
-    self.pdbs_folder = os.path.join(rootFolder, 'pdbs')
+    self.target_pdb = targetPdb
+    self.root = root
+    self.settings = f'{self.root}/settings.json'
+    self.rng_init = f'{self.root}/rng_init.json'
+    self.rng_checkpoint = f'{self.root}/.rng_checkpoint'
+    self.statistics = f'{self.root}/statistics.csv'
+    self.generation_checkpoint = f'{self.root}/.generation_checkpoint'
+    self.fitness_diversity = f'{self.root}/fitness_diversity.png'
+    self.populations = f'populations'
+    self.pdbs = f'{self.root}/pdbs'
+    # ----
     self._seed = time.time()
     random.seed(self._seed)
 
