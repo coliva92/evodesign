@@ -8,7 +8,7 @@ AMINO_ACIDS = 'ACDEFGHIKLMNPQRSTVWY'
 
 
 
-def random_sequence(length: int) -> str:
+def create_random(length: int) -> str:
   """
   Generates randomly a sequence of amino acids.
 

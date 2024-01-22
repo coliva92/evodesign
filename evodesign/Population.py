@@ -35,7 +35,7 @@ def create_random(size: int,
   """
   data = {
     'Sequence': [
-      Sequence.random_sequence(sequenceLength)
+      Sequence.create_random(sequenceLength)
       for _ in range(size)
     ]
   }
