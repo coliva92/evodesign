@@ -1,36 +1,44 @@
-from abc import ABC, abstractmethod, abstractclassmethod
-from typing import List
-from ... import Population
-from ... import Individual
+from abc import ABC, abstractmethod
+from ...AsSetttings import AsSettings
+import pandas as pd
 
 
 
 
 
-class Selection(ABC):
+class Selection(AsSettings, ABC):
 
-  @abstractclassmethod
-  def name(cls) -> str:
-    raise NotImplementedError
+  def _params(self) -> dict:
+    return {
+      'selectionSize': self._selection_size
+    }
   
-  
+
   
   def __init__(self, selectionSize: int) -> None:
     super().__init__()
     self._selection_size = selectionSize
 
 
-
-  def params_as_dict(self) -> dict:
-    return {}
-
-
-
   @abstractmethod
-  def select_parents(self, population: Population) -> List[Individual]:
+  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     raise NotImplementedError
   
 
 
-  def __call__(self, population: Population) -> Population:
-    return Population(self.select_parents(population))  
+  def __call__(self, population: pd.DataFrame) -> pd.DataFrame:
+    """
+    Selects a subset of individuals from the given population.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population to be sampled.
+
+    Returns
+    -------
+    pd.DataFrame
+        The selected subset of individuals.
+    """
+    survivors = population[population['Survivor']]
+    return self._select_parents(survivors)

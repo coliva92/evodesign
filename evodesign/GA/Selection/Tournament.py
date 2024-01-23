@@ -1,8 +1,6 @@
-from . import Selection
-from typing import List
-from ... import Population
-from ... import Individual
-import random
+from .Selection import Selection
+from ...Random import Random
+import pandas as pd
 
 
 
@@ -11,35 +9,63 @@ import random
 class Tournament(Selection):
 
   @classmethod
-  def name(cls) -> str:
+  def _name(cls) -> str:
     return 'GA_Selection_Tournament'
+  
+
+
+  def _params(self) -> dict:
+    params = super()._params()
+    params['tournamentSize'] = self._tournament_size
+    return params
   
   
   
   def __init__(self,
                selectionSize: int,
-               tournamentSize: int) -> None:
+               tournamentSize: int
+               ) -> None:
+    """
+    Selection operator in which a random uniform sample of size 
+    `tournamentSize`, without replacement, is taken from the population, and 
+    the individual with higher fitness from this sample is then selected. 
+    This process is repeated `selectionSize` times to get the final subset 
+    of individuals.
+
+    Notice that it is possible for the same individual to be chosen multiple
+    times. However, it is guaranteed that for every consecutive pair of 
+    individuals in the selected subset will be distinct.
+
+    Parameters
+    ----------
+    selectionSize : int
+        The number of individuals to be selected from the population.
+    tournamentSize : int
+        The number of individuals to be randomly chosen to participate in 
+        a tournament. Only one of these individuals will be chosen.
+    """
     super().__init__(selectionSize)
     self._tournament_size = tournamentSize
-  
-
-
-  def params_as_dict(self) -> dict:
-    params = super().params_as_dict()
-    params['tournamentSize'] = self._tournament_size
-    return params
 
 
 
-  def select_parents(self, population: Population) -> List[Individual]:
-    selected_parents = []
+  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+    
+    def tournament_selection(k: int, population: pd.DataFrame):
+      selection = rng.choice(population.index, size=k, replace=False)
+      tournament = population.iloc[selection]
+      tournament.sort_values(by='Fitness', ascending=False, inplace=True)
+      return tournament.iloc[0]
+    
+    selected_parents = pd.DataFrame(columns=population.columns)
+    rng = Random.generator()
     for i in range(self._selection_size):
-      winner = sorted(random.sample(population.individuals, 
-                                    self._tournament_size))[-1]
-      # garantizamos que dos padres consecutivos siempre sean diferentes
-      while i % 2 != 0 and selected_parents[i - 1].sequence == winner.sequence:
-        winner = sorted(random.sample(population.individuals, 
-                                      self._tournament_size))[-1]
-      selected_parents.append(winner)
+      winner = tournament_selection(self._tournament_size, population)
+      # garantee that two consecutive parents are different sequences
+      while i % 2 != 0 and \
+          selected_parents.iloc[i - 1, 'Sequence'] == winner['Sequence']:
+        winner = tournament_selection(self._tournament_size, population)
+      selected_parents = pd.concat([ selected_parents, pd.DataFrame(winner) ],
+                                   ignore_index=True)
     return selected_parents
     

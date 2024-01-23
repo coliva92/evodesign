@@ -1,8 +1,6 @@
-from . import Selection
-from typing import List
-from ... import Individual
-from ... import Population
-import random
+from .Selection import Selection
+from ...Random import Random
+import pandas as pd
 
 
 
@@ -11,55 +9,89 @@ import random
 class Overselection(Selection):
 
   @classmethod
-  def name(cls) -> str:
+  def _name(cls) -> str:
     return 'GA_Selection_Overselection'
+  
+
+
+  def _params(self) -> dict:
+    params = super()._params()
+    params['upperSize'] = self._upper_size
+    params['upperProb'] = self._upper_prob
+    params['lowerProb'] = self._lower_prob
+    return params
   
 
 
   def __init__(self, 
                selectionSize: int,
-               topSize: int,
-               topTopProbability: float = 0.8,
-               topBottomProbability: float = 0.0,
-               bottomBottomProbability: float = 0.2) -> None:
+               upperSize: int,
+               upperProb: float = 0.8,
+               lowerProb: float = 0.2) -> None:
+    """
+    Selection operator where the population is divided into to groups, which
+    we call the "upper bin" and "lower bin". The upper bin contains the top
+    `upperSize` individuals according to their fitness, and the lower bin
+    contains all remaining individuals. Then, individuals are selected in pairs,
+    where each pair could be formed by two randomly selected individuals from
+    the upper bin, two from the lower bin, or one from each bin. Which of 
+    these three options will be taken for a given pair is chosen randomly. 
+    All individuals are selected from their bins with a uniform distribution and
+    without replacement.
+
+    Parameters
+    ----------
+    selectionSize : int
+        The number of individuals to be selected from the population.
+    upperSize : int
+        The number of individuals in the upper bin.
+    upperProb : float, optional
+        The probability for selecting a pair of individuals from the upper bin.
+        The default is 0.8.
+    lowerProb : float, optional
+        The probability for selecting a pair of individuals from the lower bin.
+        The default is 0.2. The probability for selecting  mixed pair of 
+        individuals is always 1.0 - upperProb - lowerProb.
+    """
     super().__init__(selectionSize)
-    self._top_size = topSize
-    self._top_top_probability = topTopProbability
-    self._top_bot_probability = topBottomProbability
-    self._bot_bot_probability = bottomBottomProbability
+    self._upper_size = upperSize
+    self._upper_prob = upperProb
+    self._lower_prob = lowerProb
     self._weights = [
-      topTopProbability,
-      topBottomProbability,
-      bottomBottomProbability
+      upperProb,
+      lowerProb,
+      1. - upperProb - lowerProb
     ]
   
 
 
-  def params_as_dict(self) -> dict:
-    params = super().params_as_dict()
-    params['topSize'] = self._top_size
-    params['topTopProbability'] = self._top_top_probability
-    params['topBottomProbability'] = self._top_bot_probability
-    params['bottomBottomProbability'] = self._bot_bot_probability
-    return params
-  
-
-
-  def select_parents(self, population: Population) -> List[Individual]:
-    selected_parents = []
-    top = population[-self._top_size:]
-    bottom = population[:-self._top_size]
+  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+    selected_parents = pd.DataFrame(columns=population.columns)
+    rng = Random.generator()
+    upper_bin = population.iloc[:self._upper_size, :]
+    lower_bin = population.iloc[self._upper_size:, :]
     while len(selected_parents) < self._selection_size:
-      option = random.choices([ 0, 1, 2 ], self._weights)[0]
+      option = rng.choice([ 0, 1, 2 ], p=self._weights)
       if option == 0:
-        mother, father = random.choices(top, k=2)
+        selection = rng.choice(upper_bin.index, size=2, replace=False)
+        parents = population.iloc[selection]
       if option == 1:
-        mother = random.choice(top)
-        father = random.choice(bottom)
+        selection = rng.choice(lower_bin.index, size=2, replace=False)
+        parents = population.iloc[selection]
       if option == 2:
-        mother, father = random.choices(bottom, k=2)
-      while mother.sequence == father.sequence:
-        father = random.choice(top) if option == 0 else random.choice(bottom)
-      selected_parents.append(mother)
-      selected_parents.append(father)
+        m = rng.choice(upper_bin.index)
+        f = rng.choice(lower_bin.index)
+        mother, father = upper_bin.iloc[m], lower_bin.iloc[f]
+        parents = pd.concat([ pd.DataFrame(mother), pd.DataFrame(father) ], 
+                            ignore_index=True)
+      while parents.iloc[0, 'Sequence'] == parents.iloc[1, 'Sequence']:
+        if option == 0:
+          f = rng.choice(upper_bin.index)
+          father = upper_bin.iloc[f]
+        else:
+          f = rng.choice(lower_bin.index)
+          father = lower_bin.iloc[f]
+        parents.iloc[1] = father
+      selected_parents = pd.concat([ selected_parents, parents ],
+                                   ignore_index=True)
     return selected_parents
