@@ -12,7 +12,7 @@ class ESMFoldColab(Predictor):
 
   @classmethod
   def name(cls) -> str:
-    return 'Predictor_ESMFold_Colab'
+    return 'Prediction.ESMFold.Colab'
   
 
 

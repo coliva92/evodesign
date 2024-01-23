@@ -11,7 +11,7 @@ class AlphaFold(Predictor):
 
   @classmethod
   def name(cls) -> str:
-    return 'Predictor_AlphaFold'
+    return 'Prediction.AlphaFold'
   
 
 

@@ -14,7 +14,7 @@ class ESMFoldRemoteApi(Predictor):
 
   @classmethod
   def name(cls) -> str:
-    return 'Predictor_ESMFold_RemoteApi'
+    return 'Prediction.ESMFold.RemoteApi'
   
 
   
