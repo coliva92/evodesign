@@ -41,7 +41,9 @@ class Population:
         The generated population. Column `Sequence` contains the amino acid
         sequence of each individual in the population, while column 
         `Sequence_Id` contains a unique identifier for each sequence in the
-        population.
+        population. The `Survived` column contains a boolean flag which 
+        can be used to indicate which sequences can move on to the next 
+        generation.
     """
     def pad_zeroes(n: int) -> str:
       if n < 1000:
@@ -56,10 +58,11 @@ class Population:
         f'prot_{pad_zeroes(generationId)}_{pad_zeroes(i)}'
         for i in range(size)
       ],
-      'Sequence': [
-        Sequence.create_random(sequenceLength)
-        for _ in range(size)
-      ]
+      'Sequence': [ 
+        Sequence.create_random(sequenceLength) 
+        for _ in range(size) 
+      ],
+      'Survived': [ False for _ in range(size) ]
     }
     return pd.DataFrame(data)
 
