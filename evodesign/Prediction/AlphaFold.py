@@ -15,9 +15,17 @@ class AlphaFold(Predictor):
   
 
 
+  # mgnify_database_path = /media/biocomp/My Passport/mgnify/mgy_clusters_2018_12.fa
+  # data_dir = /media/biocomp/My Passport/reduced_dbs
   def __init__(self,
                fakeMsaScript: str,
-               alphafoldScript: str) -> None:
+               alphafoldScript: str,
+               mgnifyDbPath: str,
+               dataDir: str,
+               maxTemplateDate: str = '2020-05-14',
+               modelPreset: str = 'monomer',
+               dbPreset: str = 'reduced_dbs'
+               ) -> None:
     """
     Interface for interacting with the AlphaFold 2 model for protein structure 
     prediction.
@@ -25,24 +33,51 @@ class AlphaFold(Predictor):
     Parameters
     ----------
     fakeMsaScript : str
-        The path and name for the script provided from https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py.
+        The path to the script provided from 
+        https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py.
         When doing "de novo" protein design with AlphaFold, we usually want
         to skip the MSA procedure. In order to do this, we provide AlphaFold
         with an empty MSA file. The aformentioned script allow us to create
         such MSA file.
     alphafoldScript : str
-        The path and name for the script that allow us to run AlphaFold.
+        The path to the script that runs AlphaFold.
+    mgnifyDbPath : str
+        The path to the Mgnify data base file. This is required by AlphaFold.
+    dataDir : str
+        The path to the folder where the genetic and structure data bases 
+        used by AlphaFold are stored.
+    maxTemplateDate : str
+        A date string with format 'YYYY-MM-DD' that designates which templates
+        can be used by AlphaFold; only templates that were available in the 
+        PDB at this date or earlier can be used. The default is '2020-05-14',
+        corresponding to the original CASP14 configuration.
+    modelPreset : { 'monomer', 'monomer_casp14', 'monomer_ptm', 'multimer' }
+        The specific AlphaFold model to use. For single-chained peptides,
+        the 'monomer' model is recommended. For multi-chained molecules and
+        complexes, use the 'multimer' model instead. The default is 'monomer'.
+    dbPreset : { 'reduced_dbs', 'full_dbs' }
+        Controls the speed and quality of the MSA performed by AlphaFold.
+        With the 'reduced_dbs' option, a reduced version of the BFD databases
+        will be used. Otherwise, with the 'full_dbs' option, all the genetic
+        databases will be used. The default is 'reduced_dbs', since we're
+        skipping MSA anyway.
     """
     super().__init__()
-    self.fake_msa_script = f'{fakeMsaScript}/create_fakemsa.py'
-    self.alphafold_script = f'{alphafoldScript}/docker/run_docker.py'
-    self.alphafold_outputs = f'{Workspace.instance().path}/alphafold_outputs'
+    self.fakemsa_script_path = fakeMsaScript
+    self.alphafold_script_path = alphafoldScript
+    workspace = Workspace.instance()
+    self.alphafold_outputs_dir = f'{workspace.root_dir}/alphafold_outputs'
+    self.mgnify_database_path = mgnifyDbPath
+    self.data_dir = dataDir
+    self.max_template_date = maxTemplateDate
+    self.model_preset = modelPreset
+    self.database_preset = dbPreset
 
 
 
   def predict_structure(self, 
                         sequence: str, 
-                        pdbFilename: str
+                        pdbPath: str
                         ) -> None:
     """
     Predicts the 3D structure of a given amino acid sequence using the 
@@ -54,44 +89,43 @@ class AlphaFold(Predictor):
         The amino acid sequence which structure will be predicted. Each residue
         must be represented with a single letter corresponding to one of the
         20 essential amino acids.
-    pdbFilename : str
+    pdbPath : str
         The path and name of the PDB file where the predicted structure will
         be stored.
     """
-    os.makedirs(self.alphafold_outputs, exist_ok=True)
-    protein_id = os.path.splitext(os.path.basename(pdbFilename))[0]
+    os.makedirs(self.alphafold_outputs_dir, exist_ok=True)
+    protein_id = os.path.splitext(os.path.basename(pdbPath))[0]
     workspace = Workspace.instance()
-    fasta_filename = f'{workspace.path}/{protein_id}.fasta'
-    with open(fasta_filename, 'wt', encoding='utf-8') as fasta_file:
+    fasta_path = f'{workspace.root_dir}/{protein_id}.fasta'
+    with open(fasta_path, 'wt', encoding='utf-8') as fasta_file:
       fasta_file.write(f'>{protein_id}\n{sequence}\n')
     # run the script for creating an empty MSA
     subprocess.call([
       'python3',
-      self.empty_msa_filename,
-      f'--fasta_paths={fasta_filename}',
-      f'--output_dir={self.alphafold_outputs}'
+      self.fakemsa_script_path,
+      f'--fasta_paths={fasta_path}',
+      f'--output_dir={self.alphafold_outputs_dir}'
     ])
-    for line in self._run_alphafold_docker(fasta_filename):
+    for line in self._run_alphafold_docker(fasta_path):
       print(line, end='')
-    prediction_pdb = f'{self.alphafold_outputs}/{protein_id}/ranked_0.pdb'
-    os.symlink(prediction_pdb, pdbFilename)
-    os.remove(fasta_filename)
+    prediction_pdb = f'{self.alphafold_outputs_dir}/{protein_id}/ranked_0.pdb'
+    os.symlink(prediction_pdb, pdbPath)
+    os.remove(fasta_path)
 
 
 
-  def _run_alphafold_docker(self, fastaFilename: str) -> None:
-    #TODO let these options be input from `settings.json`
+  def _run_alphafold_docker(self, fastaPath: str) -> None:
     cmd = [
       'python3',
-      f'{self.alphafold_script}',
+      self.alphafold_script_path,
       '--use_precomputed_msas=True',
-      f'--fasta_paths={fastaFilename}',
-      '--max_template_date=2020-05-14',
-      '--model_preset=monomer_casp14',
-      '--db_preset=reduced_dbs',
-      f'--output_dir={self.alphafold_outputs}',
-      '--mgnify_database_path=/media/biocomp/My Passport/mgnify/mgy_clusters_2018_12.fa',
-      '--data_dir=/media/biocomp/My Passport/reduced_dbs'
+      f'--fasta_paths={fastaPath}',
+      f'--max_template_date={self.max_template_date}',
+      f'--model_preset={self.model_preset}',
+      f'--db_preset={self.database_preset}',
+      f'--output_dir={self.alphafold_outputs_dir}',
+      f'--mgnify_database_path={self.mgnify_database_path}',
+      f'--data_dir={self.data_dir}'
     ]
     popen = subprocess.Popen(cmd, 
                              stdout=subprocess.PIPE, 
