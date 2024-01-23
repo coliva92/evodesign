@@ -63,15 +63,15 @@ class AlphaFold(Predictor):
         skipping MSA anyway.
     """
     super().__init__()
-    self.fakemsa_script_path = fakeMsaScript
-    self.alphafold_script_path = alphafoldScript
+    self._fakemsa_script_path = fakeMsaScript
+    self._alphafold_script_path = alphafoldScript
     workspace = Workspace.instance()
-    self.alphafold_outputs_dir = f'{workspace.root_dir}/alphafold_outputs'
-    self.mgnify_database_path = mgnifyDbPath
-    self.data_dir = dataDir
-    self.max_template_date = maxTemplateDate
-    self.model_preset = modelPreset
-    self.database_preset = dbPreset
+    self._alphafold_outputs_dir = f'{workspace.root_dir}/alphafold_outputs'
+    self._mgnify_database_path = mgnifyDbPath
+    self._data_dir = dataDir
+    self._max_template_date = maxTemplateDate
+    self._model_preset = modelPreset
+    self._database_preset = dbPreset
 
 
 
@@ -93,7 +93,7 @@ class AlphaFold(Predictor):
         The path and name of the PDB file where the predicted structure will
         be stored.
     """
-    os.makedirs(self.alphafold_outputs_dir, exist_ok=True)
+    os.makedirs(self._alphafold_outputs_dir, exist_ok=True)
     protein_id = os.path.splitext(os.path.basename(pdbPath))[0]
     workspace = Workspace.instance()
     fasta_path = f'{workspace.root_dir}/{protein_id}.fasta'
@@ -102,13 +102,13 @@ class AlphaFold(Predictor):
     # run the script for creating an empty MSA
     subprocess.call([
       'python3',
-      self.fakemsa_script_path,
+      self._fakemsa_script_path,
       f'--fasta_paths={fasta_path}',
-      f'--output_dir={self.alphafold_outputs_dir}'
+      f'--output_dir={self._alphafold_outputs_dir}'
     ])
     for line in self._run_alphafold_docker(fasta_path):
       print(line, end='')
-    prediction_pdb = f'{self.alphafold_outputs_dir}/{protein_id}/ranked_0.pdb'
+    prediction_pdb = f'{self._alphafold_outputs_dir}/{protein_id}/ranked_0.pdb'
     os.symlink(prediction_pdb, pdbPath)
     os.remove(fasta_path)
 
@@ -117,15 +117,15 @@ class AlphaFold(Predictor):
   def _run_alphafold_docker(self, fastaPath: str) -> None:
     cmd = [
       'python3',
-      self.alphafold_script_path,
+      self._alphafold_script_path,
       '--use_precomputed_msas=True',
       f'--fasta_paths={fastaPath}',
-      f'--max_template_date={self.max_template_date}',
-      f'--model_preset={self.model_preset}',
-      f'--db_preset={self.database_preset}',
-      f'--output_dir={self.alphafold_outputs_dir}',
-      f'--mgnify_database_path={self.mgnify_database_path}',
-      f'--data_dir={self.data_dir}'
+      f'--max_template_date={self._max_template_date}',
+      f'--model_preset={self._model_preset}',
+      f'--db_preset={self._database_preset}',
+      f'--output_dir={self._alphafold_outputs_dir}',
+      f'--mgnify_database_path={self._mgnify_database_path}',
+      f'--data_dir={self._data_dir}'
     ]
     popen = subprocess.Popen(cmd, 
                              stdout=subprocess.PIPE, 
