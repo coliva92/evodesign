@@ -62,7 +62,7 @@ class Population:
         Sequence.create_random(sequenceLength) 
         for _ in range(size) 
       ],
-      'Survived': [ False for _ in range(size) ]
+      'Survivor': [ False for _ in range(size) ]
     }
     return pd.DataFrame(data)
 
