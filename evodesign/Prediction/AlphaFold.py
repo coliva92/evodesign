@@ -10,8 +10,21 @@ import os
 class AlphaFold(Predictor):
 
   @classmethod
-  def name(cls) -> str:
+  def _name(cls) -> str:
     return 'Prediction.AlphaFold'
+  
+
+
+  def _params(self) -> dict:
+    return {
+      'fakeMsaScript': self._fakemsa_script_path,
+      'alphafoldScript': self._alphafold_script_path,
+      'mgnifyDbPath': self._mgnify_database_path,
+      'dataDir': self._data_dir,
+      'maxTemplateDate': self._max_template_date,
+      'modelPreset': self._model_preset,
+      'dbPreset': self._database_preset
+    }
   
 
 

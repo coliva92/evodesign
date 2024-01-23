@@ -1,21 +1,16 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from typing import List
 from Bio.PDB.Atom import Atom
-from evodesign import Chain
+from ..Chain import Chain
+from ..AsSetttings import AsSettings
 import os
 
 
 
 
 
-class Predictor(ABC):
+class Predictor(AsSettings, ABC):
 
-  @abstractclassmethod
-  def name(cls) -> str:
-    raise NotImplementedError
-
-
-  
   @abstractmethod
   def predict_structure(self, 
                         sequence: str, 

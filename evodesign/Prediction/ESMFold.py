@@ -11,7 +11,7 @@ class ESMFold(Predictor):
 
 
   @classmethod
-  def name(cls) -> str:
+  def _name(cls) -> str:
     return 'Prediction.ESMFold.Local'
   
 
