@@ -84,13 +84,13 @@ class Chain:
 
 
   @classmethod
-  def load_structure_from_pdb(cls, filename: str) -> Structure:
+  def load_structure(cls, pdbPath: str) -> Structure:
     """
     Loads a BioPython Structure instance from the specified PDB file.
 
     Parameters
     ----------
-    filename : str
+    pdbPath : str
         The path to the PDB file to be opened.
 
     Returns
@@ -98,7 +98,7 @@ class Chain:
     Bio.PDB.Structure.Structure
         The loaded Structure instance.
     """
-    structure_id = os.path.splitext(os.path.basename(filename))[0]
+    structure_id = os.path.splitext(os.path.basename(pdbPath))[0]
     if not cls._pdb_parser:
       cls._pdb_parser = PDBParser()
-    return cls._pdb_parser.get_structure(structure_id, filename)
+    return cls._pdb_parser.get_structure(structure_id, pdbPath)

@@ -3,7 +3,7 @@ from Bio.PDB.Atom import Atom
 
 
 
-structure = Chain.load_structure_from_pdb('../8hjc.pdb')
+structure = Chain.load_structure('../8hjc.pdb')
 n = Chain.length(structure)
 backbone = Chain.backbone_atoms(structure)
 
