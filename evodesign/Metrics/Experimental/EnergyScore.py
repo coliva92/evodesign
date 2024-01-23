@@ -27,7 +27,7 @@ class EnergyScore(Metric):
                reference: List[Atom]
                ) -> float:
     workspace = Workspace.instance()
-    filename = f'{workspace.pdbs}/prot_{sequence}.pdb'
+    filename = f'{workspace.pdbs_dir}/prot_{sequence}.pdb'
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(filename)
     return self.score_fn(pose)

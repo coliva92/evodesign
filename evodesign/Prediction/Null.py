@@ -16,7 +16,7 @@ class Null(Predictor):
 
   def predict_structure(self, 
                         sequence: str, 
-                        pdbFilename: str) -> None:
+                        pdbPath: str) -> None:
     """
     Does nothing.
 
@@ -24,7 +24,7 @@ class Null(Predictor):
     ----------
     sequence : str
         Unused.
-    pdbFilename : str
+    pdbPath : str
         Unused.
     """
     pass
@@ -33,7 +33,7 @@ class Null(Predictor):
 
   def __call__(self,
                sequence: str, 
-               pdbFilename: str
+               pdbPath: str
                ) -> List[Atom]:
     """
     Does nothing.
@@ -42,7 +42,7 @@ class Null(Predictor):
     ----------
     sequence : str
         Unused.
-    pdbFilename : str
+    pdbPath : str
         Unused.
 
     Returns

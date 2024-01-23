@@ -20,14 +20,14 @@ class Workspace:
 
 
   @classmethod
-  def instance(self):
+  def instance(cls):
     """
     Returns
     -------
     Workspace
         The singleton instance for the Workspace object.
     """
-    return self._instance
+    return cls._instance
 
 
 
@@ -39,8 +39,8 @@ class Workspace:
 
 
   def __init__(self, 
-               path: str,
-               targetPdb: str
+               rootDir: str,
+               targetPdbPath: str
                ) -> None:
     """
     Interface for managing the file system folder where all the output files 
@@ -54,16 +54,10 @@ class Workspace:
         The path to the PDB file containing the backbone for which an 
         amino acid sequence will be designed.
     """
-    self.target_pdb = targetPdb
-    self.path = path
-    self.settings = f'{self.path}/settings.json'
-    self.rng_initial_state = f'{self.path}/rng_initial_state.json'
-    self.rng_checkpoint = f'{self.path}/.rng_checkpoint'
-    self.statistics = f'{self.path}/statistics.csv'
-    self.generation_checkpoint = f'{self.path}/.generation_checkpoint'
-    self.fitness_diversity = f'{self.path}/fitness_diversity.png'
-    self.populations = f'{self.path}/populations'
-    self.pdbs = f'{self.path}/pdbs'
+    self.target_pdb_path = targetPdbPath
+    self.root_dir = rootDir
+    self.populations_dir = f'{self.root_dir}/populations'
+    self.pdbs_dir = f'{self.root_dir}/pdbs'
     # ----
     self._seed = time.time()
     random.seed(self._seed)
@@ -96,7 +90,7 @@ class Workspace:
     filename = self.rng_checkpoint_filename \
                if checkpoint \
                else self.rng_settings_filename
-    if not os.path.isfile(filename):
+    if not os.root_dir.isfile(filename):
       self._seed = time.time()
       random.seed(self._seed)
       self.save_rng_json(checkpoint=False)
@@ -119,12 +113,12 @@ class Workspace:
 
 
   def load_latest_population(self) -> Population:
-    if not os.path.isdir(self.populations_folder):
+    if not os.root_dir.isdir(self.populations_folder):
       return Population()
     filenames = sorted(os.listdir(self.populations_folder))
     if not filenames:
       return Population()
-    filename = os.path.join(self.populations_folder, filenames[-1])
+    filename = os.root_dir.join(self.populations_folder, filenames[-1])
     return FileIO.load_population_csv(filename, len(filenames))
 
 
@@ -135,7 +129,7 @@ class Workspace:
 
 
   def restore_children_from_backup(self) -> Population:
-    if not os.path.isfile(self.children_filename):
+    if not os.root_dir.isfile(self.children_filename):
       return Population()
     return FileIO.load_population_json(self.children_filename)
   
@@ -150,7 +144,7 @@ class Workspace:
   def save_statistics(self, 
                       stats: Statistics, 
                       best_solution: Individual) -> None:
-    file_exists = os.path.isfile(self.stats_filename)
+    file_exists = os.root_dir.isfile(self.stats_filename)
     data = stats.as_dict()
     data['best_sequence_fitness'] = best_solution.fitness
     data['best_sequence'] = best_solution.sequence
@@ -166,7 +160,7 @@ class Workspace:
 
 
   def plot(self) -> None:
-    if not os.path.isfile(self.stats_filename):
+    if not os.root_dir.isfile(self.stats_filename):
       return
     data = {
       'iteration_id': [],
