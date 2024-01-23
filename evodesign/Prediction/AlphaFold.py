@@ -36,7 +36,7 @@ class AlphaFold(Predictor):
     super().__init__()
     self.fake_msa_script = f'{fakeMsaScript}/create_fakemsa.py'
     self.alphafold_script = f'{alphafoldScript}/docker/run_docker.py'
-    self.alphafold_outputs = f'{Workspace.instance().root}/alphafold_outputs'
+    self.alphafold_outputs = f'{Workspace.instance().path}/alphafold_outputs'
 
 
 
@@ -61,7 +61,7 @@ class AlphaFold(Predictor):
     os.makedirs(self.alphafold_outputs, exist_ok=True)
     protein_id = os.path.splitext(os.path.basename(pdbFilename))[0]
     workspace = Workspace.instance()
-    fasta_filename = f'{workspace.root}/{protein_id}.fasta'
+    fasta_filename = f'{workspace.path}/{protein_id}.fasta'
     with open(fasta_filename, 'wt', encoding='utf-8') as fasta_file:
       fasta_file.write(f'>{protein_id}\n{sequence}\n')
     # run the script for creating an empty MSA

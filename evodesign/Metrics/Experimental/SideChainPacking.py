@@ -16,8 +16,8 @@ class SideChainPacking(Metric):
                ) -> None:
     super().__init__()
     workspace = Workspace.instance()
-    self._scwrl_outputs_folder = f'{workspace.root}/scwrl_outputs'
-    self._scwrl_sequence_filename = f'{workspace.root}/.scwrl4_in'
+    self._scwrl_outputs_folder = f'{workspace.path}/scwrl_outputs'
+    self._scwrl_sequence_filename = f'{workspace.path}/.scwrl4_in'
     self._scwrl_input_pdb_filename = f'{workspace.target_pdb}'
     self._scwrl_executable = scwrlExecutablePath
 

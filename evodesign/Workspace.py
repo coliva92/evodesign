@@ -39,7 +39,7 @@ class Workspace:
 
 
   def __init__(self, 
-               root: str,
+               path: str,
                targetPdb: str
                ) -> None:
     """
@@ -48,22 +48,22 @@ class Workspace:
 
     Parameters
     ----------
-    root : str
+    path : str
         The folder where all the output files and folders will be stored.
     targetPdb : str
         The path to the PDB file containing the backbone for which an 
         amino acid sequence will be designed.
     """
     self.target_pdb = targetPdb
-    self.root = root
-    self.settings = f'{self.root}/settings.json'
-    self.rng_initial_state = f'{self.root}/rng_initial_state.json'
-    self.rng_checkpoint = f'{self.root}/.rng_checkpoint'
-    self.statistics = f'{self.root}/statistics.csv'
-    self.generation_checkpoint = f'{self.root}/.generation_checkpoint'
-    self.fitness_diversity = f'{self.root}/fitness_diversity.png'
-    self.populations = f'{self.root}/populations'
-    self.pdbs = f'{self.root}/pdbs'
+    self.path = path
+    self.settings = f'{self.path}/settings.json'
+    self.rng_initial_state = f'{self.path}/rng_initial_state.json'
+    self.rng_checkpoint = f'{self.path}/.rng_checkpoint'
+    self.statistics = f'{self.path}/statistics.csv'
+    self.generation_checkpoint = f'{self.path}/.generation_checkpoint'
+    self.fitness_diversity = f'{self.path}/fitness_diversity.png'
+    self.populations = f'{self.path}/populations'
+    self.pdbs = f'{self.path}/pdbs'
     # ----
     self._seed = time.time()
     random.seed(self._seed)
