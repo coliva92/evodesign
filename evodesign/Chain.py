@@ -11,6 +11,7 @@ import os
 class Chain:
 
   BACKBONE_ATOMS = { 'N', 'CA', 'C', 'O' }
+  _pdb_parser = None
 
 
 
@@ -90,7 +91,7 @@ class Chain:
     Parameters
     ----------
     filename : str
-        The name of the PDB file to be opened.
+        The path to the PDB file to be opened.
 
     Returns
     -------
@@ -98,5 +99,6 @@ class Chain:
         The loaded Structure instance.
     """
     structure_id = os.path.splitext(os.path.basename(filename))[0]
-    parser = PDBParser()
-    return parser.get_structure(structure_id, filename)
+    if not cls._pdb_parser:
+      cls._pdb_parser = PDBParser()
+    return cls._pdb_parser.get_structure(structure_id, filename)
