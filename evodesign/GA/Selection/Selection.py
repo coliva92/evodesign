@@ -20,6 +20,7 @@ class Selection(SettingsRetrievable, ABC):
     self._selection_size = selectionSize
 
 
+
   @abstractmethod
   def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     raise NotImplementedError
@@ -41,4 +42,4 @@ class Selection(SettingsRetrievable, ABC):
         The selected subset of individuals.
     """
     survivors = population[population['Survivor']]
-    return self._select_parents(survivors)
+    return self.select_parents(survivors)
