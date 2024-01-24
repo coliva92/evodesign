@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from ...AsSetttings import AsSettings
+from ...SettingsRetrievable import SettingsRetrievable
 import pandas as pd
 
 
 
 
 
-class Selection(AsSettings, ABC):
+class Selection(SettingsRetrievable, ABC):
 
   def _params(self) -> dict:
     return {

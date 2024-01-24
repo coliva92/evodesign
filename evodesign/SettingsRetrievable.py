@@ -4,7 +4,7 @@ from abc import ABC, abstractclassmethod
 
 
 
-class AsSettings(ABC):
+class SettingsRetrievable(ABC):
 
   @abstractclassmethod
   def _name(cls) -> str:
@@ -17,5 +17,5 @@ class AsSettings(ABC):
   
 
 
-  def as_settings(self) -> dict:
+  def settings(self) -> dict:
     return { f'{self._name()}': self._params() }

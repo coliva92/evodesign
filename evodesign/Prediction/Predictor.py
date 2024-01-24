@@ -2,14 +2,14 @@ from abc import ABC, abstractmethod
 from typing import List
 from Bio.PDB.Atom import Atom
 from ..Chain import Chain
-from ..AsSetttings import AsSettings
+from ..SettingsRetrievable import SettingsRetrievable
 import os
 
 
 
 
 
-class Predictor(AsSettings, ABC):
+class Predictor(SettingsRetrievable, ABC):
 
   @abstractmethod
   def predict_structure(self, 
