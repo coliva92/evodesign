@@ -1,30 +1,24 @@
-from abc import ABC, abstractmethod, abstractclassmethod
-from Individual import Individual
-from Population import Population
-from evodesign import Random as Choice
+from abc import ABC, abstractmethod
+from ...SettingsRetrievable import SettingsRetrievable
+from ...Random import Random
+import pandas as pd
 
 
 
 
 
-class Mutation(ABC):
+class Mutation(SettingsRetrievable, ABC):
 
-  @abstractclassmethod
-  def name(cls) -> str:
-    raise NotImplementedError
-
-
-
-  def __init__(self, probability: float = 1.0) -> None:
+  def __init__(self, mutProb: float = 1.0) -> None:
     super().__init__()
-    self._activation_weights = ( probability, 1.0 - probability )
-    self._probability = probability
+    self._weights = ( mutProb, 1.0 - mutProb )
+    self._mutation_prob = mutProb
 
 
 
-  def params_as_dict(self) -> dict:
+  def _params(self) -> dict:
     return {
-      'probability': self._probability
+      'mutProb': self._mutation_prob
     }
 
 
@@ -35,7 +29,7 @@ class Mutation(ABC):
 
 
 
-  def __call__(self, children: Population) -> None:
-    for i, child in enumerate(children):
-      if Choice.coin_toss(self._activation_weights):
-        children[i] = Individual(self.mutate_sequence(child.sequence))
+  def __call__(self, children: pd.DataFrame) -> None:
+    indices = children.apply(lambda row: Random.coin_toss(self._weights), 
+                             axis=1)
+    children[indices, 'Sequence'].apply(self.mutate_sequence, inplace=True)

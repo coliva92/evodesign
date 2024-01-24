@@ -1,35 +1,35 @@
 from Mutation import Mutation
-from ...Sequence import Sequence
 from ...Random import Random
+from ...Sequence import Sequence
 
 
 
 
 
-class RandomResetting(Mutation):
+class Switch(Mutation):
 
   @classmethod
   def _name(cls) -> str:
-    return 'GA.Mutation.RandomResetting'
+    return 'GA.Mutation.Switch'
   
 
 
   def _params(self) -> dict:
     params = super()._params()
-    params['exchangeProb'] = self._exchange_prob
+    params['numSwitches'] = self._num_switches
     return params
   
-  
+
 
   def __init__(self, 
-               mutProb: float = 1.0, 
-               exchangeProb: float = 0.1
+               mutProb: float = 1.,
+               numSwitches: int = 1
                ) -> None:
     """
-    Mutation operation in which a binary mask of the same length as the given 
-    sequence is randomly produced, and where all the residues in which the 
-    corresponding position in said mask is 1 are exchanged for a different 
-    amino acid.
+    Mutation operation in which a certain number of residues are randomly 
+    chosen from the given amino acid sequence (with uniform probability and
+    without replacement) and "switched" or exchanged for a different amino acid.
+    The replacing amino acid is chosen randomly with uniform probability. 
 
     Parameters
     ----------
@@ -37,14 +37,12 @@ class RandomResetting(Mutation):
         The probability for applying this mutation operator over a given
         sequence. The default is 1.0 (i.e., mutate every and all sequences
         in a given population).
-    exchangeProb : float, optional
-        The probability for each residue in the sequence to get a 1
-        in the corresponding position in the binary mask. 
-        The default is 0.1.
+    numSwitches : int, optional
+        The number of amino acids that will be exchanged in the sequence.
+        The default is 1.
     """
     super().__init__(mutProb)
-    self._exchange_prob = exchangeProb
-    self._residue_weights = ( exchangeProb, 1. - exchangeProb )
+    self._num_switches = numSwitches
   
 
 
@@ -64,7 +62,10 @@ class RandomResetting(Mutation):
     str
         The modified sequence.
     """
-    return ''.join([
-      Sequence.switch_residue(x) if Random.coin_toss(self._exchange_prob) else x
-      for x in sequence
-    ])
+    rng = Random.generator()
+    indices = rng.choice(len(sequence), self._num_switches, replace=False)
+    # in Python, strings are immutable
+    seq_list = list(sequence)
+    for i in indices:
+      seq_list[i] = Sequence.switch_residue(seq_list[i])
+    return ''.join(seq_list)
