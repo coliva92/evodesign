@@ -21,7 +21,7 @@ class Selection(AsSettings, ABC):
 
 
   @abstractmethod
-  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+  def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     raise NotImplementedError
   
 

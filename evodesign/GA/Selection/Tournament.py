@@ -1,4 +1,4 @@
-from .Selection import Selection
+from Selection import Selection
 from ...Random import Random
 import pandas as pd
 
@@ -49,7 +49,7 @@ class Tournament(Selection):
 
 
 
-  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+  def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     
     def tournament_selection(k: int, population: pd.DataFrame):
       selection = rng.choice(population.index, size=k, replace=False)

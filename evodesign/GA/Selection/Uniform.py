@@ -1,4 +1,4 @@
-from .Selection import Selection
+from Selection import Selection
 from ...Random import Random
 import pandas as pd
 
@@ -27,7 +27,7 @@ class Uniform(Selection):
   
 
 
-  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+  def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     rng = Random.generator()
     selection = rng.choice(population.index, 
                            self._selection_size, 

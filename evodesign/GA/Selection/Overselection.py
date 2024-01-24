@@ -1,4 +1,4 @@
-from .Selection import Selection
+from Selection import Selection
 from ...Random import Random
 import pandas as pd
 
@@ -65,7 +65,7 @@ class Overselection(Selection):
   
 
 
-  def _select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+  def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     selected_parents = pd.DataFrame(columns=population.columns)
     rng = Random.generator()
     upper_bin = population.iloc[:self._upper_size, :]
