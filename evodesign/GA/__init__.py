@@ -1,3 +1,0 @@
-from . import SteadyStateGeneticAlgorithm as GA_Steady
-from .SimpleGeneticAlgorithm import SimpleGeneticAlgorithm as GA_Simple
-from .SurrogatedGeneticAlgorithm import SurrogatedGeneticAlgorithm as GA_Simple_Surrogated
