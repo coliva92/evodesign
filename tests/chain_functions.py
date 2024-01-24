@@ -1,4 +1,4 @@
-from evodesign import Chain
+from evodesign.Chain import Chain
 from Bio.PDB.Atom import Atom
 
 

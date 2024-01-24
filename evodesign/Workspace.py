@@ -1,7 +1,7 @@
 from Individual import Individual
 from Population import Population
 from Statistics import Statistics
-import FileIO
+import evodesign.FileIO as FileIO
 import matplotlib.pyplot as plt
 import json
 import csv
@@ -32,6 +32,7 @@ class Workspace:
 
 
   def __new__(cls, *args, **kwargs):
+    # this class is a singleton
     if not cls._instance:
       cls._instance = super(Workspace, cls).__new__(cls)
     return cls._instance

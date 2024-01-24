@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod, abstractclassmethod
+from abc import ABC, abstractmethod
 from typing import List
 from Bio.PDB.Atom import Atom
 from ..Chain import Chain
@@ -16,6 +16,14 @@ class Predictor(AsSettings, ABC):
                         sequence: str, 
                         pdbPath: str
                         ) -> None:
+    raise NotImplementedError
+  
+
+
+  @abstractmethod
+  def predict_structure(self, 
+                        sequence: str, 
+                        pdbPath: str) -> None:
     raise NotImplementedError
   
 

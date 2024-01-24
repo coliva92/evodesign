@@ -1,4 +1,4 @@
-from .Metric import Metric
+from Metric import Metric
 from typing import List
 from Bio.PDB.Atom import Atom
 from Bio.PDB import Superimposer

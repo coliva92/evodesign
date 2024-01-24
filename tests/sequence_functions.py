@@ -1,4 +1,5 @@
-from evodesign import Sequence, Random
+from evodesign.Sequence import Sequence
+from evodesign.Random import Random
 
 
 
