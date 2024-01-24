@@ -31,14 +31,13 @@ class Mutation(SettingsRetrievable, ABC):
 
   def __call__(self, children: pd.DataFrame) -> None:
     """
-    Modifies the amino acid sequences of a select subset of the given 
-    collection of individuals.
+    Modifies the amino acid sequences of a select subset of rows in the given 
+    table.
 
     Parameters
     ----------
     children : pd.DataFrame
-        The collection of individuals from which a subset will be selected 
-        and modified.
+        The table from which a subset will be selected and modified.
     """
     indices = children.apply(lambda row: Random.coin_toss(self._weights), 
                              axis=1)
