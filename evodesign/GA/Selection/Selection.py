@@ -29,7 +29,8 @@ class Selection(SettingsRetrievable, ABC):
 
   def __call__(self, population: pd.DataFrame) -> pd.DataFrame:
     """
-    Selects a subset of individuals from the given population.
+    Selects a subset of individuals from the given population. Only those
+    rows with a `True` value in the 'Survivor' column are considered.
 
     Parameters
     ----------
