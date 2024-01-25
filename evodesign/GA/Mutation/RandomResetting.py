@@ -31,6 +31,10 @@ class RandomResetting(Mutation):
     corresponding position in said mask is 1 are exchanged for a different 
     amino acid.
 
+    For example, given the sequence 'AAAAAA', and assuming the mask 110001 was
+    randomly generated, then this operation would produce the sequence
+    'DFAAAL'.
+
     Parameters
     ----------
     mutProb : float, optional
@@ -38,8 +42,8 @@ class RandomResetting(Mutation):
         sequence. The default is 1.0 (i.e., mutate every and all sequences
         in a given population).
     exchangeProb : float, optional
-        The probability for each residue in the sequence to get a 1
-        in the corresponding position in the binary mask. 
+        The probability for each residue in the sequence to be exchanged
+        for another amino acid. 
         The default is 0.1.
     """
     super().__init__(mutProb)

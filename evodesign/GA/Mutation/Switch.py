@@ -26,10 +26,15 @@ class Switch(Mutation):
                numSwitches: int = 1
                ) -> None:
     """
-    Mutation operation in which a certain number of residues are randomly 
+    Mutation operation in which a given number of residues are randomly 
     chosen from the given amino acid sequence (with uniform probability and
-    without replacement) and "switched" or exchanged for a different amino acid.
+    without replacement) and exchanged for a different amino acid.
     The replacing amino acid is chosen randomly with uniform probability. 
+
+    For example, given the sequence 'AAAAAA', and assuming that three residues
+    are to be exchanged and that the first, second and last residues where
+    selected for exchange, then this operation would produce the sequence
+    'DLAAAL'.
 
     Parameters
     ----------
