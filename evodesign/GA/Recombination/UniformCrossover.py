@@ -1,6 +1,6 @@
-from . import Recombination
+from Recombination import Recombination
 from typing import List
-import random
+from ...Random import Random
 
 
 
@@ -9,24 +9,37 @@ import random
 class UniformCrossover(Recombination):
 
   @classmethod
-  def name(cls) -> str:
-    return 'GA_Recombination_UniformCrossover'
-  
-  
-
-  def __init__(self, 
-               probability: float = 1.0, 
-               bias: float = 0.5) -> None:
-    super().__init__(probability)
-    self._weights = ( bias, 1.0 - bias )
-    self._bias = bias
+  def _name(cls) -> str:
+    return 'GA.Recombination.UniformCrossover'
   
 
 
-  def params_as_dict(self) -> dict:
-    params = super().params_as_dict()
-    params['bias'] = self._bias
-    return params
+  def _params(self) -> dict:
+    return { 'maskBias': self._parent_bias }
+  
+  
+
+  def __init__(self,
+               maskBias: float = 0.5
+               ) -> None:
+    """
+    Randomly generates a binary mask of the same length as the parent sequences
+    and uses it to construct a new sequence, residue by residue, by choosing
+    one amino acid from one parent or the other for the corresponding position
+    in the generated mask.
+
+    For example, given the sequences 'AAAAAA' and 'DDDDDD', and assuming the 
+    random binary mask was 011010, then this operator would produce the 
+    sequences 'ADDADA' and 'DAADAD'.
+
+    Parameters
+    ----------
+    maskBias : float, optional
+        The probability for generating one binary value over the other in the
+        random mask. The default is 0.5.
+    """
+    self._weights = ( maskBias, 1.0 - maskBias )
+    self._parent_bias = maskBias
 
 
 
@@ -34,11 +47,29 @@ class UniformCrossover(Recombination):
                           mother: str,
                           father: str
                           ) -> List[str]:
-    # suponemos que ambos padres son de la misma longitud y que vienen 
-    # ordenados por aptitud de manera ascendente
-    selections = random.choices(( 0, 1 ), self._weights, k=len(mother))
+    """
+    Mix partial information from the two given sequences to create two new
+    sequences. It is assumed that both sequences have equal length.
+
+    In both sequences, each residue must be represented by a single letter
+    corresponding to one of the 20 essential amino acids.
+
+    Parameters
+    ----------
+    mother : str
+        One of the sequences to be mixed.
+    father : str
+        The other sequence to be mixed.
+
+    Returns
+    -------
+    List[str]
+        The two sequences produced.
+    """
+    rng = Random.generator()
+    mask = rng.choice([ 0, 1 ], size=len(mother), p=self._weights)
     parents = ( mother, father )
-    sister = ''.join([ parents[p][i] for i, p in enumerate(selections) ])
+    sister = ''.join([ parents[p][i] for i, p in enumerate(mask) ])
     parents = ( father, mother )
-    brother = ''.join([ parents[p][i] for i, p in enumerate(selections) ])
+    brother = ''.join([ parents[p][i] for i, p in enumerate(mask) ])
     return [ sister, brother ]

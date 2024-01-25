@@ -1,31 +1,29 @@
 from Recombination import Recombination
 from typing import List
-from ...Random import Random
 
 
 
 
 
-class TwoPointsCrossover(Recombination):
-
+class MiddlePointCrossover(Recombination):
+  
   @classmethod
   def _name(cls) -> str:
-    return 'GA.Recombination.TwoPointsCrossover'
-
+    return 'GA.Recombination.MiddlePointCrossover'
+  
 
 
   def __init__(self) -> None:
     """
-    Creates new sequences by splitting the parent sequences at three randomly
-    chosen residue positions and mixing two parts from one of the parents with
-    one complementary part from the other.
+    Creates new sequences by splitting both parent sequences exactly in half  
+    and mixing the half from one parent with the complementary half from 
+    the other.
 
-    For example, given the sequences 'AAAAAA' and 'DDDDDD', and assuming that
-    these sequences are to be split at the 2nd and 2nd to last positions, then
-    this operator would produce the sequences 'AADDDA' and 'DDAAAD'.
+    For example, given the sequences 'AAAAAA' and 'DDDDDD', this operator would
+    produce the sequences 'AAADDD' and 'DDDAAA'.
     """
     super().__init__()
-  
+
 
 
   def offspring_sequences(self, 
@@ -51,10 +49,8 @@ class TwoPointsCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = Random.generator()
     n = len(mother)
-    i = rng.integers(0, n) 
-    j = rng.integers(i, n)
-    sister = mother[0:i] + father[i:j] + mother[j:]
-    brother = father[0:i] + mother[i:j] + father[j:]
+    i = n / 2 if n % 2 == 0 else (n - 1) / 2
+    sister = mother[0:i] + father[i:]
+    brother = father[0:i] + mother[i:]
     return [ sister, brother ]
