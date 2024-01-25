@@ -31,10 +31,9 @@ class Switch(Mutation):
     without replacement) and exchanged for a different amino acid.
     The replacing amino acid is chosen randomly with uniform probability. 
 
-    For example, given the sequence 'AAAAAA', and assuming that three residues
-    are to be exchanged and that the first, second and last residues where
-    selected for exchange, then this operation would produce the sequence
-    'DLAAAL'.
+    For example, given the sequence 'AAAAAA', and assuming that only one 
+    residue--the third one--is to be exchanged, then this operation would 
+    produce the sequence'AADAAA'.
 
     Parameters
     ----------
