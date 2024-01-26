@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 
 
@@ -16,8 +16,8 @@ class Metric(ABC):
   
   @abstractmethod
   def __call__(self, 
-               sequence: str,
                model: List[Atom], 
-               reference: List[Atom]
+               reference: List[Atom],
+               sequence: Optional[str] = None
                ) -> float:
     raise NotImplementedError

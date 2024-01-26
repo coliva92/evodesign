@@ -1,5 +1,5 @@
 from Metric import Metric
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 from Bio.PDB import Superimposer
 
@@ -20,9 +20,9 @@ class Rmsd(Metric):
   
 
   def __call__(self, 
-               sequence: str,
                model: List[Atom], 
-               reference: List[Atom]
+               reference: List[Atom],
+               sequence: Optional[str] = None
                ) -> float:
     """
     Computes the RMSD between the atom coordinates of a model backbone and
@@ -31,14 +31,14 @@ class Rmsd(Metric):
 
     Parameters
     ----------
-    sequence : str
-        Unused.
     model : List[Atom]
         The model backbone. In this case, the model backbone will be moved 
         towards the reference backbone during the superposition.
     reference : List[Atom]
         The reference backbone. In this case, the reference backbone remains
         fixed in position during the superposition.
+    sequence : str
+        Unused.
 
     Returns
     -------

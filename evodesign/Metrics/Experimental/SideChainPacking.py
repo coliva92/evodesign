@@ -1,5 +1,5 @@
 from ..Metric import Metric
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 from ...Workspace import Workspace
 import subprocess
@@ -30,9 +30,9 @@ class SideChainPacking(Metric):
 
 
   def __call__(self, 
-               sequence: str,
                model: List[Atom], 
-               reference: List[Atom]
+               reference: List[Atom],
+               sequence: Optional[str] = None
                ) -> float:
     os.makedirs(self._scwrl_outputs_folder, exist_ok=True)
     with open(self._scwrl_sequence_filename, 'wt', encoding='utf-8') as seq_file:

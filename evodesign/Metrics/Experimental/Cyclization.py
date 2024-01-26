@@ -1,5 +1,5 @@
 from ..Metric import Metric
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 
 
@@ -15,9 +15,9 @@ class Cyclization(Metric):
 
 
   def __call__(self, 
-               sequence: str,
                model: List[Atom], 
-               reference: List[Atom]
+               reference: List[Atom],
+               sequence: Optional[str] = None
                ) -> float:
     # distance between the N atom of the first residue and the C 
     # atom of the last
