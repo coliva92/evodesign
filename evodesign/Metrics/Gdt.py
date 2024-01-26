@@ -10,7 +10,7 @@ import numpy as np
 class Gdt(Metric):
   
   @classmethod
-  def name(cls) -> str:
+  def column_name(cls) -> str:
     return 'GDT'
   
 

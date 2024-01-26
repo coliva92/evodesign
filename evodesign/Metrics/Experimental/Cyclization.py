@@ -9,7 +9,7 @@ from Bio.PDB.Atom import Atom
 class Cyclization(Metric):
 
   @classmethod
-  def name(cls) -> str:
+  def column_name(cls) -> str:
     return 'Cyclization'
 
 

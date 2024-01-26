@@ -9,7 +9,7 @@ from Bio.PDB.Atom import Atom
 class Metric(ABC):
 
   @abstractclassmethod
-  def name(cls) -> str:
+  def column_name(cls) -> str:
     raise NotImplemented
   
 
