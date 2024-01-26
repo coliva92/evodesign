@@ -9,7 +9,7 @@ from ...Sequence import Sequence
 class Switch(Mutation):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'GA.Mutation.Switch'
   
 

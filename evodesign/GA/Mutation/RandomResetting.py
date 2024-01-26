@@ -9,7 +9,7 @@ from ...Random import Random
 class RandomResetting(Mutation):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'GA.Mutation.RandomResetting'
   
 

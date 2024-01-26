@@ -10,7 +10,7 @@ import os
 class AlphaFold(Predictor):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'Prediction.AlphaFold'
   
 

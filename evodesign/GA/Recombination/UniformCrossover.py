@@ -9,7 +9,7 @@ from ...Random import Random
 class UniformCrossover(Recombination):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'GA.Recombination.UniformCrossover'
   
 

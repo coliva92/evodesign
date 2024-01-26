@@ -13,7 +13,7 @@ import time
 class ESMFoldRemoteApi(Predictor):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'Prediction.ESMFold.RemoteApi'
   
 

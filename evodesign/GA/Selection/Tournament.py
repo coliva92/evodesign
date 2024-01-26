@@ -9,7 +9,7 @@ import pandas as pd
 class Tournament(Selection):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'GA_Selection_Tournament'
   
 

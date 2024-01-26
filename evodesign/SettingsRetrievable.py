@@ -7,7 +7,7 @@ from abc import ABC, abstractclassmethod
 class SettingsRetrievable(ABC):
 
   @abstractclassmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     raise NotImplementedError
   
 
@@ -18,4 +18,4 @@ class SettingsRetrievable(ABC):
 
 
   def settings(self) -> dict:
-    return { f'{self._name()}': self._params() }
+    return { f'{self._class_name()}': self._params() }

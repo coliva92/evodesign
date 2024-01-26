@@ -8,7 +8,7 @@ from typing import List
 class MiddlePointCrossover(Recombination):
   
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'GA.Recombination.MiddlePointCrossover'
   
 
