@@ -10,6 +10,14 @@ from ...Workspace import Workspace
 class EnergyScore(Metric):
 
   score_fn = None
+
+
+
+  @classmethod
+  def name(cls) -> str:
+    return 'Energy_Score'
+  
+
   
   def __init__(self) -> None:
     super().__init__()

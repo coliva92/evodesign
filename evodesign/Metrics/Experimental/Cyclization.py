@@ -8,6 +8,12 @@ from Bio.PDB.Atom import Atom
 
 class Cyclization(Metric):
 
+  @classmethod
+  def name(cls) -> str:
+    return 'Cyclization'
+
+
+
   def __call__(self, 
                sequence: str,
                model: List[Atom], 

@@ -11,6 +11,12 @@ import os
 
 class SideChainPacking(Metric):
 
+  @classmethod
+  def name(cls) -> str:
+    return 'Side_Chain_Packing'
+
+
+
   def __init__(self,
                scwrlExecutablePath: str = './scwrl4/Scwrl4'
                ) -> None:

@@ -11,6 +11,12 @@ class Rmsd(Metric):
 
   _superimposer = None
 
+
+
+  @classmethod
+  def name(cls) -> str:
+    return 'RMSD'
+
   
 
   def __call__(self, 

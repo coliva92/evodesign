@@ -9,6 +9,12 @@ import numpy as np
 
 class Gdt(Metric):
   
+  @classmethod
+  def name(cls) -> str:
+    return 'GDT'
+  
+
+  
   def __init__(self, 
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]
                ) -> None:

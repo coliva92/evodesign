@@ -9,6 +9,12 @@ import statistics
 
 class Lddt(Metric):
 
+  @classmethod
+  def name(cls) -> str:
+    return 'lDDT'
+  
+  
+
   def __init__(self,
                cutoffs: List[float] = [ 0.5, 1.0, 2.0, 4.0 ],
                radius: float = 15,
