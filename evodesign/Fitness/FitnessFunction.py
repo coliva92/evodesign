@@ -1,53 +1,52 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional
 from Bio.PDB.Atom import Atom
-from ..Metrics import Metric
+from ..Metrics.Metric import Metric
+from ..SettingsRetrievable import SettingsRetrievable
+import pandas as pd
 
 
 
 
 
-class FitnessFunction(ABC):
+class FitnessFunction(SettingsRetrievable, ABC):
 
   @abstractclassmethod
-  def name(cls) -> str:
+  def column_name(cls) -> str:
     raise NotImplementedError
 
-  
+
 
   @abstractclassmethod
   def upper_bound(cls) -> float:
     raise NotImplementedError
   
-  
-  
-  def __init__(self, metrics: Dict[str, Metric]) -> None:
+
+
+  def __init__(self, metrics: List[Metric]) -> None:
     super().__init__()
-    self._metric_calculators = metrics
-  
-
-
-  def params_as_dict(self) -> dict:
-    return dict()
+    self._metrics = metrics
 
 
   
   @abstractmethod
   def compute_fitness(self, 
-                      metrics: Dict[str, float],
-                      sequence: Optional[str] = None) -> float:
+                      metricValues: Dict[str, float],
+                      sequence: Optional[str] = None
+                      ) -> float:
     raise NotImplementedError
 
 
 
   def __call__(self,
-               modelBackbone: List[Atom], 
-               referenceBackbone: List[Atom],
+               model: List[Atom], 
+               reference: List[Atom],
                sequence: Optional[str] = None
-               ) -> Tuple[Dict[str, float], float]:
-    metrics = { 
-      key: calc(modelBackbone, referenceBackbone, sequence) \
-        for key, calc in self._metric_calculators.items() 
+               ) -> pd.Series:
+    values = {
+      metric.column_name(): metric(model, reference, sequence)
+      for metric in self._metrics
     }
-    fitness = self.compute_fitness(metrics, sequence)
-    return metrics, fitness
+    values[self.column_name()] = self.compute_fitness(metricValues=values, 
+                                                      sequence=sequence)
+    return pd.Series(values)

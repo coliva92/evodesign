@@ -1,7 +1,7 @@
-from . import FitnessFunction
-from ..Sequence import AMINO_ACIDS_SET
+from FitnessFunction import FitnessFunction
+from ..Sequence import Sequence
 import blosum as bl
-from typing import Dict, List
+from typing import Dict, List, Optional
 import math
 import operator
 
@@ -9,7 +9,7 @@ import operator
 
 
 
-class NegativeRastrigin(FitnessFunction):
+class Rastrigin(FitnessFunction):
 
   """[Función de Rastrigin](https://www.sfu.ca/~ssurjano/rastr.html) para 
   realizar pruebas sin utilizar directamente el predictor de la estructura de 
@@ -17,19 +17,36 @@ class NegativeRastrigin(FitnessFunction):
   con `Predictor_Null`
   """
 
+  @classmethod
+  def _class_name(cls) -> str:
+    return 'Fitness.Rastrigin'
+  
 
 
-  def __init__(self, 
-               targetSequence: str,
-               windowWidth: int = 3
-               ) -> None:
-    super().__init__({})
+  @classmethod
+  def column_name(cls) -> str:
+    return 'Fitness_Rastrigin'
+  
+
+
+  def _params(self) -> dict:
+    return { 'windowWidth': self._window_width }
+  
+
+
+  @classmethod
+  def upper_bound(cls) -> float:
+    return 0.0
+
+
+
+  def __init__(self, windowWidth: int = 3) -> None:
+    super().__init__([])
 
     # acotamos los valores permitidos para la variable `windowWidth`...
     if windowWidth < 3: windowWidth = 3
     if windowWidth > 9: windowWidth = 9
 
-    self._target_sequence = targetSequence
     self._window_width = windowWidth
     self._wing_length = (windowWidth - 1) // 2
     self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
@@ -37,29 +54,9 @@ class NegativeRastrigin(FitnessFunction):
 
 
 
-  @classmethod
-  def name(cls) -> str:
-    return 'Fitness_NegativeRastrigin'
-
-
-
-  @classmethod
-  def upper_bound(cls) -> float:
-    return 0.0
-  
-
-
-  def params_as_dict(self) -> dict:
-    return {
-      'targetSequence': self._target_sequence,
-      'windowWidth': self._window_width
-    }
-
-
-
   def compute_fitness(self,
-                      _: Dict[str, float],
-                      sequence: str
+                      sequence: str,
+                      metricValues: Optional[Dict[str, float]] = None
                       ) -> float:
     x = self._to_rastrigin_domain(sequence)
     sigma = sum([ 
@@ -85,7 +82,7 @@ class NegativeRastrigin(FitnessFunction):
       amino_acid_scores = [
         (amino_acid, blosum_matrix[residue][amino_acid])
         for amino_acid in blosum_matrix[residue].keys()
-        if amino_acid in AMINO_ACIDS_SET
+        if amino_acid in Sequence.AMINO_ACIDS
       ]
       amino_acid_scores.sort(key=operator.itemgetter(1), reverse=True)
       residue_ordinals.append({
