@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod, abstractclassmethod
-from typing import Dict, List, Optional
-from Bio.PDB.Atom import Atom
+from typing import List
 from ..Metrics.Metric import Metric
 from ..SettingsRetrievable import SettingsRetrievable
 import pandas as pd
@@ -30,23 +29,15 @@ class FitnessFunction(SettingsRetrievable, ABC):
 
   
   @abstractmethod
-  def compute_fitness(self, 
-                      metricValues: Dict[str, float],
-                      sequence: Optional[str] = None
-                      ) -> float:
+  def compute_fitness(self, **kwargs) -> float:
     raise NotImplementedError
 
 
 
-  def __call__(self,
-               model: List[Atom], 
-               reference: List[Atom],
-               sequence: Optional[str] = None
-               ) -> pd.Series:
+  def __call__(self, **kwargs) -> pd.Series:
     values = {
-      metric.column_name(): metric(model, reference, sequence)
+      metric.column_name(): metric(**kwargs)
       for metric in self._metrics
     }
-    values[self.column_name()] = self.compute_fitness(metricValues=values, 
-                                                      sequence=sequence)
+    values[self.column_name()] = self.compute_fitness(**kwargs)
     return pd.Series(values)

@@ -1,7 +1,7 @@
 from FitnessFunction import FitnessFunction
 from ..Sequence import Sequence
 import blosum as bl
-from typing import Dict, List, Optional
+from typing import Dict, List
 import math
 import operator
 
@@ -25,7 +25,7 @@ class Rastrigin(FitnessFunction):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'Fitness_Rastrigin'
+    return 'fitness_rastrigin'
   
 
 
@@ -54,16 +54,13 @@ class Rastrigin(FitnessFunction):
 
 
 
-  def compute_fitness(self,
-                      sequence: str,
-                      metricValues: Optional[Dict[str, float]] = None
-                      ) -> float:
-    x = self._to_rastrigin_domain(sequence)
+  def compute_fitness(self, **kwargs) -> float:
+    x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 
       x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
       for x_i in x 
     ])
-    return -10.0 * len(sequence) - sigma # queremos el valor negativo
+    return -10.0 * len(kwargs['sequence']) - sigma # queremos el valor negativo
   
 
 

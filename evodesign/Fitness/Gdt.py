@@ -1,5 +1,5 @@
 from FitnessFunction import FitnessFunction
-from typing import Dict, List, Optional
+from typing import List
 from ..Metrics.Rmsd import Rmsd
 from ..Metrics.Gdt import Gdt as GdtMetric
 
@@ -17,7 +17,7 @@ class Gdt(FitnessFunction):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'Fitness_GDT'
+    return 'fitness_gdt'
   
 
 
@@ -63,24 +63,19 @@ class Gdt(FitnessFunction):
   
 
 
-  def compute_fitness(self, 
-                      metricValues: Dict[str, float],
-                      sequence: Optional[str] = None
-                      ) -> float:
+  def compute_fitness(self, **kwargs) -> float:
     """
     Uses the provided metric values to compute the final fitness value.
 
     Parameters
     ----------
-    metricValues: Dict[float]
-        The values of the metrics previously calculated for this fitness 
-        function.
-    sequence : Optional[str], optional
-        Unused.
+    gdt: float
+        The GDT value previously computed after superimposing the model 
+        backbone into the reference backbone.
 
     Returns
     -------
     float
         The final fitness value.
     """
-    return metricValues['GDT']
+    return kwargs['gdt']

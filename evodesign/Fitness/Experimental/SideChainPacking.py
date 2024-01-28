@@ -1,5 +1,4 @@
 from ..FitnessFunction import FitnessFunction
-from typing import Dict, Optional
 from ...Metrics.Experimental.SideChainPacking import SideChainPacking \
   as PackingMetric
 import math
@@ -18,7 +17,7 @@ class SideChainPacking(FitnessFunction):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'Side_Chain_Packing'
+    return 'fitness_sidechain_packing'
   
 
 
@@ -39,9 +38,6 @@ class SideChainPacking(FitnessFunction):
   
 
 
-  def compute_fitness(self, 
-                      metricValues: Dict[str, float], 
-                      sequence: Optional[str] = None
-                      ) -> float:
-    return -metricValues['Side_Chain_Packing']
+  def compute_fitness(self, **kwargs) -> float:
+    return -kwargs['sidechain_packing']
   

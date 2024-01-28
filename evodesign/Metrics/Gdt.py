@@ -1,6 +1,5 @@
 from Metric import Metric
-from typing import List, Optional
-from Bio.PDB.Atom import Atom
+from typing import List
 import numpy as np
 
 
@@ -11,7 +10,7 @@ class Gdt(Metric):
   
   @classmethod
   def column_name(cls) -> str:
-    return 'GDT'
+    return 'gdt'
   
 
   
@@ -32,11 +31,7 @@ class Gdt(Metric):
   
 
 
-  def __call__(self, 
-               model: List[Atom], 
-               reference: List[Atom],
-               sequence: Optional[str] = None
-               ) -> float:
+  def __call__(self, **kwargs) -> float:
     """
     Computes the RMSD between the atom coordinates of a model backbone and
     a reference backbone. Both backbones must have equal number of atoms.
@@ -47,8 +42,6 @@ class Gdt(Metric):
         The model backbone.
     reference : List[Atom]
         The reference backbone.
-    sequence : str
-        Unused.
 
     Returns
     -------
@@ -56,6 +49,7 @@ class Gdt(Metric):
         The computed GDT; it's a value between 0 and 1.
     """
     # we assume that the backbones are already superimposed
+    model, reference = kwargs['model'], kwargs['reference']
     distances = np.array([ a - b for a, b in zip(model, reference) ])
     return np.mean([
       np.mean([ d <= c for d in distances ])

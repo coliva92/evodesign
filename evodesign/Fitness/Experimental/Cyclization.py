@@ -1,4 +1,3 @@
-from typing import Dict, Optional
 from ..FitnessFunction import FitnessFunction
 from ...Metrics.Experimental.Cyclization import Cyclization as CycMetric
 
@@ -16,7 +15,7 @@ class Cyclization(FitnessFunction):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'Fitness_Cyclization'
+    return 'fitness_cyclization'
   
 
 
@@ -31,9 +30,6 @@ class Cyclization(FitnessFunction):
 
 
 
-  def compute_fitness(self, 
-                      metricValues: Dict[str, float],
-                      sequence: Optional[str] = None
-                      ) -> float:
-    return metricValues['Cyclization']
+  def compute_fitness(self, **kwargs) -> float:
+    return kwargs['cyclization']
   

@@ -1,6 +1,5 @@
 from ..Metric import Metric
-from typing import List, Optional
-from Bio.PDB.Atom import Atom
+from typing import List
 import statistics
 
 
@@ -11,7 +10,7 @@ class Lddt(Metric):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'lDDT'
+    return 'lddt'
   
   
 
@@ -25,11 +24,9 @@ class Lddt(Metric):
 
 
 
-  def __call__(self, 
-               model: List[Atom], 
-               reference: List[Atom],
-               sequence: Optional[str] = None
-               ) -> float:
+  def __call__(self, **kwargs) -> float:
+    model = kwargs['model']
+    reference = kwargs['reference']
     
     def is_preserved(i: int, j: int, cutoff: float) -> bool:
       a = model[i]
