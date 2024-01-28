@@ -41,4 +41,4 @@ class Mutation(SettingsRetrievable, ABC):
     """
     indices = children.apply(lambda row: Random.coin_toss(self._weights), 
                              axis=1)
-    children[indices, 'Sequence'].apply(self.mutate_sequence, inplace=True)
+    children[indices, 'sequence'].apply(self.mutate_sequence, inplace=True)

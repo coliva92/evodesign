@@ -75,7 +75,7 @@ class Tournament(Selection):
       winner = tournament_selection(self._tournament_size, population)
       # garantee that two consecutive parents are different sequences
       while i % 2 != 0 and \
-          selected_parents.iloc[i - 1, 'Sequence'] == winner['Sequence']:
+          selected_parents.iloc[i - 1, 'sequence'] == winner['sequence']:
         winner = tournament_selection(self._tournament_size, population)
       selected_parents = pd.concat([ selected_parents, pd.DataFrame(winner) ],
                                    ignore_index=True)

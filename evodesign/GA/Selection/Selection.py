@@ -30,7 +30,7 @@ class Selection(SettingsRetrievable, ABC):
   def __call__(self, population: pd.DataFrame) -> pd.DataFrame:
     """
     Selects a subset of individuals from the given population. Only those
-    rows with a `True` value in the 'Survivor' column are considered.
+    rows with a `True` value in the 'survivor' column are considered.
 
     Parameters
     ----------
@@ -42,5 +42,5 @@ class Selection(SettingsRetrievable, ABC):
     pd.DataFrame
         The selected subset of individuals.
     """
-    survivors = population[population['Survivor']]
+    survivors = population[population['survivor']]
     return self.select_parents(survivors)
