@@ -87,23 +87,23 @@ class Overselection(Selection):
       option = rng.choice([ 0, 1, 2 ], p=self._weights)
       if option == 0:
         selection = rng.choice(upper_bin.index, size=2, replace=False)
-        parents = population.iloc[selection]
+        parents = upper_bin.loc[selection]
       if option == 1:
         selection = rng.choice(lower_bin.index, size=2, replace=False)
-        parents = population.iloc[selection]
+        parents = lower_bin.loc[selection]
       if option == 2:
         m = rng.choice(upper_bin.index)
         f = rng.choice(lower_bin.index)
-        mother, father = upper_bin.iloc[m], lower_bin.iloc[f]
+        mother, father = population.loc[m], population.loc[f]
         parents = pd.concat([ pd.DataFrame(mother), pd.DataFrame(father) ], 
                             ignore_index=True)
       while parents.at[0, 'sequence'] == parents.at[1, 'sequence']:
         if option == 0:
           f = rng.choice(upper_bin.index)
-          father = upper_bin.iloc[f]
+          father = upper_bin.loc[f]
         else:
           f = rng.choice(lower_bin.index)
-          father = lower_bin.iloc[f]
+          father = lower_bin.loc[f]
         parents.iloc[1] = father
       selected_parents = pd.concat([ selected_parents, parents ],
                                    ignore_index=True)

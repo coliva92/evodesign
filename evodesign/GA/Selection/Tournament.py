@@ -65,7 +65,7 @@ class Tournament(Selection):
     """
     def tournament_selection(k: int, population: pd.DataFrame):
       selection = rng.choice(population.index, size=k, replace=False)
-      tournament = population.iloc[selection]
+      tournament = population.loc[selection]
       tournament.sort_values(by='Fitness', ascending=False, inplace=True)
       return tournament.iloc[0]
     

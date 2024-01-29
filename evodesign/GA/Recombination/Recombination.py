@@ -46,8 +46,8 @@ class Recombination(SettingsRetrievable, ABC):
       parents = parents.iloc[:-1]
     children = []
     for i in range(0, len(parents), 2):
-      mother = parents.at[i, 'sequence']
-      father = parents.at[i + 1, 'sequence']
+      mother = parents.iat[i, 'sequence']
+      father = parents.iat[i + 1, 'sequence']
       children += self.offspring_sequences(mother, father)
     return Population.create(children, generationId)
   

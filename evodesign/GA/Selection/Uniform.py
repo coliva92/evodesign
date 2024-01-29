@@ -45,4 +45,4 @@ class Uniform(Selection):
     selection = rng.choice(population.index, 
                            self._selection_size, 
                            replace=False)
-    return population.iloc[selection]
+    return population.loc[selection]
