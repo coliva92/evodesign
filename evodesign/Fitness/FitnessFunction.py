@@ -35,6 +35,26 @@ class FitnessFunction(SettingsRetrievable, ABC):
 
 
   def __call__(self, **kwargs) -> pd.Series:
+    """
+    Computes the fitness for a given model backbone or sequence.
+
+    Parameters
+    ----------
+    model : List[Bio.PDB.Atom.Atom]
+        The model backbone for which the fitness will be computed.
+    reference : List[Bio.PDB.Atom.Atom]
+        The reference backbone. The model usually gets compared against the
+        backbone in order to compute the fitness value of the former.
+    sequence : str
+        The name amino acid sequence for which the fitness will be computed.
+        Each residue must be represented by a single letter corresponding to
+        one of the 20 essential amino acids.
+
+    Returns
+    -------
+    pandas.Series
+        The computed metrics and fitness value for the given model or sequence.
+    """
     values = {
       metric.column_name(): metric(**kwargs)
       for metric in self._metrics
