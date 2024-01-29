@@ -55,12 +55,12 @@ class Tournament(Selection):
 
     Parameters
     ----------
-    population : pd.DataFrame
+    population : pandas.DataFrame
         The population to be sampled.
 
     Returns
     -------
-    pd.DataFrame
+    pandas.DataFrame
         The selected subset of individuals.
     """
     def tournament_selection(k: int, population: pd.DataFrame):
@@ -75,7 +75,7 @@ class Tournament(Selection):
       winner = tournament_selection(self._tournament_size, population)
       # garantee that two consecutive parents are different sequences
       while i % 2 != 0 and \
-          selected_parents.iloc[i - 1, 'sequence'] == winner['sequence']:
+          selected_parents.at[i - 1, 'sequence'] == winner['sequence']:
         winner = tournament_selection(self._tournament_size, population)
       selected_parents = pd.concat([ selected_parents, pd.DataFrame(winner) ],
                                    ignore_index=True)

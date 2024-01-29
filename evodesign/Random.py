@@ -15,7 +15,7 @@ class Random:
     """
     Returns
     -------
-    np.random.Generator
+    numpy.random.Generator
         The singleton RNG instance.
     """
     if not cls._rng:

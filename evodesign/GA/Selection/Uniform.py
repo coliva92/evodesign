@@ -33,12 +33,12 @@ class Uniform(Selection):
 
     Parameters
     ----------
-    population : pd.DataFrame
+    population : pandas.DataFrame
         The population to be sampled.
 
     Returns
     -------
-    pd.DataFrame
+    pandas.DataFrame
         The selected subset of individuals.
     """
     rng = Random.generator()

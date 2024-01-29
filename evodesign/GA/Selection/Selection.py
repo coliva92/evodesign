@@ -34,12 +34,12 @@ class Selection(SettingsRetrievable, ABC):
 
     Parameters
     ----------
-    population : pd.DataFrame
+    population : pandas.DataFrame
         The population to be sampled.
 
     Returns
     -------
-    pd.DataFrame
+    pandas.DataFrame
         The selected subset of individuals.
     """
     survivors = population[population['survivor']]

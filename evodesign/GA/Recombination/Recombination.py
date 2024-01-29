@@ -29,7 +29,7 @@ class Recombination(SettingsRetrievable, ABC):
 
     Parameters
     ----------
-    parents : pd.DataFrame
+    parents : pandas.DataFrame
         The table which rows will be mixed to produce the new table. 
         It is assumed that there is an even number of rows
         in this table, otherwise the last row is dropped.
@@ -39,15 +39,15 @@ class Recombination(SettingsRetrievable, ABC):
 
     Returns
     -------
-    pd.DataFrame
+    pandas.DataFrame
         The table of the produced sequences.
     """
     if len(parents) % 2 != 0:
       parents = parents.iloc[:-1]
     children = []
     for i in range(0, len(parents), 2):
-      mother = parents.iloc[i, 'sequence']
-      father = parents.iloc[i + 1, 'sequence']
+      mother = parents.at[i, 'sequence']
+      father = parents.at[i + 1, 'sequence']
       children += self.offspring_sequences(mother, father)
     return Population.create(children, generationId)
   

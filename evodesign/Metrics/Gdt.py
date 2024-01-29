@@ -38,9 +38,9 @@ class Gdt(Metric):
 
     Parameters
     ----------
-    model : List[Atom]
+    model : List[Bio.PDB.Atom.Atom]
         The model backbone.
-    reference : List[Atom]
+    reference : List[Bio.PDB.Atom.Atom]
         The reference backbone.
 
     Returns

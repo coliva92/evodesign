@@ -71,12 +71,12 @@ class Overselection(Selection):
 
     Parameters
     ----------
-    population : pd.DataFrame
+    population : pandas.DataFrame
         The population to be sampled.
 
     Returns
     -------
-    pd.DataFrame
+    pandas.DataFrame
         The selected subset of individuals.
     """
     selected_parents = pd.DataFrame(columns=population.columns)
@@ -97,7 +97,7 @@ class Overselection(Selection):
         mother, father = upper_bin.iloc[m], lower_bin.iloc[f]
         parents = pd.concat([ pd.DataFrame(mother), pd.DataFrame(father) ], 
                             ignore_index=True)
-      while parents.iloc[0, 'sequence'] == parents.iloc[1, 'sequence']:
+      while parents.at[0, 'sequence'] == parents.at[1, 'sequence']:
         if option == 0:
           f = rng.choice(upper_bin.index)
           father = upper_bin.iloc[f]

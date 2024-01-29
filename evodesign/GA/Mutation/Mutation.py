@@ -36,9 +36,10 @@ class Mutation(SettingsRetrievable, ABC):
 
     Parameters
     ----------
-    children : pd.DataFrame
+    children : pandas.DataFrame
         The table from which a subset will be selected and modified.
     """
     indices = children.apply(lambda row: Random.coin_toss(self._weights), 
                              axis=1)
-    children[indices, 'sequence'].apply(self.mutate_sequence, inplace=True)
+    children.loc[indices, 'sequence'] = \
+      children.loc[indices, 'sequence'].apply(self.mutate_sequence, axis=1)

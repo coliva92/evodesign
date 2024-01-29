@@ -25,10 +25,10 @@ class Rmsd(Metric):
 
     Parameters
     ----------
-    model : List[Atom]
+    model : List[Bio.PDB.Atom.Atom]
         The model backbone. In this case, the model backbone will be moved 
         towards the reference backbone during the superposition.
-    reference : List[Atom]
+    reference : List[Bio.PDB.Atom.Atom]
         The reference backbone. In this case, the reference backbone remains
         fixed in position during the superposition.
 
