@@ -1,76 +1,87 @@
-from dataclasses import dataclass, field, asdict
-from typing import Tuple
-from Population import Population
-import statistics
-import math
+from Sequence import Sequence
+from itertools import combinations
+import pandas as pd
+import numpy as np
 
 
 
 
 
-@dataclass
 class Statistics:
 
-  iteration_id: int = field(default=None)
-  min_fitness: float = field(default=None)
-  fitness_mean: float = field(default=None)
-  max_fitness: float = field(default=None)
-  sequence_identity: float = field(default=None)
-  residue_identity: float = field(default=None)
-
-
-
   @classmethod
-  def new_from_population(cls, population: Population):
-    smallest, largest, average = cls.min_max_mean(population)
-    seq_diversity = cls.average_sequence_identity(population)
-    res_diversity = cls.average_per_residue_identity(population)
-    return cls(population.iteration_id,
-               smallest,
-               average,
-               largest,
-               seq_diversity,
-               res_diversity)
-  
+  def average_missing_amino_acids(cls, population: pd.DataFrame) -> float:
+    """
+    Computes the average number of amino acid letters lost for each residue 
+    position. An amino acid letter is considered lost when none of the
+    sequences in the given population contain such letter in the corresponding
+    residue position. 
+    
+    This value is a way of measuring diversity loss accross the length of 
+    the sequences in the given population; the closer this value is to 20 
+    (the number of essential amino acids), the less diversity the population 
+    has.
 
+    Parameters
+    ----------
+    population : pandas.DataFrame
+        The population for which the average amount of missing residues will
+        be computed.
 
-  @classmethod
-  def min_max_mean(cls, population: Population) -> Tuple[float, float, float]:
-    # una prueba empírica con una población de 1M de secuencias mostró que usar
-    # las funciones min, max y statistics.mean es aprox. siete veces más lento
-    # que calcular estos valores en un solo bucle
-    summation, smallest, largest = 0.0, math.inf, -math.inf
-    for individual in population:
-      if individual.fitness < smallest:
-        smallest = individual.fitness
-      if individual.fitness > largest:
-        largest = individual.fitness
-      summation += individual.fitness
-    average = summation / len(population)
-    return smallest, largest, average
-  
-
-
-  @classmethod
-  def average_per_residue_identity(cls, population: Population) -> float:
-    return statistics.mean([
-      20 - len({ sequence[i] for sequence in population })
-      for i in range(len(population[0]))
+    Returns
+    -------
+    float
+        The average amount of missing residues.
+    """
+    m = len(Sequence.AMINO_ACIDS)
+    n = len(population.iat[0, 'sequence'])
+    data = np.array([
+      m - len({ seq[i] for _, seq in population['sequence'].iterrows() })
+      for i in range(n)
     ])
+    return data.mean()
   
 
 
   @classmethod
-  def average_sequence_identity(cls, population: Population) -> float:
-    return statistics.mean([
-      statistics.mean([
-        sum(map(lambda pair: pair[0] == pair[1], zip(current, other)))
-        for other in population[i + 1:]
-      ])
-      for i, current in enumerate(population[:-1])
-    ])
+  def average_sequence_identity(cls, population: pd.DataFrame) -> float:
+    """
+    Computes the average sequence identity for each sequence in the given 
+    population by comparing it against all other sequences in the population.
+    Then, returns the weighted average of the obtained averages. 
+    
+    This value is a way of measuring diversity loss accross all sequences in
+    the given population; to closer this value is to the sequence length,
+    the less diversity the population has.
+
+    Parameters
+    ----------
+    population : pandas.DataFrame
+        The population for which the average sequence identity will be computed.
+
+    Returns
+    -------
+    float
+        The average sequence identity.
+    """
+    # for each sequence in the population, compute its identity against all
+    # other sequences; take care not to compare the same pair of sequences
+    # more than once
+    k = None
+    identities = {}
+    for i, j in combinations(range(len(population)), 2):
+      if i != k:
+        if k in identities:
+          identities[k] = np.array(identities[k])
+        k = i
+        identities[k] = []
+      a = population.iat[i, 'sequence']
+      b = population.iat[j, 'sequence']
+      identities[k].append(sum(c == d for c, d in zip(a, b)))
+    # compute the average identity for each sequence in the population;
+    # then, since every sequence is compared against a different number of
+    # sequences, compute the weighted average of the resulting averages
+    weights = np.array([ len(data) for _, data in identities.items() ])
+    averages = np.array([ data.mean() for _, data in identities.items() ])
+    return np.average(averages, weights=weights)
   
-
-
-  def as_dict(self) -> dict:
-    return asdict(self)
