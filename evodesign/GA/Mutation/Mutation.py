@@ -29,7 +29,7 @@ class Mutation(SettingsRetrievable, ABC):
 
 
 
-  def __call__(self, children: pd.DataFrame) -> None:
+  def __call__(self, children: pd.DataFrame) -> pd.DataFrame:
     """
     Modifies the amino acid sequences of a select subset of rows in the given 
     table.
@@ -43,3 +43,4 @@ class Mutation(SettingsRetrievable, ABC):
                              axis=1)
     children.loc[indices, 'sequence'] = \
       children.loc[indices, 'sequence'].apply(self.mutate_sequence, axis=1)
+    return children
