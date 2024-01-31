@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Tuple
 from Bio.PDB.Atom import Atom
 from ..Chain import Chain
 from ..SettingsRetrievable import SettingsRetrievable
+import numpy as np
 import os
 
 
@@ -31,7 +32,7 @@ class Predictor(SettingsRetrievable, ABC):
   def __call__(self,
                sequence: str, 
                pdbPath: str
-               ) -> List[Atom]:
+               ) -> Tuple[List[Atom], float]:
     # PDBParser cannot produce an instance of `Structure` directly from
     # a raw PDB string, it can only do it by reading from a PDB file.
     # Thus, the predicted structure must be stored first, before 
@@ -40,4 +41,8 @@ class Predictor(SettingsRetrievable, ABC):
       os.makedirs(os.path.dirname(os.path.abspath(pdbPath)), exist_ok=True)
       self.predict_structure(sequence, pdbPath)
     structure = Chain.load_structure(pdbPath)
-    return Chain.backbone_atoms(structure)
+    bfactors = np.array([
+      atom.get_bfactor()
+      for atom in structure.get_atoms()
+    ])
+    return Chain.backbone_atoms(structure), bfactors.mean()
