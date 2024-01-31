@@ -66,7 +66,7 @@ class Tournament(Selection):
     def tournament_selection(k: int, population: pd.DataFrame):
       selection = rng.choice(population.index, size=k, replace=False)
       tournament = population.loc[selection]
-      tournament.sort_values(by='Fitness', ascending=False, inplace=True)
+      tournament.sort_values(by='Fitness', ascending=False)
       return tournament.iloc[0]
     
     selected_parents = pd.DataFrame(columns=population.columns)
@@ -75,7 +75,7 @@ class Tournament(Selection):
       winner = tournament_selection(self._tournament_size, population)
       # garantee that two consecutive parents are different sequences
       while i % 2 != 0 and \
-          selected_parents.at[i - 1, 'sequence'] == winner['sequence']:
+          selected_parents.iat[i - 1, 'sequence'] == winner['sequence']:
         winner = tournament_selection(self._tournament_size, population)
       selected_parents = pd.concat([ selected_parents, pd.DataFrame(winner) ],
                                    ignore_index=True)
