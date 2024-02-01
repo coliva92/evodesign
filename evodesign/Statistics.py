@@ -1,4 +1,4 @@
-from Sequence import Sequence
+from .Sequence import Sequence
 from itertools import combinations
 import pandas as pd
 import numpy as np
@@ -34,9 +34,9 @@ class Statistics:
         The average amount of missing residues.
     """
     m = len(Sequence.AMINO_ACIDS)
-    n = len(population.iat[0, 'sequence'])
+    n = len(population.iloc[0]['sequence'])
     data = np.array([
-      m - len({ seq[i] for _, seq in population['sequence'].iterrows() })
+      m - len({ seq[i] for _, seq in population['sequence'].items() })
       for i in range(n)
     ])
     return data.mean()
@@ -75,9 +75,10 @@ class Statistics:
           identities[k] = np.array(identities[k])
         k = i
         identities[k] = []
-      a = population.iat[i, 'sequence']
-      b = population.iat[j, 'sequence']
+      a = population.iloc[i]['sequence']
+      b = population.iloc[j]['sequence']
       identities[k].append(sum(c == d for c, d in zip(a, b)))
+    identities[k] = np.array(identities[k])
     # compute the average identity for each sequence in the population;
     # then, since every sequence is compared against a different number of
     # sequences, compute the weighted average of the resulting averages
