@@ -11,7 +11,6 @@ class Mutation(SettingsRetrievable, ABC):
 
   def __init__(self, mutProb: float = 1.0) -> None:
     super().__init__()
-    self._weights = ( mutProb, 1.0 - mutProb )
     self._mutation_prob = mutProb
 
 
@@ -39,8 +38,8 @@ class Mutation(SettingsRetrievable, ABC):
     children : pandas.DataFrame
         The table from which a subset will be selected and modified.
     """
-    indices = children.apply(lambda row: Random.coin_toss(self._weights), 
+    indices = children.apply(lambda row: Random.coin_toss(self._mutation_prob), 
                              axis=1)
     children.loc[indices, 'sequence'] = \
-      children.loc[indices, 'sequence'].apply(self.mutate_sequence, axis=1)
+      children.loc[indices, 'sequence'].apply(self.mutate_sequence)
     return children
