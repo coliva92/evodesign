@@ -1,14 +1,19 @@
+class HttpBadRequest(RuntimeError):
+  pass
+
+
+
 class HttpForbidden(RuntimeError):
   pass
 
 
 
-class HttpGatewayTimeout(RuntimeError):
+class HttpInternalServerError(RuntimeError):
   pass
 
 
 
-class HttpInternalServerError(RuntimeError):
+class HttpGatewayTimeout(RuntimeError):
   pass
 
 
