@@ -41,4 +41,4 @@ class Random:
         The produced value.
     """
     rng = cls.generator()
-    return rng.choice([ True, False ], [ bias, 1. - bias ])
+    return rng.choice([ True, False ], p=[ bias, 1. - bias ])
