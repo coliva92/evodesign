@@ -1,5 +1,5 @@
 from typing import List
-from Sequence import Sequence
+from .Sequence import Sequence
 import pandas as pd
 
 
@@ -40,17 +40,18 @@ class Population:
         can be used to indicate which sequences can move on to the next 
         generation.
     """
-    return cls.create([ 
-      Sequence.create_random(sequenceLength, generationId) 
+    sequences = [ 
+      Sequence.create_random(sequenceLength) 
       for _ in range(size) 
-    ])
+    ]
+    return cls.create(sequences, generationId)
   
 
 
   @classmethod
   def create(cls, 
              sequences: List[str], 
-             generationId: int
+             generationId: int = 0
              ) -> pd.DataFrame:
     """
     Creates a new population DataFrame containing the specified amino acid 
@@ -77,8 +78,9 @@ class Population:
       'survivor': []
     }
     for i, sequence in enumerate(sequences):
+      seq_id = cls._sequence_id(generationId, i)
       data['generation_id'].append(generationId)
-      data['sequence_id'].append(cls._sequence_id(generationId, i))
+      data['sequence_id'].append(seq_id)
       data['sequence'].append(sequence)
       data['survivor'].append(False)
     return pd.DataFrame(data)
@@ -106,13 +108,14 @@ class Population:
 
 
   @classmethod
-  def _pad_zeroes(n: int) -> str:
-      if n < 1000:
-        result = f'{0}{n}'
-      if n < 100:
-        result = f'{0}{result}'
-      if n < 10:
-        result = f'{0}{result}'
+  def _pad_zeroes(cls, n: int) -> str:
+    if n < 1000:
+      result = f'{0}{n}'
+    if n < 100:
+      result = f'{0}{result}'
+    if n < 10:
+      result = f'{0}{result}'
+    return result
   
 
 
