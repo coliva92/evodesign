@@ -16,3 +16,4 @@ test_passed = type(plddt) == np.float64 and \
               sum([ atom.get_name() in Chain.BACKBONE_ATOMS for atom in backbone ]) == len(backbone) and \
               os.path.isfile(filename)
 print('PASSED' if test_passed else 'FAILED')
+os.remove(filename)
