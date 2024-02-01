@@ -1,8 +1,5 @@
 from .Predictor import Predictor
-from ..Exceptions import (HttpForbidden, 
-                        HttpInternalServerError, 
-                        HttpGatewayTimeout,
-                        HttpUnknownError)
+from ..Exceptions import *
 import requests
 import time
 
@@ -38,21 +35,25 @@ class ESMFoldRemoteApi(Predictor):
 
     Raises
     ------
-    HttpForbidden
+    Exceptions.HttpBadRequest
+        Raises this exception when the API responds with HTTP error code 400.
+    Exceptions.HttpForbidden
         Raises this exception when the API responds with HTTP error code 403.
-    HttpGatewayTimeout
+    Exceptions.HttpGatewayTimeout
         Raises this exception when the API responds with HTTP error code 504.
-    HttpInternalServerError
+    Exceptions.HttpInternalServerError
         Raises this exception when the API responds with HTTP error code 500.
-    HttpUnknownError
+    Exceptions.HttpUnknownError
         Raises this exception when the API responds with any other HTTP error 
-        code.
+        code not listed here
     """
     time.sleep(1.5)
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', 
                              data=sequence, 
                              timeout=30, 
                              verify=False)
+    if response.status_code == 400:
+      raise HttpBadRequest
     if response.status_code == 403:
       raise HttpForbidden
     elif response.status_code == 504:
