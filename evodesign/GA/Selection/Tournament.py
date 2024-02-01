@@ -45,6 +45,10 @@ class Tournament(Selection):
     tournamentSize : int
         The number of individuals to be randomly chosen to participate in 
         a tournament. Only one of these individuals will be chosen.
+    fitnessColumn : str, optional
+        The column containing the fitness value to be used to select the winner
+        of each tournament. If `None`, then the rightmost column containing
+        the 'fitness_' suffix will be used. Default is `None`.
     """
     super().__init__(numSelectedCouples)
     self._tournament_size = tournamentSize
