@@ -10,7 +10,7 @@ class Overselection(Selection):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'GA_Selection_Overselection'
+    return 'GA.Selection.Overselection'
   
 
 
@@ -24,7 +24,7 @@ class Overselection(Selection):
 
 
   def __init__(self, 
-               selectionSize: int,
+               numSelectedCouples: int,
                upperSize: int,
                upperProb: float = 0.8,
                lowerProb: float = 0.2) -> None:
@@ -41,8 +41,8 @@ class Overselection(Selection):
 
     Parameters
     ----------
-    selectionSize : int
-        The number of individuals to be selected from the population.
+    numSelectedCouples : int
+        The number of parent couples to be selected from the population.
     upperSize : int
         The number of individuals in the upper bin.
     upperProb : float, optional
@@ -53,7 +53,7 @@ class Overselection(Selection):
         The default is 0.2. The probability for selecting  mixed pair of 
         individuals is always 1.0 - upperProb - lowerProb.
     """
-    super().__init__(selectionSize)
+    super().__init__(numSelectedCouples)
     self._upper_size = upperSize
     self._upper_prob = upperProb
     self._lower_prob = lowerProb

@@ -10,14 +10,15 @@ class Selection(SettingsRetrievable, ABC):
 
   def _params(self) -> dict:
     return {
-      'selectionSize': self._selection_size
+      'numSelectedCouples': self._num_selected_couples
     }
   
 
   
-  def __init__(self, selectionSize: int) -> None:
+  def __init__(self, numSelectedCouples: int) -> None:
     super().__init__()
-    self._selection_size = selectionSize
+    self._num_selected_couples = numSelectedCouples
+    self._selection_size = 2 * numSelectedCouples
 
 
 

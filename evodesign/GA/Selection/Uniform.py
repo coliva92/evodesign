@@ -10,20 +10,20 @@ class Uniform(Selection):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'GA_Selection_Uniform'
+    return 'GA.Selection.Uniform'
   
 
 
-  def __init__(self, selectionSize: int) -> None:
+  def __init__(self, numSelectedCouples: int) -> None:
     """
     Random uniform sampling from the population without replacement.
 
     Parameters
     ----------
-    selectionSize : int
-        The number of individuals to be selected from the population.
+    numSelectedCouples : int
+        The number of parent couples to be selected from the population.
     """
-    super().__init__(selectionSize)
+    super().__init__(numSelectedCouples)
   
 
 
