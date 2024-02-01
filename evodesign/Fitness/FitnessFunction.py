@@ -59,5 +59,5 @@ class FitnessFunction(SettingsRetrievable, ABC):
       metric.column_name(): metric(**kwargs)
       for metric in self._metrics
     }
-    values[self.column_name()] = self.compute_fitness(**kwargs)
+    values[self.column_name()] = self.compute_fitness(**values)
     return pd.Series(values)

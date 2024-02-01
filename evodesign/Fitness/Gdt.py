@@ -22,7 +22,7 @@ class Gdt(FitnessFunction):
 
 
   def _params(self) -> dict:
-    return self._metrics[1].params()
+    return { 'cutoffs': self._cutoffs }
   
 
 
@@ -60,6 +60,7 @@ class Gdt(FitnessFunction):
         The default configuration is [ 1.0, 2.0, 4.0, 8.0 ].
     """
     super().__init__([ Rmsd(), GdtMetric(cutoffs) ])
+    self._cutoffs = cutoffs
   
 
 
