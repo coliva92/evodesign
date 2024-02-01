@@ -1,4 +1,4 @@
-from Predictor import Predictor
+from .Predictor import Predictor
 from ..Workspace import Workspace
 import subprocess
 import os
