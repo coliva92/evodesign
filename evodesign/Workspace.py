@@ -220,6 +220,14 @@ class Workspace:
 
 
   def save_settings(self, settings: dict) -> None:
+    """
+    Saves the given algorithm settings in a JSON file in the workspace.
+
+    Parameters
+    ----------
+    settings : dict
+        The algorithm settings to be saved.
+    """
     os.makedirs(self.root_dir, exist_ok=True)
     filename = f'{self.root_dir}/settings.json'
     with open(filename, 'wt', encoding='utf-8') as json_file:
