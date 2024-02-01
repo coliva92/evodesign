@@ -1,4 +1,4 @@
-from FitnessFunction import FitnessFunction
+from .FitnessFunction import FitnessFunction
 from ..Sequence import Sequence
 import blosum as bl
 from typing import Dict, List

@@ -1,4 +1,4 @@
-from Population import Population
+from .Population import Population
 import pandas as pd
 import json
 import os

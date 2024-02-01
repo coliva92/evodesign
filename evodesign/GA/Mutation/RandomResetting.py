@@ -1,4 +1,4 @@
-from Mutation import Mutation
+from .Mutation import Mutation
 from ...Sequence import Sequence
 from ...Random import Random
 

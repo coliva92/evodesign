@@ -1,4 +1,4 @@
-from FitnessFunction import FitnessFunction
+from .FitnessFunction import FitnessFunction
 from typing import List
 from ..Metrics.Rmsd import Rmsd
 from ..Metrics.Gdt import Gdt as GdtMetric

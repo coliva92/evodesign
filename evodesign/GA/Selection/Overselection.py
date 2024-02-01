@@ -1,4 +1,4 @@
-from Selection import Selection
+from .Selection import Selection
 from ...Random import Random
 import pandas as pd
 

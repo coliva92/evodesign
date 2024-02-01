@@ -1,5 +1,5 @@
 from abc import ABC
-from Algorithm import Algorithm
+from .Algorithm import Algorithm
 from typing import List
 from ..Workspace import Workspace
 from ..Prediction.Predictor import Predictor
@@ -24,7 +24,7 @@ import os
 class PGPD(Algorithm, ABC):
 
   @classmethod
-  def _name(cls) -> str:
+  def _class_name(cls) -> str:
     return 'Algorithms.PGPD'
   
 

@@ -1,91 +1,45 @@
 import sys
-import json
-from evodesign.Algorithms.Algorithm import Algorithm
-from Prediction import *
-from Fitness import *
-from GA import *
-from GA.Selection import *
-from GA.Recombination import *
-from GA.Mutation import *
-from GA.ChildrenSelection import *
-from GA.Replacement import *
+from .Algorithms.PGPD import PGPD as Algorithms_PGPD
+from .Fitness.Gdt import Gdt as Fitness_Gdt
+from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
+from .Fitness.Experimental.Cyclization import Cyclization \
+  as Fitness_Experimental_Cyclization
+from .Fitness.Experimental.SideChainPacking import SideChainPacking \
+  as Fitness_Experimental_SideChainPacking
+from .GA.Mutation.RandomResetting import RandomResetting \
+  as GA_Mutation_RandomResetting
+from .GA.Mutation.Switch import Switch as GA_Mutation_Switch
+from .GA.Recombination.MiddlePointCrossover import MiddlePointCrossover \
+  as GA_Recombination_MiddlePointCrossover
+from .GA.Recombination.SinglePointCrossover import SinglePointCrossover \
+  as GA_Recombination_SinglePointCrossover
+from .GA.Recombination.TwoPointsCrossover import TwoPointsCrossover \
+  as GA_Recombination_TwoPointsCrossover
+from .GA.Recombination.UniformCrossover import UniformCrossover \
+  as GA_Recombination_UniformCrossover
+from .GA.Selection.Overselection import Overselection \
+  as GA_Selection_Overselection
+from .GA.Selection.Tournament import Tournament as GA_Selection_Tournament
+from .GA.Selection.Uniform import Uniform as GA_Selection_Uniform
+from .Prediction.AlphaFold import AlphaFold as Prediction_AlphaFold
+from .Prediction.ESMFold import ESMFold as Prediction_ESMFold_Local
+from .Prediction.ESMFoldColab import ESMFoldColab as Prediction_ESMFold_Colab
+from .Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi \
+  as Prediction_ESMFold_RemoteApi
+from .Prediction.Null import Null as Prediction_None
 
 
 
 
 
-def _load(filename: str) -> dict:
-  return {}
+class Settings:
 
-
-
-def _set_default_params_GA(params: dict, 
-                           nonClassParams: dict, 
-                           classes: dict) -> dict:
-  population_size = nonClassParams['populationSize']
-  numOffspringsPerPair = 1 \
-                         if isinstance(classes['recombination'], list) \
-                         else 2
-  if 'childrenSelection' not in params:
-    params['childrenSelection'] = 'GA_ChildrenSelection_BetterFitness'
-    classes['childrenSelection'] = GA_ChildrenSelection_BetterFitness
-  if 'childrenSelectionParams' not in params:
-    params['childrenSelectionParams'] = {}
-  params['selectionParams']['selectionSize'] = \
-    params['childrenSelectionParams']['maxInputSize'] = \
-    numOffspringsPerPair * population_size
-  return params
-
-
-
-_DEFAULT_ALGORITHM_PARAMS_SETTERS = {
-  'GA_Simple': _set_default_params_GA
-}
-
-
-
-def load_algorithm_from_settings(filename: str, 
-                                 additionalIterations: int = 0 
-                                 ) -> Algorithm:  
-  with open(filename, 'rt', encoding='utf-8') as json_file:
-    settings = json.load(json_file)
-  i = settings['algorithmType'].find('_')
-  algorithm_name = settings['algorithmType'][:i]
-  params = settings['algorithmParams']
-
-  def is_class_key(key: str) -> bool:
-    if key.endswith('Params') or type(params[key]) != str:
-      return False
-    return params[key].startswith('Predictor') or \
-           params[key].startswith('Fitness') or \
-           params[key].startswith(algorithm_name)
-  
-  def is_non_class_key(key: str) -> bool:
-    if key.endswith('Params'):
-      return False
-    if type(params[key]) != str:
-      return True
-    return not params[key].startswith('Predictor') and \
-           not params[key].startswith('Fitness') and \
-           not params[key].startswith(algorithm_name)
-
-  non_class_params = {
-    key: params[key] for key in filter(is_non_class_key, params)
-  }
-  classes = {
-    key: getattr(sys.modules[__name__], params[key])
-    for key in filter(is_class_key, params)
-  }
-  set_default_params = \
-    _DEFAULT_ALGORITHM_PARAMS_SETTERS[settings['algorithmType']]
-  params = set_default_params(params, non_class_params, classes)
-  class_params = {
-    key: the_class(**params[f'{key}Params'])
-    if f'{key}Params' in params else the_class()
-    for key, the_class in classes.items()
-  }
-  
-  algorithm_params = { **non_class_params, **class_params }
-  algorithm_params['numIterations'] += additionalIterations
-  algorithm_class = getattr(sys.modules[__name__], settings['algorithmType'])
-  return algorithm_class(**algorithm_params)
+  @classmethod
+  def parse(cls, settings: dict):
+    class_name = list(settings.keys())[0]
+    params = settings[class_name]
+    actual_class = getattr(sys.modules[__name__], class_name.replace('.', '_'))
+    for key, item in params.items():
+      if type(item) != dict: continue
+      params[key] = cls.parse(params[key])
+    return actual_class(**params)

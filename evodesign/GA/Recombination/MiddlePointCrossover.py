@@ -1,4 +1,4 @@
-from Recombination import Recombination
+from .Recombination import Recombination
 from typing import List
 
 

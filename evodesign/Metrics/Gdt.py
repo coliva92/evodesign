@@ -1,4 +1,4 @@
-from Metric import Metric
+from .Metric import Metric
 from typing import List
 import numpy as np
 
