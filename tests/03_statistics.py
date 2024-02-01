@@ -1,6 +1,5 @@
 from evodesign.Statistics import Statistics
 from evodesign.Population import Population
-import pandas as pd
 
 sequences = [
   'AAAAA',
