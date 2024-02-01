@@ -1,11 +1,14 @@
+import pandas as pd
+import numpy as np
+import json
+import os
+
 from Individual import Individual
 from Population import Population
-from Statistics import Statistics
+from evodesign.Statistics2 import Statistics
 import evodesign.FileIO as FileIO
 import matplotlib.pyplot as plt
-import json
 import csv
-import os
 import random
 import time
 
@@ -59,140 +62,185 @@ class Workspace:
     self.root_dir = rootDir
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
-    # ----
-    self._seed = time.time()
-    random.seed(self._seed)
-
-
-
-  def save_algorithm_settings(self, settings: dict) -> None:
-    os.makedirs(self.root_folder, exist_ok=True)
-    with open(self.settings_filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write(json.dumps(settings, indent=2) + '\n')
   
 
 
-  def save_rng_json(self, checkpoint: bool = True) -> None:
-    os.makedirs(self.root_folder, exist_ok=True)
-    filename = self.rng_checkpoint_filename \
+  def save_population(self, 
+                      population: pd.DataFrame,
+                      temporary: bool = False
+                      ) -> None:
+    """
+    Saves the given population in a CSV file in the workspace.
+
+    Parameters
+    ----------
+    population : pandas.DataFrame
+        The population to be saved.
+    lifespan : bool, optional
+        Indicates if the population file is meant to stored temporarily or 
+        permanently. Populations meant to be stored permanently will be stored
+        in their dedicated folder in the workspace, while populations meant to
+        be stored temporarily will be stored in the root directory of the 
+        workspace. Only a single population file may be stored in the root
+        directory, thus, any subsequent calls to this function using
+        `temporary = True` will overwrite the population file previously
+        stored in the root directory. The default is False.
+    """
+    os.makedirs(self.populations_dir, exist_ok=True)
+    filename = f'{self.root_dir}/.next_population' \
+               if temporary \
+               else f'{self.populations_dir}/{Population.filename(population)}'
+    population.to_csv(filename, index=False)
+    
+  
+
+  def load_population(self, temporary: bool = False) -> pd.DataFrame | None:
+    """
+    Loads the population data from a CSV file in the workspace. If no population
+    file is found in the current workspace, then `None` is returned.
+
+    Returns
+    -------
+    temporary : bool, optional
+        Indicates if the population file should be loaded from the  
+        temporary storage or from the permanent storage. The default is False.
+        When loading from the permanent storage, only the population file of the 
+        latest generation will be loaded.
+    pandas.DataFrame | None
+        The data for the population found.
+    """
+    if temporary:
+      return self._load_from_root_dir()
+    return self._load_from_populations_dir()
+  
+
+
+  def delete_temporary_population(self) -> None:
+    """
+    Deletes the temporary population CSV file from the workspace.
+    If such file does not exist, then nothing is done.
+    """
+    os.makedirs(self.root_dir, exist_ok=True)
+    filename = f'{self.root_dir}/.next_population'
+    if os.path.isfile(filename):
+      os.remove(filename)
+  
+
+
+  def save_rng_state(self, 
+                     state: dict, 
+                     checkpoint: bool = True
+                     ) -> None:
+    """
+    Saves the given RNG state in a JSON file in the workspace.
+
+    Parameters
+    ----------
+    state : dict
+        The RNG state to be saved.
+    checkpoint : bool, optional
+        If `True`, then the given state will be saved as a "checkpoint"
+        file, so that the evolutionary algorithm can use the RNG from the 
+        last known position in the random number sequence. Otherwise, the
+        state will be saved as the state that the RNG had before running
+        the evolutionary algorithm from the first generation. 
+        The default is `True`.
+    """
+    os.makedirs(self.root_dir, exist_ok=True)
+    filename = f'{self.root_dir}/.rng_state_checkpint' \
                if checkpoint \
-               else self.rng_settings_filename
-    state = random.getstate()
-    settings = {
-      'seed': self._seed,
-      'state': ( state[0], list(state[1]), state[2] )
-    }
+               else f'{self.root_dir}/initial_rng_state.json'
+    # TODO validate that the state has the correct format
     with open(filename, 'wt', encoding='utf-8') as json_file:
-      json.dump(settings, json_file)
+      json.dump(state, json_file)
   
 
 
-  def load_rng_json(self, checkpoint: bool = True) -> None:
-    filename = self.rng_checkpoint_filename \
-               if checkpoint \
-               else self.rng_settings_filename
-    if not os.root_dir.isfile(filename):
-      self._seed = time.time()
-      random.seed(self._seed)
-      self.save_rng_json(checkpoint=False)
-      return
+  def load_rng_state(self, loadCheckpoint: bool = True) -> dict | None:
+    """
+    Loads the RNG state from a previously saved JSON file in the workspace. 
+    If no such file is found, then `None` is returned.
+
+    Parameters
+    ----------
+    loadCheckpoint : bool, optional
+        If `True`, the workspace is first searched for the JSON file containing 
+        the last known RNG state. If `False`, no such search is performed and 
+        instead the workspace is immediately searched for the JSON file 
+        containing the initial RNG state at the beginning of the evolutionary 
+        algorithm. The default is `True`.
+
+    Returns
+    -------
+    dict | None
+        The state object found.
+    """
+    filename = f'{self.root_dir}/.rng_state_checkpoint'
+    if not (loadCheckpoint and os.path.isfile(filename)):
+      filename = f'{self.root_dir}/initial_rng_state.json'
+      if not os.path.isfile(filename):
+        return None
     with open(filename, 'rt', encoding='utf-8') as json_file:
-      settings = json.load(json_file)
-    self._seed = settings['seed']
-    random.seed(self._seed)
-    if 'state' in settings and settings['state'] is not None:
-      settings['state'][1] = tuple(settings['state'][1])
-      random.setstate(tuple(settings['state']))
-
-
-
-  def save_population(self, population: Population) -> None:
-    os.makedirs(self.populations_folder, exist_ok=True)
-    filename = population.get_filename(self.populations_folder)
-    FileIO.save_population_csv(population, filename)
-
-
-
-  def load_latest_population(self) -> Population:
-    if not os.root_dir.isdir(self.populations_folder):
-      return Population()
-    filenames = sorted(os.listdir(self.populations_folder))
-    if not filenames:
-      return Population()
-    filename = os.root_dir.join(self.populations_folder, filenames[-1])
-    return FileIO.load_population_csv(filename, len(filenames))
-
-
-
-  def backup_children(self, children: Population) -> None:
-    FileIO.save_population_json(children, self.children_filename)
-
-
-
-  def restore_children_from_backup(self) -> Population:
-    if not os.root_dir.isfile(self.children_filename):
-      return Population()
-    return FileIO.load_population_json(self.children_filename)
+      state = json.load(json_file)
+    # TODO validate that the loaded json object has the correct format
+    return state
   
 
 
-  def delete_children_backup(self) -> None:
-    with open(self.children_filename, 'wt', encoding='utf-8') as json_file:
-      json_file.write('[]\n')
+  def save_statistics(self, stats: pd.DataFrame) -> None:
+    """
+    Saves the given population statistics data into a CSV file in the workspace.
+
+    Parameters
+    ----------
+    stats : pandas.DataFrame
+        The statistics data that will be saved.
+    """
+    os.makedirs(self.root_dir, exist_ok=True)
+    filename = f'{self.root_dir}/statistics.csv'
+    stats.to_csv(filename, index=False)
   
 
 
-  def save_statistics(self, 
-                      stats: Statistics, 
-                      best_solution: Individual) -> None:
-    file_exists = os.root_dir.isfile(self.stats_filename)
-    data = stats.as_dict()
-    data['best_sequence_fitness'] = best_solution.fitness
-    data['best_sequence'] = best_solution.sequence
-    with open(self.stats_filename, 'at', encoding='utf-8') as csv_file:
-      writer = csv.DictWriter(csv_file, 
-                              data.keys(), 
-                              dialect='unix',
-                              quoting=csv.QUOTE_NONE)
-      if not file_exists: 
-        writer.writeheader()
-      writer.writerow(data)
+  def load_statistics(self) -> pd.DataFrame:
+    """
+    Loads the population statistics data from a CSV file in the workspace.
+    If no such file is found, then an empty `DataFrame` is returned.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The statistics data found.
+    """
+    filename = f'{self.root_dir}/statistics.csv'
+    if not os.path.isfile(filename):
+      return pd.DataFrame()
+    return pd.read_csv(filename)
+
+
+
+  def save_settings(self, settings: dict) -> None:
+    os.makedirs(self.root_dir, exist_ok=True)
+    filename = f'{self.root_dir}/settings.json'
+    with open(filename, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(settings, indent=4) + '\n')
   
 
 
-  def plot(self) -> None:
-    if not os.root_dir.isfile(self.stats_filename):
-      return
-    data = {
-      'iteration_id': [],
-      'min_fitness': [],
-      'fitness_mean': [],
-      'max_fitness': [],
-      'sequence_identity': [],
-      'residue_identity': [],
-      'best_sequence_fitness': []
-    }
-    with open(self.stats_filename, 'rt', encoding='utf-8') as csv_file:
-      for row in csv.DictReader(csv_file, dialect='unix'):
-        for key in data:
-          data[key].append(float(row[key]))
-    fig, ax = plt.subplots(ncols=3, figsize=(21, 6))
-    fig.suptitle(self.root_folder)
-    ax[0].plot(data['iteration_id'], data['fitness_mean'], label='Fitness mean')
-    ax[0].fill_between(data['iteration_id'], 
-                       data['min_fitness'], 
-                       data['max_fitness'], 
-                       alpha=0.1)
-    ax[0].plot(data['iteration_id'], 
-               data['best_sequence_fitness'],
-               label='Best solution found')
-    ax[0].set_xlabel('Iterations')
-    ax[0].set_ylabel('Fitness')
-    ax[0].legend(loc='best')
-    ax[1].plot(data['iteration_id'], data['sequence_identity'], color='C2')
-    ax[1].set_xlabel('Iterations')
-    ax[1].set_ylabel('Population diversity')
-    ax[2].plot(data['iteration_id'], data['residue_identity'], color='C3')
-    ax[2].set_xlabel('Iterations')
-    ax[2].set_ylabel('Amino acid diversity')
-    fig.savefig(self.graph_filename)
+  def _load_from_populations_dir(self) -> pd.DataFrame | None:
+    if not os.path.isdir(self.populations_dir):
+      return None
+    filenames = os.listdir(self.populations_dir)
+    if not filenames or len(filenames) == 0:
+      return None
+    filename = f'{self.populations_dir}/{sorted(filenames)[-1]}'
+    return pd.read_csv(filename)
+  
+
+
+  def _load_from_root_dir(self) -> pd.DataFrame | None:
+    filename = f'{self.root_dir}/.next_population'
+    if not os.path.isfile(filename):
+      return None
+    return pd.read_csv(filename)
+
