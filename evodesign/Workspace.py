@@ -67,7 +67,7 @@ class Workspace:
     ----------
     population : pandas.DataFrame
         The population to be saved.
-    lifespan : bool, optional
+    temporary : bool, optional
         Indicates if the population file is meant to stored temporarily or 
         permanently. Populations meant to be stored permanently will be stored
         in their dedicated folder in the workspace, while populations meant to
@@ -85,10 +85,10 @@ class Workspace:
     
   
 
-  def load_population(self, temporary: bool = False) -> pd.DataFrame | None:
+  def load_population(self, temporary: bool = False) -> pd.DataFrame:
     """
     Loads the population data from a CSV file in the workspace. If no population
-    file is found in the current workspace, then `None` is returned.
+    file is found in the current workspace, then an empty DataFrame is returned.
 
     Returns
     -------
@@ -97,7 +97,7 @@ class Workspace:
         temporary storage or from the permanent storage. The default is False.
         When loading from the permanent storage, only the population file of the 
         latest generation will be loaded.
-    pandas.DataFrame | None
+    pandas.DataFrame
         The data for the population found.
     """
     if temporary:
@@ -226,19 +226,19 @@ class Workspace:
   
 
 
-  def _load_from_populations_dir(self) -> pd.DataFrame | None:
+  def _load_from_populations_dir(self) -> pd.DataFrame:
     if not os.path.isdir(self.populations_dir):
-      return None
+      return pd.DataFrame()
     filenames = os.listdir(self.populations_dir)
     if not filenames or len(filenames) == 0:
-      return None
+      return pd.DataFrame()
     filename = f'{self.populations_dir}/{sorted(filenames)[-1]}'
     return pd.read_csv(filename)
   
 
 
-  def _load_from_root_dir(self) -> pd.DataFrame | None:
+  def _load_from_root_dir(self) -> pd.DataFrame:
     filename = f'{self.root_dir}/.next_population'
     if not os.path.isfile(filename):
-      return None
+      return pd.DataFrame()
     return pd.read_csv(filename)
