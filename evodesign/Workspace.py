@@ -1,16 +1,7 @@
+from Population import Population
 import pandas as pd
-import numpy as np
 import json
 import os
-
-from Individual import Individual
-from Population import Population
-from evodesign.Statistics2 import Statistics
-import evodesign.FileIO as FileIO
-import matplotlib.pyplot as plt
-import csv
-import random
-import time
 
 
 
@@ -251,4 +242,3 @@ class Workspace:
     if not os.path.isfile(filename):
       return None
     return pd.read_csv(filename)
-

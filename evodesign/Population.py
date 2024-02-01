@@ -1,11 +1,6 @@
-from typing import List, Optional
-from Bio.PDB.Atom import Atom
-from .Individual import Individual
-from .Fitness import FitnessFunction
-from .Prediction import Predictor
-import os
+from typing import List
+from Sequence import Sequence
 import pandas as pd
-from .Sequence import Sequence
 
 
 
@@ -20,7 +15,7 @@ class Population:
                     generationId: int = 0
                     ) -> pd.DataFrame:
     """
-    Creates a collection of randomly generated amino acid sequences. 
+    Creates a table of randomly generated amino acid sequences. 
     Populations in EvoDesign are Pandas DataFrames in which each row corresponds 
     to a single sequence, and where additional columns typically represent
     fitness values for each sequence.
@@ -37,119 +32,93 @@ class Population:
 
     Returns
     -------
-    pd.DataFrame
-        The generated population. Column `Sequence` contains the amino acid
+    pandas.DataFrame
+        The generated table. Column `Sequence` contains the amino acid
         sequence of each individual in the population, while column 
         `Sequence_Id` contains a unique identifier for each sequence in the
         population. The `Survived` column contains a boolean flag which 
         can be used to indicate which sequences can move on to the next 
         generation.
     """
-    def pad_zeroes(n: int) -> str:
+    return cls.create([ 
+      Sequence.create_random(sequenceLength, generationId) 
+      for _ in range(size) 
+    ])
+  
+
+
+  @classmethod
+  def create(cls, 
+             sequences: List[str], 
+             generationId: int
+             ) -> pd.DataFrame:
+    """
+    Creates a new population DataFrame containing the specified amino acid 
+    sequences.
+
+    Parameters
+    ----------
+    sequences : List[str]
+        The amino acid sequences that will be contained in the created 
+        DataFrame. Each sequence must only contain letters corresponding to one
+        of the 20 essential amino acids.
+    generationId : int
+        The unique identifier for the population being created.
+
+    Returns
+    -------
+    pandas.DataFrame
+        _description_
+    """
+    data = {
+      'generation_id': [],
+      'sequence_id': [],
+      'sequence': [],
+      'survivor': []
+    }
+    for i, sequence in enumerate(sequences):
+      data['generation_id'].append(generationId)
+      data['sequence_id'].append(cls._sequence_id(generationId, i))
+      data['sequence'].append(sequence)
+      data['survivor'].append(False)
+    return pd.DataFrame(data)
+  
+
+
+  @classmethod
+  def filename(cls, population: pd.DataFrame) -> str:
+    """
+    Returns the name of the file where the given population would be saved.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population for which the file name will be returned.
+
+    Returns
+    -------
+    str
+        The filename for the given population.
+    """
+    generation_id = population['generation_id'].iloc[0]
+    return f'pop_{cls._pad_zeroes(generation_id)}.csv'
+
+
+
+  @classmethod
+  def _pad_zeroes(n: int) -> str:
       if n < 1000:
         result = f'{0}{n}'
       if n < 100:
         result = f'{0}{result}'
       if n < 10:
         result = f'{0}{result}'
-    
-    data = {
-      'Sequence_Id': [
-        f'prot_{pad_zeroes(generationId)}_{pad_zeroes(i)}'
-        for i in range(size)
-      ],
-      'Sequence': [ 
-        Sequence.create_random(sequenceLength) 
-        for _ in range(size) 
-      ],
-      'Survivor': [ False for _ in range(size) ]
-    }
-    return pd.DataFrame(data)
-
+  
 
 
   @classmethod
-  def new_random(cls,
-                 size: int, 
-                 sequenceLength: int,
-                 iterationId: int = 1):
-    return cls([ Individual.new_random(sequenceLength) for _ in range(size) ], 
-               iterationId)
-
-
-
-  def __init__(self, 
-               individuals: Optional[List[Individual]] = None,
-               iterationId: int = 0, 
-               ) -> None:
-    if individuals is None: individuals = []
-    self.iteration_id = iterationId
-    self.individuals = individuals
-  
-
-
-  def as_dict(self) -> list:
-    return [ individual.as_dict() for individual in self.individuals ]
-  
-
-
-  def get_filename(self, populationsFolder: Optional[str] = None) -> str:
-    if populationsFolder is None: populationsFolder = ''
-    return os.path.join(populationsFolder, f'pop_{self.iteration_id:04d}.csv')
-  
-
-
-  def __len__(self) -> int:
-    return len(self.individuals)
-  
-
-
-  def __getitem__(self, i: int) -> Individual:
-    return self.individuals[i]
-  
-
-
-  def __setitem__(self, i: int, value) -> None:
-    if not isinstance(value, Individual):
-      raise NotImplementedError
-    self.individuals[i] = value
-  
-
-
-  def __iter__(self):
-    for individual in self.individuals:
-      yield individual
-  
-
-
-  def __iadd__(self, other):
-    if isinstance(other, list):
-      self.individuals += other
-      return self
-    if isinstance(other, Population):
-      self.individuals += other.individuals
-      return self
-    raise NotImplementedError
-  
-
-
-  def sort(self, reverse: bool = False) -> None:
-    self.individuals.sort(reverse=reverse)
-
-
-
-  def update_fitness(self,
-                     fitnessFn: FitnessFunction, 
-                     predictor: Predictor, 
-                     referenceBackbone: List[Atom],
-                     pdbsFolder: Optional[str] = None) -> bool:
-    missing_fitness = list(filter(lambda ind: ind.fitness is None, 
-                                  self.individuals))
-    for individual in missing_fitness:
-      filename = individual.pdb_filename(pdbsFolder)
-      individual.update_fitness(fitnessFn, 
-                                predictor, 
-                                referenceBackbone,
-                                filename)
-    return len(missing_fitness) > 0
-  
+  def _sequence_id(cls, 
+                   generationId: int, 
+                   rowIdx: int
+                   ) -> str:
+    return f'prot_{cls._pad_zeroes(generationId)}_{cls._pad_zeroes(rowIdx)}'

@@ -1,6 +1,6 @@
 import sys
 import json
-from Algorithm import Algorithm
+from evodesign.Algorithms.Algorithm import Algorithm
 from Prediction import *
 from Fitness import *
 from GA import *
@@ -11,6 +11,11 @@ from GA.ChildrenSelection import *
 from GA.Replacement import *
 
 
+
+
+
+def _load(filename: str) -> dict:
+  return {}
 
 
 
