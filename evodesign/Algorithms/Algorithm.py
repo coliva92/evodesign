@@ -29,12 +29,13 @@ class Algorithm(SettingsRetrievable, ABC):
 
     # initialize the RNG
     rng = Random.generator()
-    state = self.workspace.load_rng_state()
-    if not state:
-      state = self.workspace.load_rng_state(loadCheckpoint=False)
-    if not state:
+    initial = self.workspace.load_rng_state(loadCheckpoint=False)
+    checkpoint = self.workspace.load_rng_state()
+    state = checkpoint if checkpoint else initial
+    if state:
+      rng.bit_generator.state = state
+    else:
       self.workspace.save_rng_state(rng.bit_generator.state, checkpoint=False)
-    rng.bit_generator.state = state
     self.workspace.save_settings(self.settings())
 
   
