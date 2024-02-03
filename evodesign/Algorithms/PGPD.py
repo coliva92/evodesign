@@ -242,7 +242,11 @@ class PGPD(Algorithm, ABC):
                            ascending=False, 
                            inplace=True)
       population = self.replacement(population, children)
+      new_stats = self.compute_statistics(population)
+      stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
       self.workspace.save_population(population)
+      self.workspace.save_statistics(stats)
+      self.save_statistics_graph(stats)
       self.workspace.delete_temporary_population()
   
 
@@ -410,32 +414,37 @@ class PGPD(Algorithm, ABC):
         The statistics which data will be graphed and stored.
     """
     os.makedirs(self.workspace.root_dir, exist_ok=True)
-    matplotlib.use('Agg') # turn off the GUI
+    plt.ioff() # turn off the GUI
     fig, ax = plt.subplots(ncols=2, figsize=(14, 6))
     fig.suptitle(self.workspace.root_dir)
     c = self._fitness_fn.column_name()
     ax[0].plot(stats['generation_id'], stats[c], label=c)
-    ax[0].plot(stats['generation_id'], stats[c], label='plddt')
-    ax[0].set_ylim(bottom=0., top=1.)
+    ax[0].plot(stats['generation_id'], stats['plddt'], label='plddt')
     ax[0].set_xlabel('generation_id')
     ax[0].legend(loc='best')
-    ax[1].plot(stats['generation_id'], 
-               stats['pop_sequence_identity'], 
-               color='C2',
-               label='pop_sequence_identity')
+    series1 = ax[1].plot(stats['generation_id'], 
+                         stats['pop_sequence_identity'], 
+                         color='C2',
+                         label='pop_sequence_identity')
     ax[1].tick_params(axis='y', labelcolor='C2')
     sequence_length = len(stats.iloc[0]['sequence'])
     ax[1].set_ylim(bottom=0., top=sequence_length)
     ax[1].set_xlabel('generation_id')
     ax2 = ax[1].twinx()
-    ax2.plot(stats['generation_id'], 
-             stats['pop_missing_amino_acids'], 
-             color='C3',
-             label='pop_missing_amino_acids')
+    series2 = ax2.plot(stats['generation_id'], 
+                       stats['pop_missing_amino_acids'], 
+                       color='C3',
+                       label='pop_missing_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
     ax2.set_ylim(bottom=0., top=len(Sequence.AMINO_ACIDS))
-    ax[1].legend(loc='best')
-    fig.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    # ax[1].legend(loc='best')
+    # ax2.legend(loc='best')
+    series = series1 + series2
+    labels = [ s.get_label() for s in series ]
+    ax[1].legend(series, labels, loc='best')
+    # fig.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    plt.close()
   
 
 
@@ -447,11 +456,21 @@ class PGPD(Algorithm, ABC):
     children = self._offspring_selection(children)
     last_upper_bin = population.iloc[:self._elitism_size]
     upper_bin = children.iloc[:self._elitism_size]
-    last_upper_bin['generation_id'] = children.iloc[0]['generation_id']
+    # could've used:
+    # last_upper_bin['generation_id'] = children.iloc[0]['generation_id]
+    # but pandas doesn't like it
+    for _, row in last_upper_bin.iterrows():
+      row['generation_id'] = children.iloc[0]['generation_id']
     upper_bin = self._merge(upper_bin, last_upper_bin)
     survivors_upper = upper_bin.iloc[:self._elitism_size]
+    # for i in range(self._elitism_size, len(upper_bin)):
+    #   upper_bin.iloc[i]['survivor'] = False
     dead_upper = upper_bin.iloc[self._elitism_size:]
-    dead_upper['survivor'] = False
+    # could've used:
+    # dead_upper['survivor'] = False
+    # but pandas complaints about it
+    for _, row in dead_upper.iterrows():
+      row['survivor'] = False
     objs = [ 
       survivors_upper, 
       children.iloc[self._elitism_size:],
@@ -519,10 +538,14 @@ class _OffspringSelection:
       b, w = (i, i + 1) if better >= worse else (i + 1, i)
       s, d = (b, w) if Random.coin_toss(self._better_bias) else (w, b)
       child = children.iloc[s]
-      child['survivor'] = True
       survivors = pd.concat([ survivors, child.to_frame().T ],
                             ignore_index=True)
       dead = pd.concat([ dead, children.iloc[d].to_frame().T ],
                        ignore_index=True)
+    # could've used:
+    # child['survivor'] = True
+    # but I don't want pandas to be complaining about it
+    for _, row in survivors.iterrows():
+      row['survivor'] = True
     results = pd.concat([ survivors, dead ], ignore_index=True)
     return results
