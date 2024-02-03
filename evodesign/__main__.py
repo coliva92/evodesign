@@ -38,16 +38,6 @@ params = algorithm.setup(args.target_pdb, args.workspace_root)
 while True:
   try:
     algorithm(**params)
-    #----
-    # algorithm = Settings.load_algorithm_from_settings(filename, 
-    #                                                   args.add_iterations)
-    # if filename != algorithm.workspace.settings_filename:
-    #   algorithm.workspace.save_algorithm_settings(algorithm.settings())
-    #   filename = algorithm.workspace.settings_filename
-    # algorithm.workspace.load_rng_json()
-    # population = algorithm.workspace.load_latest_population()
-    # algorithm(population)
-    # algorithm.workspace.plot()
     break
   except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
     print(f'\nINTERRUPTED.\n'
