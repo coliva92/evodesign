@@ -1,5 +1,5 @@
 from .Predictor import Predictor
-from typing import List
+from typing import List, Tuple
 from Bio.PDB.Atom import Atom
 
 
@@ -34,7 +34,7 @@ class Null(Predictor):
   def __call__(self,
                sequence: str, 
                pdbPath: str
-               ) -> List[Atom]:
+               ) -> Tuple[List[Atom], float]:
     """
     Does nothing.
 
@@ -50,4 +50,4 @@ class Null(Predictor):
     List[Atom]
         An empty list.
     """
-    return []
+    return [], 0.0
