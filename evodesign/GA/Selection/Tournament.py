@@ -1,4 +1,5 @@
 from .Selection import Selection
+from typing import Optional
 from ...Random import Random
 import pandas as pd
 
@@ -25,7 +26,7 @@ class Tournament(Selection):
   def __init__(self,
                numSelectedCouples: int,
                tournamentSize: int,
-               fitnessColumn: str | None = None
+               fitnessColumn: Optional[str] = None
                ) -> None:
     """
     Selection operator in which a random uniform sample of size 
