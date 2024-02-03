@@ -1,4 +1,5 @@
 from .Population import Population
+from typing import Optional
 import pandas as pd
 import json
 import os
@@ -138,7 +139,7 @@ class Workspace:
         The default is `True`.
     """
     os.makedirs(self.root_dir, exist_ok=True)
-    filename = f'{self.root_dir}/.rng_state_checkpint' \
+    filename = f'{self.root_dir}/.rng_state_checkpoint' \
                if checkpoint \
                else f'{self.root_dir}/initial_rng_state.json'
     # TODO validate that the state has the correct format
@@ -147,7 +148,7 @@ class Workspace:
   
 
 
-  def load_rng_state(self, loadCheckpoint: bool = True) -> dict | None:
+  def load_rng_state(self, loadCheckpoint: bool = True) -> Optional[dict]:
     """
     Loads the RNG state from a previously saved JSON file in the workspace. 
     If no such file is found, then `None` is returned.
