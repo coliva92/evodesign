@@ -1,7 +1,9 @@
 from .FitnessFunction import FitnessFunction
-from ..Sequence import Sequence
-import blosum as bl
 from typing import Dict, List
+from ..Sequence import Sequence
+from ..Workspace import Workspace
+from ..Chain import Chain
+import blosum as bl
 import math
 import operator
 
@@ -40,21 +42,30 @@ class Rastrigin(FitnessFunction):
 
 
 
-  def __init__(self, windowWidth: int = 3) -> None:
+  def __init__(self,
+               windowWidth: int = 3) -> None:
     super().__init__([])
 
     # acotamos los valores permitidos para la variable `windowWidth`...
     if windowWidth < 3: windowWidth = 3
     if windowWidth > 9: windowWidth = 9
 
+    
+
     self._window_width = windowWidth
     self._wing_length = (windowWidth - 1) // 2
-    self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
+    self._residue_ordinals = None
     self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_width
 
 
 
   def compute_fitness(self, **kwargs) -> float:
+    if not self._residue_ordinals:
+      # workspace = Workspace.instance()
+      # structure = Chain.load_structure(workspace.target_pdb_path)
+      # self._target_sequence = Sequence.create_random(Chain.length(structure))
+      self._target_sequence = 20 * 'A'
+      self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
     x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 
       x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
