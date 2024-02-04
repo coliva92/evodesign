@@ -81,8 +81,8 @@ class Overselection(Selection):
     """
     selected_parents = pd.DataFrame(columns=population.columns)
     rng = Random.generator()
-    upper_bin = population.iloc[:self._upper_size, :]
-    lower_bin = population.iloc[self._upper_size:, :]
+    upper_bin = population.iloc[:self._upper_size]
+    lower_bin = population.iloc[self._upper_size:]
     while len(selected_parents) < self._selection_size:
       option = rng.choice([ 0, 1, 2 ], p=self._weights)
       if option == 0:
