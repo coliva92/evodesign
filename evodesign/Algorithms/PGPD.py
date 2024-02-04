@@ -213,6 +213,7 @@ class PGPD(Algorithm, ABC):
       new_stats = self.compute_statistics(population)
       stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
     
+    # save progress
     self.workspace.save_population(population)
     self.workspace.save_statistics(stats)
     self.save_statistics_graph(stats)
@@ -229,7 +230,7 @@ class PGPD(Algorithm, ABC):
         break
 
       # check if we are resuming from an earlier execution and the children were
-      # already generated
+      # already generated; if not, apply the evolutionary operations
       children = self.workspace.load_population(temporary=True)
       if children.empty:
         children = self.next_population(population)
@@ -268,8 +269,8 @@ class PGPD(Algorithm, ABC):
         The generated population data.
     """
     population = Population.create_random(self._pop_size, 
-                                            sequenceLength, 
-                                            generationId=1)
+                                          sequenceLength, 
+                                          generationId=1)
     population['survivor'] = True
     return population
   
@@ -437,12 +438,9 @@ class PGPD(Algorithm, ABC):
                        label='pop_missing_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
     ax2.set_ylim(bottom=0., top=len(Sequence.AMINO_ACIDS))
-    # ax[1].legend(loc='best')
-    # ax2.legend(loc='best')
     series = series1 + series2
     labels = [ s.get_label() for s in series ]
     ax[1].legend(series, labels, loc='best')
-    # fig.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
     plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
     plt.close()
   
@@ -454,23 +452,13 @@ class PGPD(Algorithm, ABC):
                   ) -> pd.DataFrame:
     # TODO documentar esta función y hacer sus pruebas unitarias
     children = self._offspring_selection(children)
-    last_upper_bin = population.iloc[:self._elitism_size]
+    last_upper_bin = population.iloc[:self._elitism_size].copy()
     upper_bin = children.iloc[:self._elitism_size]
-    # could've used:
-    # last_upper_bin['generation_id'] = children.iloc[0]['generation_id]
-    # but pandas doesn't like it
-    for _, row in last_upper_bin.iterrows():
-      row['generation_id'] = children.iloc[0]['generation_id']
+    last_upper_bin['generation_id'] = children.iloc[0]['generation_id']
     upper_bin = self._merge(upper_bin, last_upper_bin)
     survivors_upper = upper_bin.iloc[:self._elitism_size]
-    # for i in range(self._elitism_size, len(upper_bin)):
-    #   upper_bin.iloc[i]['survivor'] = False
-    dead_upper = upper_bin.iloc[self._elitism_size:]
-    # could've used:
-    # dead_upper['survivor'] = False
-    # but pandas complaints about it
-    for _, row in dead_upper.iterrows():
-      row['survivor'] = False
+    dead_upper = upper_bin.iloc[self._elitism_size:].copy()
+    dead_upper['survivor'] = False
     objs = [ 
       survivors_upper, 
       children.iloc[self._elitism_size:],
@@ -529,23 +517,19 @@ class _OffspringSelection:
     # we assume that the recombination operation used produced two children
     # per parent pair; thus, if the number of children is odd, then disregard
     # the last element
-    survivors, dead = pd.DataFrame(), pd.DataFrame()
     if len(children) % 2 != 0:
       children = children.iloc[:-1]
+    survivors, dead = pd.DataFrame(), pd.DataFrame()
     for i in range(0, len(children), 2):
       better = children.iloc[i][self._fitness_col]
       worse = children.iloc[i + 1][self._fitness_col]
       b, w = (i, i + 1) if better >= worse else (i + 1, i)
       s, d = (b, w) if Random.coin_toss(self._better_bias) else (w, b)
-      child = children.iloc[s]
-      survivors = pd.concat([ survivors, child.to_frame().T ],
+      selected_child = children.iloc[s].copy()
+      selected_child['survivor'] = True
+      survivors = pd.concat([ survivors, selected_child.to_frame().T ],
                             ignore_index=True)
       dead = pd.concat([ dead, children.iloc[d].to_frame().T ],
                        ignore_index=True)
-    # could've used:
-    # child['survivor'] = True
-    # but I don't want pandas to be complaining about it
-    for _, row in survivors.iterrows():
-      row['survivor'] = True
     results = pd.concat([ survivors, dead ], ignore_index=True)
     return results
