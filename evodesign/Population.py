@@ -102,7 +102,7 @@ class Population:
     str
         The filename for the given population.
     """
-    generation_id = population['generation_id'].iloc[0]
+    generation_id = population.iloc[0]['generation_id']
     return f'pop_{cls._pad_zeroes(generation_id)}.csv'
 
 
