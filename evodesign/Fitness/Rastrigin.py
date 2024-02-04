@@ -50,8 +50,6 @@ class Rastrigin(FitnessFunction):
     if windowWidth < 3: windowWidth = 3
     if windowWidth > 9: windowWidth = 9
 
-    
-
     self._window_width = windowWidth
     self._wing_length = (windowWidth - 1) // 2
     self._residue_ordinals = None
@@ -61,10 +59,9 @@ class Rastrigin(FitnessFunction):
 
   def compute_fitness(self, **kwargs) -> float:
     if not self._residue_ordinals:
-      # workspace = Workspace.instance()
-      # structure = Chain.load_structure(workspace.target_pdb_path)
-      # self._target_sequence = Sequence.create_random(Chain.length(structure))
-      self._target_sequence = 20 * 'A'
+      workspace = Workspace.instance()
+      structure = Chain.load_structure(workspace.target_pdb_path)
+      self._target_sequence = Sequence.create_random(Chain.length(structure))
       self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
     x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 
@@ -110,10 +107,9 @@ class Rastrigin(FitnessFunction):
     # aminoácidos a un vector de números reales para la función de Rastrigin, 
     # de tal manera que el vector para el óptimo global corresponda con la 
     # secuencia de la estructura objetivo.
-    return [ 
-      self._to_real(self._to_decimal(sequence, i)) 
-      for i in range(len(sequence)) 
-    ]
+    decimals = [ self._to_decimal(sequence, i) for i in range(len(sequence)) ]
+    reals = [ self._to_real(d) for d in decimals ]
+    return reals
   
 
 
@@ -132,10 +128,11 @@ class Rastrigin(FitnessFunction):
     a = pivot - self._wing_length
     b = pivot + self._wing_length + 1
     indices = [ i % n for i in range(a, b) ]
-    return sum([
-      self._residue_ordinals[j][sequence[i]] * 20**(self._window_width - 1 - i)
+    ordinals = [
+      self._residue_ordinals[j][sequence[j]] * 20**(self._window_width - 1 - i)
       for i, j in enumerate(indices)
-    ])
+    ]
+    return sum(ordinals)
 
   
 
