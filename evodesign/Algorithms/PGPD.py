@@ -14,8 +14,8 @@ from ..Sequence import Sequence
 from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib
 import os
+
 
 
 
