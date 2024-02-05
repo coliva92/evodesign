@@ -21,19 +21,21 @@ parser.add_argument('settings_filename',
 parser.add_argument('workspace_root',
                     help='path to the folder where all the output files will '
                          'be written')
-parser.add_argument('-n', '--for-generations', 
+parser.add_argument('-n', '--num-generations', 
                     type=int, 
                     default=0,
                     help='stops algorithm execution after a the specified '
                          'amount of generations are produced, instead of '
-                         'the amount specified by the `generations` field '
+                         'the amount specified by the `numGenerations` field '
                          'in the settings file')
 args = parser.parse_args()
 
 with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
   setttings = json.load(json_file)
 algorithm = Settings.parse(setttings)
-params = algorithm.setup(args.target_pdb, args.workspace_root)
+params = algorithm.setup(args.target_pdb, 
+                         args.workspace_root, 
+                         args.num_generations)
 
 while True:
   try:
