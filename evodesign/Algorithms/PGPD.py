@@ -206,6 +206,9 @@ class PGPD(Algorithm, ABC):
     sequence_length = len(reference) // len(Chain.BACKBONE_ATOMS)
     i = 0
 
+    # store the target PDB in the workspace
+    self.workspace.save_target_pdb()
+
     # load the statistics file
     stats = self.workspace.load_statistics()
 

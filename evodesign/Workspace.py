@@ -3,6 +3,7 @@ from typing import Optional
 import pandas as pd
 import json
 import os
+import shutil
 
 
 
@@ -55,6 +56,16 @@ class Workspace:
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
   
+
+
+  def save_target_pdb(self) -> None:
+    """
+    Makes a copy in the workspace folder of the target PDB file.
+    """
+    os.makedirs(self.root_dir, exist_ok=True)
+    name = os.path.basename(self.target_pdb_path)
+    shutil.copy(self.target_pdb_path, f'{self.root_dir}/{name}')
+
 
 
   def save_population(self, 
