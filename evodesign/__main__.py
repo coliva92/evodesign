@@ -31,8 +31,8 @@ parser.add_argument('-n', '--num-generations',
 args = parser.parse_args()
 
 with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
-  setttings = json.load(json_file)
-algorithm = Settings.parse(setttings)
+  settings = json.load(json_file)
+algorithm = Settings.parse(settings)
 params = algorithm.setup(args.target_pdb, 
                          args.workspace_root, 
                          args.num_generations)
