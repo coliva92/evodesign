@@ -448,10 +448,18 @@ class PGPD(Algorithm, ABC):
     fig, ax = plt.subplots(ncols=2, figsize=(14, 6))
     fig.suptitle(self.workspace.root_dir)
     c = self._fitness_fn.column_name()
-    ax[0].plot(stats['generation_id'], stats[c], label=c)
-    ax[0].plot(stats['generation_id'], stats['plddt'], label='plddt')
+    series1 = ax[0].plot(stats['generation_id'], stats[c], color='C0', label=c)
+    ax[0].tick_params(axis='y', labelcolor='C0')
     ax[0].set_xlabel('generation_id')
-    ax[0].legend(loc='best')
+    ax1 = ax[0].twinx()
+    series2 = ax1.plot(stats['generation_id'], 
+                       stats['plddt'], 
+                       color='C1', 
+                       label='plddt')
+    ax1.tick_params(axis='y', labelcolor='C1')
+    series = series1 + series2
+    labels = [ s.get_label() for s in series ]
+    ax[0].legend(series, labels, loc='best')
     series1 = ax[1].plot(stats['generation_id'], 
                          stats['pop_sequence_identity'], 
                          color='C2',
