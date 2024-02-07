@@ -11,7 +11,7 @@ class SideChainPacking(FitnessFunction):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'Fitness.SideChainPacking'
+    return 'Fitness.Experimental.SideChainPacking'
   
 
 
@@ -22,19 +22,18 @@ class SideChainPacking(FitnessFunction):
 
 
   def _params(self) -> dict:
-    return self._metrics[0].params()
-  
-
-
-  @classmethod
-  def upper_bound(cls) -> float:
-    return math.inf
+    params = super()._params()
+    params['scwrlExecutablePath'] = self._scwrl_executable_path
+    return params
   
 
 
   def __init__(self,
-               scwrlExecutablePath: str = './scwrl4/Scwrl4') -> None:
-    super().__init__([ PackingMetric(scwrlExecutablePath) ])
+               upperBound: float = -math.inf,
+               scwrlExecutablePath: str = './scwrl4/Scwrl4'
+               ) -> None:
+    super().__init__(upperBound, [ PackingMetric(scwrlExecutablePath) ])
+    self._scwrl_executable_path = scwrlExecutablePath
   
 
 

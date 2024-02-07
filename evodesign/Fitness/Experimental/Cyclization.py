@@ -9,7 +9,7 @@ class Cyclization(FitnessFunction):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'Fitness.Cyclization'
+    return 'Fitness.Experimental.Cyclization'
   
 
 
@@ -19,17 +19,11 @@ class Cyclization(FitnessFunction):
   
 
 
-  @classmethod
-  def upper_bound(cls) -> float:
-    return -1.4
-  
-
-
-  def __init__(self) -> None:
-    super().__init__([ CycMetric() ])
+  def __init__(self, upperBound: float = -1.4) -> None:
+    super().__init__(upperBound, [ CycMetric() ])
 
 
 
   def compute_fitness(self, **kwargs) -> float:
-    return kwargs['cyclization']
+    return -kwargs['cyclization']
   

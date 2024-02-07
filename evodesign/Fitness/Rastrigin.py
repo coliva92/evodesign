@@ -32,19 +32,17 @@ class Rastrigin(FitnessFunction):
 
 
   def _params(self) -> dict:
-    return { 'windowWidth': self._window_width }
+    params = super()._params()
+    params['windowWidth'] = self._window_width
+    return params
   
 
 
-  @classmethod
-  def upper_bound(cls) -> float:
-    return 0.0
-
-
-
   def __init__(self,
-               windowWidth: int = 3) -> None:
-    super().__init__([])
+               upperBound: float = 0.0,
+               windowWidth: int = 3
+               ) -> None:
+    super().__init__(upperBound, [])
 
     # acotamos los valores permitidos para la variable `windowWidth`...
     if windowWidth < 3: windowWidth = 3

@@ -22,24 +22,14 @@ class Gdt(FitnessFunction):
 
 
   def _params(self) -> dict:
-    return { 'cutoffs': self._cutoffs }
-  
-
-
-  @classmethod
-  def upper_bound(cls) -> float:
-    """
-    Returns
-    -------
-    float
-        The highest value the fitness function can achieve in order to trigger
-        the termination of the evolutionary algorithm.
-    """
-    return 0.95
+    params = super()._params()
+    params['cutoffs'] = self._cutoffs
+    return params
   
 
 
   def __init__(self,
+               upperBound: float = 0.95,
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ],
                ) -> None:
     """
@@ -59,7 +49,7 @@ class Gdt(FitnessFunction):
         
         The default configuration is [ 1.0, 2.0, 4.0, 8.0 ].
     """
-    super().__init__([ Rmsd(), GdtMetric(cutoffs) ])
+    super().__init__(upperBound, [ Rmsd(), GdtMetric(cutoffs) ])
     self._cutoffs = cutoffs
   
 

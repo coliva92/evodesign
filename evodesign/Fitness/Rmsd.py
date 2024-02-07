@@ -19,26 +19,13 @@ class Rmsd(FitnessFunction):
   
 
 
-  @classmethod
-  def upper_bound(cls) -> float:
-    """
-    Returns
-    -------
-    float
-        The highest value the fitness function can achieve before triggering
-        the termination of the evolutionary algorithm.
-    """
-    return -0.5
-  
-
-
-  def __init__(self) -> None:
+  def __init__(self, upperBound: float = -0.5) -> None:
     """
     Superimposes two given protein backbones, a model, which is movable, and 
     a reference, which remains fixed, and computes the RMSD for the model
     backbone.
     """
-    super().__init__([ RmsdMetric() ])
+    super().__init__(upperBound, [ RmsdMetric() ])
   
 
 
@@ -52,5 +39,5 @@ class Rmsd(FitnessFunction):
         The RMSD value previously computed after superimposing the model 
         backbone into the reference backbone.
     """
-    return kwargs['rmsd']
+    return -kwargs['rmsd']
   

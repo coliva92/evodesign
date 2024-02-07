@@ -13,18 +13,33 @@ class FitnessFunction(SettingsRetrievable, ABC):
   @abstractclassmethod
   def column_name(cls) -> str:
     raise NotImplementedError
-
-
-
-  @abstractclassmethod
-  def upper_bound(cls) -> float:
-    raise NotImplementedError
   
 
 
-  def __init__(self, metrics: List[Metric]) -> None:
+  def _params(self) -> dict:
+    return { 'upperBound': self._upper_bound }
+  
+
+
+  def __init__(self, 
+               upperBound: float, 
+               metrics: List[Metric]
+               ) -> None:
     super().__init__()
+    self._upper_bound = upperBound
     self._metrics = metrics
+  
+
+
+  def upper_bound(self) -> float:
+    """
+    Returns
+    -------
+    float
+        The highest value the fitness function can achieve before triggering
+        the termination of the evolutionary algorithm.
+    """
+    return self._upper_bound
 
 
   
