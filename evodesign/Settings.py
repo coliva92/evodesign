@@ -1,5 +1,6 @@
 import sys
 from .Algorithms.PGPD import PGPD as Algorithms_PGPD
+from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
 from .Fitness.Gdt import Gdt as Fitness_Gdt
 from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .Fitness.Experimental.Cyclization import Cyclization \
