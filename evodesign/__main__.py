@@ -26,20 +26,17 @@ parser.add_argument('-n', '--num-generations',
                     default=0,
                     help='stops algorithm execution after a the specified '
                          'amount of generations are produced, instead of '
-                         'the amount specified by the `numGenerations` field '
-                         'in the settings file')
+                         'the amount specified in the settings file')
 args = parser.parse_args()
 
 with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
   settings = json.load(json_file)
 algorithm = Settings.parse(settings)
-params = algorithm.setup(args.target_pdb, 
-                         args.workspace_root, 
-                         args.num_generations)
+reference, population = algorithm.setup(args.target_pdb, args.workspace_root)
 
 while True:
   try:
-    algorithm(**params)
+    algorithm(reference, population, numGenerations=args.num_generations)
     break
   except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
     print(f'\nINTERRUPTED.\n'
