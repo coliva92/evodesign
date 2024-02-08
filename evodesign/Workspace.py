@@ -64,7 +64,9 @@ class Workspace:
     """
     os.makedirs(self.root_dir, exist_ok=True)
     name = os.path.basename(self.target_pdb_path)
-    shutil.copy(self.target_pdb_path, f'{self.root_dir}/{name}')
+    stored_pdb = f'{self.root_dir}/{name}'
+    if not os.path.isfile(stored_pdb):
+      shutil.copy(self.target_pdb_path, )
 
 
 
