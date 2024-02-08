@@ -154,9 +154,9 @@ class PGPD(Algorithm, ABC):
     KeyboardInterrupt
         Raised any time the user presses Ctrl + C from the standard input.
     """
-    num_generations = kwargs['numGenerations'] \
-                      if kwargs['numGenerations'] > 0 \
-                      else math.inf
+    num_generations = math.inf
+    if 'numGenerations' in kwargs and kwargs['numGenerations'] > 0:
+      num_generations = kwargs['numGenerations']
     sequence_length = len(reference) // len(Chain.BACKBONE_ATOMS)
     i = 0
 
