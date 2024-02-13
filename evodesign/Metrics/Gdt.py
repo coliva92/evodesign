@@ -46,7 +46,7 @@ class Gdt(Metric):
     Returns
     -------
     float
-        The computed GDT; it's a value between 0 and 1.
+        The computed GDT; it's value is between 0 and 1.
     """
     # we assume that the backbones are already superimposed
     model, reference = kwargs['model'], kwargs['reference']
