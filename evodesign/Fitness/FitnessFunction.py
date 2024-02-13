@@ -60,10 +60,13 @@ class FitnessFunction(SettingsRetrievable, ABC):
     reference : List[Bio.PDB.Atom.Atom]
         The reference backbone. The model usually gets compared against the
         backbone in order to compute the fitness value of the former.
-    sequence : str
+    sequence : str, optional
         The name amino acid sequence for which the fitness will be computed.
         Each residue must be represented by a single letter corresponding to
         one of the 20 essential amino acids.
+    plddt : float, optional
+        The predicted lDDT value computed by the protein structure prediction
+        algorithm that was used for obtaining the given model backbone.
 
     Returns
     -------
