@@ -14,16 +14,16 @@ class Uniform(Selection):
   
 
 
-  def __init__(self, numSelectedCouples: int) -> None:
+  def __init__(self, numCouples: int) -> None:
     """
     Random uniform sampling from the population without replacement.
 
     Parameters
     ----------
-    numSelectedCouples : int
+    numCouples : int
         The number of parent couples to be selected from the population.
     """
-    super().__init__(numSelectedCouples)
+    super().__init__(numCouples)
   
 
 

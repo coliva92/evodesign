@@ -10,7 +10,7 @@ import numpy as np
 class Statistics:
 
   @classmethod
-  def average_missing_amino_acids(cls, population: pd.DataFrame) -> float:
+  def average_amino_acid_loss(cls, population: pd.DataFrame) -> float:
     """
     Computes the average number of amino acid letters lost for each residue 
     position. An amino acid letter is considered lost when none of the

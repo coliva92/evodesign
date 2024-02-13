@@ -24,7 +24,7 @@ class Tournament(Selection):
   
   
   def __init__(self,
-               numSelectedCouples: int,
+               numCouples: int,
                tournamentSize: int,
                fitnessColumn: Optional[str] = None
                ) -> None:
@@ -32,7 +32,7 @@ class Tournament(Selection):
     Selection operator in which a random uniform sample of size 
     `tournamentSize`, without replacement, is taken from the population, and 
     the individual with higher fitness from this sample is then selected. 
-    This process is repeated `2 * numSelectedCouples` times to get the final 
+    This process is repeated `2 * numCouples` times to get the final 
     subset of individuals.
 
     Notice that it is possible for the same individual to be chosen multiple
@@ -41,7 +41,7 @@ class Tournament(Selection):
 
     Parameters
     ----------
-    numSelectedCouples : int
+    numCouples : int
         The number of parent couples to be selected from the population.
     tournamentSize : int
         The number of individuals to be randomly chosen to participate in 
@@ -51,7 +51,7 @@ class Tournament(Selection):
         of each tournament. If `None`, then the rightmost column containing
         the 'fitness_' suffix will be used. Default is `None`.
     """
-    super().__init__(numSelectedCouples)
+    super().__init__(numCouples)
     self._tournament_size = tournamentSize
     self._fitness_column = fitnessColumn
 
@@ -93,6 +93,8 @@ class Tournament(Selection):
     rng = Random.generator()
     selection = rng.choice(population.index, size=selectionSize, replace=False)
     tournament = population.loc[selection]
-    tournament.sort_values(by=self._fitness_column, ascending=False)
+    tournament.sort_values(by=self._fitness_column, 
+                           ascending=False, 
+                           ignore_index=True)
     return tournament.iloc[0]
     

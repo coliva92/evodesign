@@ -28,6 +28,7 @@ from .Prediction.ESMFoldColab import ESMFoldColab as Prediction_ESMFold_Colab
 from .Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi \
   as Prediction_ESMFold_RemoteApi
 from .Prediction.Null import Null as Prediction_None
+import copy
 
 
 
@@ -38,7 +39,7 @@ class Settings:
   @classmethod
   def parse(cls, settings: dict):
     class_name = list(settings.keys())[0]
-    params = settings[class_name]
+    params = copy.deepcopy(settings[class_name])
     actual_class = getattr(sys.modules[__name__], class_name.replace('.', '_'))
     for key, item in params.items():
       if type(item) != dict: continue

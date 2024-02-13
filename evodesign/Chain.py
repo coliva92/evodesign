@@ -10,7 +10,7 @@ import os
 
 class Chain:
 
-  BACKBONE_ATOMS = { 'N', 'CA', 'C', 'O' }
+  BACKBONE_ATOMS = dict.fromkeys([ 'N', 'CA', 'C', 'O' ])
   _pdb_parser = None
 
 

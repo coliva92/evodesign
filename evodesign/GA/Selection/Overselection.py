@@ -24,7 +24,7 @@ class Overselection(Selection):
 
 
   def __init__(self, 
-               numSelectedCouples: int,
+               numCouples: int,
                upperSize: int,
                upperProb: float = 0.8,
                lowerProb: float = 0.2) -> None:
@@ -41,7 +41,7 @@ class Overselection(Selection):
 
     Parameters
     ----------
-    numSelectedCouples : int
+    numCouples : int
         The number of parent couples to be selected from the population.
     upperSize : int
         The number of individuals in the upper bin.
@@ -53,7 +53,7 @@ class Overselection(Selection):
         The default is 0.2. The probability for selecting  mixed pair of 
         individuals is always 1.0 - upperProb - lowerProb.
     """
-    super().__init__(numSelectedCouples)
+    super().__init__(numCouples)
     self._upper_size = upperSize
     self._upper_prob = upperProb
     self._lower_prob = lowerProb
