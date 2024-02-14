@@ -44,5 +44,5 @@ class Cyclization(FitnessFunction):
     c = kwargs['cyclization']
     r_min = self._rmsd_bound
     c_min = self._cyc_bound
-    return np.array([ r_min / r, c_min / c ]).mean()
+    return np.array([ r_min / r, c_min / 1.0 + c ]).mean()
   
