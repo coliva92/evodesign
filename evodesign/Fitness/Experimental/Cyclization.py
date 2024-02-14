@@ -24,7 +24,7 @@ class Cyclization(FitnessFunction):
   def __init__(self, 
                upperBound: float = 1.0,
                rmsdBound: float = 2.0,
-               cyclizationBound: float = 1.5) -> None:
+               cyclizationBound: float = 1.32) -> None:
     super().__init__(upperBound, [ CycMetric(), Rmsd() ])
     self._rmsd_bound = rmsdBound
     self._cyc_bound = cyclizationBound
