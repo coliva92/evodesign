@@ -1,4 +1,3 @@
-from abc import ABC
 from .Algorithm import Algorithm
 from typing import List
 from ..Prediction.Predictor import Predictor
@@ -6,8 +5,6 @@ from ..Fitness.FitnessFunction import FitnessFunction
 from ..GA.Selection.Selection import Selection
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
-from ..Population import Population
-from ..Chain import Chain
 from ..Random import Random
 from ..Statistics import Statistics
 from ..Sequence import Sequence
@@ -15,14 +12,12 @@ from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-import math
 
 
 
 
 
-# TODO actualizar el README
-class PGPD(Algorithm, ABC):
+class PGPD(Algorithm):
 
   @classmethod
   def _class_name(cls) -> str:
@@ -31,22 +26,16 @@ class PGPD(Algorithm, ABC):
 
 
   def _params(self) -> dict:
-    return {
-      'numGenerations': self._max_generations,
-      'popSize': self._pop_size,
-      'elitismSize': self._elitism_size,
-      'betterOffspringBias': self._better_bias,
-      'predictor': self._predictor.settings(),
-      'fitnessFn': self._fitness_fn.settings(),
-      'selection': self._selection.settings(),
-      'recombination': self._recombination.settings(),
-      'mutation': self._mutation.settings()
-    }
+    params = super()._params()
+    params['elitismSize'] = self._elitism_size
+    params['betterOffspringBias'] = self._better_bias
+    params['fitnessFn'] = self._fitness_fn.settings()
+    return params
   
 
 
   def __init__(self,
-               numGenerations: int,
+               maxGenerations: int,
                popSize: int,
                elitismSize: int,
                predictor: Predictor,
@@ -63,7 +52,7 @@ class PGPD(Algorithm, ABC):
 
     Parameters
     ----------
-    numGenerations : int
+    maxGenerations : int
         The maximum number of generations for which the algorithm will be 
         executed.
     popSize : int
@@ -88,199 +77,93 @@ class PGPD(Algorithm, ABC):
     mutation : Mutation
         The sequence mutation operation that will be used.
     """
-    super().__init__()
-    self._max_generations = numGenerations
-    self._pop_size = popSize
+    super().__init__(maxGenerations,
+                     popSize,
+                     predictor,
+                     selection,
+                     recombination,
+                     mutation)
     self._elitism_size = elitismSize
     self._better_bias = betterOffspringBias
-    self._predictor = predictor
     self._fitness_fn = fitnessFn
-    self._selection = selection
-    self._recombination = recombination
-    self._mutation = mutation
     self._offspring_selection = _OffspringSelection(fitnessFn.column_name(), 
                                                     betterOffspringBias)
-
-  
-  
-  def __call__(self, 
-               reference: List[Atom], 
-               population: pd.DataFrame, 
-               **kwargs
-               ) -> None:
-    """
-    Starts the execution of the evolutionary algorithm.
-
-    Parameters
-    ----------
-    reference : List[Bio.PDB.Atom.Atom]
-        The backbone of the target protein.
-    population : pandas.DataFrame, optional
-        The population from which the evolutionary algorithm will begin its 
-        execution.
-    numGenerations : int, optional
-        If a value greater than zero is provided, the algorithm will be run 
-        for the given amount of generations, unless any other termination
-        condition is met. If a zero or lower value is provided, then the
-        algorithm will until the configured maximum number of generations
-        is met. The default is 0 (run until the maximum is met). 
-    
-    Raises
-    ------
-    Exceptions.HttpBadRequest
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        400.
-    Exceptions.HttpForbidden
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        403.
-    Exceptions.HttpInternalServerError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        500.
-    Exceptions.HttpGatewayTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        504.
-    Exceptions.HttpUnknownError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with any other HTTP
-        error code not listed here.
-    requests.exceptions.ConnectTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when communication attempt with the remote
-        server times out.
-    KeyboardInterrupt
-        Raised any time the user presses Ctrl + C from the standard input.
-    """
-    num_generations = math.inf
-    if 'numGenerations' in kwargs and kwargs['numGenerations'] > 0:
-      num_generations = kwargs['numGenerations']
-    sequence_length = len(reference) // len(Chain.BACKBONE_ATOMS)
-    i = 0
-
-    # store the target PDB in the workspace
-    self.workspace.save_target_pdb()
-
-    # load the statistics file
-    stats = self.workspace.load_statistics()
-
-    # check if we are starting from an empty population or we are continuing
-    # from the last population of an earlier execution
-    if population.empty:
-      population = self.initial_population(sequence_length)
-      self.workspace.save_population(population)
-      self.workspace.save_rng_state(Random.generator().bit_generator.state)
-      i = 1
-    
-    c = self._fitness_fn.column_name()
-    if c not in population.columns or population[c].isna().sum() > 0:
-      # if we are starting fresh, compute the fitness of all the initial 
-      # individuals; if we are resuming from a previous population, continue
-      # calculating the fitness of the individuals with missing fitness
-      # (if there are any)
-      population = self.compute_fitness(population, reference)
-      
-      # sort the population by fitness in descending order
-      population.sort_values(by=self._fitness_fn.column_name(), 
-                            ascending=False, 
-                            inplace=True)
-    
-    # compute the statistics if we have not done it yet
-    curr_gen_id = population.iloc[0]['generation_id']
-    if stats.empty or stats.iloc[-1]['generation_id'] != curr_gen_id:
-      new_stats = self.compute_statistics(population)
-      stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
-    
-    # save progress
-    self.workspace.save_population(population)
-    self.workspace.save_statistics(stats)
-    self.save_statistics_graph(stats)
-
-    # main loop
-    f = self._fitness_fn
-    while True:
-      # check the termination conditions
-      if i >= num_generations:
-        break
-      if population.iloc[0]['generation_id'] == self._max_generations:
-        break
-      if population.iloc[0][f.column_name()] >= f.upper_bound():
-        break
-      if stats.iloc[-1]['pop_sequence_identity'] >= 0.9 * sequence_length:
-        break
-
-      # check if we are resuming from an earlier execution and the children were
-      # already generated; if not, apply the evolutionary operations
-      children = self.workspace.load_population(temporary=True)
-      if children.empty:
-        children = self.next_population(population)
-        self.workspace.save_rng_state(Random.generator().bit_generator.state)
-        self.workspace.save_population(children, temporary=True)
-      children = self.compute_fitness(children, 
-                                      reference,
-                                      temporary=True)
-      children.sort_values(by=self._fitness_fn.column_name(), 
-                           ascending=False, 
-                           inplace=True)
-      population = self.replacement(population, children)
-      new_stats = self.compute_statistics(population)
-      stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
-      self.workspace.save_population(population)
-      self.workspace.save_statistics(stats)
-      self.save_statistics_graph(stats)
-      self.workspace.delete_temporary_population()
-      i += 1
   
 
 
-  def initial_population(self, sequenceLength: int) -> pd.DataFrame:
+  def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
     """
-    Creates a collection of random amino acid sequences to be used as the 
-    population for the very first generation of the evolutionary algorithm.
-
-    Parameters
-    ----------
-    sequenceLength : int
-        The number of amino acid residues that each sequence in the generated 
-        population should have.
-
-    Returns
-    -------
-    pandas.DataFrame
-        The generated population data.
-    """
-    population = Population.create_random(self._pop_size, 
-                                          sequenceLength, 
-                                          generationId=1)
-    population['survivor'] = True
-    return population
-  
-
-
-  def next_population(self, population: pd.DataFrame) -> pd.DataFrame:
-    """
-    Apply the selection, recombination and mutation operators to the given 
-    population to create a new population for the next generation of the
-    evolutionary algorithm.
+    Computes the average number of missing amino acids and the average sequence 
+    identity amongst all the sequences in the given population.
 
     Parameters
     ----------
     population : pandas.DataFrame
-        The population from which the new population will be created.
+        The population from which the statistics will be computed.
 
     Returns
     -------
-    pandas.DataFrame
-        The generated population.
+    pandas.Series
+        The information of the top solution in the given population, alongside
+        the computed statistics for said population.
     """
-    next_gen_id = population.iloc[0]['generation_id'] + 1
-    parents = self._selection(population)
-    children = self._recombination(parents, next_gen_id)
-    children = self._mutation(children)
-    return children
+    top_solution = population.iloc[0].copy()
+    top_solution['lost_amino_acids'] = \
+      Statistics.average_amino_acid_loss(population)
+    top_solution['sequence_identity'] = \
+      Statistics.average_sequence_identity(population)
+    return top_solution
+  
 
+
+  def save_statistics_graph(self, stats: pd.DataFrame) -> None:
+    """
+    Creates a graph for the given statistics and saves it as a PNG file in the
+    workspace.
+
+    Parameters
+    ----------
+    stats : pandas.DataFrame
+        The statistics which data will be graphed and stored.
+    """
+    os.makedirs(self.workspace.root_dir, exist_ok=True)
+    plt.ioff() # turn off the GUI
+    fig, ax = plt.subplots(ncols=2, figsize=(14, 6))
+    fig.suptitle(self.workspace.root_dir)
+    c = self._fitness_fn.column_name()
+    series1 = ax[0].plot(stats['generation_id'], stats[c], color='C0', label=c)
+    ax[0].tick_params(axis='y', labelcolor='C0')
+    ax[0].set_xlabel('generation_id')
+    ax1 = ax[0].twinx()
+    series2 = ax1.plot(stats['generation_id'], 
+                       stats['plddt'], 
+                       color='C1', 
+                       label='plddt')
+    ax1.tick_params(axis='y', labelcolor='C1')
+    series = series1 + series2
+    labels = [ s.get_label() for s in series ]
+    ax[0].legend(series, labels, loc='best')
+    series1 = ax[1].plot(stats['generation_id'], 
+                         stats['sequence_identity'], 
+                         color='C2',
+                         label='sequence_identity')
+    ax[1].tick_params(axis='y', labelcolor='C2')
+    sequence_length = len(stats.iloc[0]['sequence'])
+    ax[1].set_ylim(bottom=0., top=sequence_length)
+    ax[1].set_xlabel('generation_id')
+    ax2 = ax[1].twinx()
+    series2 = ax2.plot(stats['generation_id'], 
+                       stats['lost_amino_acids'], 
+                       color='C3',
+                       label='lost_amino_acids')
+    ax2.tick_params(axis='y', labelcolor='C3')
+    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS))
+    series = series1 + series2
+    labels = [ s.get_label() for s in series ]
+    ax[1].legend(series, labels, loc='best')
+    plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    plt.close()
+  
 
 
   def compute_fitness(self, 
@@ -351,7 +234,8 @@ class PGPD(Algorithm, ABC):
         model, row['plddt'] = self._predictor(row['sequence'], filename)
         results = self._fitness_fn(model=model, 
                                    reference=reference, 
-                                   sequence=row['sequence'])
+                                   sequence=row['sequence'],
+                                   plddt=row['plddt'])
         row = row.combine_first(results)
         for column, value in row.items():
           population.at[idx, column] = value
@@ -362,86 +246,54 @@ class PGPD(Algorithm, ABC):
   
 
 
-  def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
+  def initial_fitness_computation(self, 
+                                  population: pd.DataFrame,
+                                  reference: List[Atom]
+                                  ) -> pd.DataFrame:
     """
-    Computes the average number of missing amino acids and the average sequence 
-    identity amongst all the sequences in the given population.
+    Computes the fitness of the population of the first generation, and sorts
+    the individuals according to their fitness in descending order. If the
+    given population has the fitness values already computed for some of the
+    individuals, only the individuals with missing fitness values will be
+    processed.
 
     Parameters
     ----------
     population : pandas.DataFrame
-        The population from which the statistics will be computed.
+        The population for which individuals the fitness value will be computed.
+    reference : List[Bio.PDB.Atom.Atom]
+        The reference backbone against which the individuals in the population
+        will be compared in order to compute their fitness values.
 
     Returns
     -------
-    pandas.Series
-        The information of the top solution in the given population, alongside
-        the computed statistics for said population.
+    pandas.DataFrame
+        The population updated with the fitness values for all individuals.
     """
-    top_solution = population.iloc[0].copy()
-    top_solution['pop_missing_amino_acids'] = \
-      Statistics.average_missing_amino_acids(population)
-    top_solution['pop_sequence_identity'] = \
-      Statistics.average_sequence_identity(population)
-    return top_solution
-  
-
-
-  def save_statistics_graph(self, stats: pd.DataFrame) -> None:
-    """
-    Creates a graph for the given statistics and saves it as a PNG file in the
-    workspace.
-
-    Parameters
-    ----------
-    stats : pandas.DataFrame
-        The statistics which data will be graphed and stored.
-    """
-    os.makedirs(self.workspace.root_dir, exist_ok=True)
-    plt.ioff() # turn off the GUI
-    fig, ax = plt.subplots(ncols=2, figsize=(14, 6))
-    fig.suptitle(self.workspace.root_dir)
     c = self._fitness_fn.column_name()
-    series1 = ax[0].plot(stats['generation_id'], stats[c], color='C0', label=c)
-    ax[0].tick_params(axis='y', labelcolor='C0')
-    ax[0].set_xlabel('generation_id')
-    ax1 = ax[0].twinx()
-    series2 = ax1.plot(stats['generation_id'], 
-                       stats['plddt'], 
-                       color='C1', 
-                       label='plddt')
-    ax1.tick_params(axis='y', labelcolor='C1')
-    series = series1 + series2
-    labels = [ s.get_label() for s in series ]
-    ax[0].legend(series, labels, loc='best')
-    series1 = ax[1].plot(stats['generation_id'], 
-                         stats['pop_sequence_identity'], 
-                         color='C2',
-                         label='pop_sequence_identity')
-    ax[1].tick_params(axis='y', labelcolor='C2')
-    sequence_length = len(stats.iloc[0]['sequence'])
-    ax[1].set_ylim(bottom=0., top=sequence_length)
-    ax[1].set_xlabel('generation_id')
-    ax2 = ax[1].twinx()
-    series2 = ax2.plot(stats['generation_id'], 
-                       stats['pop_missing_amino_acids'], 
-                       color='C3',
-                       label='pop_missing_amino_acids')
-    ax2.tick_params(axis='y', labelcolor='C3')
-    ax2.set_ylim(bottom=0., top=len(Sequence.AMINO_ACIDS))
-    series = series1 + series2
-    labels = [ s.get_label() for s in series ]
-    ax[1].legend(series, labels, loc='best')
-    plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
-    plt.close()
+    if c not in population.columns or population[c].isna().sum() > 0:
+      population = self.compute_fitness(population, reference)
+      population.sort_values(by=self._fitness_fn.column_name(), 
+                            ascending=False,
+                            inplace=True,
+                            ignore_index=True)
+    return population
   
 
 
   def replacement(self, 
                   population: pd.DataFrame, 
-                  children: pd.DataFrame
+                  children: pd.DataFrame,
+                  reference: List[Atom]
                   ) -> pd.DataFrame:
     # TODO documentar esta función y hacer sus pruebas unitarias
+    children = self.compute_fitness(children, 
+                                    reference,
+                                    temporary=True)
+    children.sort_values(by=self._fitness_fn.column_name(), 
+                         ascending=False, 
+                         inplace=True,
+                         ignore_index=True)
     children = self._offspring_selection(children)
     last_upper_bin = population.iloc[:self._elitism_size].copy()
     upper_bin = children.iloc[:self._elitism_size]
@@ -457,6 +309,26 @@ class PGPD(Algorithm, ABC):
     ]
     results = pd.concat(objs, axis=0, ignore_index=True)
     return results
+  
+
+
+  def termination(self, population: pd.DataFrame) -> bool:
+    """
+    Checks if the best solution in the given population has reached the upper 
+    bound for the fitness value.
+
+    Parameters
+    ----------
+    population : pandas.DataFrame
+        The population for which the termination condition will be checked.
+
+    Returns
+    -------
+    bool
+        A flag that indicates if the fitness upper bound has been reached.
+    """
+    f = self._fitness_fn
+    return population.iloc[0][f.column_name()] >= f.upper_bound()
 
 
 

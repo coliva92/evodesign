@@ -1,7 +1,9 @@
 import sys
 from .Algorithms.PGPD import PGPD as Algorithms_PGPD
+from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
 from .Fitness.Gdt import Gdt as Fitness_Gdt
+from .Fitness.Plddt import Plddt as Fitness_Plddt
 from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .Fitness.Experimental.Cyclization import Cyclization \
   as Fitness_Experimental_Cyclization
@@ -42,6 +44,8 @@ class Settings:
     params = copy.deepcopy(settings[class_name])
     actual_class = getattr(sys.modules[__name__], class_name.replace('.', '_'))
     for key, item in params.items():
-      if type(item) != dict: continue
-      params[key] = cls.parse(params[key])
+      if type(item) == dict:
+        params[key] = cls.parse(item)
+      if type(item) == list:
+        params[key] = [ cls.parse(s) for s in item ]
     return actual_class(**params)
