@@ -21,6 +21,14 @@ class Cyclization(FitnessFunction):
   
 
 
+  def _params(self) -> dict:
+    params = super()._params()
+    params['rmsdBound'] = self._rmsd_bound
+    params['cyclizationBound'] = self._cyc_bound
+    return params
+  
+
+
   def __init__(self, 
                upperBound: float = 1.0,
                rmsdBound: float = 2.0,
