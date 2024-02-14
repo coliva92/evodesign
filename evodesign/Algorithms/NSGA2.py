@@ -32,6 +32,7 @@ class NSGA2(Algorithm):
     params['numCouples'] = tournament['numCouples']
     params['tournamentSize'] = tournament['tournamentSize']
     params['fitnessFns'] = [ f.settings() for f in self._fitness_fns ]
+    del params['selection']
     return params
   
 
@@ -51,7 +52,7 @@ class NSGA2(Algorithm):
                      predictor,
                      Tournament(numCouples, 
                                 tournamentSize, 
-                                fitnessColumn='rank'),
+                                fitnessColumn='pandas.DataFrame.index'),
                      recombination,
                      mutation)
     self._fitness_fns = fitnessFns
