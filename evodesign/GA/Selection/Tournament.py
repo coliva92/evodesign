@@ -93,8 +93,12 @@ class Tournament(Selection):
     rng = Random.generator()
     selection = rng.choice(population.index, size=selectionSize, replace=False)
     tournament = population.loc[selection]
-    tournament.sort_values(by=self._fitness_column, 
-                           ascending=False, 
-                           ignore_index=True)
+    if self._fitness_column == 'pandas.DataFrame.index':
+      tournament.sort_index(inplace=True)
+    else:
+      tournament.sort_values(by=self._fitness_column, 
+                            ascending=False,
+                            inplace=True, 
+                            ignore_index=True)
     return tournament.iloc[0]
     
