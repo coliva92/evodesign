@@ -5,6 +5,7 @@ from evodesign.Fitness.Gdt import Gdt
 from evodesign.Fitness.Rastrigin import Rastrigin
 from evodesign.Fitness.Experimental.Cyclization import Cyclization
 from evodesign.Fitness.Experimental.SideChainPacking import SideChainPacking
+from evodesign.GA.Selection.Tournament import Tournament
 from evodesign.Workspace import Workspace
 import math
 
@@ -85,7 +86,7 @@ class SettingsTests(TestCase):
 
   def test_parse_algorithm(self):
     correct_settings = {
-      'Algorithms.PGPD': {
+      'Algorithms.PDGA': {
         'maxGenerations': 1000,
         'popSize': 100,
         'elitismSize': 20,
@@ -105,7 +106,9 @@ class SettingsTests(TestCase):
         'selection': {
           'GA.Selection.Tournament': {
             'numCouples': 100,
-            'tournamentSize': 5
+            'tournamentSize': 5,
+            'fitnessColumns': [ 'rank', 'distance' ],
+            'ascendingSort': [ True, False ]
           }
         },
         'recombination': {
@@ -117,13 +120,30 @@ class SettingsTests(TestCase):
       }
     }
     algo = Settings.parse(correct_settings)
-    correct_settings['Algorithms.PGPD']['betterOffspringBias'] = 1.0
-    correct_settings['Algorithms.PGPD']['fitnessFn']['Fitness.Gdt']['upperBound'] = 0.95
-    correct_settings['Algorithms.PGPD']['predictor']['Prediction.AlphaFold']['maxTemplateDate'] = '2020-05-14'
-    correct_settings['Algorithms.PGPD']['predictor']['Prediction.AlphaFold']['modelPreset'] = 'monomer'
-    correct_settings['Algorithms.PGPD']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
-    correct_settings['Algorithms.PGPD']['selection']['GA.Selection.Tournament']['fitnessColumn'] = None
-    correct_settings['Algorithms.PGPD']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
-    correct_settings['Algorithms.PGPD']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
+    correct_settings['Algorithms.PDGA']['betterOffspringBias'] = 1.0
+    correct_settings['Algorithms.PDGA']['fitnessFn']['Fitness.Gdt']['upperBound'] = 0.95
+    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['maxTemplateDate'] = '2020-05-14'
+    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['modelPreset'] = 'monomer'
+    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
+    correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
+    correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
     settings = algo.settings()
+    self.assertEqual(settings, correct_settings)
+  
+
+
+  def test_tournament_selection_settings(self):
+    correct_settings = {
+      'GA.Selection.Tournament': {
+        'numCouples': 10,
+        'tournamentSize': 3,
+        'fitnessColumns': [ 'rank', 'distance' ],
+        'ascendingSort': [ True, False ]
+      }
+    }
+    tournament = Tournament(numCouples=10,
+                            tournamentSize=3,
+                            fitnessColumns=[ 'rank', 'distance' ],
+                            ascendingSort=[ True, False ])
+    settings = tournament.settings()
     self.assertEqual(settings, correct_settings)

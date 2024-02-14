@@ -1,5 +1,5 @@
 from .Selection import Selection
-from typing import Optional
+from typing import Optional, List
 from ...Random import Random
 import pandas as pd
 
@@ -18,7 +18,8 @@ class Tournament(Selection):
   def _params(self) -> dict:
     params = super()._params()
     params['tournamentSize'] = self._tournament_size
-    params['fitnessColumn'] = self._fitness_column
+    params['fitnessColumns'] = self._fitness_columns
+    params['ascendingSort'] = self._ascending
     return params
   
   
@@ -26,7 +27,8 @@ class Tournament(Selection):
   def __init__(self,
                numCouples: int,
                tournamentSize: int,
-               fitnessColumn: Optional[str] = None
+               fitnessColumns: Optional[List[str]] = None,
+               ascendingSort: Optional[List[bool]] = None
                ) -> None:
     """
     Selection operator in which a random uniform sample of size 
@@ -46,14 +48,17 @@ class Tournament(Selection):
     tournamentSize : int
         The number of individuals to be randomly chosen to participate in 
         a tournament. Only one of these individuals will be chosen.
-    fitnessColumn : str, optional
-        The column containing the fitness value to be used to select the winner
-        of each tournament. If `None`, then the rightmost column containing
-        the 'fitness_' suffix will be used. Default is `None`.
+    fitnessColumns : List[str], optional
+        The columns containing the fitness values to be used to select the 
+        winner of each tournament. If `None`, then all columns which name
+        has the 'fitness_' preffix will be used. Default is `None`.
+    ascendingSort : List[bool], optional
+
     """
     super().__init__(numCouples)
     self._tournament_size = tournamentSize
-    self._fitness_column = fitnessColumn
+    self._fitness_columns = fitnessColumns
+    self._ascending = ascendingSort 
 
 
 
@@ -87,18 +92,24 @@ class Tournament(Selection):
   def _tournament_selection(self, 
                             selectionSize: int, 
                             population: pd.DataFrame):
-    if not self._fitness_column:
-      temp = [ col for col in population.columns if 'fitness' in col ]
-      self._fitness_column = temp[-1]
+    n = len(self._fitness_columns)
+    if not self._fitness_columns or n == 0:
+      self._fitness_columns = [ 
+        col for col in population.columns if 'fitness' in col 
+      ]
+    if not self._ascending:
+      self._ascending = len(self._fitness_columns) * [ True ]
     rng = Random.generator()
     selection = rng.choice(population.index, size=selectionSize, replace=False)
     tournament = population.loc[selection]
-    if self._fitness_column == 'pandas.DataFrame.index':
+    if n == 1 and self._fitness_columns[0] == 'pandas.DataFrame.index':
       tournament.sort_index(inplace=True)
     else:
-      tournament.sort_values(by=self._fitness_column, 
-                            ascending=False,
-                            inplace=True, 
-                            ignore_index=True)
+      # we assume pandas.DataFrame.index will never be used in multiobjective
+      # optimization
+      tournament.sort_values(by=self._fitness_columns, 
+                             ascending=self._ascending,
+                             inplace=True, 
+                             ignore_index=True)
     return tournament.iloc[0]
     

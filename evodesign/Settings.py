@@ -46,6 +46,8 @@ class Settings:
     for key, item in params.items():
       if type(item) == dict:
         params[key] = cls.parse(item)
-      if type(item) == list:
-        params[key] = [ cls.parse(s) for s in item ]
+      if type(item) == list and type(item[0]) == dict:
+        params[key] = [ cls.parse(s) for s in item ] \
+                      if type(item[0]) == dict \
+                      else item
     return actual_class(**params)
