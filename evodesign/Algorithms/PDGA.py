@@ -21,7 +21,7 @@ class PDGA(Algorithm):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'Algorithms.PGPD'
+    return 'Algorithms.PDGA'
   
 
 
