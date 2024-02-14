@@ -94,7 +94,9 @@ class PGPD(Algorithm):
   def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
     """
     Computes the average number of missing amino acids and the average sequence 
-    identity amongst all the sequences in the given population.
+    identity amongst the sequences in the upper bin in the given population.
+    Only the upper bin is considered because, if its diversity is lost, then 
+    the algorithm would've converged in a local optimum.
 
     Parameters
     ----------
@@ -108,10 +110,11 @@ class PGPD(Algorithm):
         the computed statistics for said population.
     """
     top_solution = population.iloc[0].copy()
+    upper_bin = population.iloc[:self._elitism_size]
     top_solution['lost_amino_acids'] = \
-      Statistics.average_amino_acid_loss(population)
+      Statistics.average_amino_acid_loss(upper_bin)
     top_solution['sequence_identity'] = \
-      Statistics.average_sequence_identity(population)
+      Statistics.average_sequence_identity(upper_bin)
     return top_solution
   
 
@@ -274,9 +277,9 @@ class PGPD(Algorithm):
     if c not in population.columns or population[c].isna().sum() > 0:
       population = self.compute_fitness(population, reference)
       population.sort_values(by=self._fitness_fn.column_name(), 
-                            ascending=False,
-                            inplace=True,
-                            ignore_index=True)
+                             ascending=False,
+                             inplace=True,
+                             ignore_index=True)
     return population
   
 
