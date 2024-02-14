@@ -17,7 +17,7 @@ import os
 
 
 
-class PGPD(Algorithm):
+class PDGA(Algorithm):
 
   @classmethod
   def _class_name(cls) -> str:

@@ -1,5 +1,5 @@
 import sys
-from .Algorithms.PGPD import PGPD as Algorithms_PGPD
+from .Algorithms.PDGA import PDGA as Algorithms_PDGA
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
 from .Fitness.Gdt import Gdt as Fitness_Gdt
