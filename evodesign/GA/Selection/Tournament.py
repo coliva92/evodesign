@@ -17,6 +17,7 @@ class Tournament(Selection):
 
   def _params(self) -> dict:
     return {
+      'elitism': self._elitism,
       'tournamentSize': self._tournament_size,
       'fitnessColumns': self._fitness_columns,
       'ascendingSort': self._ascending
@@ -27,7 +28,8 @@ class Tournament(Selection):
   def __init__(self,
                tournamentSize: int,
                fitnessColumns: Optional[List[str]] = None,
-               ascendingSort: Optional[List[bool]] = None
+               ascendingSort: Optional[List[bool]] = None,
+               elitism: bool = False
                ) -> None:
     """
     Selection operator in which a random uniform sample of size 
@@ -54,9 +56,16 @@ class Tournament(Selection):
         `fitnessColumns` should be sorted in asending order or in descending 
         order. If `None`, then all columns will be sorted in ascending order.
         Default is `None`. 
+    elitism : bool, optional
+        Indicates if this operator will be applying elitism or not. 
+        Default is False.
     """
+    # TODO actualizar documentación
     super().__init__()
-    self._tournament_size = tournamentSize
+    self._elitism = elitism
+    self._tournament_size = tournamentSize - 1 \
+                            if elitism \
+                            else tournamentSize
     self._fitness_columns = fitnessColumns
     self._ascending = ascendingSort 
 
@@ -85,7 +94,8 @@ class Tournament(Selection):
     
     selected_parents = pd.DataFrame(columns=population.columns)
     for i in range(len(population)):
-      winner = self._tournament_selection(population)
+      elitist = population.iloc[0]
+      winner = self._tournament_selection(population, elitist)
       while i % 2 != 0 and \
           selected_parents.at[i - 1, 'sequence_id'] == winner['sequence_id']:
         winner = self._tournament_selection(population)
@@ -95,12 +105,16 @@ class Tournament(Selection):
   
 
 
-  def _tournament_selection(self, population: pd.DataFrame):
+  def _tournament_selection(self, 
+                            population: pd.DataFrame,
+                            elitist: pd.Series = pd.Series()):
     rng = Random.generator()
     selection = rng.choice(population.index, 
                            size=self._tournament_size, 
                            replace=False)
     tournament = population.loc[selection]
+    if self._elitism:
+      tournament = pd.concat([ tournament, elitist.to_frame().T ])
     if len(self._fitness_columns) == 1 and \
         self._fitness_columns[0] == 'pandas.DataFrame.index':
       tournament.sort_index(inplace=True)
