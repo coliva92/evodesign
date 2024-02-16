@@ -8,20 +8,6 @@ import pandas as pd
 
 class Selection(SettingsRetrievable, ABC):
 
-  def _params(self) -> dict:
-    return {
-      'numCouples': self._num_couples
-    }
-  
-
-  
-  def __init__(self, numCouples: int) -> None:
-    super().__init__()
-    self._num_couples = numCouples
-    self._selection_size = 2 * numCouples
-
-
-
   @abstractmethod
   def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     raise NotImplementedError

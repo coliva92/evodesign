@@ -15,19 +15,19 @@ class Overselection(Selection):
 
 
   def _params(self) -> dict:
-    params = super()._params()
-    params['upperSize'] = self._upper_size
-    params['upperProb'] = self._upper_prob
-    params['lowerProb'] = self._lower_prob
-    return params
+    return {
+      'upperSize': self._upper_size,
+      'upperProb': self._upper_prob,
+      'lowerProb': self._lower_prob
+    }
   
 
 
   def __init__(self, 
-               numCouples: int,
                upperSize: int,
                upperProb: float = 0.8,
-               lowerProb: float = 0.2) -> None:
+               lowerProb: float = 0.2,
+               twoChildren: bool = True,) -> None:
     """
     Selection operator where the population is divided into to groups, which
     we call the "upper bin" and "lower bin". The upper bin contains the top
@@ -41,8 +41,6 @@ class Overselection(Selection):
 
     Parameters
     ----------
-    numCouples : int
-        The number of parent couples to be selected from the population.
     upperSize : int
         The number of individuals in the upper bin.
     upperProb : float, optional
@@ -52,8 +50,14 @@ class Overselection(Selection):
         The probability for selecting a pair of individuals from the lower bin.
         The default is 0.2. The probability for selecting  mixed pair of 
         individuals is always 1.0 - upperProb - lowerProb.
+    twoChildren : bool, optional.
+        A flag that indicates if the recombination operation would produce two
+        children or only one child per parent pair. Depending on the case, the
+        number of selections performed by this operator will be different in
+        order to produce the correct number of individuals for the next 
+        generation. The default is True.
     """
-    super().__init__(numCouples)
+    self._two_children = twoChildren
     self._upper_size = upperSize
     self._upper_prob = upperProb
     self._lower_prob = lowerProb
@@ -79,11 +83,15 @@ class Overselection(Selection):
     pandas.DataFrame
         The selected subset of individuals.
     """
+    selection_size = len(population) \
+                     if self._two_children \
+                     else 2 * len(population)
+    
     selected_parents = pd.DataFrame(columns=population.columns)
     rng = Random.generator()
     upper_bin = population.iloc[:self._upper_size]
     lower_bin = population.iloc[self._upper_size:]
-    while len(selected_parents) < self._selection_size:
+    while len(selected_parents) < selection_size:
       option = rng.choice([ 0, 1, 2 ], p=self._weights)
       if option == 0:
         selection = rng.choice(upper_bin.index, size=2, replace=False)

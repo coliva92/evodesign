@@ -14,19 +14,6 @@ class Uniform(Selection):
   
 
 
-  def __init__(self, numCouples: int) -> None:
-    """
-    Random uniform sampling from the population without replacement.
-
-    Parameters
-    ----------
-    numCouples : int
-        The number of parent couples to be selected from the population.
-    """
-    super().__init__(numCouples)
-  
-
-
   def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     """
     Selects a subset of individuals from the given population.
@@ -43,6 +30,6 @@ class Uniform(Selection):
     """
     rng = Random.generator()
     selection = rng.choice(population.index, 
-                           self._selection_size, 
+                           len(population), 
                            replace=False)
     return population.loc[selection]

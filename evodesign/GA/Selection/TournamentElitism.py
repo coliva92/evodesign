@@ -11,20 +11,21 @@ class Tournament(Selection):
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'GA.Selection.Tournament'
+    return 'GA.Selection.TournamentElitism'
   
 
 
   def _params(self) -> dict:
-    return {
-      'tournamentSize': self._tournament_size,
-      'fitnessColumns': self._fitness_columns,
-      'ascendingSort': self._ascending
-    }
+    params = super()._params()
+    params['tournamentSize'] = self._tournament_size
+    params['fitnessColumns'] = self._fitness_columns
+    params['ascendingSort'] = self._ascending
+    return params
   
   
   
   def __init__(self,
+               numCouples: int,
                tournamentSize: int,
                fitnessColumns: Optional[List[str]] = None,
                ascendingSort: Optional[List[bool]] = None
@@ -42,6 +43,8 @@ class Tournament(Selection):
 
     Parameters
     ----------
+    numCouples : int
+        The number of parent couples to be selected from the population.
     tournamentSize : int
         The number of individuals to be randomly chosen to participate in 
         a tournament. Only one of these individuals will be chosen.
@@ -55,7 +58,7 @@ class Tournament(Selection):
         order. If `None`, then all columns will be sorted in ascending order.
         Default is `None`. 
     """
-    super().__init__()
+    super().__init__(numCouples)
     self._tournament_size = tournamentSize
     self._fitness_columns = fitnessColumns
     self._ascending = ascendingSort 
@@ -84,25 +87,34 @@ class Tournament(Selection):
       self._ascending = len(self._fitness_columns) * [ True ]
     
     selected_parents = pd.DataFrame(columns=population.columns)
-    for i in range(len(population)):
-      winner = self._tournament_selection(population)
+    for i in range(self._selection_size):
+      elite = population.iloc[i]
+      winner = self._tournament_selection(self._tournament_size, population)
+      # garantee that two consecutive parents are different sequences
       while i % 2 != 0 and \
-          selected_parents.at[i - 1, 'sequence_id'] == winner['sequence_id']:
-        winner = self._tournament_selection(population)
+          selected_parents.at[i - 1, 'sequence'] == winner['sequence']:
+        winner = self._tournament_selection(self._tournament_size, population)
       selected_parents = pd.concat([ selected_parents, winner.to_frame().T ],
                                    ignore_index=True)
     return selected_parents
   
 
 
-  def _tournament_selection(self, population: pd.DataFrame):
+  def _tournament_selection(self, 
+                            selectionSize: int, 
+                            population: pd.DataFrame):
+    n = len(self._fitness_columns)
+    if not self._fitness_columns or n == 0:
+      self._fitness_columns = [ 
+        col for col in population.columns if 'fitness' in col 
+      ]
+    if not self._ascending:
+      self._ascending = len(self._fitness_columns) * [ True ]
+
     rng = Random.generator()
-    selection = rng.choice(population.index, 
-                           size=self._tournament_size, 
-                           replace=False)
+    selection = rng.choice(population.index, size=selectionSize, replace=False)
     tournament = population.loc[selection]
-    if len(self._fitness_columns) == 1 and \
-        self._fitness_columns[0] == 'pandas.DataFrame.index':
+    if n == 1 and self._fitness_columns[0] == 'pandas.DataFrame.index':
       tournament.sort_index(inplace=True)
     else:
       # we assume pandas.DataFrame.index will never be used in multiobjective
@@ -112,4 +124,3 @@ class Tournament(Selection):
                              inplace=True, 
                              ignore_index=True)
     return tournament.iloc[0]
-    
