@@ -96,7 +96,7 @@ class Overselection(Selection):
         f = rng.choice(lower_bin.index)
         mother, father = population.loc[m], population.loc[f]
         parents = pd.concat([ mother, father ], axis=1, ignore_index=True).transpose()
-      while parents.iloc[0]['sequence'] == parents.iloc[1]['sequence']:
+      while parents.iloc[0]['sequence_id'] == parents.iloc[1]['sequence_id']:
         if option == 0:
           f = rng.choice(upper_bin.index)
           father = upper_bin.loc[f]
