@@ -24,14 +24,14 @@ class SelectionTests(EvoDesignTestCase, ABC):
     self.pop = Population.create(self.sequences)
     self.pop['survivor'] = True
     self.seq_length = len(self.sequences[0])
-    self.num_couples = 3
-    self.selection_size = 6
+    self.num_couples = 8
+    self.selection_size = 16
   
 
 
   def couples_are_different_sequences(self, parents):
     num_couples_diff_seq = sum([ 
-      parents.iloc[i]['sequence'] != parents.iloc[i + 1]['sequence'] 
+      parents.iloc[i]['sequence_id'] != parents.iloc[i + 1]['sequence_id'] 
       for i in range(0, len(parents), 2) 
     ])
     self.assertEqual(num_couples_diff_seq, self.num_couples)
@@ -69,7 +69,7 @@ class OverselectionTests(SelectionTests):
 
 
   def test_upper_bin_selection(self):
-    selection = Overselection(numCouples=self.num_couples, 
+    selection = Overselection(twoChildren=False,
                               upperSize=self.upper_size, 
                               upperProb=1.0, 
                               lowerProb=0.0)
@@ -84,7 +84,7 @@ class OverselectionTests(SelectionTests):
 
 
   def test_lower_bin_selection(self):
-    selection = Overselection(numCouples=self.num_couples, 
+    selection = Overselection(twoChildren=False,
                               upperSize=self.upper_size, 
                               upperProb=0.0, 
                               lowerProb=1.0)
@@ -99,7 +99,7 @@ class OverselectionTests(SelectionTests):
 
 
   def test_middle_bin_selection(self):
-    selection = Overselection(numCouples=self.num_couples, 
+    selection = Overselection(twoChildren=False,
                               upperSize=self.upper_size, 
                               upperProb=0.0, 
                               lowerProb=0.0)
