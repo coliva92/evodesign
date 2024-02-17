@@ -138,7 +138,7 @@ class NSGA2(Algorithm):
       population, fronts = self.non_domination_rank(population)
       population = pd.DataFrame(columns=population.columns)
       for front in fronts:
-        self.compute_crowding_distance(front)
+        front = self.compute_crowding_distance(front)
         population = pd.concat([ population, front ], ignore_index=True)
     return population
   
