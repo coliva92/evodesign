@@ -1,4 +1,5 @@
 from ..FitnessFunction import FitnessFunction
+from typing import List
 from ...Metrics.Experimental.Cyclization import Cyclization as CycMetric
 from ...Metrics.Rmsd import Rmsd
 import numpy as np
@@ -25,6 +26,7 @@ class Cyclization(FitnessFunction):
     params = super()._params()
     params['rmsdBound'] = self._rmsd_bound
     params['cyclizationBound'] = self._cyc_bound
+    params['weights'] = self._weights
     return params
   
 
@@ -32,10 +34,12 @@ class Cyclization(FitnessFunction):
   def __init__(self, 
                upperBound: float = 1.0,
                rmsdBound: float = 2.0,
-               cyclizationBound: float = 1.32) -> None:
+               cyclizationBound: float = 1.32,
+               weights: List[float] = [ 1.0, 0.5 ]) -> None:
     super().__init__(upperBound, [ CycMetric(), Rmsd() ])
     self._rmsd_bound = rmsdBound
     self._cyc_bound = cyclizationBound
+    self._weights = weights
 
 
 
@@ -44,5 +48,6 @@ class Cyclization(FitnessFunction):
     c = kwargs['cyclization']
     r_min = self._rmsd_bound
     c_min = self._cyc_bound
-    return np.array([ r_min / r, c_min / 1.0 + c ]).mean()
+    return np.average(np.array([ r_min / (1.0 + r), 1.0 - c + c_min ]), 
+                      weights=self._weights)
   
