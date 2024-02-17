@@ -135,8 +135,10 @@ class NSGA2(Algorithm):
     if c not in population.columns or population[c].isna().sum() > 0:
       population = self.compute_fitness(population, reference)
       # sort the population by rank in ascending order
-      population, _ = self.non_domination_rank(population)
-      population.sort_values(by='rank', inplace=True, ignore_index=True)
+      population, fronts = self.non_domination_rank(population)
+      for front in fronts:
+        self.compute_crowding_distance(front)
+        population = pd.concat([ population, front ], ignore_index=True)
     return population
   
 
