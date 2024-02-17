@@ -36,3 +36,6 @@ df.to_csv(f'{populations_dir}/pop_0001.csv')
 
 shutil.copy(f'{args.source_workspace}/initial_rng_state.json',
             args.destination_workspace)
+
+shutil.copy(f'{args.source_workspace}/settings.json', 
+            args.destination_workspace)
