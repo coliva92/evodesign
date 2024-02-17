@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from evodesign.Population import Population
+from ..evodesign.Population import Population
 import pandas as pd
 import shutil
 import os
