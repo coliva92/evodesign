@@ -62,7 +62,9 @@ class SettingsTests(TestCase):
   def test_fitness_cyclization_settings_retrieval(self):
     correct_settings = {
       'Fitness.Experimental.Cyclization': {
-        'upperBound': -1.4
+        'cyclizationBound': 1.32,
+        'rmsdBound': 2.0,
+        'upperBound': 1.0
       }
     }
     cyclization = Cyclization()
@@ -105,7 +107,6 @@ class SettingsTests(TestCase):
         },
         'selection': {
           'GA.Selection.Tournament': {
-            'numCouples': 100,
             'tournamentSize': 5,
             'fitnessColumns': [ 'rank', 'distance' ],
             'ascendingSort': [ True, False ]
@@ -127,6 +128,7 @@ class SettingsTests(TestCase):
     correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
     correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
     correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
+    correct_settings['Algorithms.PDGA']['selection']['GA.Selection.Tournament']['elitism'] = False
     settings = algo.settings()
     self.assertEqual(settings, correct_settings)
   
@@ -135,13 +137,13 @@ class SettingsTests(TestCase):
   def test_tournament_selection_settings(self):
     correct_settings = {
       'GA.Selection.Tournament': {
-        'numCouples': 10,
         'tournamentSize': 3,
         'fitnessColumns': [ 'rank', 'distance' ],
-        'ascendingSort': [ True, False ]
+        'ascendingSort': [ True, False ],
+        'elitism': True
       }
     }
-    tournament = Tournament(numCouples=10,
+    tournament = Tournament(elitism=True,
                             tournamentSize=3,
                             fitnessColumns=[ 'rank', 'distance' ],
                             ascendingSort=[ True, False ])

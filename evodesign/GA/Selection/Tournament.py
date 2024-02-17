@@ -63,9 +63,7 @@ class Tournament(Selection):
     # TODO actualizar documentación
     super().__init__()
     self._elitism = elitism
-    self._tournament_size = tournamentSize - 1 \
-                            if elitism \
-                            else tournamentSize
+    self._tournament_size = tournamentSize
     self._fitness_columns = fitnessColumns
     self._ascending = ascendingSort 
 
