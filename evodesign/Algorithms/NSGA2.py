@@ -28,8 +28,6 @@ class NSGA2(Algorithm):
 
   def _params(self) -> dict:
     params = super()._params()
-    tournament = self._selection._params()
-    params['tournamentSize'] = tournament['tournamentSize']
     params['fitnessFns'] = [ f.settings() for f in self._fitness_fns ]
     del params['selection']
     return params
@@ -39,7 +37,6 @@ class NSGA2(Algorithm):
   def __init__(self, 
                maxGenerations: int,
                popSize: int,
-               tournamentSize: int,
                predictor: Predictor,
                fitnessFns: List[FitnessFunction],
                recombination: Recombination,
@@ -48,7 +45,7 @@ class NSGA2(Algorithm):
     super().__init__(maxGenerations,
                      popSize,
                      predictor,
-                     Tournament(tournamentSize, 
+                     Tournament(tournamentSize=2, 
                                 fitnessColumns=[ 'rank', 'distance' ],
                                 ascendingSort=[ True, False ],
                                 elitism=True),
