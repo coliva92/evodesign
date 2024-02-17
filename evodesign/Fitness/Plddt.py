@@ -1,5 +1,3 @@
-from typing import List
-from evodesign.Metrics.Metric import Metric
 from .FitnessFunction import FitnessFunction
 
 
