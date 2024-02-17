@@ -107,8 +107,11 @@ class Tournament(Selection):
                             population: pd.DataFrame,
                             elitist: pd.Series = pd.Series()):
     rng = Random.generator()
+    tournament_size = self._tournament_size - 1 \
+                      if self._elitism \
+                      else self._tournament_size
     selection = rng.choice(population.index, 
-                           size=self._tournament_size, 
+                           size=tournament_size, 
                            replace=False)
     tournament = population.loc[selection]
     if self._elitism:
