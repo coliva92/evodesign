@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from ..evodesign.Population import Population
 import pandas as pd
 import shutil
 import os
@@ -31,9 +30,8 @@ os.makedirs(populations_dir)
 shutil.copy(f'{args.source_workspace}/populations/pop_0001.csv', 
             populations_dir)
 # remove fitness columns
-pop = Population.create_random(1, 4)
 df = pd.read_csv(f'{populations_dir}/pop_0001.csv')
-df = df[pop.columns]
+df = df[[ 'generation_id', 'sequence_id', 'sequence', 'survivor' ]]
 df.to_csv(f'{populations_dir}/pop_0001.csv')
 
 shutil.copy(f'{args.source_workspace}/initial_rng_state.json',
