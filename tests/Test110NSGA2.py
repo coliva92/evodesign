@@ -18,7 +18,6 @@ class NSGA2Tests(EvoDesignTestCase):
     self.algo = NSGA2(
       maxGenerations=100,
       popSize=10,
-      tournamentSize=2,
       predictor=Null(),
       fitnessFns=[ Rmsd(), Gdt(), Rastrigin() ],
       recombination=UniformCrossover(),

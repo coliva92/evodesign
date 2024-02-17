@@ -64,7 +64,8 @@ class SettingsTests(TestCase):
       'Fitness.Experimental.Cyclization': {
         'cyclizationBound': 1.32,
         'rmsdBound': 2.0,
-        'upperBound': 1.0
+        'upperBound': 1.0,
+        'weights': [ 1.0, 0.5 ]
       }
     }
     cyclization = Cyclization()
