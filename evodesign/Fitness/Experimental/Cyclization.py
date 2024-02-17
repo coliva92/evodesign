@@ -48,6 +48,6 @@ class Cyclization(FitnessFunction):
     c = kwargs['cyclization']
     r_min = self._rmsd_bound
     c_min = self._cyc_bound
-    return np.average(np.array([ r_min / (1.0 + r), 1.0 - c + c_min ]), 
+    return np.average(np.array([ r_min / (1.0 + r), c_min / (1.0 + c) ]), 
                       weights=self._weights)
   
