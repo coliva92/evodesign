@@ -9,7 +9,7 @@ import glob
 
 
 
-parser = ArgumentParser(prog='reproduce',
+parser = ArgumentParser(prog='reproduce_workspace',
                         description='A utility script for replicating an '
                                     'EvoDesign workspace in order to reproduce '
                                     'the corresponding experiment')
