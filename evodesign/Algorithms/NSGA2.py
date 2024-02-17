@@ -29,7 +29,6 @@ class NSGA2(Algorithm):
   def _params(self) -> dict:
     params = super()._params()
     tournament = self._selection._params()
-    params['numCouples'] = tournament['numCouples']
     params['tournamentSize'] = tournament['tournamentSize']
     params['fitnessFns'] = [ f.settings() for f in self._fitness_fns ]
     del params['selection']
@@ -40,7 +39,6 @@ class NSGA2(Algorithm):
   def __init__(self, 
                maxGenerations: int,
                popSize: int,
-               numCouples: int,
                tournamentSize: int,
                predictor: Predictor,
                fitnessFns: List[FitnessFunction],
@@ -50,9 +48,10 @@ class NSGA2(Algorithm):
     super().__init__(maxGenerations,
                      popSize,
                      predictor,
-                     Tournament(numCouples, 
-                                tournamentSize, 
-                                fitnessColumn='pandas.DataFrame.index'),
+                     Tournament(tournamentSize, 
+                                fitnessColumns=[ 'rank', 'distance' ],
+                                ascendingSort=[ True, False ],
+                                elitism=True),
                      recombination,
                      mutation)
     self._fitness_fns = fitnessFns
