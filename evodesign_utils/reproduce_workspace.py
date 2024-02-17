@@ -39,3 +39,6 @@ shutil.copy(f'{args.source_workspace}/initial_rng_state.json',
 
 shutil.copy(f'{args.source_workspace}/settings.json', 
             args.destination_workspace)
+
+for filepath in glob.glob(f'{args.source_workspace}/*.pdb'):
+  shutil.copy(filepath, args.destination_workspace)
