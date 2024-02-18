@@ -88,7 +88,7 @@ class Tournament(Selection):
         col for col in population.columns if 'fitness' in col 
       ]
     if not self._ascending:
-      self._ascending = len(self._fitness_columns) * [ True ]
+      self._ascending = len(self._fitness_columns) * [ False ]
     
     selected_parents = pd.DataFrame(columns=population.columns)
     for i in range(len(population)):
