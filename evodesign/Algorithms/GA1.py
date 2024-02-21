@@ -36,7 +36,7 @@ class GA1(GenericGA):
                          ascending=self._sort_ascending, 
                          inplace=True,
                          ignore_index=True)
-    last_pop = population[population['survivor']]
+    last_pop = population[population['survivor']].copy()
     last_pop['survivor'] = False
     last_pop['generation_id'] = children.iloc[0]['generation_id']
     mixed = self._merge(last_pop, children)
