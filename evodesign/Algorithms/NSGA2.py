@@ -59,12 +59,12 @@ class NSGA2(Algorithm):
 
 
   def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
-    survivors = population[population['survivor'] == True]
+    survivors = population[population['survivor']]
     data = {
       'generation_id': population.iloc[0]['generation_id'],
       'non_dominated_front_size': len(survivors[survivors['rank'] == 1]),
-      'lost_amino_acids': Statistics.average_amino_acid_loss(survivors),
       'sequence_identity': Statistics.average_sequence_identity(survivors),
+      'lost_amino_acids': Statistics.average_amino_acid_loss(survivors),
       'sequence_length': len(survivors.iloc[0]['sequence'])
     }
     return pd.Series(data)
