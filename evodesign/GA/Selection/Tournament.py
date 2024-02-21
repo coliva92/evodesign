@@ -19,16 +19,16 @@ class Tournament(Selection):
     return {
       'elitism': self._elitism,
       'tournamentSize': self._tournament_size,
-      'fitnessColumns': self._fitness_columns,
-      'ascendingSort': self._ascending
+      'sortColumns': self._sort_columns,
+      'sortAscending': self._ascending
     }
   
   
   
   def __init__(self,
                tournamentSize: int,
-               fitnessColumns: Optional[List[str]] = None,
-               ascendingSort: Optional[List[bool]] = None,
+               sortColumns: Optional[List[str]] = None,
+               sortAscending: Optional[List[bool]] = None,
                elitism: bool = False
                ) -> None:
     """
@@ -47,13 +47,13 @@ class Tournament(Selection):
     tournamentSize : int
         The number of individuals to be randomly chosen to participate in 
         a tournament. Only one of these individuals will be chosen.
-    fitnessColumns : List[str], optional
+    sortColumns : List[str], optional
         The columns containing the fitness values to be used to select the 
         winner of each tournament. If `None`, then all columns which name
         has the 'fitness_' preffix will be used. Default is `None`.
-    ascendingSort : List[bool], optional
+    sortAscending : List[bool], optional
         Each flag indicates if the corresponding column specified in 
-        `fitnessColumns` should be sorted in asending order or in descending 
+        `sortColumns` should be sorted in asending order or in descending 
         order. If `None`, then all columns will be sorted in ascending order.
         Default is `None`. 
     elitism : bool, optional
@@ -64,8 +64,8 @@ class Tournament(Selection):
     super().__init__()
     self._elitism = elitism
     self._tournament_size = tournamentSize
-    self._fitness_columns = fitnessColumns
-    self._ascending = ascendingSort 
+    self._sort_columns = sortColumns
+    self._ascending = sortAscending 
 
 
 
@@ -83,12 +83,12 @@ class Tournament(Selection):
     pandas.DataFrame
         The selected subset of individuals.
     """
-    if not self._fitness_columns or len(self._fitness_columns) == 0:
-      self._fitness_columns = [ 
-        col for col in population.columns if 'fitness' in col 
+    if not self._sort_columns:
+      self._sort_columns = [ 
+        col for col in population.columns if 'fitness_' in col 
       ]
     if not self._ascending:
-      self._ascending = len(self._fitness_columns) * [ False ]
+      self._ascending = len(self._sort_columns) * [ False ]
     
     selected_parents = pd.DataFrame(columns=population.columns)
     for i in range(len(population)):
@@ -116,15 +116,9 @@ class Tournament(Selection):
     tournament = population.loc[selection]
     if self._elitism:
       tournament = pd.concat([ tournament, elitist.to_frame().T ])
-    if len(self._fitness_columns) == 1 and \
-        self._fitness_columns[0] == 'pandas.DataFrame.index':
-      tournament.sort_index(inplace=True)
-    else:
-      # we assume pandas.DataFrame.index will never be used in multiobjective
-      # optimization
-      tournament.sort_values(by=self._fitness_columns, 
-                             ascending=self._ascending,
-                             inplace=True, 
-                             ignore_index=True)
+    tournament.sort_values(by=self._sort_columns, 
+                           ascending=self._ascending,
+                           inplace=True, 
+                           ignore_index=True)
     return tournament.iloc[0]
     
