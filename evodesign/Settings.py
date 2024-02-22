@@ -7,8 +7,8 @@ from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
 from .Fitness.Gdt import Gdt as Fitness_Gdt
 from .Fitness.Plddt import Plddt as Fitness_Plddt
 from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
-from .Fitness.Experimental.Cyclization import Cyclization \
-  as Fitness_Experimental_Cyclization
+from .Fitness.Experimental.RmsdCyclization import RmsdCyclization \
+  as Fitness_Experimental_RmsdCyclization
 from .Fitness.Experimental.SideChainPacking import SideChainPacking \
   as Fitness_Experimental_SideChainPacking
 from .GA.Mutation.RandomResetting import RandomResetting \

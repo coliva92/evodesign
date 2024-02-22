@@ -2,29 +2,33 @@ from ..FitnessFunction import FitnessFunction
 from ...Metrics.Experimental.Cyclization import Cyclization as CycMetric
 from ...Metrics.Rmsd import Rmsd
 import numpy as np
+from scipy.stats import norm
 
 
 
 
 
-class Cyclization(FitnessFunction):
+class RmsdCyclization(FitnessFunction):
+
+  _MEAN = 1.3248119
+  _STANDARD_DEV = 0.10498072
+
+
 
   @classmethod
   def _class_name(cls) -> str:
-    return 'Fitness.Experimental.Cyclization'
+    return 'Fitness.Experimental.RmsdCyclization'
   
 
 
   @classmethod
   def column_name(cls) -> str:
-    return 'fitness_cyclization'
+    return 'fitness_rmsd_cyclization'
   
 
 
   def _params(self) -> dict:
     params = super()._params()
-    params['rmsdBound'] = self._rmsd_bound
-    params['cyclizationBound'] = self._cyc_bound
     params['rmsdWeight'] = self._rmsd_weight
     params['cycWeight'] = self._cyc_weight
     return params
@@ -33,14 +37,10 @@ class Cyclization(FitnessFunction):
 
   def __init__(self, 
                upperBound: float = 1.0,
-               rmsdBound: float = 2.0,
-               cyclizationBound: float = 1.32,
                rmsdWeight: float = 1.0,
                cycWeight: float = 1.0
                ) -> None:
-    super().__init__(upperBound, [ CycMetric(), Rmsd() ])
-    self._rmsd_bound = rmsdBound
-    self._cyc_bound = cyclizationBound
+    super().__init__(upperBound, [ Rmsd(), CycMetric() ])
     self._rmsd_weight = rmsdWeight
     self._cyc_weight = cycWeight
     self._weights = np.array([ rmsdWeight, cycWeight ])
@@ -48,11 +48,18 @@ class Cyclization(FitnessFunction):
 
 
   def compute_fitness(self, **kwargs) -> float:
-    r = kwargs['rmsd']
-    c = kwargs['cyclization']
-    r_min = self._rmsd_bound
-    c_min = self._cyc_bound
-    a = 1.0 / (1.0 + (r - r_min))
-    b = 1.0 / (1.0 + (c - c_min))
-    return np.average(np.array([ a, b ]), weights=self._weights)
+    c = self._compute_probability(kwargs['cyclization'])
+    r = self._normalize_rmsd(kwargs['rmsd'])
+    return np.average(np.array([ r, c ]), weights=self._weights)
+  
+
+
+  def _compute_probability(self, cyclization: float) -> float:
+    z_score = (cyclization - self._MEAN) / self._STANDARD_DEV
+    return norm.cdf(z_score)
+  
+
+
+  def _normalize_rmsd(self, rmsd: float) -> float:
+    return 1.0 / (1.0 + rmsd)
   
