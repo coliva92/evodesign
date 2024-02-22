@@ -7,6 +7,7 @@ from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
 from ..Random import Random
 from ..Statistics import Statistics
+import evodesign.Operators as op
 from Bio.PDB.Atom import Atom
 import pandas as pd
 
@@ -133,7 +134,10 @@ class GA2(GenericGA):
     last_upper_bin = population.iloc[:self._elitism_size].copy()
     upper_bin = children.iloc[:self._elitism_size]
     last_upper_bin['generation_id'] = children.iloc[0]['generation_id']
-    upper_bin = self._merge(upper_bin, last_upper_bin)
+    upper_bin = op.merge(upper_bin, 
+                         last_upper_bin, 
+                         self._sort_cols, 
+                         self._sort_ascending)
     survivors_upper = upper_bin.iloc[:self._elitism_size]
     dead_upper = upper_bin.iloc[self._elitism_size:].copy()
     dead_upper['survivor'] = False
