@@ -182,13 +182,6 @@ class NSGA2(Algorithm):
     for j in range(i, len(fronts)):
       next_pop = pd.concat([ next_pop, fronts[j] ], ignore_index=True)
     return next_pop
-
-  
-
-  def termination(self, population: pd.DataFrame) -> bool:
-    # terminate if all the sequences fall into the same front
-    df = population[population['survivor']]
-    return len(df[df['rank'] == 1]) == self._pop_size
   
 
   
