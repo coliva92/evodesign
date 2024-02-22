@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from .Workspace import Workspace
 from .Settings import Settings
 from .Exceptions import *
 from requests.exceptions import ConnectTimeout
@@ -33,6 +34,7 @@ with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
   settings = json.load(json_file)
 algorithm = Settings.parse(settings)
 reference, population = algorithm.setup(args.target_pdb, args.workspace_root)
+Workspace.instance().save_commit_hash()
 
 while True:
   try:

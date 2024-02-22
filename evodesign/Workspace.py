@@ -58,6 +58,18 @@ class Workspace:
   
 
 
+  def save_commit_hash(self) -> None:
+    """
+    Saves a text file in the workspace folder indicating the version of this
+    program that was used to produce the results contained in it.
+    """
+    os.makedirs(self.root_dir, exist_ok=True)
+    filepath = f'{self.root_dir}/commit_hash.txt'
+    with open(filepath, 'wt', encoding='utf-8') as txt_file:
+      txt_file.write('24c0dc5\n')
+
+
+
   def save_target_pdb(self) -> None:
     """
     Makes a copy in the workspace folder of the target PDB file.
