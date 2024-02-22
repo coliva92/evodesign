@@ -1,7 +1,7 @@
 from ..FitnessFunction import FitnessFunction
 from ...Metrics.Experimental.Cyclization import Cyclization
 from ...Metrics.Rmsd import Rmsd
-import Utils
+import evodesign.Fitness.Experimental.Utils as Utils
 import numpy as np
 
 

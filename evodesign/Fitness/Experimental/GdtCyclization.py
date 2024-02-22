@@ -3,7 +3,7 @@ from typing import List
 from ...Metrics.Experimental.Cyclization import Cyclization
 from ...Metrics.Rmsd import Rmsd
 from ...Metrics.Gdt import Gdt
-import Utils
+import evodesign.Fitness.Experimental.Utils as Utils
 import numpy as np
 
 
