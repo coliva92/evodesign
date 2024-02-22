@@ -1,6 +1,8 @@
 import sys
-from .Algorithms.PDGA import PDGA as Algorithms_PDGA
+from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
+from .Algorithms.GA1 import GA1 as Algorithms_GA1
+from .Algorithms.GA3 import GA3 as Algorithms_GA3
 from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
 from .Fitness.Gdt import Gdt as Fitness_Gdt
 from .Fitness.Plddt import Plddt as Fitness_Plddt
