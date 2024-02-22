@@ -3,7 +3,7 @@ from evodesign.Settings import Settings
 from evodesign.Fitness.Rmsd import Rmsd
 from evodesign.Fitness.Gdt import Gdt
 from evodesign.Fitness.Rastrigin import Rastrigin
-from evodesign.Fitness.Experimental.Cyclization import Cyclization
+from evodesign.Fitness.Experimental.RmsdCyclization import RmsdCyclization
 from evodesign.Fitness.Experimental.SideChainPacking import SideChainPacking
 from evodesign.GA.Selection.Tournament import Tournament
 from evodesign.Workspace import Workspace
@@ -61,14 +61,13 @@ class SettingsTests(TestCase):
 
   def test_fitness_cyclization_settings_retrieval(self):
     correct_settings = {
-      'Fitness.Experimental.Cyclization': {
-        'cyclizationBound': 1.32,
-        'rmsdBound': 2.0,
+      'Fitness.Experimental.RmsdCyclization': {
         'upperBound': 1.0,
-        'weights': [ 1.0, 0.5 ]
+        'rmsdWeight': 1.0,
+        'cycWeight': 0.5
       }
     }
-    cyclization = Cyclization()
+    cyclization = RmsdCyclization()
     settings = cyclization.settings()
     self.assertEqual(settings, correct_settings)
   
