@@ -213,7 +213,7 @@ class Algorithm(SettingsRetrievable, ABC):
         break
       if population.iloc[0]['generation_id'] == self._max_generations:
         break
-      if stats.iloc[-1]['sequence_identity'] >= 0.9 * sequence_length:
+      if stats.iloc[-1]['sequence_identity'] >= 0.95 * sequence_length:
         break
       if self.termination(population):
         break
