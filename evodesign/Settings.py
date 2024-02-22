@@ -9,6 +9,16 @@ from .Fitness.Plddt import Plddt as Fitness_Plddt
 from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .Fitness.Experimental.RmsdCyclization import RmsdCyclization \
   as Fitness_Experimental_RmsdCyclization
+from .Fitness.Experimental.RmsdPlddt import RmsdPlddt \
+  as Fitness_Experimental_RmsdPlddt
+from .Fitness.Experimental.RmsdCyclizationPlddt import RmsdCyclizationPlddt \
+  as Fitness_Experimental_RmsdCyclizationPlddt
+from .Fitness.Experimental.GdtCyclization import GdtCyclization \
+  as Fitness_Experimental_GdtCyclization
+from .Fitness.Experimental.GdtPlddt import GdtPlddt \
+  as Fitness_Experimental_GdtPlddt
+from .Fitness.Experimental.GdtCyclizationPlddt import GdtCyclizationPlddt \
+  as Fitness_Experimental_GdtCyclizationPlddt
 from .Fitness.Experimental.SideChainPacking import SideChainPacking \
   as Fitness_Experimental_SideChainPacking
 from .GA.Mutation.RandomResetting import RandomResetting \
