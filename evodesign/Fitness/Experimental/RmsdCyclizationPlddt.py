@@ -48,5 +48,5 @@ class RmsdCyclizationPlddt(FitnessFunction):
   def compute_fitness(self, **kwargs) -> float:
     c = Utils.cyclization_probability(kwargs['cyclization'])
     r = Utils.normalize_rmsd(kwargs['rmsd'])
-    return np.average(np.array([ r, c, kwargs['plddt'] ]), 
-                      weights=self._weights)
+    p = Utils.normalize_plddt(kwargs['plddt'])
+    return np.average(np.array([ r, c, p ]), weights=self._weights)

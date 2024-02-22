@@ -43,4 +43,5 @@ class RmsdPlddt(FitnessFunction):
 
   def compute_fitness(self, **kwargs) -> float:
     r = Utils.normalize_rmsd(kwargs['rmsd'])
-    return np.average(np.array([ r, kwargs['plddt'] ]), weights=self._weights)
+    p = Utils.normalize_plddt(kwargs['plddt'])
+    return np.average(np.array([ r, p ]), weights=self._weights)

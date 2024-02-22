@@ -15,3 +15,8 @@ def normalize_rmsd(rmsd: float) -> float:
 def cyclization_probability(cyclization: float) -> float:
   z_score = (cyclization - _MEAN) / _STANDARD_DEV
   return norm.cdf(z_score)
+
+
+
+def normalize_plddt(plddt: float) -> float:
+  return plddt / 100 if plddt > 1.0 else plddt

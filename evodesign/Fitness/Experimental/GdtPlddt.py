@@ -2,6 +2,7 @@ from ..FitnessFunction import FitnessFunction
 from typing import List
 from ...Metrics.Rmsd import Rmsd
 from ...Metrics.Gdt import Gdt
+import Utils
 import numpy as np
 
 
@@ -46,6 +47,6 @@ class GdtPlddt(FitnessFunction):
 
 
   def compute_fitness(self, **kwargs) -> float:
-    return np.average(np.array([ kwargs['gdt'], kwargs['plddt'] ]),
-                      weights=self._weights)
+    p = Utils.normalize_plddt(kwargs['plddt'])
+    return np.average(np.array([ kwargs['gdt'], p ]), weights=self._weights)
   
