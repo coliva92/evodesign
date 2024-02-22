@@ -64,7 +64,7 @@ class SettingsTests(TestCase):
       'Fitness.Experimental.RmsdCyclization': {
         'upperBound': 1.0,
         'rmsdWeight': 1.0,
-        'cycWeight': 0.5
+        'cycWeight': 1.0
       }
     }
     cyclization = RmsdCyclization()
@@ -88,10 +88,12 @@ class SettingsTests(TestCase):
 
   def test_parse_algorithm(self):
     correct_settings = {
-      'Algorithms.PDGA': {
+      'Algorithms.GA2': {
         'maxGenerations': 1000,
         'popSize': 100,
         'elitismSize': 20,
+        'sortColumns': [ 'fitness_gdt', 'rmsd', 'plddt' ],
+        'sortAscending': [ False, True, False ],
         'predictor': {
           'Prediction.AlphaFold': {
             'fakeMsaScript': 'fakemsa.py',
@@ -108,8 +110,8 @@ class SettingsTests(TestCase):
         'selection': {
           'GA.Selection.Tournament': {
             'tournamentSize': 5,
-            'fitnessColumns': [ 'rank', 'distance' ],
-            'ascendingSort': [ True, False ]
+            'sortColumns': [ 'rank', 'distance' ],
+            'sortAscending': [ True, False ]
           }
         },
         'recombination': {
@@ -121,14 +123,16 @@ class SettingsTests(TestCase):
       }
     }
     algo = Settings.parse(correct_settings)
-    correct_settings['Algorithms.PDGA']['betterOffspringBias'] = 1.0
-    correct_settings['Algorithms.PDGA']['fitnessFn']['Fitness.Gdt']['upperBound'] = 0.95
-    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['maxTemplateDate'] = '2020-05-14'
-    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['modelPreset'] = 'monomer'
-    correct_settings['Algorithms.PDGA']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
-    correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
-    correct_settings['Algorithms.PDGA']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
-    correct_settings['Algorithms.PDGA']['selection']['GA.Selection.Tournament']['elitism'] = False
+    correct_settings['Algorithms.GA2']['betterOffspringBias'] = 1.0
+    correct_settings['Algorithms.GA2']['sortColumns'] = [ 'fitness_gdt', 'rmsd', 'plddt' ]
+    correct_settings['Algorithms.GA2']['sortAscending'] = [ False, True, False ]
+    correct_settings['Algorithms.GA2']['fitnessFn']['Fitness.Gdt']['upperBound'] = 0.95
+    correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['maxTemplateDate'] = '2020-05-14'
+    correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['modelPreset'] = 'monomer'
+    correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
+    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
+    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
+    correct_settings['Algorithms.GA2']['selection']['GA.Selection.Tournament']['elitism'] = False
     settings = algo.settings()
     self.assertEqual(settings, correct_settings)
   
@@ -138,14 +142,14 @@ class SettingsTests(TestCase):
     correct_settings = {
       'GA.Selection.Tournament': {
         'tournamentSize': 3,
-        'fitnessColumns': [ 'rank', 'distance' ],
-        'ascendingSort': [ True, False ],
+        'sortColumns': [ 'rank', 'distance' ],
+        'sortAscending': [ True, False ],
         'elitism': True
       }
     }
     tournament = Tournament(elitism=True,
                             tournamentSize=3,
-                            fitnessColumns=[ 'rank', 'distance' ],
-                            ascendingSort=[ True, False ])
+                            sortColumns=[ 'rank', 'distance' ],
+                            sortAscending=[ True, False ])
     settings = tournament.settings()
     self.assertEqual(settings, correct_settings)

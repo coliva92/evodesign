@@ -48,8 +48,8 @@ class NSGA2(Algorithm):
                      popSize,
                      predictor,
                      Tournament(tournamentSize=2, 
-                                fitnessColumns=[ 'rank', 'distance' ],
-                                ascendingSort=[ True, False ],
+                                sortColumns=[ 'rank', 'distance' ],
+                                sortAscending=[ True, False ],
                                 elitism=tournamentElitism),
                      recombination,
                      mutation)
