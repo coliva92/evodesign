@@ -237,39 +237,3 @@ class GenericGA(Algorithm, ABC):
     f = self._fitness_fn
     return population.iloc[0][f.column_name()] >= f.upper_bound()
   
-
-
-  def _merge(self, 
-             a: pd.DataFrame, 
-             b: pd.DataFrame
-             ) -> pd.DataFrame:
-    # TODO documentar esta funcion y hacer las pruebas unitarias
-    merged = pd.DataFrame(columns=a.columns)
-    i, j, n = 0, 0, len(a)
-    while i < n and j < n:
-      row_a, row_b = a.iloc[i], b.iloc[j]
-      if self._comparison(row_a, row_b):
-        merged = pd.concat([ merged, a.iloc[i].to_frame().T ],
-                           ignore_index=True)
-        i += 1
-      else:
-        merged = pd.concat([ merged, b.iloc[j].to_frame().T ],
-                           ignore_index=True)
-        j += 1
-    if i < n:
-      merged = pd.concat([ merged, a.iloc[i:] ], axis=0, ignore_index=True)
-    if j < n:
-      merged = pd.concat([ merged, b.iloc[j:] ], axis=0, ignore_index=True)
-    return merged
-
-
-
-  def _comparison(self, 
-                  a: pd.Series, 
-                  b: pd.Series
-                  ) -> bool:
-    for col, ascending in zip(self._sort_cols, self._sort_ascending):
-      if a[col] == b[col]:
-        continue
-      return a[col] < b[col] if ascending else a[col] > b[col]
-    return True
