@@ -35,6 +35,7 @@ class GA3(GenericGA):
                   ) -> pd.DataFrame:
     elite = population.iloc[0].copy()
     elite['survivor'] = False
+    elite['generation_id'] = children.iloc[0]['generation_id']
     mixed = pd.concat([ elite.to_frame().T, children ], ignore_index=True)
     for i, row in mixed.iloc[1:].iterrows():
       if op.comes_first(elite, row, self._sort_cols, self._sort_ascending):
