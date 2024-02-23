@@ -23,7 +23,7 @@ def reproduce_workspace(source_dir: str,
   # remove fitness columns
   df = pd.read_csv(f'{populations_dir}/pop_0001.csv')
   df = df[[ 'generation_id', 'sequence_id', 'sequence', 'survivor' ]]
-  df.to_csv(f'{populations_dir}/pop_0001.csv')
+  df.to_csv(f'{populations_dir}/pop_0001.csv', index=False)
   shutil.copy(f'{source_dir}/initial_rng_state.json', destination_dir)
   shutil.copy(f'{source_dir}/settings.json', destination_dir)
   for filepath in glob.glob(f'{source_dir}/*.pdb'):
