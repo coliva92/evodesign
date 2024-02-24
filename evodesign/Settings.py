@@ -21,6 +21,8 @@ from .Fitness.Experimental.GdtCyclizationPlddt import GdtCyclizationPlddt \
   as Fitness_Experimental_GdtCyclizationPlddt
 from .Fitness.Experimental.SideChainPacking import SideChainPacking \
   as Fitness_Experimental_SideChainPacking
+from .Fitness.Experimental.CyclizationPlddt import CyclizationPlddt \
+  as Fitness_Experimental_CyclizationPlddt
 from .GA.Mutation.RandomResetting import RandomResetting \
   as GA_Mutation_RandomResetting
 from .GA.Mutation.Switch import Switch as GA_Mutation_Switch
