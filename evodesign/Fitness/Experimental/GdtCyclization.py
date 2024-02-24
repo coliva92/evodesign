@@ -48,5 +48,5 @@ class GdtCyclization(FitnessFunction):
 
 
   def compute_fitness(self, **kwargs) -> float:
-    c = Utils.normalize_cyclization(kwargs['cyclization'])
+    c = Utils.normalize(abs(Utils.cyclization_z_score(kwargs['cyclization'])))
     return np.average(np.array([ kwargs['gdt'], c ]), weights=self._weights)
