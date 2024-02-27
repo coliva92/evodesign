@@ -66,7 +66,7 @@ class Workspace:
     os.makedirs(self.root_dir, exist_ok=True)
     filepath = f'{self.root_dir}/commit_hash.txt'
     with open(filepath, 'wt', encoding='utf-8') as txt_file:
-      txt_file.write('df257c1\n')
+      txt_file.write('8b7ad43\n')
 
 
 
