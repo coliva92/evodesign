@@ -37,7 +37,7 @@ def top_solutions_from_all_populations(workspace_dir: str,
   settings_path = f'{workspace_dir}/settings.json'
   with open(settings_path, 'rt', encoding='utf-8') as json_file:
     settings = json.load(json_file)
-  k = next(settings.keys())
+  k = list(settings.keys())[0]
   sort_columns = settings[k]['sortColumns']
   sort_ascending = settings[k]['sortAscending']
   populations_dir = f'{workspace_dir}/populations'
