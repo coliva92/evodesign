@@ -26,46 +26,55 @@ class GA3Tests(TestCase):
                     sortColumns=[ 'fitness_rastrigin' ],
                     sortAscending=[ False ])
     self.pop = pd.DataFrame({
+      'generation_id': 0,
       'sequence_id': [ 'A', 'B', 'C', 'D', 'E', 'X', 'Z' ],
       'fitness_rastrigin': [ -0.1, -0.2, -0.3, -0.4, -0.5, -0.6, -0.7 ],
       'survivor': [ True, True, True, True, True, False, False ]
     })
     self.children = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'F', 'G', 'H', 'I', 'J' ],
       'fitness_rastrigin': [ -0.81, -0.82, -0.83, -0.84, -0.85 ],
       'survivor': [ False, False, False, False, False ]
     })
     self.correct_next_pop = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'A', 'F', 'G', 'H', 'I', 'J' ],
       'fitness_rastrigin': [ -0.1, -0.81, -0.82, -0.83, -0.84, -0.85 ],
       'survivor': [ True, True, True, True, True, False ]
     })
     self.children_winner_first = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'F', 'G', 'H', 'I', 'J' ],
       'fitness_rastrigin': [ -0.05, -0.82, -0.83, -0.84, -0.85 ],
       'survivor': [ False, False, False, False, False ]
     })
     self.correct_next_pop_winner_first = pd.DataFrame({
-      'sequence_id': [ 'F', 'J', 'G', 'H', 'I', 'A' ],
-      'fitness_rastrigin': [ -0.05, -0.85, -0.82, -0.83, -0.84, -0.1 ],
+      'generation_id': 1,
+      'sequence_id': [ 'F', 'G', 'H', 'I', 'J', 'A' ],
+      'fitness_rastrigin': [ -0.05, -0.82, -0.83, -0.84, -0.85, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
     })
     self.children_winner_mid = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'F', 'G', 'H', 'I', 'J' ],
       'fitness_rastrigin': [ -0.81, -0.82, -0.05, -0.84, -0.85 ],
       'survivor': [ False, False, False, False, False ]
     })
     self.correct_next_pop_winner_mid = pd.DataFrame({
-      'sequence_id': [ 'H', 'F', 'G', 'J', 'I', 'A' ],
-      'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.85, -0.84, -0.1 ],
+      'generation_id': 1,
+      'sequence_id': [ 'H', 'F', 'G', 'I', 'J', 'A' ],
+      'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.84, -0.85, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
     })
     self.children_winner_last = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'F', 'G', 'H', 'I', 'J' ],
       'fitness_rastrigin': [ -0.81, -0.82, -0.83, -0.84, -0.05 ],
       'survivor': [ False, False, False, False, False ]
     })
     self.correct_next_pop_winner_last = pd.DataFrame({
+      'generation_id': 1,
       'sequence_id': [ 'J', 'F', 'G', 'H', 'I', 'A' ],
       'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.83, -0.84, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
