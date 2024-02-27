@@ -35,7 +35,7 @@ class CyclizationPlddt(FitnessFunction):
                cycWeight: float = 1.0,
                plddtWeight: float = 1.0
                ) -> None:
-    super().__init__(upperBound, [ Rmsd(), Cyclization() ])
+    super().__init__(upperBound, [ Cyclization() ])
     self._cyc_weight = cycWeight
     self._plddt_weight = plddtWeight
     self._weights = np.array([ cycWeight, plddtWeight ])
