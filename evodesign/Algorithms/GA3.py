@@ -36,15 +36,21 @@ class GA3(GenericGA):
     elite = population.iloc[0].copy()
     elite['survivor'] = False
     elite['generation_id'] = children.iloc[0]['generation_id']
-    children.sort_values(by=self._sort_cols, 
-                         ascending=self._sort_ascending,
-                         inplace=True,
-                         ignore_index=True)
-    if op.comes_first(elite, children.iloc[0], self._sort_cols, self._sort_ascending):
-      mixed = pd.concat([ elite.to_frame().T, children ], ignore_index=True)
-      mixed['survivor'] = True
-      mixed.loc[len(mixed) - 1, 'survivor'] = False
-    elif op.comes_first(children.iloc[0], elite, self._sort_cols, self._sort_ascending):
-      children['survivor'] = True
-      mixed = pd.concat([ children, elite.to_frame().T ], ignore_index=True)
+    mixed = pd.concat([ elite.to_frame().T, children ], ignore_index=True)
+    j, best = 1, mixed.iloc[1]
+    for i, row in mixed.iloc[2:].iterrows():
+      if op.comes_first(best, row, self._sort_cols, self._sort_ascending):
+        continue
+      j, best = i, row
+    if not op.comes_first(elite, best, self._sort_cols, self._sort_ascending):
+      # put winning row in the elite position
+      mixed.iloc[0] = best
+      # move last row to the winning row's original position
+      mixed.iloc[j] = mixed.iloc[-1]
+      # put elite solution (which is no longer the elite) in the last position
+      mixed.iloc[-1] = elite
+    # if last pop's elite solution wins, it is preserved;
+    # if it loses to another solution in children, it is removed and all
+    # children survive to the next generation
+    mixed.loc[:self._pop_size - 1, 'survivor'] = True
     return mixed

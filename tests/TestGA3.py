@@ -51,8 +51,8 @@ class GA3Tests(TestCase):
     })
     self.correct_next_pop_winner_first = pd.DataFrame({
       'generation_id': 1,
-      'sequence_id': [ 'F', 'G', 'H', 'I', 'J', 'A' ],
-      'fitness_rastrigin': [ -0.05, -0.82, -0.83, -0.84, -0.85, -0.1 ],
+      'sequence_id': [ 'F', 'J', 'G', 'H', 'I', 'A' ],
+      'fitness_rastrigin': [ -0.05, -0.85, -0.82, -0.83, -0.84, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
     })
     self.children_winner_mid = pd.DataFrame({
@@ -63,8 +63,8 @@ class GA3Tests(TestCase):
     })
     self.correct_next_pop_winner_mid = pd.DataFrame({
       'generation_id': 1,
-      'sequence_id': [ 'H', 'F', 'G', 'I', 'J', 'A' ],
-      'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.84, -0.85, -0.1 ],
+      'sequence_id': [ 'H', 'F', 'G', 'J', 'I', 'A' ],
+      'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.85, -0.84, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
     })
     self.children_winner_last = pd.DataFrame({
@@ -77,6 +77,18 @@ class GA3Tests(TestCase):
       'generation_id': 1,
       'sequence_id': [ 'J', 'F', 'G', 'H', 'I', 'A' ],
       'fitness_rastrigin': [ -0.05, -0.81, -0.82, -0.83, -0.84, -0.1 ],
+      'survivor': [ True, True, True, True, True, False ]
+    })
+    self.children_unsorted = pd.DataFrame({
+      'generation_id': 1,
+      'sequence_id': [ 'F', 'G', 'H', 'I', 'J' ],
+      'fitness_rastrigin': [ -0.05, -0.04, -0.03, -0.02, -0.01 ],
+      'survivor': [ False, False, False, False, False ]
+    })
+    self.correct_next_pop_unsorted = pd.DataFrame({
+      'generation_id': 1,
+      'sequence_id': [ 'J', 'F', 'G', 'H', 'I', 'A' ],
+      'fitness_rastrigin': [ -0.01, -0.05, -0.04, -0.03, -0.02, -0.1 ],
       'survivor': [ True, True, True, True, True, False ]
     })
   
@@ -109,5 +121,13 @@ class GA3Tests(TestCase):
   def test_replacement_winner_last(self):
     next_pop = self.algo.replacement(self.pop, self.children_winner_last, [])
     comparison = next_pop == self.correct_next_pop_winner_last
+    rows_equal = comparison.all(axis=1)
+    self.assertEqual(rows_equal.all(), True)
+  
+
+
+  def test_best_child_is_winner(self):
+    next_pop = self.algo.replacement(self.pop, self.children_unsorted, [])
+    comparison = next_pop == self.correct_next_pop_unsorted
     rows_equal = comparison.all(axis=1)
     self.assertEqual(rows_equal.all(), True)
