@@ -13,7 +13,7 @@ class MiddlePointCrossover(Recombination):
   
 
 
-  def __init__(self) -> None:
+  def __init__(self, probability: float = 1.0) -> None:
     """
     Creates new sequences by splitting both parent sequences exactly in half  
     and mixing the half from one parent with the complementary half from 
@@ -22,7 +22,7 @@ class MiddlePointCrossover(Recombination):
     For example, given the sequences 'AAAAAA' and 'DDDDDD', this operator would
     produce the sequences 'AAADDD' and 'DDDAAA'.
     """
-    super().__init__()
+    super().__init__(probability)
 
 
 

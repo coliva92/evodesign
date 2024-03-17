@@ -115,7 +115,9 @@ class SettingsTests(TestCase):
           }
         },
         'recombination': {
-          'GA.Recombination.MiddlePointCrossover': {}
+          'GA.Recombination.MiddlePointCrossover': {
+            'probability': 1.0
+          }
         },
         'mutation': {
           'GA.Mutation.Switch': {}

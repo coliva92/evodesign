@@ -14,7 +14,7 @@ class SinglePointCrossover(Recombination):
 
 
 
-  def __init__(self) -> None:
+  def __init__(self, probability: float = 1.0) -> None:
     """
     Creates new sequences by splitting the parent sequences at a randomly 
     chosen residue position and mixing one part from one of the parents with
@@ -24,7 +24,7 @@ class SinglePointCrossover(Recombination):
     it was chosen to split these sequences at the 4th position, then this 
     operator would produce the sequences 'AAAADD' and 'DDDDAA'.
     """
-    super().__init__()
+    super().__init__(probability)
   
 
 

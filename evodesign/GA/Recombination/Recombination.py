@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from ...SettingsRetrievable import SettingsRetrievable
 from typing import List
 from ...Population import Population
+from ...Random import Random
 import pandas as pd
 
 
@@ -16,6 +17,17 @@ class Recombination(SettingsRetrievable, ABC):
                           father: str
                           ) -> List[str]:
     raise NotImplementedError
+  
+
+
+  def _params(self) -> dict:
+    return { 'probability': self._probability }
+  
+
+
+  def __init__(self, probability: float) -> None:
+    super().__init__()
+    self._probability = probability
   
 
 
@@ -48,6 +60,8 @@ class Recombination(SettingsRetrievable, ABC):
     for i in range(0, len(parents), 2):
       mother = parents.iloc[i]['sequence']
       father = parents.iloc[i + 1]['sequence']
-      children += self.offspring_sequences(mother, father)
+      children += self.offspring_sequences(mother, father) \
+                  if Random.coin_toss(self._probability) \
+                  else [ mother, father ]
     return Population.create(children, generationId)
   

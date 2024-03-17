@@ -15,12 +15,15 @@ class UniformCrossover(Recombination):
 
 
   def _params(self) -> dict:
-    return { 'maskBias': self._parent_bias }
+    params = super()._params()
+    params['maskBias'] = self._parent_bias
+    return params
   
   
 
   def __init__(self,
-               maskBias: float = 0.5
+               maskBias: float = 0.5,
+               probability: float = 1.0
                ) -> None:
     """
     Randomly generates a binary mask of the same length as the parent sequences
@@ -38,6 +41,7 @@ class UniformCrossover(Recombination):
         The probability for generating one binary value over the other in the
         random mask. The default is 0.5.
     """
+    super().__init__(probability)
     self._weights = ( maskBias, 1.0 - maskBias )
     self._parent_bias = maskBias
 
