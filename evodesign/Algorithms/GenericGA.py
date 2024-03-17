@@ -1,6 +1,6 @@
 from .Algorithm import Algorithm
 from abc import ABC
-from typing import Optional, List, Callable
+from typing import Optional, List
 from ..GA.Mutation.Mutation import Mutation
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Selection.Selection import Selection
