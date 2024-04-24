@@ -61,9 +61,11 @@ class FitnessFunction(SettingsRetrievable, ABC):
         The reference backbone. The model usually gets compared against the
         backbone in order to compute the fitness value of the former.
     sequence : str, optional
-        The name amino acid sequence for which the fitness will be computed.
+        The amino acid sequence for which the fitness will be computed.
         Each residue must be represented by a single letter corresponding to
         one of the 20 essential amino acids.
+    sequence_id : str, optional
+        The unique identifier for the given sequence.
     plddt : float, optional
         The predicted lDDT value computed by the protein structure prediction
         algorithm that was used for obtaining the given model backbone.

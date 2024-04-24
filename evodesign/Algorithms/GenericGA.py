@@ -173,6 +173,7 @@ class GenericGA(Algorithm, ABC):
         results = self._fitness_fn(model=model, 
                                    reference=reference, 
                                    sequence=row['sequence'],
+                                   sequenceId=row['sequence_id'],
                                    plddt=row['plddt'])
         row = row.combine_first(results)
         for column, value in row.items():
