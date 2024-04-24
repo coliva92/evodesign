@@ -55,6 +55,7 @@ class Workspace:
     self.root_dir = rootDir
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
+    self.ilearn_dir = f'{self.root_dir}/ilearn'
   
 
 
