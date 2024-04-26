@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import evodesign_tools as tools
+from . import reproduce_workspace
 
 
 
@@ -17,4 +17,4 @@ if __name__ == '__main__':
                       help='path to the folder where the results from the '
                           'reproduced experiment will be stored')
   args = parser.parse_args()
-  tools.reproduce_workspace(args.source_workspace, args.destination_workspace)
+  reproduce_workspace(args.source_workspace, args.destination_workspace)
