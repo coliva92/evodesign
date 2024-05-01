@@ -104,7 +104,7 @@ class DescGdtContactMapCyclizationPlddt(GdtContactMapCyclizationPlddt):
   def _compute_reference_descriptors(self):
     if self._ref_desc: return
     csv_paths = [
-      metric(sequence=self._ref_sequence, sequence_id='ref_prot')
+      metric(sequence=self._ref_sequence, sequenceId='ref_prot')
       for metric in self._metrics[0:8]
     ]
     temp = [

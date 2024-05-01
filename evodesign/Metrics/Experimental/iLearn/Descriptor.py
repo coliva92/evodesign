@@ -21,7 +21,7 @@ class Descriptor(Metric, ABC):
 
   def __call__(self, **kwargs) -> str:
     sequence = kwargs['sequence']
-    sequence_id = kwargs['sequence_id']
+    sequence_id = kwargs['sequenceId']
     workspace = Workspace.instance()
     fasta_path = f'{workspace.root_dir}/.temp.fasta'
     with open(fasta_path, 'wt', encoding='utf-8') as fasta_file:
