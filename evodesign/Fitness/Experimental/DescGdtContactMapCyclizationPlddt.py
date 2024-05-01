@@ -91,7 +91,7 @@ class DescGdtContactMapCyclizationPlddt(GdtContactMapCyclizationPlddt):
       pd.read_csv(kwargs['GDPC'], header=None).iloc[0][1:].to_numpy(),
       pd.read_csv(kwargs['GTPC'], header=None).iloc[0][1:].to_numpy()
     ]
-    temp[0] = Utils.normalize_numpy(temp[0], -4, 9)
+    temp[0] = Utils.normalize_numpy(temp[0], -4, 11)
     temp[3] = Utils.normalize_numpy(temp[3], 0, 100)
     model_desc = np.concatenate(temp)
     desc_rms = np.sqrt(np.mean((model_desc - self._ref_desc)**2))
