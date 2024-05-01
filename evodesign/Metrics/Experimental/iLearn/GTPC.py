@@ -1,4 +1,4 @@
-from Descriptor import Descriptor
+from .Descriptor import Descriptor
 
 
 
