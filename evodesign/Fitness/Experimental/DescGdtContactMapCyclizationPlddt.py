@@ -111,6 +111,6 @@ class DescGdtContactMapCyclizationPlddt(GdtContactMapCyclizationPlddt):
       pd.read_csv(csv_path, header=None).iloc[0][1:].to_numpy()
       for csv_path in csv_paths
     ]
-    temp[0] = Utils.normalize_numpy(temp[0], -4, 9)
+    temp[0] = Utils.normalize_numpy(temp[0], -4, 11)
     temp[3] = Utils.normalize_numpy(temp[3], 0, 100)
     self._ref_desc = np.concatenate(temp)
