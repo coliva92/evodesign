@@ -25,6 +25,8 @@ from .Fitness.Experimental.CyclizationPlddt import CyclizationPlddt \
   as Fitness_Experimental_CyclizationPlddt
 from .Fitness.Experimental.GdtContactMapCyclizationPlddt import GdtContactMapCyclizationPlddt \
   as Fitness_Experimental_GdtContactMapCyclizationPlddt
+from .Fitness.Experimental.DescGdtContactMapCyclizationPlddt import DescGdtContactMapCyclizationPlddt \
+  as Fitness_Experimental_DescriptorsGdtContactMapCyclizationPlddt
 from .GA.Mutation.RandomResetting import RandomResetting \
   as GA_Mutation_RandomResetting
 from .GA.Mutation.Switch import Switch as GA_Mutation_Switch
