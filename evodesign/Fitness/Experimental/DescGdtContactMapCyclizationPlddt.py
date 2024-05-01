@@ -1,5 +1,5 @@
 from typing import List
-from GdtContactMapCyclizationPlddt import GdtContactMapCyclizationPlddt
+from .GdtContactMapCyclizationPlddt import GdtContactMapCyclizationPlddt
 from ...Metrics.Experimental.iLearn.BLOSUM62 import BLOSUM62
 from ...Metrics.Experimental.iLearn.CKSAAGP import CKSAAGP
 from ...Metrics.Experimental.iLearn.CTDC import CTDC
