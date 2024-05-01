@@ -17,3 +17,11 @@ def cyclization_z_score(cyclization: float) -> float:
 
 def normalize_plddt(plddt: float) -> float:
   return plddt / 100 if plddt > 1.0 else plddt
+
+
+
+def normalize_numpy(x, 
+                    lower: float, 
+                    upper: float
+                    ):
+  return (x - lower) / (upper - lower)
