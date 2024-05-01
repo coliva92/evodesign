@@ -8,7 +8,7 @@ class CTDT(Descriptor):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'CTDC'
+    return 'CTDT'
   
 
 

@@ -4,13 +4,13 @@ from Descriptor import Descriptor
 
 
 
-class CTDC(Descriptor):
+class CTDD(Descriptor):
 
   @classmethod
   def column_name(cls) -> str:
-    return 'CTDC'
+    return 'CTDD'
   
 
 
   def __init__(self, ilearnDir: str) -> None:
-    super().__init__(ilearnDir, 'CTDC')
+    super().__init__(ilearnDir, 'CTDD')
