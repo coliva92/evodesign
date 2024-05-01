@@ -8,7 +8,7 @@ import os
 
 
 
-class Descriptor(ABC, Metric):
+class Descriptor(Metric, ABC):
 
   def __init__(self, 
                ilearnDir: str,
