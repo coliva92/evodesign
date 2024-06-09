@@ -1,4 +1,4 @@
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 
 
 
@@ -6,7 +6,8 @@ from abc import ABC, abstractclassmethod
 
 class SettingsRetrievable(ABC):
 
-  @abstractclassmethod
+  @classmethod
+  @abstractmethod
   def _class_name(cls) -> str:
     raise NotImplementedError
   
