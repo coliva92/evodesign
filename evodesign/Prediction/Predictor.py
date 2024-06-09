@@ -42,7 +42,9 @@ class Predictor(SettingsRetrievable, ABC):
       self.predict_structure(sequence, pdbPath)
     structure = Chain.load_structure(pdbPath)
     bfactors = np.array([
-      atom.get_bfactor()
+      atom.get_bfactor() / 100.0 
+        if atom.get_bfactor() > 1.0 
+        else atom.get_bfactor()
       for atom in structure.get_atoms()
     ])
     return Chain.backbone_atoms(structure), bfactors.mean()
