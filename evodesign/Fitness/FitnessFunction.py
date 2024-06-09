@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod, abstractclassmethod
+from abc import ABC, abstractmethod
 from typing import List
 from ..Metrics.Metric import Metric
 from ..SettingsRetrievable import SettingsRetrievable
@@ -10,7 +10,8 @@ import pandas as pd
 
 class FitnessFunction(SettingsRetrievable, ABC):
 
-  @abstractclassmethod
+  @classmethod
+  @abstractmethod
   def column_name(cls) -> str:
     raise NotImplementedError
   
@@ -58,8 +59,12 @@ class FitnessFunction(SettingsRetrievable, ABC):
     model : List[Bio.PDB.Atom.Atom]
         The model backbone for which the fitness will be computed.
     reference : List[Bio.PDB.Atom.Atom]
-        The reference backbone. The model usually gets compared against the
-        backbone in order to compute the fitness value of the former.
+        The backbone of the target protein. The fitness of each individual
+        in the population can be computed from this backbone.
+    refSequence: str, optional
+        The amino acid sequence of the target protein. The fitness of each
+        individual in the population can be computed from this sequence.
+        Default is `None`.
     sequence : str, optional
         The amino acid sequence for which the fitness will be computed.
         Each residue must be represented by a single letter corresponding to
@@ -75,9 +80,8 @@ class FitnessFunction(SettingsRetrievable, ABC):
     pandas.Series
         The computed metrics and fitness value for the given model or sequence.
     """
-    values = {
-      metric.column_name(): metric(**kwargs)
-      for metric in self._metrics
-    }
+    values = {}
+    for metric in self._metrics:
+      values = { **values, **metric(**kwargs) }
     values[self.column_name()] = self.compute_fitness(**{ **kwargs, **values })
     return pd.Series(values)

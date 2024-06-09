@@ -30,8 +30,7 @@ class GA1(GenericGA):
 
   def replacement(self, 
                   population: pd.DataFrame, 
-                  children: pd.DataFrame,
-                  reference: List[Atom]
+                  children: pd.DataFrame
                   ) -> pd.DataFrame:
     children.sort_values(by=self._sort_cols, 
                          ascending=self._sort_ascending, 

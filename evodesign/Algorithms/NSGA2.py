@@ -1,5 +1,5 @@
 from .Algorithm import Algorithm
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from ..Prediction.Predictor import Predictor
 from ..Fitness.FitnessFunction import FitnessFunction
 from ..GA.Recombination.Recombination import Recombination
@@ -100,6 +100,7 @@ class NSGA2(Algorithm):
   def compute_fitness(self, 
                       population: pd.DataFrame,
                       reference: List[Atom],
+                      refSequence: Optional[str] = None,
                       **kwargs
                       ) -> pd.DataFrame:
     # for multiobjective optimization, either all the fitness values are 
@@ -116,6 +117,7 @@ class NSGA2(Algorithm):
         for f in self._fitness_fns:
           results = f(model=model, 
                       reference=reference, 
+                      refSequence=refSequence,
                       sequence=row['sequence'],
                       sequenceId=row['sequence_id'],
                       plddt=row['plddt'])
@@ -131,13 +133,14 @@ class NSGA2(Algorithm):
 
   def initial_fitness_computation(self, 
                                   population: pd.DataFrame,
-                                  reference: List[Atom]
+                                  reference: List[Atom],
+                                  refSequence: Optional[str] = None,
                                   ) -> pd.DataFrame:
     # we assume that either all the fitness values are present in the DataFrame
     # or none of them are
     c = self._fitness_fns[0].column_name()
     if c not in population.columns or population[c].isna().sum() > 0:
-      population = self.compute_fitness(population, reference)
+      population = self.compute_fitness(population, reference, refSequence)
       # sort the population by rank in ascending order
       population, fronts = self.non_domination_rank(population)
       population = pd.DataFrame(columns=population.columns)
@@ -150,8 +153,7 @@ class NSGA2(Algorithm):
 
   def replacement(self, 
                   population: pd.DataFrame, 
-                  children: pd.DataFrame,
-                  reference: List[Atom]
+                  children: pd.DataFrame
                   ) -> pd.DataFrame:
     mixed = pd.concat([ population[population['survivor']], children ], 
                       ignore_index=True)
@@ -203,8 +205,8 @@ class NSGA2(Algorithm):
 
 
   def non_domination_rank(self, 
-                         population: pd.DataFrame
-                         ) -> Tuple[pd.DataFrame, List[pd.DataFrame]]:
+                          population: pd.DataFrame
+                          ) -> Tuple[pd.DataFrame, List[pd.DataFrame]]:
     fitness_cols = [ f.column_name() for f in self._fitness_fns ]
     population['rank'] = 0
     dominated_solutions = dict()

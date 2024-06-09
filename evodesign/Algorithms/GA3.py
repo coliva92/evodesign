@@ -30,8 +30,7 @@ class GA3(GenericGA):
 
   def replacement(self, 
                   population: pd.DataFrame, 
-                  children: pd.DataFrame, 
-                  reference: List[Atom]
+                  children: pd.DataFrame
                   ) -> pd.DataFrame:
     elite = population.iloc[0].copy()
     elite['survivor'] = False

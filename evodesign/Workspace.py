@@ -1,9 +1,9 @@
 from .Population import Population
-from typing import Optional
 import pandas as pd
 import json
 import os
 import shutil
+from typing import Optional
 
 
 
@@ -29,7 +29,7 @@ class Workspace:
 
   def __new__(cls, *args, **kwargs):
     # this class is a singleton
-    if not cls._instance:
+    if cls._instance == None: 
       cls._instance = super(Workspace, cls).__new__(cls)
     return cls._instance
 
@@ -37,7 +37,8 @@ class Workspace:
 
   def __init__(self, 
                rootDir: str,
-               targetPdbPath: str
+               targetPdbPath: str,
+               targetFastaPath: Optional[str] = None
                ) -> None:
     """
     Interface for managing the file system folder where all the output files 
@@ -47,15 +48,18 @@ class Workspace:
     ----------
     path : str
         The folder where all the output files and folders will be stored.
-    targetPdb : str
-        The path to the PDB file containing the backbone for which an 
-        amino acid sequence will be designed.
+    targetPdbPath : str
+        The path to the PDB file containing the target protein backbone.
+    targetFastaPath : str, optional
+        The path to the FASTA file containing the amino acid sequence of the 
+        target protein. Default is `None`.
     """
-    self.target_pdb_path = targetPdbPath
     self.root_dir = rootDir
+    self.target_pdb_path = targetPdbPath
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
     self.ilearn_dir = f'{self.root_dir}/ilearn'
+    self.target_fasta_path = targetFastaPath
   
 
 
@@ -75,12 +79,37 @@ class Workspace:
     """
     Makes a copy in the workspace folder of the target PDB file.
     """
-    os.makedirs(self.root_dir, exist_ok=True)
     name = os.path.basename(self.target_pdb_path)
     destination = f'{self.root_dir}/{name}'
     if self.target_pdb_path != destination:
+      os.makedirs(self.root_dir, exist_ok=True)
       shutil.copy(self.target_pdb_path, destination)
     return
+
+  
+
+  def save_target_fasta(self) -> None:
+    """
+    Makes a copy in the workspace folder of the target FASTA file. 
+    If no such file was provided, then this function does nothing.
+    """
+    if self.target_fasta_path == None: return
+    name = os.path.basename(self.target_pdb_path)
+    destination = f'{self.root_dir}/{name}'
+    if self.target_pdb_path != destination:
+      os.makedirs(self.root_dir, exist_ok=True)
+      shutil.copy(self.target_pdb_path, destination)
+    return
+  
+
+
+  def load_target_fasta(self) -> str | None:
+    if self.target_fasta_path == None: return None
+    for line in open(self.target_fasta_path, 'rt', encoding='utf-8'):
+      if line.find('>') > -1: continue
+      sequence = line
+      break
+    return sequence
 
 
 

@@ -122,8 +122,7 @@ class GA2(GenericGA):
 
   def replacement(self, 
                   population: pd.DataFrame, 
-                  children: pd.DataFrame,
-                  reference: List[Atom]
+                  children: pd.DataFrame
                   ) -> pd.DataFrame:
     # TODO documentar esta función y hacer sus pruebas unitarias
     children.sort_values(by=self._sort_cols, 

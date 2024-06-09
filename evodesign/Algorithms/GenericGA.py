@@ -45,9 +45,11 @@ class GenericGA(Algorithm, ABC):
                      recombination,
                      mutation)
     if not sortColumns:
+      # if two individuals are tied in fitness, break the tie using the plddt
       sortColumns = [ fitnessFn.column_name(), 'plddt' ]
     self._sort_cols = sortColumns
     if not sortAscending:
+      # by default sort in descending order; higher fitness comes at the top
       sortAscending = len(self._sort_cols) * [ False ]
     self._sort_ascending = sortAscending
     self._fitness_fn = fitnessFn
@@ -107,6 +109,7 @@ class GenericGA(Algorithm, ABC):
   def compute_fitness(self, 
                       population: pd.DataFrame,
                       reference: List[Atom],
+                      refSequence: Optional[str] = None,
                       **kwargs
                       ) -> pd.DataFrame:
     """
@@ -117,8 +120,12 @@ class GenericGA(Algorithm, ABC):
     population : pandas.DataFrame
         The population for which sequences the fitness will be computed.
     reference : List[Bio.PDB.Atom.Atom]
-        The target backbone against which each sequence in the population will 
-        be compared in order to compute its fitness.
+        The backbone of the target protein. The fitness of each individual
+        in the population can be computed from this backbone.
+    refSequence: str, optional
+        The amino acid sequence of the target protein. The fitness of each
+        individual in the population can be computed from this sequence.
+        Default is `None`.
     temporary : bool, optional
         Indicates if the data of the current population data should be stored in 
         the temporary storage location or the permanent one in case an exception
@@ -172,6 +179,7 @@ class GenericGA(Algorithm, ABC):
         model, row['plddt'] = self._predictor(row['sequence'], filename)
         results = self._fitness_fn(model=model, 
                                    reference=reference, 
+                                   refSequence=refSequence,
                                    sequence=row['sequence'],
                                    sequenceId=row['sequence_id'],
                                    plddt=row['plddt'])
@@ -187,7 +195,8 @@ class GenericGA(Algorithm, ABC):
 
   def initial_fitness_computation(self, 
                                   population: pd.DataFrame,
-                                  reference: List[Atom]
+                                  reference: List[Atom],
+                                  refSequence: Optional[str] = None
                                   ) -> pd.DataFrame:
     """
     Computes the fitness of the population of the first generation, and sorts
@@ -201,8 +210,11 @@ class GenericGA(Algorithm, ABC):
     population : pandas.DataFrame
         The population for which individuals the fitness value will be computed.
     reference : List[Bio.PDB.Atom.Atom]
-        The reference backbone against which the individuals in the population
-        will be compared in order to compute their fitness values.
+        The backbone of the target protein. The fitness of each individual
+        in the population can be computed from this backbone.
+    refSequence: str, optional
+        The amino acid sequence of the target protein. The fitness of each
+        individual in the population can be computed from this sequence.
 
     Returns
     -------
@@ -211,7 +223,7 @@ class GenericGA(Algorithm, ABC):
     """
     c = self._fitness_fn.column_name()
     if c not in population.columns or population[c].isna().sum() > 0:
-      population = self.compute_fitness(population, reference)
+      population = self.compute_fitness(population, reference, refSequence)
       population.sort_values(by=self._sort_cols, 
                              ascending=self._sort_ascending,
                              inplace=True,
