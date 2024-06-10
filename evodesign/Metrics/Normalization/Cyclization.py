@@ -23,9 +23,16 @@ class Cyclization(Metric):
   
 
 
-  def __init__(self) -> None:
+  def _params(self) -> dict:
+    return {
+      'cycCalc': self._cyclization.settings()
+    }
+  
+
+
+  def __init__(self, cycCalc: Cyclization) -> None:
     super().__init__()
-    self._cyclization = Cyclization()
+    self._cyclization = cycCalc
   
 
 
