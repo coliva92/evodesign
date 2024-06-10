@@ -1,5 +1,6 @@
 from .Metric import Metric
 from typing import List
+from .Rmsd import Rmsd
 import numpy as np
 
 
@@ -7,34 +8,49 @@ import numpy as np
 
 
 class Gdt(Metric):
-  
+
   @classmethod
+  def _class_name(cls) -> str:
+    return 'Metrics.Gdt'
+  
+
+  
   def column_name(cls) -> str:
     return 'gdt'
   
 
   
+  def _params(self) -> dict:
+    return {
+      'cutoffs': self._cutoffs
+    }
+  
+
+
   def __init__(self, 
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]
                ) -> None:
     """
-    This class computes the GDT value between two backbones of equal length.
+    Computes the GDT value between the model backbone and a reference backbone
+    after superimposing the former into the latter. Both backbones must contain 
+    equal number of atoms.
 
     Parameters
     ----------
     cutoffs : List[float], optional
         The cut-off distances used for computing the GDT. Default value is 
-        [ 1.0, 2.0, 4.0, 8.0 ]
+        `[ 1.0, 2.0, 4.0, 8.0 ]`
     """
     super().__init__()
-    self.cutoffs = cutoffs
+    self._cutoffs = cutoffs
+    self._rmsd_calc = Rmsd()
   
 
 
-  def __call__(self, **kwargs) -> float:
+  def compute_values(self, **kwargs) -> float:
     """
-    Computes the RMSD between the atom coordinates of a model backbone and
-    a reference backbone. Both backbones must have equal number of atoms.
+    Uses the given model and reference backbones to compute the GDT after
+    superimposing the former into the latter.
 
     Parameters
     ----------
@@ -42,17 +58,24 @@ class Gdt(Metric):
         The model backbone.
     reference : List[Bio.PDB.Atom.Atom]
         The reference backbone.
+    otherMetrics : Dict[str, int | float | str], optional
+        The previously computed values of other metrics. Default is an empty 
+        dictionary.
 
     Returns
     -------
     float
         The computed GDT; it's value is between 0 and 1.
     """
-    # we assume that the backbones are already superimposed
+    c = self._rmsd_calc.column_name()
+    # check if the structures were already superimposed
+    if c not in kwargs['otherMetrics']:
+      kwargs['otherMetrics'][c] = self._rmsd_calc.compute_value(**kwargs)
     model, reference = kwargs['model'], kwargs['reference']
     distances = np.array([ a - b for a, b in zip(model, reference) ])
-    return np.mean([
+    gdt = np.mean([
       np.mean([ d <= c for d in distances ])
-      for c in self.cutoffs
+      for c in self._cutoffs
     ])
+    return gdt
   

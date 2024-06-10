@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Dict
 from ..Metrics.Metric import Metric
 from ..SettingsRetrievable import SettingsRetrievable
 import pandas as pd
@@ -23,12 +23,12 @@ class FitnessFunction(SettingsRetrievable, ABC):
 
 
   def __init__(self, 
-               upperBound: float, 
-               metrics: List[Metric]
+               terms: List[Metric],
+               upperBound: float
                ) -> None:
     super().__init__()
     self._upper_bound = upperBound
-    self._metrics = metrics
+    self._terms = terms
   
 
 
@@ -45,7 +45,9 @@ class FitnessFunction(SettingsRetrievable, ABC):
 
   
   @abstractmethod
-  def compute_fitness(self, **kwargs) -> float:
+  def compute_fitness(self, 
+                      termValues: Dict[str, int | float | str] = {}
+                      ) -> float:
     raise NotImplementedError
 
 
@@ -78,10 +80,12 @@ class FitnessFunction(SettingsRetrievable, ABC):
     Returns
     -------
     pandas.Series
-        The computed metrics and fitness value for the given model or sequence.
+        The computed term and fitness values for the given model or sequence.
     """
-    values = {}
-    for metric in self._metrics:
-      values = { **values, **metric(**kwargs) }
-    values[self.column_name()] = self.compute_fitness(**{ **kwargs, **values })
-    return pd.Series(values)
+    kwargs['otherMetrics'] = term_values = {}
+    if 'plddt' in kwargs: 
+      term_values['plddt'] = kwargs['plddt']
+    for term in self._terms:
+      term_values[term.column_name()] = term(**kwargs)
+    term_values[self.column_name()] = self.compute_fitness(term_values)
+    return pd.Series(term_values)

@@ -3,30 +3,19 @@ from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Algorithms.GA1 import GA1 as Algorithms_GA1
 from .Algorithms.GA3 import GA3 as Algorithms_GA3
-from .Fitness.Rmsd import Rmsd as Fitness_Rmsd
-from .Fitness.Gdt import Gdt as Fitness_Gdt
-from .Fitness.Plddt import Plddt as Fitness_Plddt
-from .Fitness.Rastrigin import Rastrigin as Fitness_Rastrigin
-from .Fitness.Experimental.RmsdCyclization import RmsdCyclization \
-  as Fitness_Experimental_RmsdCyclization
-from .Fitness.Experimental.RmsdPlddt import RmsdPlddt \
-  as Fitness_Experimental_RmsdPlddt
-from .Fitness.Experimental.RmsdCyclizationPlddt import RmsdCyclizationPlddt \
-  as Fitness_Experimental_RmsdCyclizationPlddt
-from .Fitness.Experimental.GdtCyclization import GdtCyclization \
-  as Fitness_Experimental_GdtCyclization
-from .Fitness.Experimental.GdtPlddt import GdtPlddt \
-  as Fitness_Experimental_GdtPlddt
-from .Fitness.Experimental.GdtCyclizationPlddt import GdtCyclizationPlddt \
-  as Fitness_Experimental_GdtCyclizationPlddt
-from .Fitness.Experimental.SideChainPacking import SideChainPacking \
-  as Fitness_Experimental_SideChainPacking
-from .Fitness.Experimental.CyclizationPlddt import CyclizationPlddt \
-  as Fitness_Experimental_CyclizationPlddt
-from .Fitness.Experimental.GdtContactMapCyclizationPlddt import GdtContactMapCyclizationPlddt \
-  as Fitness_Experimental_GdtContactMapCyclizationPlddt
-from .Fitness.Experimental.DescGdtContactMapCyclizationPlddt import DescGdtContactMapCyclizationPlddt \
-  as Fitness_Experimental_DescriptorsGdtContactMapCyclizationPlddt
+from .Metrics.Plddt import Plddt as Metrics_Plddt
+from .Metrics.Rmsd import Rmsd as Metrics_Rmsd
+from .Metrics.Gdt import Gdt as Metrics_Gdt
+from .Metrics.ContactMapRms import ContactMapRms as Metrics_ContactMapRms
+from .Metrics.Cyclization import Cyclization as Metrics_Cyclization
+from .Metrics.Normalization.Reciprocal import Reciprocal \
+  as Metrics_Normalization_Reciprocal
+from .Metrics.Normalization.Cyclization import Cyclization \
+  as Metrics_Normalization_Cyclization
+from .Fitness.WeightedMean import WeightedMean as Fitness_WeightedMean
+from .Fitness.LinearCombination import LinearCombination \
+  as Fitness_LinearCombination
+from .Fitness.Experimental.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .GA.Mutation.RandomResetting import RandomResetting \
   as GA_Mutation_RandomResetting
 from .GA.Mutation.Switch import Switch as GA_Mutation_Switch

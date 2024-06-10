@@ -12,16 +12,21 @@ class Rmsd(Metric):
 
 
   @classmethod
+  def _class_name(cls) -> str:
+    return 'Metrics.Rmsd'
+  
+
+
   def column_name(cls) -> str:
     return 'rmsd'
 
   
 
-  def __call__(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     """
-    Computes the RMSD between the atom coordinates of a model backbone and
-    a reference backbone after superimposing the former into the latter. Both
-    backbones must contain equal number of atoms.
+    Computes the root-mean-squared of the distance between the atom coordinates 
+    of a model backbone and a reference backbone after superimposing the former 
+    into the latter. Both backbones must contain equal number of atoms.
 
     Parameters
     ----------

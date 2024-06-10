@@ -1,8 +1,8 @@
-from .FitnessFunction import FitnessFunction
+from ..FitnessFunction import FitnessFunction
 from typing import Dict, List
-from ..Sequence import Sequence
-from ..Workspace import Workspace
-from ..Chain import Chain
+from ...Sequence import Sequence
+from ...Workspace import Workspace
+from ...Chain import Chain
 import blosum as bl
 import math
 import operator

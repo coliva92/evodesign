@@ -5,7 +5,7 @@ from evodesign.GA.Recombination.UniformCrossover import UniformCrossover
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
 from evodesign.Fitness.Gdt import Gdt
 from evodesign.Fitness.Rmsd import Rmsd
-from evodesign.Fitness.Rastrigin import Rastrigin
+from evodesign.Fitness.Experimental.Rastrigin import Rastrigin
 import pandas as pd
 
 

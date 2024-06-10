@@ -2,7 +2,7 @@ from unittest import TestCase
 from evodesign.Settings import Settings
 from evodesign.Fitness.Rmsd import Rmsd
 from evodesign.Fitness.Gdt import Gdt
-from evodesign.Fitness.Rastrigin import Rastrigin
+from evodesign.Fitness.Experimental.Rastrigin import Rastrigin
 from evodesign.Fitness.Experimental.RmsdCyclization import RmsdCyclization
 from evodesign.Fitness.Experimental.SideChainPacking import SideChainPacking
 from evodesign.GA.Selection.Tournament import Tournament

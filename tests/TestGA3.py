@@ -3,7 +3,7 @@ from evodesign.Algorithms.GA3 import GA3
 from evodesign.GA.Selection.Tournament import Tournament
 from evodesign.GA.Recombination.UniformCrossover import UniformCrossover
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
-from evodesign.Fitness.Rastrigin import Rastrigin
+from evodesign.Fitness.Experimental.Rastrigin import Rastrigin
 from evodesign.Prediction.Null import Null
 import pandas as pd
 
