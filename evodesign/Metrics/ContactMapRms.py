@@ -25,7 +25,7 @@ class ContactMapRms(Metric):
   
 
 
-  def __call__(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     # TODO: guardar los mapas de contacto en un archivo
     model, reference = kwargs['model'], kwargs['reference']
     if self._reference_map == None:

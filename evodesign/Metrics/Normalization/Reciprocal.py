@@ -23,7 +23,7 @@ class Reciprocal(Metric):
   
 
 
-  def compute_values(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     otherMetrics = kwargs['otherMetrics']
     value = self._metric(**kwargs)
     otherMetrics[self._metric.column_name()] = value

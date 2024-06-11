@@ -23,13 +23,13 @@ class Gdt(Metric):
   def _params(self) -> dict:
     return {
       'cutoffs': self._cutoffs,
-      'rmsdCalc': self._rmsd_calc.settings()
+      'rmsdCalculator': self._rmsd_calc.settings()
     }
   
 
 
   def __init__(self, 
-               rmsdCalc: Rmsd,
+               rmsdCalculator: Rmsd,
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]
                ) -> None:
     """
@@ -45,11 +45,11 @@ class Gdt(Metric):
     """
     super().__init__()
     self._cutoffs = cutoffs
-    self._rmsd_calc = rmsdCalc
+    self._rmsd_calc = rmsdCalculator
   
 
 
-  def compute_values(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     """
     Uses the given model and reference backbones to compute the GDT after
     superimposing the former into the latter.

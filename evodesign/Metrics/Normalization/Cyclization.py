@@ -36,7 +36,7 @@ class Cyclization(Metric):
   
 
 
-  def compute_values(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     otherMetrics = kwargs['otherMetrics']
     value = self._cyclization(**kwargs)
     otherMetrics[self._cyclization.column_name()] = value
