@@ -59,6 +59,7 @@ class Workspace:
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
     self.ilearn_dir = f'{self.root_dir}/ilearn'
+    self.esm2_dir = f'{self.root_dir}/esm2'
     self.target_fasta_path = targetFastaPath
   
 
