@@ -8,10 +8,19 @@ from .Metrics.Rmsd import Rmsd as Metrics_Rmsd
 from .Metrics.Gdt import Gdt as Metrics_Gdt
 from .Metrics.ContactMapRms import ContactMapRms as Metrics_ContactMapRms
 from .Metrics.Cyclization import Cyclization as Metrics_Cyclization
+from .Metrics.TMScore import TMScore as Metrics_TMScore
+from .Metrics.PyRosettaRef2015 import PyRosettaRef2015 \
+  as Metrics_Ref2015
+from .Metrics.iLearnDescriptors import iLearnDescriptors \
+  as Metrics_iLearnDescriptors
+from .Metrics.ESM2Descriptors import ESM2Descriptors as Metrics_ESM2Descriptors
 from .Metrics.Normalization.Reciprocal import Reciprocal \
   as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
   as Metrics_Normalization_Cyclization
+from .Metrics.Yan24.Geometric import Geometric as Metrics_Yan24_Geometric
+from .Metrics.Yan24.Energy import Energy as Metrics_Yan24_Energy
+from .Metrics.Yan24.Descriptors import Descriptors as Metrics_Yan24_Descriptors
 from .Fitness.WeightedMean import WeightedMean as Fitness_WeightedMean
 from .Fitness.LinearCombination import LinearCombination \
   as Fitness_LinearCombination
