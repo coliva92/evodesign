@@ -44,7 +44,8 @@ class Descriptors(Metric):
     return {
       'weight': self._weight,
       'ilearnDir': self._ilearn_dir,
-      'ilearnMethods': self._ilearn_methods
+      'ilearnMethods': self._ilearn_methods,
+      'useGpu': self._esm2_model._use_gpu
     }
   
 
@@ -52,11 +53,12 @@ class Descriptors(Metric):
   def __init__(self,
                weight: float,
                ilearnDir: str,
-               ilearnMethods: List[str]
+               ilearnMethods: List[str],
+               useGpu: bool = True
                ) -> None:
     super().__init__()
     self._ilearn_model = iLearnDescriptors(ilearnDir, ilearnMethods)
-    self._esm2_model = ESM2Descriptors()
+    self._esm2_model = ESM2Descriptors(useGpu)
     self._ilearn_dir = ilearnDir
     self._ilearn_methods = ilearnMethods
     self._weight = weight
@@ -88,10 +90,10 @@ class Descriptors(Metric):
 
 
   def _symmetric_kullback_leibler(self,
-                        reference: npt.NDArray[np.float64],
-                        model: npt.NDArray[np.float64],
-                        methodType: str
-                        ) -> float:
+                                  reference: npt.NDArray[np.float64],
+                                  model: npt.NDArray[np.float64],
+                                  methodType: str
+                                  ) -> float:
     a = self._kullback_leibler(reference, model, methodType)
     b = self._kullback_leibler(model, reference, methodType)
     return a + b
@@ -104,7 +106,11 @@ class Descriptors(Metric):
                         methodType: str
                         ) -> float:
     a, b = reference, model
-    if methodType == 'non_probabilistic':
+    if methodType == 'probabilistic':
+      # we do this so that the probability is non-zero
+      a += 0.01
+      b += 0.01
+    else:
       min_value = min([ reference.min(), model.min() ])
       max_value = max([ reference.max(), model.max() ])
       dist_range = (min_value, max_value)
@@ -116,5 +122,8 @@ class Descriptors(Metric):
                           bins=20, 
                           range=dist_range,
                           density=False)
+      # we do this so that the probability is non-zero
+      a += 0.5
+      b += 0.5
     divergence = sp.entropy(a, b)
     return divergence
