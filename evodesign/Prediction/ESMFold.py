@@ -36,11 +36,12 @@ class ESMFold(Predictor):
     """
     import torch
     import esm
-    if not ESMFold._model:
-      ESMFold._model = esm.pretrained.esmfold_v1()
-      ESMFold._model.eval().cuda().requires_grad_(False)
-      ESMFold._model.set_chunk_size(128)
-    prediction = ESMFold._model.infer_pdb(sequence)
+    if not self.model:
+      self.model = esm.pretrained.esmfold_v1()
+      self.model.eval().cuda()
+      self.model.set_chunk_size(128)
+    with torch.no_grad():
+      prediction = self.model.infer_pdb(sequence)
     torch.cuda.empty_cache()
     with open(pdbPath, 'wt', encoding='utf-8') as pdb_file:
       pdb_file.write(prediction)
