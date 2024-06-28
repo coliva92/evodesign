@@ -7,13 +7,7 @@ from typing import Dict, List, Optional
 
 
 class LinearCombination(FitnessFunction):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Fitness.LinearCombination'
   
-
-
   @classmethod
   def column_name(cls) -> str:
     return 'fitness_linear'

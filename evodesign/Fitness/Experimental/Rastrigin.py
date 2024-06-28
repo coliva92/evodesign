@@ -18,13 +18,7 @@ class Rastrigin(FitnessFunction):
   una proteína al calcular la aptitud. Esta función debe utilizarse en conjunto 
   con `Predictor_Null`
   """
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Fitness.Rastrigin'
   
-
-
   @classmethod
   def column_name(cls) -> str:
     return 'fitness_rastrigin'

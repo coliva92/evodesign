@@ -15,13 +15,7 @@ import pandas as pd
 
 
 class GA2(GenericGA):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Algorithms.GA2'
   
-
-
   def _params(self) -> dict:
     params = super()._params()
     params['elitismSize'] = self._elitism_size

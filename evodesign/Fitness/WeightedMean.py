@@ -8,13 +8,7 @@ from typing import List, Dict, Optional
 
 
 class WeightedMean(FitnessFunction):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Fitness.WeightedMean'
   
-
-
   @classmethod
   def column_name(cls) -> str:
     return 'fitness_weighted_mean'

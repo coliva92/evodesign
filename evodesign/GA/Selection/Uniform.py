@@ -7,13 +7,7 @@ import pandas as pd
 
 
 class Uniform(Selection):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Selection.Uniform'
   
-
-
   def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
     """
     Selects a subset of individuals from the given population.

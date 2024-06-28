@@ -11,12 +11,6 @@ import numpy as np
 class ContactMapRms(Metric):
 
   _reference_map = None
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.ContactMapRms'
   
 
 

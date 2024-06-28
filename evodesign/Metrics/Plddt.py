@@ -5,13 +5,7 @@ from .Metric import Metric
 
 
 class Plddt(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Plddt'
   
-
-
   def column_name(self) -> str:
     return 'plddt'
   

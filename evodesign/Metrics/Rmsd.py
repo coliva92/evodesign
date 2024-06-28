@@ -8,12 +8,6 @@ from Bio.PDB import Superimposer
 class Rmsd(Metric):
 
   _superimposer = None
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Rmsd'
   
 
 

@@ -8,13 +8,7 @@ import pandas as pd
 
 
 class GA1(GenericGA):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Algorithms.GA1'
   
-
-
   def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
     top_solution = population.iloc[0].copy()
     survivors = population[population['survivor']]

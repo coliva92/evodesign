@@ -8,13 +8,7 @@ import os
 
 
 class AlphaFold(Predictor):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Prediction.AlphaFold'
   
-
-
   def _params(self) -> dict:
     return {
       'fakeMsaScript': self._fakemsa_script_path,

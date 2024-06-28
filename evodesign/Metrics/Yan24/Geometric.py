@@ -11,13 +11,7 @@ from typing import List
 
 
 class Geometric(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Yan24.Geometric'
   
-
-
   def column_name(self) -> str:
     return 'yan24_geometric'
   

@@ -7,13 +7,7 @@ import evodesign.Random as Random
 
 
 class RandomResetting(Mutation):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Mutation.RandomResetting'
   
-
-
   def _params(self) -> dict:
     params = super()._params()
     params['exchangeProb'] = self._exchange_prob

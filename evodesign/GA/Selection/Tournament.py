@@ -8,13 +8,7 @@ import pandas as pd
 
 
 class Tournament(Selection):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Selection.Tournament'
   
-
-
   def _params(self) -> dict:
     return {
       'elitism': self._elitism,

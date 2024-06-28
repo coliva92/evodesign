@@ -8,12 +8,6 @@ import evodesign.Random as Random
 
 class TwoPointsCrossover(Recombination):
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Recombination.TwoPointsCrossover'
-
-
-
   def __init__(self, probability: float = 1.0) -> None:
     """
     Creates new sequences by splitting the parent sequences at three randomly

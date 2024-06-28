@@ -8,12 +8,6 @@ from Bio.PDB.Atom import Atom
 
 class Null(Predictor):
   
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Prediction.None'
-  
-
-
   def predict_structure(self, 
                         sequence: str, 
                         pdbPath: str) -> None:

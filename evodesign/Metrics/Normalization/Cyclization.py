@@ -9,12 +9,6 @@ class Cyclization(Metric):
 
   _MEAN = 1.3248119
   _STANDARD_DEVIATION = 0.10498072
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Normalization.Cyclization'
   
 
 

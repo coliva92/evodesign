@@ -10,12 +10,6 @@ class ESMFold(Predictor):
   
 
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Prediction.ESMFold.Local'
-  
-
-
   def predict_structure(self, 
                         sequence: str, 
                         pdbPath: str

@@ -7,13 +7,7 @@ import numpy as np
 
 
 class TMScore(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.TMScore'
   
-
-
   def column_name(self) -> str:
     return 'tm_score'
   

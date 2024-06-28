@@ -12,12 +12,6 @@ class ESM2Descriptors(Metric):
 
   model = None
   batch_converter = None
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.ESM2Descriptors'
   
 
 

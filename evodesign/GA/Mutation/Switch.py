@@ -7,13 +7,7 @@ import evodesign.Sequence as Sequence
 
 
 class Switch(Mutation):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Mutation.Switch'
   
-
-
   def _params(self) -> dict:
     params = super()._params()
     params['numSwitches'] = self._num_switches

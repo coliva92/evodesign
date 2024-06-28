@@ -10,12 +10,6 @@ class ESMFoldColab(Predictor):
   
 
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Prediction.ESMFold.Colab'
-  
-
-
   def predict_structure(self, 
                         sequence: str, 
                         pdbPath: str

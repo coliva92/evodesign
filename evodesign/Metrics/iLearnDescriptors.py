@@ -11,13 +11,7 @@ import os
 
 
 class iLearnDescriptors(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.iLearnDescriptors'
   
-
-
   def column_name(self) -> str:
     return ''
   

@@ -20,12 +20,6 @@ import os
 
 class NSGA2(Algorithm):
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Algorithms.NSGA2'
-  
-
-
   def _params(self) -> dict:
     params = super()._params()
     params['fitnessFns'] = [ f.settings() for f in self._fitness_fns ]

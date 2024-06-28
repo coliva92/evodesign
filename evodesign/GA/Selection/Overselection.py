@@ -7,13 +7,7 @@ import pandas as pd
 
 
 class Overselection(Selection):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Selection.Overselection'
   
-
-
   def _params(self) -> dict:
     return {
       'upperSize': self._upper_size,

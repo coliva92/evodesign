@@ -26,12 +26,6 @@ class Descriptors(Metric):
     'ESM2': 'non_probabilistic'
   }
   _ref_vectors = None
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Yan24.Descriptors'
   
 
 

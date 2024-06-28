@@ -8,12 +8,6 @@ import numpy as np
 
 
 class Gdt(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Gdt'
-  
-
   
   def column_name(cls) -> str:
     return 'gdt'

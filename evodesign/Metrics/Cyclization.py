@@ -5,12 +5,6 @@ from .Metric import Metric
 
 
 class Cyclization(Metric):
-  
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Cyclization'
-  
-
 
   def column_name(self) -> str:
     return 'cyclization'

@@ -7,12 +7,6 @@ from typing import List
 
 class MiddlePointCrossover(Recombination):
   
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Recombination.MiddlePointCrossover'
-  
-
-
   def __init__(self, probability: float = 1.0) -> None:
     """
     Creates new sequences by splitting both parent sequences exactly in half  

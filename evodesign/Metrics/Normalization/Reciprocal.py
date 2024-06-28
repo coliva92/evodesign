@@ -5,13 +5,7 @@ from ..Metric import Metric
 
 
 class Reciprocal(Metric):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Normalization.Reciprocal'
   
-
-
   def column_name(self) -> str:
     return f'reciprocal_norm_{self._metric.column_name()}'
   

@@ -7,13 +7,7 @@ import evodesign.Random as Random
 
 
 class UniformCrossover(Recombination):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Recombination.UniformCrossover'
   
-
-
   def _params(self) -> dict:
     params = super()._params()
     params['maskBias'] = self._parent_bias

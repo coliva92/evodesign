@@ -15,12 +15,6 @@ class Energy(Metric):
 
 
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Yan24.Energy'
-
-
-
   def column_name(self) -> str:
     return 'yan24_energy'
   

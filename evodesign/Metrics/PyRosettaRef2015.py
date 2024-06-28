@@ -8,12 +8,6 @@ from ..Workspace import Workspace
 class PyRosettaRef2015(Metric):
 
   score_fn = None
-
-
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Metrics.Ref2015'
   
 
   

@@ -8,12 +8,6 @@ import evodesign.Random as Random
 
 class SinglePointCrossover(Recombination):
 
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'GA.Recombination.SinglePointCrossover'
-
-
-
   def __init__(self, probability: float = 1.0) -> None:
     """
     Creates new sequences by splitting the parent sequences at a randomly 

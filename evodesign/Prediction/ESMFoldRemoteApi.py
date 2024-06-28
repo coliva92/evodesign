@@ -8,12 +8,6 @@ import time
 
 
 class ESMFoldRemoteApi(Predictor):
-
-  @classmethod
-  def _class_name(cls) -> str:
-    return 'Prediction.ESMFold.RemoteApi'
-  
-
   
   def predict_structure(self, 
                         sequence: str, 
