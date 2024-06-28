@@ -38,7 +38,7 @@ parser.add_argument('-f', '--target_fasta',
 args = parser.parse_args()
 
 with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
-  settings = json.load(json_file)
+    settings = json.load(json_file)
 algorithm = Settings.parse(settings)
 reference, population, ref_sequence = algorithm.setup(args.target_pdb, 
                                                       args.workspace_root,
@@ -46,21 +46,21 @@ reference, population, ref_sequence = algorithm.setup(args.target_pdb,
 Workspace.instance().save_commit_hash()
 
 while True:
-  try:
-    algorithm(reference, 
-              population, 
-              refSequence=ref_sequence, 
-              numGenerations=args.num_generations)
-    break
-  except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
-    temp = f'-s {args.target_fasta} ' if args.target_fasta else ''
-    print(f'\nINTERRUPTED.\n'
-          f'Run `python -m evodesign {args.workspace_root} '
-          f'{args.target_pdb} {args.settings_filename}` '
-          f'{temp} to resume later.')
-    sys.exit(130) # SIGINT
-  except (HttpInternalServerError, 
-          HttpGatewayTimeout,
-          HttpForbidden,
-          ConnectTimeout):
-    pass
+    try:
+        algorithm(reference, 
+                  population, 
+                  refSequence=ref_sequence, 
+                  numGenerations=args.num_generations)
+        break
+    except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
+        temp = f'-s {args.target_fasta} ' if args.target_fasta else ''
+        print(f'\nINTERRUPTED.\n'
+              f'Run `python -m evodesign {args.workspace_root} '
+              f'{args.target_pdb} {args.settings_filename}` '
+              f'{temp} to resume later.')
+        sys.exit(130) # SIGINT
+    except (HttpInternalServerError, 
+            HttpGatewayTimeout,
+            HttpForbidden,
+            ConnectTimeout):
+        pass
