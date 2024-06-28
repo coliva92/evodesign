@@ -1,5 +1,5 @@
 from .Mutation import Mutation
-import evodesign.Sequence as s
+import evodesign.Sequence as Sequence
 import evodesign.Random as Random
 
 
@@ -69,6 +69,6 @@ class RandomResetting(Mutation):
         The modified sequence.
     """
     return ''.join([
-      s.switch_letter(x) if Random.coin_toss(self._exchange_prob) else x
+      Sequence.switch_letter(x) if Random.coin_toss(self._exchange_prob) else x
       for x in sequence
     ])

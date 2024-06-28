@@ -1,5 +1,5 @@
 from typing import List
-import evodesign.Sequence as s
+import evodesign.Sequence as Sequence
 import evodesign.Utils as Utils
 import pandas as pd
 
@@ -42,7 +42,7 @@ class Population:
         generation.
     """
     sequences = [ 
-      s.create_random(sequenceLength) 
+      Sequence.create_random(sequenceLength) 
       for _ in range(size) 
     ]
     return cls.create(sequences, generationId)

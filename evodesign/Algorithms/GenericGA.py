@@ -6,7 +6,7 @@ from ..GA.Recombination.Recombination import Recombination
 from ..GA.Selection.Selection import Selection
 from ..Prediction.Predictor import Predictor
 from ..Fitness.FitnessFunction import FitnessFunction
-import evodesign.Sequence as s
+import evodesign.Sequence as Sequence
 from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -97,7 +97,7 @@ class GenericGA(Algorithm, ABC):
                        color='C3',
                        label='lost_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
-    ax2.set_ylim(bottom=0, top=len(s.AMINO_ACIDS))
+    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS))
     series = series1 + series2
     labels = [ x.get_label() for x in series ]
     ax[1].legend(series, labels, loc='best')
