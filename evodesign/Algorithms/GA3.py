@@ -1,8 +1,6 @@
-from typing import List
-from Bio.PDB.Atom import Atom
 from .GenericGA import GenericGA
 from ..Statistics import Statistics
-import evodesign.Utils as u
+import evodesign.Utils as Utils
 import pandas as pd
 
 
@@ -38,10 +36,10 @@ class GA3(GenericGA):
     mixed = pd.concat([ elite.to_frame().T, children ], ignore_index=True)
     j, best = 1, mixed.iloc[1]
     for i, row in mixed.iloc[2:].iterrows():
-      if u.is_sorted_before(best, row, self._sort_cols, self._sort_ascending):
+      if Utils.is_sorted_before(best, row, self._sort_cols, self._sort_ascending):
         continue
       j, best = i, row
-    if not u.is_sorted_before(elite, best, self._sort_cols, self._sort_ascending):
+    if not Utils.is_sorted_before(elite, best, self._sort_cols, self._sort_ascending):
       # put winning row in the elite position
       mixed.iloc[0] = best
       # move last row to the winning row's original position
