@@ -1,6 +1,6 @@
 from .Recombination import Recombination
 from typing import List
-from ...Random import Random
+import evodesign.Random as r
 
 
 
@@ -70,7 +70,7 @@ class UniformCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = Random.generator()
+    rng = r.generator()
     mask = rng.choice([ 0, 1 ], size=len(mother), p=self._weights)
     parents = ( mother, father )
     sister = ''.join([ parents[p][i] for i, p in enumerate(mask) ])

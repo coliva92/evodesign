@@ -1,5 +1,5 @@
 from .Selection import Selection
-from ...Random import Random
+import evodesign.Random as r
 import pandas as pd
 
 
@@ -28,7 +28,7 @@ class Uniform(Selection):
     pandas.DataFrame
         The selected subset of individuals.
     """
-    rng = Random.generator()
+    rng = r.generator()
     selection = rng.choice(population.index, 
                            len(population), 
                            replace=False)

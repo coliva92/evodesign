@@ -2,30 +2,28 @@ import numpy as np
 
 
 
-
-
-class Random:
-
-  _rng = None
+_rng = None
 
 
 
-  @classmethod
-  def generator(cls) -> np.random.Generator:
+
+
+def generator() -> np.random.Generator:
     """
+    Returns a singleton RNG instance.
+
     Returns
     -------
     numpy.random.Generator
         The singleton RNG instance.
     """
-    if not cls._rng:
-      cls._rng = np.random.default_rng()
-    return cls._rng
+    global _rng
+    if not _rng: _rng = np.random.default_rng()
+    return _rng
   
 
 
-  @classmethod
-  def coin_toss(cls, bias: float = 0.5) -> bool:
+def coin_toss(bias: float = 0.5) -> bool:
     """
     Randomly produce a boolean value.
 
@@ -38,7 +36,7 @@ class Random:
     Returns
     -------
     bool
-        The produced value.
+        A randomly produced value.
     """
-    rng = cls.generator()
+    rng = generator()
     return rng.choice([ True, False ], p=[ bias, 1. - bias ])

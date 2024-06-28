@@ -1,5 +1,5 @@
 from .Mutation import Mutation
-from ...Random import Random
+import evodesign.Random as r
 from ...Sequence import Sequence
 
 
@@ -66,7 +66,7 @@ class Switch(Mutation):
     str
         The modified sequence.
     """
-    rng = Random.generator()
+    rng = r.generator()
     indices = rng.choice(len(sequence), self._num_switches, replace=False)
     # in Python, strings are immutable
     seq_list = list(sequence)

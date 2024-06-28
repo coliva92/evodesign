@@ -5,7 +5,7 @@ from ..Fitness.FitnessFunction import FitnessFunction
 from ..GA.Selection.Selection import Selection
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
-from ..Random import Random
+import evodesign.Random as r
 from ..Statistics import Statistics
 import evodesign.Utils as u
 from Bio.PDB.Atom import Atom
@@ -175,7 +175,7 @@ class _OffspringSelection:
       better = children.iloc[i][self._fitness_col]
       worse = children.iloc[i + 1][self._fitness_col]
       b, w = (i, i + 1) if better >= worse else (i + 1, i)
-      s, d = (b, w) if Random.coin_toss(self._better_bias) else (w, b)
+      s, d = (b, w) if r.coin_toss(self._better_bias) else (w, b)
       selected_child = children.iloc[s].copy()
       selected_child['survivor'] = True
       survivors = pd.concat([ survivors, selected_child.to_frame().T ],

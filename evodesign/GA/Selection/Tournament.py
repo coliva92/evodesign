@@ -1,6 +1,6 @@
 from .Selection import Selection
 from typing import Optional, List
-from ...Random import Random
+import evodesign.Random as r
 import pandas as pd
 
 
@@ -106,7 +106,7 @@ class Tournament(Selection):
   def _tournament_selection(self, 
                             population: pd.DataFrame,
                             elitist: pd.Series = pd.Series()):
-    rng = Random.generator()
+    rng = r.generator()
     tournament_size = self._tournament_size - 1 \
                       if self._elitism \
                       else self._tournament_size
