@@ -1,6 +1,6 @@
 from ..FitnessFunction import FitnessFunction
 from typing import Dict, List
-from ...Sequence import Sequence
+import evodesign.Sequence as s
 from ...Workspace import Workspace
 from ...Chain import Chain
 import blosum as bl
@@ -59,7 +59,7 @@ class Rastrigin(FitnessFunction):
     if not self._residue_ordinals:
       workspace = Workspace.instance()
       structure = Chain.load_structure(workspace.target_pdb_path)
-      self._target_sequence = Sequence.create_random(Chain.length(structure))
+      self._target_sequence = s.create_random(Chain.length(structure))
       self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
     x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 
@@ -85,7 +85,7 @@ class Rastrigin(FitnessFunction):
       amino_acid_scores = [
         (amino_acid, blosum_matrix[residue][amino_acid])
         for amino_acid in blosum_matrix[residue].keys()
-        if amino_acid in Sequence.AMINO_ACIDS
+        if amino_acid in s.AMINO_ACIDS
       ]
       amino_acid_scores.sort(key=operator.itemgetter(1), reverse=True)
       residue_ordinals.append({

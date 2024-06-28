@@ -6,7 +6,7 @@ from ..GA.Recombination.Recombination import Recombination
 from ..GA.Selection.Selection import Selection
 from ..Prediction.Predictor import Predictor
 from ..Fitness.FitnessFunction import FitnessFunction
-from ..Sequence import Sequence
+import evodesign.Sequence as s
 from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -81,7 +81,7 @@ class GenericGA(Algorithm, ABC):
                        label='plddt')
     ax1.tick_params(axis='y', labelcolor='C1')
     series = series1 + series2
-    labels = [ s.get_label() for s in series ]
+    labels = [ x.get_label() for x in series ]
     ax[0].legend(series, labels, loc='best')
     series1 = ax[1].plot(stats['generation_id'], 
                          stats['sequence_identity'], 
@@ -97,9 +97,9 @@ class GenericGA(Algorithm, ABC):
                        color='C3',
                        label='lost_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
-    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS))
+    ax2.set_ylim(bottom=0, top=len(s.AMINO_ACIDS))
     series = series1 + series2
-    labels = [ s.get_label() for s in series ]
+    labels = [ x.get_label() for x in series ]
     ax[1].legend(series, labels, loc='best')
     plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
     plt.close()

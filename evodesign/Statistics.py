@@ -1,4 +1,4 @@
-from .Sequence import Sequence
+import evodesign.Sequence as s
 from itertools import combinations
 import pandas as pd
 import numpy as np
@@ -33,7 +33,7 @@ class Statistics:
     float
         The average amount of missing residues.
     """
-    m = len(Sequence.AMINO_ACIDS)
+    m = len(s.AMINO_ACIDS)
     n = len(population.iloc[0]['sequence'])
     data = np.array([
       m - len({ seq[i] for _, seq in population['sequence'].items() })

@@ -6,7 +6,7 @@ from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
 from ..GA.Selection.Tournament import Tournament
 from ..Statistics import Statistics
-from ..Sequence import Sequence
+import evodesign.Sequence as s
 import evodesign.Utils as u
 from Bio.PDB.Atom import Atom
 import pandas as pd
@@ -88,9 +88,9 @@ class NSGA2(Algorithm):
                        color='C3',
                        label='lost_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
-    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS))
+    ax2.set_ylim(bottom=0, top=len(s.AMINO_ACIDS))
     series = series1 + series2
-    labels = [ s.get_label() for s in series ]
+    labels = [ x.get_label() for x in series ]
     ax1.legend(series, labels, loc='best')
     plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
     plt.close()

@@ -1,6 +1,6 @@
 from .Mutation import Mutation
 import evodesign.Random as r
-from ...Sequence import Sequence
+import evodesign.Sequence as s
 
 
 
@@ -71,5 +71,5 @@ class Switch(Mutation):
     # in Python, strings are immutable
     seq_list = list(sequence)
     for i in indices:
-      seq_list[i] = Sequence.switch_residue(seq_list[i])
+      seq_list[i] = s.switch_letter(seq_list[i])
     return ''.join(seq_list)

@@ -2,18 +2,16 @@ import evodesign.Random as r
 
 
 
-
-
-class Sequence:
-
-  AMINO_ACIDS = 'ACDEFGHIKLMNPQRSTVWY'
+AMINO_ACIDS = 'ACDEFGHIKLMNPQRSTVWY'
 
 
 
-  @classmethod
-  def create_random(cls, length: int) -> str:
+
+
+def create_random(length: int) -> str:
     """
-    Generates randomly a sequence of amino acids.
+    Generates a random sequence of amino acids with uniform probability for
+    all amino acids at each residue position. 
 
     Parameters
     ----------
@@ -24,33 +22,33 @@ class Sequence:
     -------
     str
         The generated sequence. Each residue is represented as a
-        single letter corresponding to one of the 20 essential amino acids.
+        single letter corresponding to one of the 20 standard amino acids.
     """
     rng = r.generator()
-    indices = rng.choice(len(cls.AMINO_ACIDS), size=length)
-    return ''.join([ cls.AMINO_ACIDS[i] for i in indices ])
+    indices = rng.choice(len(AMINO_ACIDS), size=length)
+    return ''.join([ AMINO_ACIDS[i] for i in indices ])
 
 
 
-  @classmethod
-  def switch_residue(cls, residue: str) -> str:
+def switch_letter(letter: str) -> str:
     """
-    Randomly produce a single amino acid letter that's different from the one
-    specified by `residue`.
+    Produce a single random amino acid letter that's different from the one
+    specified by `letter`.
 
     Parameters
     ----------
-    residue : str
-        A single letter representing one of the 20 essential amino acids.
+    letter : str
+        A single letter representing one of the 20 standard amino acids.
 
     Returns
     -------
     str
-        A different letter, which also represents one of the 20 essential amino 
+        A single letter that is different from the one specified by `letter`. 
+        The produced letter also corresponds to one of the 20 standard amino 
         acids.
     """
     rng = r.generator()
-    while True:
-      new_residue = cls.AMINO_ACIDS[rng.choice(len(cls.AMINO_ACIDS))]
-      if new_residue != residue:
-        return new_residue
+    new_letter = letter
+    while new_letter == letter:
+        new_letter = AMINO_ACIDS[rng.choice(len(AMINO_ACIDS))]
+    return new_letter
