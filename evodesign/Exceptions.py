@@ -1,22 +1,22 @@
 class HttpBadRequest(RuntimeError):
-  pass
+    pass
 
 
 
 class HttpForbidden(RuntimeError):
-  pass
+    pass
 
 
 
 class HttpInternalServerError(RuntimeError):
-  pass
+    pass
 
 
 
 class HttpGatewayTimeout(RuntimeError):
-  pass
+    pass
 
 
 
 class HttpUnknownError(RuntimeError):
-  pass
+    pass
