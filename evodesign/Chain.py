@@ -93,7 +93,7 @@ def backbone_atoms(structure: Structure,
         The backbone atoms of the specified chain.
     """
     return [
-      atom
-      for atom in structure[model_id][chain_id].get_atoms()
-      if atom.get_name() in BACKBONE_ATOMS
+        atom
+        for atom in structure[model_id][chain_id].get_atoms()
+        if atom.get_name() in BACKBONE_ATOMS
     ]

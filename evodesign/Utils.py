@@ -127,10 +127,10 @@ def merge(a: pd.DataFrame,
     unmerged = size - len(merged)
     if i < n and unmerged > 0:
         merged = pd.concat([ merged, a.iloc[i:i + unmerged] ], 
-                          axis=0, 
-                          ignore_index=True)
+                           axis=0, 
+                           ignore_index=True)
     if j < m and unmerged > 0:
         merged = pd.concat([ merged, b.iloc[j:j + unmerged] ], 
-                          axis=0, 
-                          ignore_index=True)
+                           axis=0, 
+                           ignore_index=True)
     return merged
