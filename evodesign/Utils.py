@@ -7,6 +7,31 @@ import numpy.typing as npt
 
 
 
+def pad_zeroes(n: int) -> str:
+    """
+    Adds up to three zeroes to the left of the integer specified by `n`
+    if `n < 1000`.
+
+    If `n >= 1000`, then this function simply casts the number `n` to a string.
+
+    Parameters
+    ----------
+    n : int
+        The number to be padded with zeroes.
+
+    Returns
+    -------
+    str
+        A string containing the padded number `n`.
+    """
+    result = f'{n}'
+    if n < 1000: result = f'{0}{n}'
+    if n < 100: result = f'{0}{result}'
+    if n < 10: result = f'{0}{result}'
+    return result
+
+
+
 def dominates(a: npt.NDArray[np.float64], 
               b: npt.NDArray[np.float64]
               ) -> bool:

@@ -1,5 +1,6 @@
 from typing import List
 import evodesign.Sequence as s
+import evodesign.Utils as Utils
 import pandas as pd
 
 
@@ -103,19 +104,7 @@ class Population:
         The filename for the given population.
     """
     generation_id = population.iloc[0]['generation_id']
-    return f'pop_{cls._pad_zeroes(generation_id)}.csv'
-
-
-
-  @classmethod
-  def _pad_zeroes(cls, n: int) -> str:
-    if n < 1000:
-      result = f'{0}{n}'
-    if n < 100:
-      result = f'{0}{result}'
-    if n < 10:
-      result = f'{0}{result}'
-    return result
+    return f'pop_{Utils.pad_zeroes(generation_id)}.csv'
   
 
 
@@ -124,4 +113,4 @@ class Population:
                    generationId: int, 
                    rowIdx: int
                    ) -> str:
-    return f'prot_{cls._pad_zeroes(generationId)}_{cls._pad_zeroes(rowIdx)}'
+    return f'prot_{Utils.pad_zeroes(generationId)}_{Utils.pad_zeroes(rowIdx)}'
