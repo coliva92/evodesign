@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from ...SettingsRetrievable import SettingsRetrievable
 from typing import List
 from ...Population import Population
-import evodesign.Random as r
+import evodesign.Random as Random
 import pandas as pd
 
 
@@ -61,7 +61,7 @@ class Recombination(SettingsRetrievable, ABC):
       mother = parents.iloc[i]['sequence']
       father = parents.iloc[i + 1]['sequence']
       children += self.offspring_sequences(mother, father) \
-                  if r.coin_toss(self._probability) \
+                  if Random.coin_toss(self._probability) \
                   else [ mother, father ]
     return Population.create(children, generationId)
   

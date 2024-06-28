@@ -1,6 +1,6 @@
 from .Recombination import Recombination
 from typing import List
-import evodesign.Random as r
+import evodesign.Random as Random
 
 
 
@@ -51,7 +51,7 @@ class SinglePointCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = r.generator()
+    rng = Random.generator()
     i = rng.integers(0, len(mother))
     sister = mother[0:i] + father[i:]
     brother = father[0:i] + mother[i:]

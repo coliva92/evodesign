@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
 from ..Workspace import Workspace
-import evodesign.Random as r
+import evodesign.Random as Random
 import evodesign.Chain as c
 from ..Population import Population
 from ..Prediction.Predictor import Predictor
@@ -100,7 +100,7 @@ class Algorithm(SettingsRetrievable, ABC):
     self.workspace = Workspace(workspaceDir, targetPdbPath, targetFastaPath)
 
     # initialize the RNG
-    rng = r.generator()
+    rng = Random.generator()
     state = self.workspace.load_rng_state()
     if state == None:
       state = self.workspace.load_rng_state(loadCheckpoint=False)
@@ -206,7 +206,7 @@ class Algorithm(SettingsRetrievable, ABC):
     if population.empty:
       population = self.initial_population(sequence_length)
       self.workspace.save_population(population)
-      self.workspace.save_rng_state(r.generator().bit_generator.state)
+      self.workspace.save_rng_state(Random.generator().bit_generator.state)
       t = 1
     
     # if we are starting fresh, compute the fitness of all the initial 
@@ -245,7 +245,7 @@ class Algorithm(SettingsRetrievable, ABC):
       children = self.workspace.load_population(temporary=True)
       if children.empty:
         children = self.next_population(population)
-        self.workspace.save_rng_state(r.generator().bit_generator.state)
+        self.workspace.save_rng_state(Random.generator().bit_generator.state)
         self.workspace.save_population(children, temporary=True)
       
       # compute the children's fitness and choose the surviving children

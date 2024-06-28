@@ -1,6 +1,6 @@
 from .Recombination import Recombination
 from typing import List
-import evodesign.Random as r
+import evodesign.Random as Random
 
 
 
@@ -51,7 +51,7 @@ class TwoPointsCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = r.generator()
+    rng = Random.generator()
     n = len(mother)
     i = rng.integers(0, n) 
     j = rng.integers(i, n)

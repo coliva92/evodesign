@@ -1,4 +1,4 @@
-import evodesign.Random as r
+import evodesign.Random as Random
 
 
 
@@ -24,7 +24,7 @@ def create_random(length: int) -> str:
         The generated sequence. Each residue is represented as a
         single letter corresponding to one of the 20 standard amino acids.
     """
-    rng = r.generator()
+    rng = Random.generator()
     return ''.join(rng.choice(AMINO_ACIDS, size=length).tolist())
 
 
@@ -46,7 +46,7 @@ def switch_letter(letter: str) -> str:
         The produced letter also corresponds to one of the 20 standard amino 
         acids.
     """
-    rng = r.generator()
+    rng = Random.generator()
     new_letter = letter
     while new_letter == letter:
         new_letter = AMINO_ACIDS[rng.choice(len(AMINO_ACIDS))]

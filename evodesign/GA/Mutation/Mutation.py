@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ...SettingsRetrievable import SettingsRetrievable
-import evodesign.Random as r
+import evodesign.Random as Random
 import pandas as pd
 
 
@@ -38,7 +38,7 @@ class Mutation(SettingsRetrievable, ABC):
     children : pandas.DataFrame
         The table from which a subset will be selected and modified.
     """
-    indices = children.apply(lambda row: r.coin_toss(self._mutation_prob), 
+    indices = children.apply(lambda row: Random.coin_toss(self._mutation_prob), 
                              axis=1)
     children.loc[indices, 'sequence'] = \
       children.loc[indices, 'sequence'].apply(self.mutate_sequence)

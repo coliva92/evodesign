@@ -1,5 +1,5 @@
 from .Selection import Selection
-import evodesign.Random as r
+import evodesign.Random as Random
 import pandas as pd
 
 
@@ -88,7 +88,7 @@ class Overselection(Selection):
                      else 2 * len(population)
     
     selected_parents = pd.DataFrame(columns=population.columns)
-    rng = r.generator()
+    rng = Random.generator()
     upper_bin = population.iloc[:self._upper_size]
     lower_bin = population.iloc[self._upper_size:]
     while len(selected_parents) < selection_size:
