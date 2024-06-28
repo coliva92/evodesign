@@ -2,7 +2,7 @@ import evodesign.Random as r
 
 
 
-AMINO_ACIDS = 'ACDEFGHIKLMNPQRSTVWY'
+AMINO_ACIDS = list('ACDEFGHIKLMNPQRSTVWY')
 
 
 
@@ -25,8 +25,7 @@ def create_random(length: int) -> str:
         single letter corresponding to one of the 20 standard amino acids.
     """
     rng = r.generator()
-    indices = rng.choice(len(AMINO_ACIDS), size=length)
-    return ''.join([ AMINO_ACIDS[i] for i in indices ])
+    return ''.join(rng.choice(AMINO_ACIDS, size=length).tolist())
 
 
 
