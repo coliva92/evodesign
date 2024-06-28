@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from .Workspace import Workspace
-from .Settings import Settings
+import evodesign.Settings as Settings
 from .Exceptions import *
 from requests.exceptions import ConnectTimeout
 import sys

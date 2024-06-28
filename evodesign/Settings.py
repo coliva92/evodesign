@@ -52,18 +52,15 @@ import copy
 
 
 
-class Settings:
-
-  @classmethod
-  def parse(cls, settings: dict):
+def parse(settings: dict):
     class_name = list(settings.keys())[0]
     params = copy.deepcopy(settings[class_name])
     actual_class = getattr(sys.modules[__name__], class_name.replace('.', '_'))
     for key, item in params.items():
-      if type(item) == dict:
-        params[key] = cls.parse(item)
-      if type(item) == list and type(item[0]) == dict:
-        params[key] = [ cls.parse(s) for s in item ] \
-                      if type(item[0]) == dict \
-                      else item
+        if type(item) == dict:
+            params[key] = parse(item)
+        if type(item) == list and type(item[0]) == dict:
+            params[key] = [ parse(s) for s in item ] \
+                          if type(item[0]) == dict \
+                          else item
     return actual_class(**params)
