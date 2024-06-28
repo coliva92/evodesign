@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
 from ..Workspace import Workspace
 import evodesign.Random as r
-from ..Chain import Chain
+import evodesign.Chain as c
 from ..Population import Population
 from ..Prediction.Predictor import Predictor
 from ..GA.Selection.Selection import Selection
@@ -113,8 +113,8 @@ class Algorithm(SettingsRetrievable, ABC):
     self.workspace.save_settings(self.settings())
 
     # load the target protein
-    reference = Chain.load_structure(targetPdbPath)
-    reference = Chain.backbone_atoms(reference)
+    reference = c.load_structure(targetPdbPath)
+    reference = c.backbone_atoms(reference)
 
     # check if we are restoring from a previous population
     population = self.workspace.load_population()
@@ -187,7 +187,7 @@ class Algorithm(SettingsRetrievable, ABC):
       num_generations = kwargs['numGenerations']
     
     # compute the sequence length
-    sequence_length = len(reference) // len(Chain.BACKBONE_ATOMS)
+    sequence_length = len(reference) // len(c.BACKBONE_ATOMS)
     
     # set the generations counter
     t = 0
