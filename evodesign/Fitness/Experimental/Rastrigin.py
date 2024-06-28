@@ -2,7 +2,7 @@ from ..FitnessFunction import FitnessFunction
 from typing import Dict, List
 import evodesign.Sequence as s
 from ...Workspace import Workspace
-import evodesign.Chain as c
+import evodesign.Chain as Chain
 import blosum as bl
 import math
 import operator
@@ -58,8 +58,8 @@ class Rastrigin(FitnessFunction):
   def compute_fitness(self, **kwargs) -> float:
     if not self._residue_ordinals:
       workspace = Workspace.instance()
-      structure = c.load_structure(workspace.target_pdb_path)
-      self._target_sequence = s.create_random(c.length(structure))
+      structure = Chain.load_structure(workspace.target_pdb_path)
+      self._target_sequence = s.create_random(Chain.length(structure))
       self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
     x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 

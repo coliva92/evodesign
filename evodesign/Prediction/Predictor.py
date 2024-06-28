@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 from Bio.PDB.Atom import Atom
-import evodesign.Chain as c
+import evodesign.Chain as Chain
 from ..SettingsRetrievable import SettingsRetrievable
 import numpy as np
 import os
@@ -40,11 +40,11 @@ class Predictor(SettingsRetrievable, ABC):
     if not os.path.isfile(pdbPath):
       os.makedirs(os.path.dirname(os.path.abspath(pdbPath)), exist_ok=True)
       self.predict_structure(sequence, pdbPath)
-    structure = c.load_structure(pdbPath)
+    structure = Chain.load_structure(pdbPath)
     bfactors = np.array([
       atom.get_bfactor() / 100.0 
         if atom.get_bfactor() > 1.0 
         else atom.get_bfactor()
       for atom in structure.get_atoms()
     ])
-    return c.backbone_atoms(structure), bfactors.mean()
+    return Chain.backbone_atoms(structure), bfactors.mean()
