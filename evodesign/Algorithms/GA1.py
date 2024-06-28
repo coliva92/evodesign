@@ -1,7 +1,7 @@
 from .GenericGA import GenericGA
 from typing import List
 from ..Statistics import Statistics
-import evodesign.Operators as op
+import evodesign.Utils as u
 from Bio.PDB.Atom import Atom
 import pandas as pd
 
@@ -39,6 +39,6 @@ class GA1(GenericGA):
     last_pop = population[population['survivor']].copy()
     last_pop['survivor'] = False
     last_pop['generation_id'] = children.iloc[0]['generation_id']
-    mixed = op.merge(last_pop, children, self._sort_cols, self._sort_ascending)
+    mixed = u.merge(last_pop, children, self._sort_cols, self._sort_ascending)
     mixed.loc[:self._pop_size - 1, 'survivor'] = True
     return mixed

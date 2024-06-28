@@ -7,7 +7,7 @@ from ..GA.Mutation.Mutation import Mutation
 from ..GA.Selection.Tournament import Tournament
 from ..Statistics import Statistics
 from ..Sequence import Sequence
-import evodesign.Operators as op
+import evodesign.Utils as u
 from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -220,9 +220,9 @@ class NSGA2(Algorithm):
         if i == j:
           continue
         b = other.loc[fitness_cols].to_numpy()
-        if op.dominates(a, b):
+        if u.dominates(a, b):
           dominated_solutions[i].append(j)
-        if op.dominates(b, a):
+        if u.dominates(b, a):
           num_dominating_solutions[i] += 1
       if num_dominating_solutions[i] == 0:
         population.at[i, 'rank'] = curr['rank'] = 1
