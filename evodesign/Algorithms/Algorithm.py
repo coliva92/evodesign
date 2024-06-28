@@ -3,7 +3,7 @@ from ..SettingsRetrievable import SettingsRetrievable
 from ..Workspace import Workspace
 import evodesign.Random as Random
 import evodesign.Chain as Chain
-from ..Population import Population
+import evodesign.Population as Population
 from ..Prediction.Predictor import Predictor
 from ..GA.Selection.Selection import Selection
 from ..GA.Recombination.Recombination import Recombination
@@ -307,7 +307,7 @@ class Algorithm(SettingsRetrievable, ABC):
     """
     population = Population.create_random(self._pop_size, 
                                           sequenceLength, 
-                                          generationId=1)
+                                          generation_id=1)
     population['survivor'] = True
     return population
   

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from ...SettingsRetrievable import SettingsRetrievable
 from typing import List
-from ...Population import Population
+import evodesign.Population as Population
 import evodesign.Random as Random
 import pandas as pd
 

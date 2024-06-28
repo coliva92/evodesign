@@ -1,4 +1,4 @@
-from .Population import Population
+import evodesign.Population as Population
 import pandas as pd
 import json
 import os

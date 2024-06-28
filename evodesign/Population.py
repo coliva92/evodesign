@@ -7,27 +7,23 @@ import pandas as pd
 
 
 
-class Population:
-  
-  @classmethod
-  def create_random(cls, 
-                    size: int,
-                    sequenceLength: int,
-                    generationId: int = 0
-                    ) -> pd.DataFrame:
+def create_random(size: int,
+                  sequence_length: int,
+                  generation_id: int = 0
+                  ) -> pd.DataFrame:
     """
     Creates a table of randomly generated amino acid sequences. 
-    Populations in EvoDesign are Pandas DataFrames in which each row corresponds 
-    to a single sequence, and where additional columns typically represent
-    fitness values for each sequence.
+    Populations in EvoDesign are represented as Pandas DataFrames in which each 
+    row corresponds to a single sequence, and where additional columns 
+    typically represent fitness values for each sequence.
 
     Parameters
     ----------
     size : int
         The size of the population.
-    sequenceLength : int
+    sequence_length : int
         The length of each amino acid sequence in the population.
-    generationId : int, optional
+    generation_id : int, optional
         The unique identifier for the population being created. 
         The default value is 0.
 
@@ -42,18 +38,16 @@ class Population:
         generation.
     """
     sequences = [ 
-      Sequence.create_random(sequenceLength) 
-      for _ in range(size) 
+        Sequence.create_random(sequence_length) 
+        for _ in range(size) 
     ]
-    return cls.create(sequences, generationId)
+    return create(sequences, generation_id)
   
 
 
-  @classmethod
-  def create(cls, 
-             sequences: List[str], 
-             generationId: int = 0
-             ) -> pd.DataFrame:
+def create(sequences: List[str], 
+           generation_id: int = 0
+           ) -> pd.DataFrame:
     """
     Creates a new population DataFrame containing the specified amino acid 
     sequences.
@@ -63,14 +57,14 @@ class Population:
     sequences : List[str]
         The amino acid sequences that will be contained in the created 
         DataFrame. Each sequence must only contain letters corresponding to one
-        of the 20 essential amino acids.
-    generationId : int
+        of the 20 standard amino acids.
+    generation_id : int
         The unique identifier for the population being created.
 
     Returns
     -------
     pandas.DataFrame
-        _description_
+        A new DataFrame instance containing the specified population sequences.
     """
     data = {
       'generation_id': [],
@@ -79,38 +73,54 @@ class Population:
       'survivor': []
     }
     for i, sequence in enumerate(sequences):
-      seq_id = cls._sequence_id(generationId, i)
-      data['generation_id'].append(generationId)
+      seq_id = sequence_id(generation_id, i)
+      data['generation_id'].append(generation_id)
       data['sequence_id'].append(seq_id)
       data['sequence'].append(sequence)
       data['survivor'].append(False)
     return pd.DataFrame(data)
-  
 
 
-  @classmethod
-  def filename(cls, population: pd.DataFrame) -> str:
+
+def sequence_id(generation_id: int, 
+                row_idx: int
+                ) -> str:
     """
-    Returns the name of the file where the given population would be saved.
+    Produces a unique identifier for some protein sequence.
 
     Parameters
     ----------
-    population : pd.DataFrame
-        The population for which the file name will be returned.
+    generation_id : int
+        The generation in the evolutionary algorithm at which the hypothetical 
+        sequence was created.
+    row_idx : int
+        The row index for the hypothetical sequence in the corresponding 
+        population DataFrame.
 
     Returns
     -------
     str
-        The filename for the given population.
+        A string containing a unique identifier to be used by a particular 
+        protein sequence.
     """
-    generation_id = population.iloc[0]['generation_id']
-    return f'pop_{Utils.pad_zeroes(generation_id)}.csv'
+    return f'prot_{Utils.pad_zeroes(generation_id)}_{Utils.pad_zeroes(row_idx)}'
   
 
 
-  @classmethod
-  def _sequence_id(cls, 
-                   generationId: int, 
-                   rowIdx: int
-                   ) -> str:
-    return f'prot_{Utils.pad_zeroes(generationId)}_{Utils.pad_zeroes(rowIdx)}'
+def filename(population: pd.DataFrame) -> str:
+    """
+    Returns the full path to the CSV file where the given population ought to be 
+    saved.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population for which the file path will be produced.
+
+    Returns
+    -------
+    str
+        The file path for the given population.
+    """
+    generation_id = population.iloc[0]['generation_id']
+    return f'pop_{Utils.pad_zeroes(generation_id)}.csv'
