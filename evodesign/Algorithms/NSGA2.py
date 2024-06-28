@@ -5,7 +5,7 @@ from ..Fitness.FitnessFunction import FitnessFunction
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
 from ..GA.Selection.Tournament import Tournament
-from ..Statistics import Statistics
+import evodesign.Statistics as Statistics
 import evodesign.Sequence as Sequence
 import evodesign.Utils as Utils
 from Bio.PDB.Atom import Atom

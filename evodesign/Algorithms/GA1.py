@@ -1,5 +1,5 @@
 from .GenericGA import GenericGA
-from ..Statistics import Statistics
+import evodesign.Statistics as Statistics
 import evodesign.Utils as Utils
 import pandas as pd
 

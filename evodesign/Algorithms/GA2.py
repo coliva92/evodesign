@@ -6,7 +6,7 @@ from ..GA.Selection.Selection import Selection
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
 import evodesign.Random as Random
-from ..Statistics import Statistics
+import evodesign.Statistics as Statistics
 import evodesign.Utils as Utils
 import pandas as pd
 

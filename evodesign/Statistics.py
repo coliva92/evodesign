@@ -7,10 +7,7 @@ import numpy as np
 
 
 
-class Statistics:
-
-  @classmethod
-  def average_amino_acid_loss(cls, population: pd.DataFrame) -> float:
+def average_amino_acid_loss(population: pd.DataFrame) -> float:
     """
     Computes the average number of amino acid letters lost for each residue 
     position. An amino acid letter is considered lost when none of the
@@ -36,15 +33,14 @@ class Statistics:
     m = len(Sequence.AMINO_ACIDS)
     n = len(population.iloc[0]['sequence'])
     data = np.array([
-      m - len({ seq[i] for _, seq in population['sequence'].items() })
-      for i in range(n)
+        m - len({ seq[i] for _, seq in population['sequence'].items() })
+        for i in range(n)
     ])
     return data.mean()
   
 
 
-  @classmethod
-  def average_sequence_identity(cls, population: pd.DataFrame) -> float:
+def average_sequence_identity(population: pd.DataFrame) -> float:
     """
     Computes the average sequence identity for each sequence in the given 
     population by comparing it against all other sequences in the population.
@@ -70,19 +66,19 @@ class Statistics:
     k = None
     identities = {}
     for i, j in combinations(range(len(population)), 2):
-      if i != k:
-        if k in identities:
-          identities[k] = np.array(identities[k])
-        k = i
-        identities[k] = []
-      a = population.iloc[i]['sequence']
-      b = population.iloc[j]['sequence']
-      identities[k].append(sum(c == d for c, d in zip(a, b)))
+        if i != k:
+            if k in identities:
+                identities[k] = np.array(identities[k])
+            k = i
+            identities[k] = []
+        a = population.iloc[i]['sequence']
+        b = population.iloc[j]['sequence']
+        identities[k].append(sum(c == d for c, d in zip(a, b)))
     identities[k] = np.array(identities[k])
     # compute the average identity for each sequence in the population;
     # then, since every sequence is compared against a different number of
     # sequences, compute the weighted average of the resulting averages
-    weights = np.array([ len(data) for _, data in identities.items() ])
     averages = np.array([ data.mean() for _, data in identities.items() ])
+    weights = np.array([ len(data) for _, data in identities.items() ])
     return np.average(averages, weights=weights)
   
