@@ -121,7 +121,7 @@ class AlphaFold(Predictor):
 
 
 
-  def _run_alphafold_docker(self, fastaPath: str) -> None:
+  def _run_alphafold_docker(self, fastaPath: str):
     cmd = [
       'python3',
       self._alphafold_script_path,
