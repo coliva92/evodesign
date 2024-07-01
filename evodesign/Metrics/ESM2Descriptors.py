@@ -62,6 +62,13 @@ class ESM2Descriptors(Metric):
                                 sequence_id: str = 'prot_0000_0000'
                                 ) -> npt.NDArray[np.float64]:
     import torch
+    if self.model == None or self.batch_converter == None:
+      import esm
+      self.model, alphabet = esm.pretrained.esm2_t36_3B_UR50D()
+      self.batch_converter = alphabet.get_batch_converter()
+      self.model.eval()
+      if self._use_gpu and torch.cuda.is_available(): 
+        self.model = self.model.cuda()
     workspace = Workspace.instance()
     os.makedirs(workspace.esm2_dir, exist_ok=True)
     data = [( sequence_id, sequence )]
@@ -95,6 +102,6 @@ class ESM2Descriptors(Metric):
     # save the descriptors to a file
     with open(csvPath, 'wt', encoding='utf-8') as csv_file:
       values = vector.tolist()
-      csv_file.write(','.join(values) + '\n')
+      csv_file.write(','.join(map(str, values)) + '\n')
     return vector
   

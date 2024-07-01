@@ -104,7 +104,7 @@ class Workspace:
   
 
 
-  def load_target_fasta(self) -> str | None:
+  def load_target_fasta(self):
     if self.target_fasta_path == None: return None
     for line in open(self.target_fasta_path, 'rt', encoding='utf-8'):
       if line.find('>') > -1: continue

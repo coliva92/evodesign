@@ -60,7 +60,7 @@ class Descriptors(Metric):
 
 
   def compute_value(self, **kwargs) -> float:
-    if self._ref_vectors == None:
+    if self._ref_vectors is None:
       workspace = Workspace.instance()
       self._ilearn_model.compute_descriptors(workspace.target_fasta_path, 
                                              workspace.ilearn_dir)

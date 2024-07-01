@@ -15,12 +15,12 @@ class Metric(SettingsRetrievable, ABC):
 
 
   @abstractmethod
-  def compute_value(self, **kwargs) -> float | None:
+  def compute_value(self, **kwargs):
     raise NotImplementedError
   
 
 
-  def __call__(self, **kwargs) -> float | None:
+  def __call__(self, **kwargs):
     """
     Computes the specified metric for a given model backbone or sequence.
 
