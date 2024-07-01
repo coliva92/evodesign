@@ -14,6 +14,8 @@ from .Metrics.PyRosettaRef2015 import PyRosettaRef2015 \
 from .Metrics.iLearnDescriptors import iLearnDescriptors \
   as Metrics_iLearnDescriptors
 from .Metrics.ESM2Descriptors import ESM2Descriptors as Metrics_ESM2Descriptors
+from .Metrics.ESM2DescriptorsRms import ESM2DescriptorsRms \
+  as Metrics_ESM2DescriptorsRms
 from .Metrics.Normalization.Reciprocal import Reciprocal \
   as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
