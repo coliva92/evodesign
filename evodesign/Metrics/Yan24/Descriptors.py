@@ -25,7 +25,6 @@ class Descriptors(Metric):
     'CTDD': 'non_probabilistic',
     'ESM2': 'non_probabilistic'
   }
-  _ref_vectors = None
   
 
 
@@ -51,6 +50,7 @@ class Descriptors(Metric):
                useGpu: bool = True
                ) -> None:
     super().__init__()
+    self._ref_vectors = None
     self._ilearn_model = iLearnDescriptors(ilearnDir, ilearnMethods)
     self._esm2_model = ESM2Descriptors(useGpu)
     self._ilearn_dir = ilearnDir
