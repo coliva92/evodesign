@@ -60,8 +60,8 @@ class Descriptors(Metric):
 
 
   def compute_value(self, **kwargs) -> float:
+    workspace = Workspace.instance()
     if self._ref_vectors is None:
-      workspace = Workspace.instance()
       self._ilearn_model.compute_descriptors(workspace.target_fasta_path, 
                                              workspace.ilearn_dir)
       self._ref_vectors = self._ilearn_model.load_vectors(workspace.ilearn_dir)
@@ -70,13 +70,15 @@ class Descriptors(Metric):
         self._esm2_model.compute_descriptor_vector(kwargs['refSequence'], 
                                                    csv_path)
     self._ilearn_model(**kwargs)
-    vectors_dir = self._ilearn_model.vectors_csv_path(kwargs['sequence_id'])
+    vectors_dir = self._ilearn_model.vectors_csv_dir(kwargs['sequenceId'])
     model_vectors = self._ilearn_model.load_vectors(vectors_dir)
-    csv_path = f'{workspace.esm2_dir}/{kwargs["sequence_id"]}.csv'
+    csv_path = f'{workspace.esm2_dir}/{kwargs["sequenceId"]}.csv'
     model_vectors['EMS2'] = \
       self._esm2_model.compute_descriptor_vector(kwargs['sequence'], csv_path)
     divergence_scores = np.array([
-      self._symmetric_kullback_leibler(self._ref_vectors, model_vectors, method)
+      self._symmetric_kullback_leibler(self._ref_vectors[method], 
+                                       model_vectors[method], 
+                                       self._DESCRIPTOR_METHOD_TYPES[method])
       for method in self._ilearn_methods
     ])
     return 2 * self._weight / (1 + divergence_scores.mean())
@@ -116,6 +118,9 @@ class Descriptors(Metric):
                           bins=20, 
                           range=dist_range,
                           density=False)
+      # numpy does not like mixing int with float
+      if a.dtype != np.float64: a = a.astype(np.float64)
+      if b.dtype != np.float64: b = b.astype(np.float64)
       # we do this so that the probability is non-zero
       a += 0.5
       b += 0.5
