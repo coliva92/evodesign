@@ -6,22 +6,17 @@ import evodesign.Random as Random
 
 
 
+"""
+Creates new sequences by splitting the parent sequences at three randomly
+chosen residue positions and mixing two parts from one of the parents with
+one complementary part from the other.
+
+For example, given the sequences 'AAAAAA' and 'DDDDDD', and assuming that
+these sequences are to be split at the 2nd and 2nd to last positions, then
+this operator would produce the sequences 'AADDDA' and 'DDAAAD'.
+"""
 class TwoPointsCrossover(Recombination):
-
-  def __init__(self, probability: float = 1.0) -> None:
-    """
-    Creates new sequences by splitting the parent sequences at three randomly
-    chosen residue positions and mixing two parts from one of the parents with
-    one complementary part from the other.
-
-    For example, given the sequences 'AAAAAA' and 'DDDDDD', and assuming that
-    these sequences are to be split at the 2nd and 2nd to last positions, then
-    this operator would produce the sequences 'AADDDA' and 'DDAAAD'.
-    """
-    super().__init__(probability)
   
-
-
   def offspring_sequences(self, 
                           mother: str,
                           father: str

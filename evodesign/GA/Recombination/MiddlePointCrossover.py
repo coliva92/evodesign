@@ -5,20 +5,15 @@ from typing import List
 
 
 
+"""
+Creates new sequences by splitting both parent sequences exactly in half  
+and mixing the half from one parent with the complementary half from 
+the other.
+
+For example, given the sequences 'AAAAAA' and 'DDDDDD', this operator would
+produce the sequences 'AAADDD' and 'DDDAAA'.
+"""
 class MiddlePointCrossover(Recombination):
-  
-  def __init__(self, probability: float = 1.0) -> None:
-    """
-    Creates new sequences by splitting both parent sequences exactly in half  
-    and mixing the half from one parent with the complementary half from 
-    the other.
-
-    For example, given the sequences 'AAAAAA' and 'DDDDDD', this operator would
-    produce the sequences 'AAADDD' and 'DDDAAA'.
-    """
-    super().__init__(probability)
-
-
 
   def offspring_sequences(self, 
                           mother: str,

@@ -9,15 +9,12 @@ import evodesign.Random as Random
 class UniformCrossover(Recombination):
   
   def _params(self) -> dict:
-    params = super()._params()
-    params['maskBias'] = self._parent_bias
-    return params
+    return { 'maskBias': self._parent_bias }
   
   
 
   def __init__(self,
-               maskBias: float = 0.5,
-               probability: float = 1.0
+               maskBias: float = 0.5
                ) -> None:
     """
     Randomly generates a binary mask of the same length as the parent sequences
@@ -35,7 +32,7 @@ class UniformCrossover(Recombination):
         The probability for generating one binary value over the other in the
         random mask. The default is 0.5.
     """
-    super().__init__(probability)
+    super().__init__()
     self._weights = ( maskBias, 1.0 - maskBias )
     self._parent_bias = maskBias
 
