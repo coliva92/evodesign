@@ -28,7 +28,8 @@ def load_structure(pdb_path: str) -> Structure:
         The loaded Structure instance.
     """
     global _pdb_parser
-    if not _pdb_parser: _pdb_parser = PDBParser()
+    if _pdb_parser is None: 
+        _pdb_parser = PDBParser()
     structure_id = os.path.splitext(os.path.basename(pdb_path))[0]
     return _pdb_parser.get_structure(structure_id, pdb_path)
 
