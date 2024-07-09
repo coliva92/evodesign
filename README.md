@@ -1,214 +1,198 @@
 # EvoDesign
 
-Este es un programa y un _framework_ rudimentario, escrito en Python 3.8, para implementar diferentes [algoritmos evolutivos](https://en.wikipedia.org/wiki/Evolutionary_algorithm) para el _diseño de proteínas_. 
-En el diseño de proteínas, el objetivo es encontrar la secuencia de aminoácidos que se pliega en una estructura objetivo determinada. 
-Para verificar que una secuencia particular se pliega en la estructura objetivo, los algoritmos evolutivos implementados con EvoDesign utilizan un algoritmo de _predicción de la estructura de una proteína_, como por ejemplo, [ESMFold](https://github.com/facebookresearch/esm).
+This is a rudimentary framework written in Python 3.8 for implementing and testing different evolutionary algorithms for protein design.
+In the protein design problem, the goal is to find the amino acid sequence that folds into a given target structure. 
+To determine if a given sequence would indeed fold into the desired structure, the evolutionary algorithms implemented with EvoDesign use a structure prediction model (e.g. AlphaFold2 or ESMFold).
 
-## Contenido
+## Content
 
-1. [Instalación](#instalacion)
-2. [Instrucciones de uso desde la consola](#instrucciones-consola)
-  1. [Ejemplo](#ejemplo)
-  2. [Catálogo completo de las diferentes opciones de configuración](#opciones-catalogo)
-  3. [Condición de finalización del algoritmo evolutivo](#condicion-finalizacion)
-  4. [Reanudar la ejecución del programa a partir de una interrupción anterior](#reanudar-ejecucion)
-  5. [Extender la ejecución del programa](#extender-ejecucion)
-3. [Instrucciones de uso desde Python](#instrucciones-python)
+1. [Installation](#installation)
+2. [Using EvoDesign as a module from the console](#module-usage)
+  1. [Example of a settings JSON file](#example)
+  2. [Resuming execution from an interruption](#resuming-execution)
+3. [Using EvoDesign as a library](#library-usage)
 
-<a name="instalacion"></a>
-## Instalación
+<a name="installation"></a>
+## Installation
 
-Para utilizar EvoDesign, se recomienda instalar [Anaconda](https://www.anaconda.com/).
-Alternativamente, las dependencias pueden instalarse de manera individual:
+For running EvoDesign, it is highly recommended to install [Anaconda](https://www.anaconda.com/).
+Using the `conda` command, you need to install the following packages:
 
-- [Instrucciones de instalación de BioPython](https://biopython.org/wiki/Download).
-- [Instrucciones de instalación de Matplotlib](https://matplotlib.org/stable/users/getting_started/index.html#installation-quick-start).
+- [NumPy](https://numpy.org/install/).
+- [BioPython](https://biopython.org/wiki/Packages).
+- [Pandas](https://pypi.org/project/pandas/).
+- [Matplotlib](https://matplotlib.org/stable/users/getting_started/index.html#installation-quick-start).
+- [SciPy](https://scipy.org/install/#pip-install).
 
-Después de instalar las dependencias, el siguiente paso es clonar este repositorio, lo que se logra ingresando el siguiente comando en la consola: 
+Next, clone this repository using the following command:
 
 ```
 git clone https://github.com/coliva92/evodesign.git
 ```
 
-Finalmente, se registra la carpeta de `evodesign` en la variable de entorno `PYTHONPATH`, utilizando el siguiente comando en la consola:
+Finally, it is recommended that you add the `evodesign` repo folder to the `PYTHONPATH` environment variable so you can run the program from any directory in your system. 
+If you're using bash, you can achieve this by running the following command:
 
 ```
-export PYTHONPATH=${PYTHONPATH}:path/to/evodesign
+export PYTHONPATH=${PYTHONPATH}:path/to/evodesign/repo
 source ~/.bashrc
 ```
 
-Este registro permite importar el módulo `evodesign` desde cualquier _script_ de Python, sin importar su locación en el sistema de archivos. 
+Installation instructions for the external components used by EvoDesign are provided separately:
 
-<a name="instrucciones-consola"></a>
-## Instrucciones de uso desde la consola
+- [AlphaFold2](https://github.com/google-deepmind/alphafold).
+- [ESM2 and ESMFold](https://github.com/facebookresearch/esm).
+- [iLearn](https://github.com/Superzchen/iLearn).
+- [PyRosetta](https://www.pyrosetta.org/downloads#h.iwt5ktel05jc).
 
-Para correr un algoritmo evolutivo utilizando EvoDesign, se deben seguir los siguientes pasos:
+<a name="module-usage"></a>
+## Using EvoDesign as a module from the console
 
-1. Crear la carpeta donde se guardarán los datos producidos durante la ejecución del algoritmo. En esta documentación, nos referiremos a esta carpeta como el _workspace_ del algoritmo.
-2. Dentro de la carpeta _workspace_, crear un archivo de texto llamado `settings.json`.
-3. Llenar el archivo `settings.json` con la configuración del algoritmo que se desea ejecutar. En el ejemplo siguiente se describe el formato en que debe escribirse dicha configuración.
-4. Comenzar la ejecución del programa usando el comando: `python3 -m evodesign <workspace>/settings.json`. 
-
-<a name="ejemplo"></a>
-### Ejemplo
-
-Supóngase que se desea ejecutar un algoritmo genético que cumpla con las siguientes características:
-
-- **Estructura objetivo**: aquella identificada por el PDBID 1Y32.
-- **Representación de los individuos**: secuencias de aminoácidos, en donde cada cadena lateral se representa por medio de una letra.
-- **Función de aptitud**: el GDT de la superposición contra la estructura objetivo. 
-- **Tamaño de la población**: 10 individuos.
-- **Selección**: por [torneo](https://en.wikipedia.org/wiki/Tournament_selection) entre 3 individuos.
-- **Número de padres e hijos**: 2.
-- **Recombinación**: por [_crossover_ de dos puntos](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)).
-- **Mutación**: cambiar un aminoácido por otro de manera aleatoria.
-- **Probabilidad de mutación**: 10%.
-- **Reemplazo**: se preservan los 10 individuos de mayor aptitud.
-- **Máximo número de iteraciones**: 20.
-
-Todas estas características pueden alimentarse a EvoDesign por medio de un archivo JSON, denominado `settings.json`, que debe contener lo siguiente:
-
-```json
-{
-  "algorithmType": "GA_Steady",
-  "algorithmParams": {
-    "workspaceRoot": "example",
-    "targetPdbFilename": "example/1Y32.pdb",
-    "predictor": "Predictor_ESMFold_RemoteApi",
-    "fitnessFunction": "Fitness_GDT",
-    "populationSize": 10,
-    "numIterations": 20,
-    "selection": "GA_Selection_Tournament",
-    "selectionParams": {
-      "selectionSize": 2,
-      "tournamentSize": 3
-    },
-    "recombination": "GA_Recombination_TwoPointsCrossover",
-    "mutation": "GA_Mutation_SingleSwitch",
-    "mutationParams": {
-      "probability": 0.1
-    },
-    "replacement": "GA_Replacement_WorseOut"
-  }
-}
-```
-
-Una vez escrita este archivo de configuración, el programa puede ejecutarse ingresando el siguiente comando en la consola: 
+You can run EvoDesign as a Python module from the command line interface. You can check the command instructions using:
 
 ```
-python -m evodesign example/settings.json
+python -m evodesign --help
 ```
 
-Al finalizar la ejecución del programa, la carpeta _workspace_ debería contener la siguiente estructura:
+Follow these steps to run a custom evolutionary algorithm using EvoDesign:
+
+1. Write a JSON file describing the characteristics of the algorithm to be executed. 
+2. Gather the PDB and FASTA files of the target protein. 
+3. Run the following command: 
+
+```
+python -m evodesign path/to/target.pdb \
+                    path/to/settings.json \
+                    path/to/output/folder \
+                    -f path/to/target.fasta 
+```
+
+**NOTE**: if the output folder, here on refered to as the _workspace_, does not exists, it will be created automathically. 
+
+After finishing execution, the workspace folder will contain the following structure:
 
 ```
 .
-├─ example/
+├─ workspace_name/
 |  ├─ pdbs/
-|  |  ├─ prot_ABC.pdb
+|  |  ├─ prot_0001_0000.pdb
 |  |  ├─ ...
 |  ├─ populations/
-|  |  ├─ pop_0.json
+|  |  ├─ pop_0001.csv
 |  |  ├─ ...
-|  ├─ ~children.tmp
-|  ├─ fitness.png
+|  ├─ commit_hash.txt
+|  ├─ initial_rng_state.json
 |  ├─ settings.json
 |  ├─ statistics.csv
+|  ├─ target_protein.pdb
 ```
 
-- La carpeta `pdbs` contiene los archivos PDB de las estructuras que fueron predichas para todas las secuencias producidas durante la ejecución del programa (y que cuya aptitud fue evaluada).
-- La carpeta `populations` contiene las poblaciones (esto es, el conjunto de secuencias) producidas en cada iteración del algoritmo evolutivo. En cada uno de estos archivos se registra la aptitud y demás métricas de cada secuencia.
-- El archivo `.children` es un archivo temporal que se usa durante la ejecución del programa. **Este archivo puede ignorarse**.
-- El archivo `fitness.png` contiene la gráfica que muestra la aptitud de la población en cada iteración del algoritmo.
-- El archivo `settings.json` es el mismo archivo de configuración que se mencionó anteriormente. No se modifica durante la ejecución del algoritmo. 
-- El archivo `statistics.csv` contiene datos relevantes de cada iteración del algoritmo. Estos datos son los siguientes:
-  - La aptitud mínima, promedio y máxima de la población.
-  - El valor de aptitud y la secuencia correspondiente al individuo de mayor aptitud encontrado por el algoritmo.
+- The `pdbs` folder contains the PDB files for all predicted structures produced during algorithm execution. Each file is named `prot_XXXX_YYYY.pdb`, where `XXXX` is an integer with trailing zeroes indicating the generation number and `YYYY` is also an integer with trailing zeroes indicating the individual number in the given generation.
+- The `populations` folder contains the population data for every generation. Each file is named `pop_XXXX`, where `XXXX` is an integer with trailing zeroes indicating the generation number.
+- The `commit_hash.txt` file simply contains the number of the specific EvoDesign version used to produced all the data in the current workspace folder. This version number is simply the hash value of a specific commit in the EvoDesign GitHub repository.
+- The `initial_rng_state.json` contains data needed to recreate the state that the RNG had at the very first generation. This is useful for reproducing the results of a given execution. See [here](https://numpy.org/doc/stable/reference/random/bit_generators/pcg64.html) for more details.
+- The `settings.json` file is a copy of the settings file provided as input of the `python -m evodesign` command.
+- Lastly, a copy of the target protein PDB file will be stored with the original name. In this example, this file is named `target_protein.pdb`.
 
-<a name="reanudar-ejecucion"></a>
-### Reanudar la ejecución del programa a partir de una interrupción anterior
+Additional folders and files may be created if external components (e.g. iLearn or ESM2) are used, but the structure explained here should be common for all cases.
 
-Es posible que en algún punto se vea interrumpida la ejecución del programa (ya sea porque ocurrió un error, porque el API remoto de ESMFold falló en responder a una petición, o porque el usuario interrumpió el programa deliveradamente). 
-En estos casos, es posible reanudar la ejecución del programa, continuando desde la iteración que fue interrumpida. Para ello, simplemente hay que volver a ingresar en la consola el mismo comando mostrado anteriormente: 
+<a name="example"></a>
+### Example of a settings JSON file
 
+Let's say you want to run a simple genetic algorithm with the following characteristics:
+
+- **Individual representation**: a string where each character represents a distinct amino acid type. 
+- **Fitness function**: maximize the GDT after superimposing the modeled structure with the target structure.
+- **Population size**: 100 individuals.
+- **Selection**: by binary tournament.
+- **Number of parents and children**: 2.
+- **Recombination**: by 2-points crossover.
+- **Mutation**: randomly choose 1 amino acid in the string and swap it for another one randomly chosen.
+- **Mutation probability**: 10%.
+- **Replacement**: combine the parents and children populations and preserve the 100 fittest individuals.
+- **Maximum number of generations**: 100.
+
+All these characteristics can be described in a settings JSON file like the following:
+
+```json
+{
+    "Algorithms.GASteadyState": {
+        "maxGenerations": 100,
+        "popSize": 100,
+        "predictor": {
+            "Prediction.ESMFoldRemoteApi": {}
+        },
+        "selection": {
+            "GA.Selection.Tournament": {
+                "tournamentSize": 2
+            }
+        },
+        "recombination": {
+            "GA.Recombination.TwoPointsCrossover": {}
+        },
+        "mutation": {
+            "GA.Mutation.Swap": {
+                "mutProb": 0.1,
+                "numSwaps": 1
+            }
+        },
+        "fitnessFn": {
+            "Fitness.LinearCombination": {
+                "upperBound": 0.95,
+                "terms": [
+                    {
+                        "Metrics.Gdt": {
+                            "rmsdCalculator": {
+                                "Metrics.Rmsd": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
 ```
-python -m evodesign example/settings.json
-```
 
-<a name="extender-ejecucion"></a>
-### Extender la ejecución del programa
+Once the settings JSON file has been written, EvoDesign can be executed using the command shown in the previous section.
 
-Supóngase que el algoritmo utilizado en el ejemplo anterior terminó de ejecutar las 20 iteraciones que fueron especificadas en `example/settings.json`, y supóngase que se desea correr este mismo algoritmo por 10 iteraciones adicionales. Para lograr esto, simplemente debe modificarse el archivo `example/settings.json` para cambiar el campo que originalmente decía `"numIterations": 20` por `"numIterations": 30`. Luego, se vuelve a ejecutar el comando `python -m evodesign example/settings.json`.
+<a name="resuming-execution"></a>
+### Resuming execution from an interruption
 
-<a name="instrucciones-consola"></a>
-## Instrucciones de uso desde Python
+Algorithms run by EvoDesign tipycally take a long time and execution may be interrupted either manually or due to some error. 
+The EvoDesign saves its progress after computing the fitness of any individual.
+Thus, the execution can be resumed from its last saved point by simply re-running the same command shown in the [Using EvoDesign as a module from the console](#module-usage) section.
 
-El archivo `settings.json` mostrado en el [ejemplo de la sección anterior](#ejemplo), es equivalente a escribir el siguiente programa en Python:
+<a name="library-usage"></a>
+## Using EvoDesign as a library
+
+EvoDesign can also be imported as a library into a custom Python script.
+In this case, EvoDesign code is actually written emulating the settings JSON file. 
+For example, the settings described in the [Example of a settings JSON file](#example) could be reproduced in a Python script as follows:
 
 ```python
-from evodesign.GA import GA_Steady
-from evodesign.Prediction import Predictor_ESMFold_RemoteApi
-from evodesign.Fitness import Fitness_GDT
-from evodesign.GA.Selection import GA_Selection_Tournament
-from evodesign.GA.Recombination import GA_Recombination_TwoPointsCrossover
-from evodesign.GA.Mutation import GA_Mutation_SingleSwitch
-from evodesign.GA.Replacement import GA_Replacement_WorseOut
+from evodesign.Algorithms import GASteadyState
+from evodesign.Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi
+from evodesign.GA.Selection.Tournament import Tournament
+from evodesign.GA.Recombination.TwoPointsCrossover import TwoPointsCrossover
+from evodesign.GA.Mutation.Swap import Swap
+from evodesign.Metrics.Rmsd import Rmsd
+from evodesign.Metrics.Gdt import Gdt
+from evodesign.Fitness.LinearCombination import LinearCombination
 
-algorithm = GA_Steady(workspaceRoot='example',
-                      targetPdbFilename='example/1Y32.pdb',
-                      predictor=Predictor_ESMFold_RemoteApi(),
-                      fitnessFunction=Fitness_GDT(),
-                      populationSize=10,
-                      numIterations=20,
-                      selection=GA_Selection_Tournament(selectionSize=2,
-                                                        tournamentSize=3),
-                      recombination=GA_Recombination_TwoPointsCrossover(),
-                      mutation=GA_Mutation_SingleSwitch(probability=0.1),
-                      replacement=GA_Replacement_WorseOut())
-algorithm() # iniciamos la ejecución del algoritmo
-print(algorithm.best_solution)
-```
-
-Alternativamente, es posible replicar la ejecución del algoritmo anterior utilizando las clases individuales, como se muestra en el siguiente ejemplo:
-
-```python
-from evodesign.Prediction import Predictor_ESMFold_RemoteApi
-from evodesign.Fitness import Fitness_GDT
-from evodesign.GA.Selection import GA_Selection_Tournament
-from evodesign.GA.Recombination import GA_Recombination_TwoPointsCrossover
-from evodesign.GA.Mutation import GA_Mutation_SingleSwitch
-from evodesign.GA.Replacement import GA_Replacement_WorseOut
-import evodesign.FileIO as FileIO
-import evodesign.Chain as Chain
-from evodesign import Population, Statistics
-
-fitnessFn = Fitness_GDT()
-predictor = Predictor_ESMFold_RemoteApi()
-selection = GA_Selection_Tournament(selectionSize=2, tournamentSize=3)
-recombination = GA_Recombination_TwoPointsCrossover()
-mutation = GA_Mutation_SingleSwitch(probability=0.1)
-replacement = GA_Replacement_WorseOut()
-
-target_structure = FileIO.load_structure_from_pdb('example/1Y32.pdb')
-sequence_length = Chain.count_chain_residues(target_structure)
-target_backbone = Chain.filter_backbone_atoms_in_chain(target_structure)
-
-population = Population.new_random(size=10, 
-                                   sequenceLength=sequence_length,
-                                   iterationId=1)
-population.update_fitness(fitnessFn, predictor, target_backbone)
-# después de calcular la aptitud, la población se ordena de manera ascendente
-print(Statistics.new_from_population(population))
-while True:
-  if population.iteration_id == 20: # max. 20 iteraciones
-    break
-  if population[-1].fitness >= fitnessFn.upper_bound():
-    break
-  parents = selection(population)
-  children = recombination(parents)
-  mutation(children)
-  children.update_fitness(fitnessFn, predictor, target_backbone)
-  population = replacement(population, children)
-  print(Statistics.new_from_population(population))
-print(population[-1]) # mejor solución
+algorithm = GASteadyState(maxGenerations=100,
+                          popSize=100,
+                          predictor=ESMFoldRemoteApi(),
+                          selection=Tournament(tournamentSize=2),
+                          recombination=TwoPointsCrossover(),
+                          mutation=Swap(mutProb=0.1,
+                                        numSwaps=1),
+                          fitnessFn=LinearCombination(upperBound=0.95,
+                                                      terms=[
+                                                          Gdt(rmsdCalculator=Rmsd())
+                                                      ]))
+reference, population, _ = algorithm.setup('target_protein.pdb',
+                                           'path/to/workspace',
+                                           'target_protein.fasta')
+algorithm(reference, population) # begin algorithm execution
 ```
