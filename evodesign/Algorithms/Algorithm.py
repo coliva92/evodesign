@@ -104,7 +104,7 @@ class Algorithm(SettingsRetrievable, ABC):
     state = self.workspace.load_rng_state()
     if state is None:
       state = self.workspace.load_rng_state(loadCheckpoint=False)
-    if state != None:
+    if state is not None:
       rng.bit_generator.state = state
     else:
       self.workspace.save_rng_state(rng.bit_generator.state, checkpoint=False)
@@ -121,7 +121,7 @@ class Algorithm(SettingsRetrievable, ABC):
 
     # load the target sequence if one was provided
     ref_sequence = None
-    if targetFastaPath != None:
+    if targetFastaPath is not None:
       ref_sequence = self.workspace.load_target_fasta()
     return reference, population, ref_sequence
 

@@ -18,7 +18,7 @@ class PyRosettaRef2015(Metric):
 
   def __init__(self) -> None:
     super().__init__()
-    if self.score_fn != None: return
+    if self.score_fn is not None: return
     import pyrosetta
     pyrosetta.init()
     self.score_fn = pyrosetta.get_score_function(True)

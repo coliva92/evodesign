@@ -90,7 +90,7 @@ class FitnessFunction(SettingsRetrievable, ABC):
       term_values['plddt'] = kwargs['plddt']
     for term in self._terms:
       value = term(**kwargs)
-      if value != None:
+      if value is not None:
         term_values[term.column_name()] = value
     term_values[self.column_name()] = self.compute_fitness(term_values)
     return pd.Series(term_values)
