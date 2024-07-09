@@ -7,7 +7,7 @@ import pandas as pd
 
 
 
-class GA3(GenericGA):
+class GASimpleElitism(GenericGA):
   
   def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
     top_solution = population.iloc[0].copy()

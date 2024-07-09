@@ -6,18 +6,18 @@ import evodesign.Sequence as Sequence
 
 
 
-class Switch(Mutation):
+class Swap(Mutation):
   
   def _params(self) -> dict:
     params = super()._params()
-    params['numSwitches'] = self._num_switches
+    params['numSwaps'] = self._num_swaps
     return params
   
 
 
   def __init__(self, 
                mutProb: float = 1.,
-               numSwitches: int = 1
+               numSwaps: int = 1
                ) -> None:
     """
     Mutation operation in which a given number of residues are randomly 
@@ -35,12 +35,12 @@ class Switch(Mutation):
         The probability for applying this mutation operator over a given
         sequence. The default is 1.0 (i.e., mutate every and all sequences
         in a given population).
-    numSwitches : int, optional
+    numSwaps : int, optional
         The number of amino acids that will be exchanged in the sequence.
         The default is 1.
     """
     super().__init__(mutProb)
-    self._num_switches = numSwitches
+    self._num_swaps = numSwaps
   
 
 
@@ -61,9 +61,9 @@ class Switch(Mutation):
         The modified sequence.
     """
     rng = Random.generator()
-    indices = rng.choice(len(sequence), self._num_switches, replace=False)
+    indices = rng.choice(len(sequence), self._num_swaps, replace=False)
     # in Python, strings are immutable
     seq_list = list(sequence)
     for i in indices:
-      seq_list[i] = Sequence.switch_letter(seq_list[i])
+      seq_list[i] = Sequence.swap_letter(seq_list[i])
     return ''.join(seq_list)

@@ -1,8 +1,8 @@
 import sys
 from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
-from .Algorithms.GA1 import GA1 as Algorithms_GA1
-from .Algorithms.GA3 import GA3 as Algorithms_GA3
+from .Algorithms.GASteadyState import GASteadyState as Algorithms_GASteadyState
+from .Algorithms.GASimpleElitism import GASimpleElitism as Algorithms_GASimpleElitism
 from .Metrics.Plddt import Plddt as Metrics_Plddt
 from .Metrics.Rmsd import Rmsd as Metrics_Rmsd
 from .Metrics.Gdt import Gdt as Metrics_Gdt
@@ -29,7 +29,7 @@ from .Fitness.LinearCombination import LinearCombination \
 from .Fitness.Experimental.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .GA.Mutation.RandomResetting import RandomResetting \
   as GA_Mutation_RandomResetting
-from .GA.Mutation.Switch import Switch as GA_Mutation_Switch
+from .GA.Mutation.Swap import Swap as GA_Mutation_Swap
 from .GA.Recombination.MiddlePointCrossover import MiddlePointCrossover \
   as GA_Recombination_MiddlePointCrossover
 from .GA.Recombination.SinglePointCrossover import SinglePointCrossover \
