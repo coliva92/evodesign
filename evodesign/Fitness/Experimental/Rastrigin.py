@@ -36,7 +36,7 @@ class Rastrigin(FitnessFunction):
                upperBound: float = 0.0,
                windowWidth: int = 3
                ) -> None:
-    super().__init__(upperBound, [])
+    super().__init__([], upperBound)
 
     # acotamos los valores permitidos para la variable `windowWidth`...
     if windowWidth < 3: windowWidth = 3

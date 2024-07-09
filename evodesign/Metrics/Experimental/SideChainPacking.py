@@ -12,6 +12,11 @@ class SideChainPacking(Metric):
   @classmethod
   def column_name(cls) -> str:
     return 'sidechain_packing'
+  
+
+
+  def _params(self) -> dict:
+    return { 'scwrlExecutablePath': self._scwrl_executable }
 
 
 
@@ -27,7 +32,7 @@ class SideChainPacking(Metric):
 
 
 
-  def __call__(self, **kwargs) -> float:
+  def compute_value(self, **kwargs) -> float:
     sequence = kwargs['sequence']
     os.makedirs(self._scwrl_outputs_folder, exist_ok=True)
     with open(self._scwrl_sequence_filename, 'wt', encoding='utf-8') as seq_file:

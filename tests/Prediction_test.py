@@ -1,6 +1,6 @@
 from unittest import TestCase
 from evodesign.Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi
-from evodesign.Chain import Chain
+import evodesign.Chain as Chain
 import os
 
 

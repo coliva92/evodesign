@@ -1,7 +1,7 @@
 from abc import ABC
 from unittest import TestCase
-from evodesign.Population import Population
-from evodesign.Sequence import Sequence
+import evodesign.Population as Population
+import evodesign.Sequence as Sequence
 import pandas as pd
 
 

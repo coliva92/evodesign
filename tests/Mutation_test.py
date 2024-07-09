@@ -1,7 +1,7 @@
 from abc import ABC
 from Utils import EvoDesignTestCase
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
-from evodesign.Population import Population
+import evodesign.Population as Population
 
 
 

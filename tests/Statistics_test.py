@@ -1,6 +1,6 @@
 from unittest import TestCase
-from evodesign.Statistics import Statistics
-from evodesign.Population import Population
+import evodesign.Statistics as Statistics
+import evodesign.Population as Population
 
 
 

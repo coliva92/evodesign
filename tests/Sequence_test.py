@@ -1,6 +1,6 @@
 from Utils import EvoDesignTestCase
-from evodesign.Sequence import Sequence
-from evodesign.Random import Random
+import evodesign.Sequence as Sequence
+import evodesign.Random as Random
 
 
 
@@ -17,7 +17,7 @@ class SequenceTests(EvoDesignTestCase):
   def test_amino_acid_exchange(self):
     rng = Random.generator()
     old_letter = rng.choice(list(Sequence.AMINO_ACIDS))
-    new_letter = Sequence.switch_residue(old_letter)
+    new_letter = Sequence.swap_letter(old_letter)
     self.assertIsInstance(new_letter, str)
     new_letter_length = len(new_letter)
     self.assertEqual(new_letter_length, 1)

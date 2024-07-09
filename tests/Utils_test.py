@@ -1,5 +1,5 @@
 from unittest import TestCase
-import evodesign.Operators as op
+import evodesign.Utils as op
 import pandas as pd
 import numpy as np
 
@@ -7,7 +7,7 @@ import numpy as np
 
 
 
-class OperatorsTests(TestCase):
+class UtilsTest(TestCase):
 
   def setUp(self):
     self.array_A = np.array([ 1.0, 1.5, 2.0, 0.0 ])
@@ -69,7 +69,7 @@ class OperatorsTests(TestCase):
 
 
   def test_first_before_second_value1(self):
-    A_before_B = op.comes_first(self.series_A, 
+    A_before_B = op.is_sorted_before(self.series_A, 
                                 self.series_B,
                                 [ 'value1' ],
                                 [ False ])
@@ -78,7 +78,7 @@ class OperatorsTests(TestCase):
 
 
   def test_second_not_before_first_value1(self):
-    B_before_A = op.comes_first(self.series_B,
+    B_before_A = op.is_sorted_before(self.series_B,
                                 self.series_A,
                                 [ 'value1' ],
                                 [ False ])
@@ -87,7 +87,7 @@ class OperatorsTests(TestCase):
 
 
   def test_first_before_third_value1(self):
-    A_before_C = op.comes_first(self.series_A,
+    A_before_C = op.is_sorted_before(self.series_A,
                                 self.series_C,
                                 [ 'value1' ],
                                 [ False ])
@@ -96,7 +96,7 @@ class OperatorsTests(TestCase):
 
 
   def test_first_not_before_third_value1_value2(self):
-    A_before_C = op.comes_first(self.series_A, 
+    A_before_C = op.is_sorted_before(self.series_A, 
                                 self.series_C,
                                 [ 'value1', 'value2' ],
                                 [ False, True ])
@@ -105,7 +105,7 @@ class OperatorsTests(TestCase):
 
 
   def test_third_before_first_value1_value2(self):
-    C_before_A = op.comes_first(self.series_C, 
+    C_before_A = op.is_sorted_before(self.series_C, 
                                 self.series_A,
                                 [ 'value1', 'value2' ],
                                 [ False, True ])
@@ -114,7 +114,7 @@ class OperatorsTests(TestCase):
 
 
   def test_first_before_first_value1_value2(self):
-    A_before_A = op.comes_first(self.series_A,
+    A_before_A = op.is_sorted_before(self.series_A,
                                 self.series_A,
                                 [ 'value1', 'value2' ],
                                 [ False, True ])

@@ -1,7 +1,7 @@
 from abc import ABC
 from Utils import EvoDesignTestCase
 from evodesign.GA.Recombination.UniformCrossover import UniformCrossover
-from evodesign.Population import Population
+import evodesign.Population as Population
 
 
 

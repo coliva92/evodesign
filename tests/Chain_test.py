@@ -1,5 +1,5 @@
 from unittest import TestCase
-from evodesign.Chain import Chain
+import evodesign.Chain as Chain
 
 
 

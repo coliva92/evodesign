@@ -47,8 +47,8 @@ class LinearCombination(FitnessFunction):
     RuntimeError
         If the length of `terms` and `coefficients` are not the same.
     """
-    super().__init__(upperBound, terms)
-    if len(coefficients) == 0:
+    super().__init__(terms, upperBound)
+    if coefficients is None or len(coefficients) == 0:
       coefficients = len(self._terms) * [ 1.0 ]
     if len(coefficients) != len(self._terms):
       raise RuntimeError

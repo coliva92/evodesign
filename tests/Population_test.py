@@ -1,5 +1,5 @@
 from Utils import EvoDesignTestCase
-from evodesign.Population import Population
+import evodesign.Population as Population
 
 
 

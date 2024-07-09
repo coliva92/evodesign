@@ -1,10 +1,10 @@
 from unittest import TestCase
-from evodesign.Settings import Settings
-from evodesign.Fitness.Rmsd import Rmsd
-from evodesign.Fitness.Gdt import Gdt
+import evodesign.Settings as Settings
+from evodesign.Fitness.LinearCombination import LinearCombination
+from evodesign.Metrics.Gdt import Gdt
+from evodesign.Metrics.Rmsd import Rmsd
 from evodesign.Fitness.Experimental.Rastrigin import Rastrigin
-from evodesign.Fitness.Experimental.RmsdCyclization import RmsdCyclization
-from evodesign.Fitness.Experimental.SideChainPacking import SideChainPacking
+from evodesign.Metrics.Experimental.SideChainPacking import SideChainPacking
 from evodesign.GA.Selection.Tournament import Tournament
 from evodesign.Workspace import Workspace
 import math
@@ -21,36 +21,35 @@ class SettingsTests(TestCase):
   
 
 
-  def test_fitness_rmsd_settings_retrieval(self):
+  def test_fitness_linear_combination_settings_retrieval(self):
     correct_settings = {
-      'Fitness.Rmsd': {
-        'upperBound': -0.5
+      'Fitness.LinearCombination': {
+        'upperBound': 0.99,
+        'coefficients': [ 1.0 ],
+        'terms': [
+          {
+            "Metrics.Gdt": {
+              "cutoffs": [ 1.0, 2.0, 4.0, 8.0 ],
+              "rmsdCalculator": {
+                "Metrics.Rmsd": {}
+              }
+            }
+          }
+        ]
       }
     }
-    rmsd = Rmsd()
-    settings = rmsd.settings()
+    fitness_fn = LinearCombination(upperBound=0.99, terms=[ Gdt(rmsdCalculator=Rmsd()) ])
+    settings = fitness_fn.settings()
     self.assertEqual(settings, correct_settings)
   
 
 
-  def test_fitness_gdt_settings_retrieval(self):
+  def test_rastrigin_settings_retrieval(self):
     correct_settings = {
-      'Fitness.Gdt': {
-        'upperBound': 0.95,
-        'cutoffs': [ 1.0, 2.0, 4.0, 8.0 ]
-      }
-    }
-    gdt = Gdt()
-    settings = gdt.settings()
-    self.assertEqual(settings, correct_settings)
-  
-
-
-  def test_fitness_rastrigin_settings_retrieval(self):
-    correct_settings = {
-      'Fitness.Rastrigin': {
+      'Fitness.Experimental.Rastrigin': {
         'upperBound': 0.0,
-        'windowWidth': 3
+        'windowWidth': 3,
+        'terms': []
       }
     }
     rastrigin = Rastrigin()
@@ -59,24 +58,9 @@ class SettingsTests(TestCase):
   
 
 
-  def test_fitness_cyclization_settings_retrieval(self):
+  def test_sc_packing_settings_retrieval(self):
     correct_settings = {
-      'Fitness.Experimental.RmsdCyclization': {
-        'upperBound': 1.0,
-        'rmsdWeight': 1.0,
-        'cycWeight': 1.0
-      }
-    }
-    cyclization = RmsdCyclization()
-    settings = cyclization.settings()
-    self.assertEqual(settings, correct_settings)
-  
-
-
-  def test_fitness_sc_packing_settings_retrieval(self):
-    correct_settings = {
-      'Fitness.Experimental.SideChainPacking': {
-        'upperBound': -math.inf,
+      'Metrics.Experimental.SideChainPacking': {
         'scwrlExecutablePath': './scwrl4/Scwrl4'
       }
     }
@@ -103,9 +87,18 @@ class SettingsTests(TestCase):
           }
         },
         'fitnessFn': {
-          'Fitness.Gdt': {
-            'cutoffs': [ 0.5, 1.0 ]
+          "Fitness.LinearCombination": {
+            "upperBound": 0.95,
+            "terms": [
+              {
+                'Metrics.Gdt': {
+                  'cutoffs': [ 0.5, 1.0 ],
+                  'rmsdCalculator': { 'Metrics.Rmsd': {} }
+                }
+              }
+            ]
           }
+          
         },
         'selection': {
           'GA.Selection.Tournament': {
@@ -115,12 +108,10 @@ class SettingsTests(TestCase):
           }
         },
         'recombination': {
-          'GA.Recombination.MiddlePointCrossover': {
-            'probability': 1.0
-          }
+          'GA.Recombination.MiddlePointCrossover': {}
         },
         'mutation': {
-          'GA.Mutation.Switch': {}
+          'GA.Mutation.Swap': {}
         }
       }
     }
@@ -128,12 +119,12 @@ class SettingsTests(TestCase):
     correct_settings['Algorithms.GA2']['betterOffspringBias'] = 1.0
     correct_settings['Algorithms.GA2']['sortColumns'] = [ 'fitness_gdt', 'rmsd', 'plddt' ]
     correct_settings['Algorithms.GA2']['sortAscending'] = [ False, True, False ]
-    correct_settings['Algorithms.GA2']['fitnessFn']['Fitness.Gdt']['upperBound'] = 0.95
+    correct_settings['Algorithms.GA2']['fitnessFn']['Fitness.LinearCombination']['upperBound'] = 0.95
     correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['maxTemplateDate'] = '2020-05-14'
     correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['modelPreset'] = 'monomer'
     correct_settings['Algorithms.GA2']['predictor']['Prediction.AlphaFold']['dbPreset'] = 'reduced_dbs'
-    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Switch']['mutProb'] = 1.0
-    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Switch']['numSwitches'] = 1
+    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Swap']['mutProb'] = 1.0
+    correct_settings['Algorithms.GA2']['mutation']['GA.Mutation.Swap']['numSwaps'] = 1
     correct_settings['Algorithms.GA2']['selection']['GA.Selection.Tournament']['elitism'] = False
     settings = algo.settings()
     self.assertEqual(settings, correct_settings)
