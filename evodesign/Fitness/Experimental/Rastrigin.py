@@ -3,7 +3,7 @@ from typing import Dict, List
 import evodesign.Sequence as Sequence
 from ...Workspace import Workspace
 import evodesign.Chain as Chain
-import blosum as bl
+from Bio.Align import substitution_matrices, Array
 import math
 import operator
 
@@ -54,7 +54,8 @@ class Rastrigin(FitnessFunction):
       workspace = Workspace.instance()
       structure = Chain.load_structure(workspace.target_pdb_path)
       self._target_sequence = Sequence.create_random(Chain.length(structure))
-      self._residue_ordinals = self._compute_residue_ordinals(bl.BLOSUM(62))
+      blosum_matrix = substitution_matrices.load("BLOSUM62")
+      self._residue_ordinals = self._compute_residue_ordinals(blosum_matrix)
     x = self._to_rastrigin_domain(kwargs['sequence'])
     sigma = sum([ 
       x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
@@ -65,7 +66,7 @@ class Rastrigin(FitnessFunction):
 
 
   def _compute_residue_ordinals(self, 
-                                blosum_matrix: bl.BLOSUM
+                                blosum_matrix: Array
                                 ) -> List[Dict[str, float]]:
     # Para convertir una secuencia de aminoácidos a un vector de la misma
     # longitud que contiene números en el intervalo [-5.12, 5.12], vamos a 
