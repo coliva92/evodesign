@@ -41,7 +41,7 @@ class Energy(Metric):
 
 
   def compute_value(self, **kwargs) -> float:
-    if self._reference_energy == None:
+    if self._reference_energy is None:
       workspace = Workspace.instance()
       import pyrosetta
       pose = pyrosetta.pose_from_pdb(workspace.target_pdb_path)

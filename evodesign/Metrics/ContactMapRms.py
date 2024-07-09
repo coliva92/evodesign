@@ -22,7 +22,7 @@ class ContactMapRms(Metric):
   def compute_value(self, **kwargs) -> float:
     # TODO: guardar los mapas de contacto en un archivo
     model, reference = kwargs['model'], kwargs['reference']
-    if self._reference_map == None:
+    if self._reference_map is None:
       self._reference_map = self._contact_map(reference)
     model_map = self._contact_map(model)
     difference = self._reference_map - model_map

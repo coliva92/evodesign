@@ -31,9 +31,9 @@ class ESM2Descriptors(Metric):
 
 
   def compute_value(self, **kwargs) -> None:
-    sequence, sequence_id = kwargs['sequence'], kwargs['sequence_id']
+    sequence, sequence_id = kwargs['sequence'], kwargs['sequenceId']
     other_metrics = kwargs['otherMetrics']
-    if self.model == None or self.batch_converter == None:
+    if self.model is None or self.batch_converter is None:
       import esm
       import torch
       self.model, alphabet = esm.pretrained.esm2_t36_3B_UR50D()
@@ -62,7 +62,7 @@ class ESM2Descriptors(Metric):
                                 sequence_id: str = 'prot_0000_0000'
                                 ) -> npt.NDArray[np.float64]:
     import torch
-    if self.model == None or self.batch_converter == None:
+    if self.model is None or self.batch_converter is None:
       import esm
       self.model, alphabet = esm.pretrained.esm2_t36_3B_UR50D()
       self.batch_converter = alphabet.get_batch_converter()

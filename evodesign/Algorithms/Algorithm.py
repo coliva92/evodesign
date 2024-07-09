@@ -102,7 +102,7 @@ class Algorithm(SettingsRetrievable, ABC):
     # initialize the RNG
     rng = Random.generator()
     state = self.workspace.load_rng_state()
-    if state == None:
+    if state is None:
       state = self.workspace.load_rng_state(loadCheckpoint=False)
     if state != None:
       rng.bit_generator.state = state

@@ -29,7 +29,7 @@ class Workspace:
 
   def __new__(cls, *args, **kwargs):
     # this class is a singleton
-    if cls._instance == None: 
+    if cls._instance is None: 
       cls._instance = super(Workspace, cls).__new__(cls)
     return cls._instance
 
@@ -94,7 +94,7 @@ class Workspace:
     Makes a copy in the workspace folder of the target FASTA file. 
     If no such file was provided, then this function does nothing.
     """
-    if self.target_fasta_path == None: return
+    if self.target_fasta_path is None: return
     name = os.path.basename(self.target_pdb_path)
     destination = f'{self.root_dir}/{name}'
     if self.target_pdb_path != destination:
@@ -105,7 +105,7 @@ class Workspace:
 
 
   def load_target_fasta(self):
-    if self.target_fasta_path == None: return None
+    if self.target_fasta_path is None: return None
     for line in open(self.target_fasta_path, 'rt', encoding='utf-8'):
       if line.find('>') > -1: continue
       sequence = line
