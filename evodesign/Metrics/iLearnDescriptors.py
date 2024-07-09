@@ -42,15 +42,15 @@ class iLearnDescriptors(Metric):
     fasta_path = f'{workspace.root_dir}/.temp.fasta'
     with open(fasta_path, 'wt', encoding='utf-8') as fasta_file:
       fasta_file.write(f'>{sequence_id}|null|null|null\n{sequence}\n')
-    csv_path = self.vectors_csv_path(sequence_id)
-    vector_paths = self.compute_descriptors(fasta_path, csv_path)
+    csv_dir = self.vectors_csv_dir(sequence_id)
+    vector_paths = self.compute_descriptors(fasta_path, csv_dir)
     for method, filepath in vector_paths.items():
       other_metrics[method] = filepath
     os.remove(fasta_path)
   
 
 
-  def vectors_csv_path(self, sequence_id: str) -> str:
+  def vectors_csv_dir(self, sequence_id: str) -> str:
     workspace = Workspace.instance()
     return f'{workspace.ilearn_dir}/{sequence_id}'
   
@@ -68,7 +68,7 @@ class iLearnDescriptors(Metric):
   def load_vector_from_csv(self, csvPath: str) -> npt.NDArray[np.float64]:
     for line in open(csvPath, 'rt'):
       values = line.split(',')
-    vector = np.array([ float(x.strip()) for x in values ])
+    vector = np.array([ float(x.strip()) for x in values if x.find('null') == -1 ])
     return vector
   
 
@@ -77,15 +77,14 @@ class iLearnDescriptors(Metric):
                           fastaPath: str,
                           csvDir: str
                           ) -> Dict[str, str]:
-    workspace = Workspace.instance()
-    os.makedirs(workspace.ilearn_dir, exist_ok=True)
+    os.makedirs(csvDir, exist_ok=True)
     output = {}
     for method in self._methods:
       csv_path = f'{csvDir}/{method}.csv'
       output[method] = csv_path
       for line in self._descriptor_method_cmd(method, fastaPath, csv_path):
         print(line, end='')
-    return
+    return output
 
 
 
