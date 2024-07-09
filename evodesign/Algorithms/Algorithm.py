@@ -71,7 +71,7 @@ class Algorithm(SettingsRetrievable, ABC):
             targetPdbPath: str,
             workspaceDir: str,
             targetFastaPath: Optional[str] = None
-            ) -> Tuple[List[Atom], pd.DataFrame, str | None]:
+            ) -> Tuple[List[Atom], pd.DataFrame, Optional[str]]:
     """
     Initializes the workspace and the RNG, as well as the reference backbone
     and the population before running the evolutionary algorithm.

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict
+from typing import List, Dict, Union
 from ..Metrics.Metric import Metric
 from ..SettingsRetrievable import SettingsRetrievable
 import pandas as pd
@@ -46,7 +46,7 @@ class FitnessFunction(SettingsRetrievable, ABC):
   
   @abstractmethod
   def compute_fitness(self, 
-                      termValues: Dict[str, int | float | str] = {}
+                      termValues: Dict[str, Union[int, float, str]] = {}
                       ) -> float:
     raise NotImplementedError
 
@@ -88,6 +88,6 @@ class FitnessFunction(SettingsRetrievable, ABC):
     for term in self._terms:
       value = term(**kwargs)
       if value != None:
-        term_values[term.column_name()] = term(**kwargs)
+        term_values[term.column_name()] = value
     term_values[self.column_name()] = self.compute_fitness(term_values)
     return pd.Series(term_values)

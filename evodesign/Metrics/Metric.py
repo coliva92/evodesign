@@ -41,7 +41,7 @@ class Metric(SettingsRetrievable, ABC):
         one of the 20 essential amino acids.
     sequence_id : str, optional
         The unique identifier for the given sequence.
-    otherMetrics : Dict[str, int  |  float  |  str], optional
+    otherMetrics : Dict[str, Union[int, float, str]], optional
         The previously computed values for other metrics. Default is an empty 
         dictionary.
 

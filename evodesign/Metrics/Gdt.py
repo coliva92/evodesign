@@ -54,7 +54,7 @@ class Gdt(Metric):
         The model backbone.
     reference : List[Bio.PDB.Atom.Atom]
         The reference backbone.
-    otherMetrics : Dict[str, int | float | str], optional
+    otherMetrics : Dict[str, Union[int, float, str]], optional
         The previously computed values of other metrics. Default is an empty 
         dictionary.
 

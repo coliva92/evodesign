@@ -1,6 +1,6 @@
 from .FitnessFunction import FitnessFunction
 from ..Metrics.Metric import Metric
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 
 
@@ -57,7 +57,7 @@ class LinearCombination(FitnessFunction):
 
 
   def compute_fitness(self, 
-                      termValues: Dict[str, int | float | str] = {}
+                      termValues: Dict[str, Union[int, float, str]] = {}
                       ) -> float:
     """
     Uses the provided term values and the configured coefficients to compute the
@@ -65,7 +65,7 @@ class LinearCombination(FitnessFunction):
 
     Parameters
     ----------
-    termValues : Dict[str, int  |  float  |  str], optional
+    termValues : Dict[str, Union[int, float, str]], optional
         The values of all the individual terms required for the computation 
         of the fitness value. Default is an empty dictionary. 
 

@@ -1,7 +1,7 @@
 from .FitnessFunction import FitnessFunction
 from ..Metrics.Metric import Metric
 import numpy as np
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 
 
 
@@ -58,7 +58,7 @@ class WeightedMean(FitnessFunction):
 
 
   def compute_fitness(self, 
-                      termValues: Dict[str, int | float | str] = {}
+                      termValues: Dict[str, Union[int, float, str]] = {}
                       ) -> float:
     """
     Uses the provided term values and the configured weights to compute the 
@@ -66,7 +66,7 @@ class WeightedMean(FitnessFunction):
 
     Parameters
     ----------
-    termValues : Dict[str, int | float | str], optional
+    termValues : Dict[str, any], optional
         The values of all the individual terms required for the computation 
         of the fitness value. Default is an empty dictionary. 
 
