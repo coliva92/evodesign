@@ -6,7 +6,7 @@ from .Predictor import Predictor
 
 class ESMFold(Predictor):
 
-  _model = None
+  model = None
   
 
 
@@ -30,7 +30,7 @@ class ESMFold(Predictor):
     """
     import torch
     import esm
-    if not self.model:
+    if self.model is None:
       self.model = esm.pretrained.esmfold_v1()
       self.model.eval().cuda()
       self.model.set_chunk_size(128)
