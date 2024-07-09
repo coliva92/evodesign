@@ -107,7 +107,7 @@ def sequence_id(generation_id: int,
   
 
 
-def filename(population: pd.DataFrame) -> str:
+def file_path(population: pd.DataFrame) -> str:
     """
     Returns the full path to the CSV file where the given population ought to be 
     saved.

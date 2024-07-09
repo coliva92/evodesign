@@ -63,6 +63,6 @@ class RandomResetting(Mutation):
         The modified sequence.
     """
     return ''.join([
-      Sequence.switch_letter(x) if Random.coin_toss(self._exchange_prob) else x
+      Sequence.swap_letter(x) if Random.coin_toss(self._exchange_prob) else x
       for x in sequence
     ])

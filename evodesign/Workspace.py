@@ -138,7 +138,7 @@ class Workspace:
     os.makedirs(self.populations_dir, exist_ok=True)
     filename = f'{self.root_dir}/.next_population' \
                if temporary \
-               else f'{self.populations_dir}/{Population.filename(population)}'
+               else f'{self.populations_dir}/{Population.file_path(population)}'
     population.to_csv(filename, index=False)
     
   

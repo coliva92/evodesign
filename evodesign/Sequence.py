@@ -29,7 +29,7 @@ def create_random(length: int) -> str:
 
 
 
-def switch_letter(letter: str) -> str:
+def swap_letter(letter: str) -> str:
     """
     Produce a single random amino acid letter that's different from the one
     specified by `letter`.
