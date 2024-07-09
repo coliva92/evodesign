@@ -18,7 +18,10 @@ class FitnessFunction(SettingsRetrievable, ABC):
 
 
   def _params(self) -> dict:
-    return { 'upperBound': self._upper_bound }
+    return {
+      'upperBound': self._upper_bound,
+      'terms': [ term.settings() for term in self._terms ]
+    }
   
 
 
