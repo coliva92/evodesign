@@ -14,7 +14,10 @@ class ESMFoldRemoteApi(Predictor):
         return { 
             'url': self._url,
             'request_is_json': self._request_is_json,
-            'response_is_json': self._response_is_json
+            'response_is_json': self._response_is_json,
+            'sequence_json_key': self._sequence_json_key,
+            'prediction_json_key': self._prediction_json_key,
+            'sleep_time': self._sleep_time
         }
     
 
@@ -22,7 +25,10 @@ class ESMFoldRemoteApi(Predictor):
     def __init__(self, 
                  url: str = 'https://api.esmatlas.com/foldSequence/v1/pdb/',
                  request_is_json: bool = False,
-                 response_is_json: bool = False
+                 response_is_json: bool = False,
+                 sequence_json_key: str = 'input',
+                 prediction_json_key: str = 'output',
+                 sleep_time: float = 1.5
                  ) -> None:
         """
         Interface for interacting with the ESMFold model running as an API
@@ -34,11 +40,35 @@ class ESMFoldRemoteApi(Predictor):
             The URL of the remote API to be called. The default is the URL
             for Meta's ESM Metagenomic Atlas (see [here](https://esmatlas.com/about#api)
             for more details).
+        request_is_json : bool, optional
+            Indicates if the request data is sent to the remote API in JSON 
+            format or as a raw string in the request body. Default is `False`.
+        response_is_json : bool, optional
+            Indicates if the response data is recieved from the remote API in 
+            JSON format or as a raw string in the request body. Default is 
+            `False`.
+        sequence_json_key : str, optional
+            If `request_is_json` is `True`, then `sequence_json_key` describes 
+            the name of the field in the request JSON that will contain the 
+            amino acid sequence. Default is "input".
+        prediction_json_key : str, optional
+            If `response_is_json` is `True`, then `prediction_json_key` 
+            describes the name of the field in the response JSON that should
+            contain the PDB string of the predicted structure. Default is 
+            "output".
+        sleep_time : float, optional
+            A waiting time (in seconds) set in between requests to the remote 
+            API. Increase this number if the remote API limites the rate at 
+            which it admits requests. Set to zero to send requests with no wait
+            time between them. Default is 1.5 seconds.
         """
         self._url = url
-        self._verify = self._url.find('esmatlas') == -1
         self._request_is_json = request_is_json
         self._response_is_json = response_is_json
+        self._sequence_json_key = sequence_json_key
+        self._prediction_json_key = prediction_json_key
+        self._sleep_time = sleep_time
+        self._verify = self._url.find('esmatlas') == -1
 
 
 
@@ -73,14 +103,15 @@ class ESMFoldRemoteApi(Predictor):
             Raises this exception when the API responds with any other HTTP error 
             code not listed here
         """
-        if self._url.find('esmatlas') != -1: time.sleep(1.5)
+        if self._sleep_time > 0: 
+            time.sleep(self._sleep_time)
         if self._request_is_json:
             response = requests.post(self._url, 
-                                    json={ 'input': sequence },
+                                    json={ self._sequence_json_key: sequence },
                                     timeout=30, 
                                     verify=self._verify)
         else:
-            respose = requests.post(self._url, 
+            response = requests.post(self._url, 
                                     data=sequence, 
                                     timeout=30, 
                                     verify=self._verify)
@@ -97,5 +128,5 @@ class ESMFoldRemoteApi(Predictor):
             print(response.content.decode())
             raise HttpUnknownError
         if self._response_is_json:
-            return response.json()['output']
+            return response.json()[self._prediction_json_key]
         return response.content.decode()
