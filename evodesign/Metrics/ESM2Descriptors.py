@@ -94,7 +94,6 @@ class ESM2Descriptors(Metric):
     # free GPU memory
     del tokens
     del result
-    torch.cuda.empty_cache()
 
     # collapse all weights into a single vector
     vector = np.concatenate(matrix, axis=0)
