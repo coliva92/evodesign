@@ -11,12 +11,18 @@ from typing import Optional
 class ESMFoldRemoteApi(Predictor):
 
     def _params(self) -> dict:
-        return { 'url': self._url }
+        return { 
+            'url': self._url,
+            'request_is_json': self._request_is_json,
+            'response_is_json': self._response_is_json
+        }
     
 
 
     def __init__(self, 
-                 url: Optional[str] = 'https://api.esmatlas.com/foldSequence/v1/pdb/'
+                 url: str = 'https://api.esmatlas.com/foldSequence/v1/pdb/',
+                 request_is_json: bool = False,
+                 response_is_json: bool = False
                  ) -> None:
         """
         Interface for interacting with the ESMFold model running as an API
@@ -31,6 +37,8 @@ class ESMFoldRemoteApi(Predictor):
         """
         self._url = url
         self._verify = self._url.find('esmatlas') == -1
+        self._request_is_json = request_is_json
+        self._response_is_json = response_is_json
 
 
 
@@ -66,10 +74,16 @@ class ESMFoldRemoteApi(Predictor):
             code not listed here
         """
         if self._url.find('esmatlas') != -1: time.sleep(1.5)
-        response = requests.post(self._url, 
-                                 data=sequence, 
-                                 timeout=30, 
-                                 verify=self._verify)
+        if self._request_is_json:
+            response = requests.post(self._url, 
+                                    json={ 'input': sequence },
+                                    timeout=30, 
+                                    verify=self._verify)
+        else:
+            respose = requests.post(self._url, 
+                                    data=sequence, 
+                                    timeout=30, 
+                                    verify=self._verify)
         if response.status_code == 400:
             raise HttpBadRequest
         if response.status_code == 403:
@@ -82,4 +96,6 @@ class ESMFoldRemoteApi(Predictor):
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
+        if self._response_is_json:
+            return response.json()['output']
         return response.content.decode()
