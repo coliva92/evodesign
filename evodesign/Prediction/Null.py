@@ -8,40 +8,36 @@ from Bio.PDB.Atom import Atom
 
 class Null(Predictor):
   
-  def predict_structure(self, 
-                        sequence: str, 
-                        pdbPath: str) -> None:
-    """
-    Does nothing.
+    def predict_raw_pdb(self, sequence: str) -> str:
+        """
+        Does nothing.
 
-    Parameters
-    ----------
-    sequence : str
-        Unused.
-    pdbPath : str
-        Unused.
-    """
-    pass
+        Parameters
+        ----------
+        sequence : str
+            Unused.
+        """
+        pass
 
 
 
-  def __call__(self,
-               sequence: str, 
-               pdbPath: str
-               ) -> Tuple[List[Atom], float]:
-    """
-    Does nothing.
+    def __call__(self,
+                 sequence: str, 
+                 pdb_path: str
+                 ) -> Tuple[List[Atom], float]:
+        """
+        Does nothing.
 
-    Parameters
-    ----------
-    sequence : str
-        Unused.
-    pdbPath : str
-        Unused.
+        Parameters
+        ----------
+        sequence : str
+            Unused.
+        pdbPath : str
+            Unused.
 
-    Returns
-    -------
-    List[Atom]
-        An empty list.
-    """
-    return [], 0.0
+        Returns
+        -------
+        List[Atom]
+            An empty list.
+        """
+        return [], 0.0
