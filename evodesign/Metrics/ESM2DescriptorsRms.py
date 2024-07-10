@@ -15,14 +15,14 @@ class ESM2DescriptorsRms(Metric):
 
 
   def _params(self) -> dict:
-    return { 'descriptor_calc': self._descriptor_calc.settings() }
+    return { 'useGpu': self._descriptor_calc._use_gpu }
   
 
 
-  def __init__(self, descriptor_calc: ESM2Descriptors) -> None:
+  def __init__(self, useGpu: bool = True) -> None:
     super().__init__()
     self._ref_vector = None
-    self._descriptor_calc = descriptor_calc 
+    self._descriptor_calc = ESM2Descriptors(useGpu) 
   
 
 

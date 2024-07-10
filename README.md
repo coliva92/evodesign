@@ -139,15 +139,7 @@ All these characteristics can be described in a settings JSON file like the foll
         "fitnessFn": {
             "Fitness.LinearCombination": {
                 "upperBound": 0.95,
-                "terms": [
-                    {
-                        "Metrics.Gdt": {
-                            "rmsdCalculator": {
-                                "Metrics.Rmsd": {}
-                            }
-                        }
-                    }
-                ]
+                "terms": [{ "Metrics.Gdt": {} }]
             }
         }
     }

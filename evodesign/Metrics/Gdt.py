@@ -15,15 +15,11 @@ class Gdt(Metric):
 
   
   def _params(self) -> dict:
-    return {
-      'cutoffs': self._cutoffs,
-      'rmsdCalculator': self._rmsd_calc.settings()
-    }
+    return { 'cutoffs': self._cutoffs }
   
 
 
-  def __init__(self, 
-               rmsdCalculator: Rmsd,
+  def __init__(self,
                cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]
                ) -> None:
     """
@@ -39,7 +35,7 @@ class Gdt(Metric):
     """
     super().__init__()
     self._cutoffs = cutoffs
-    self._rmsd_calc = rmsdCalculator
+    self._rmsd_calc = Rmsd()
   
 
 
