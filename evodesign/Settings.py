@@ -1,4 +1,5 @@
 import sys
+import copy
 from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Algorithms.GASteadyState import GASteadyState as Algorithms_GASteadyState
@@ -20,7 +21,7 @@ from .Metrics.Normalization.Reciprocal import Reciprocal \
   as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
   as Metrics_Normalization_Cyclization
-from .Metrics.Yan24.Geometric import Geometric as Metrics_Yan24_Geometric
+from .Metrics.Yan24.Geometry import Geometry as Metrics_Yan24_Geometry
 from .Metrics.Yan24.Energy import Energy as Metrics_Yan24_Energy
 from .Metrics.Yan24.Descriptors import Descriptors as Metrics_Yan24_Descriptors
 from .Fitness.WeightedMean import WeightedMean as Fitness_WeightedMean
@@ -48,7 +49,6 @@ from .Prediction.ESMFoldColab import ESMFoldColab as Prediction_ESMFoldColab
 from .Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi \
   as Prediction_ESMFoldRemoteApi
 from .Prediction.Null import Null as Prediction_Null
-import copy
 
 
 
