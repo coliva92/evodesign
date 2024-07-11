@@ -11,34 +11,10 @@ from typing import Optional
 
 class Workspace:
 
-  _instance = None
-
-
-
-  @classmethod
-  def instance(cls):
-    """
-    Returns
-    -------
-    Workspace
-        The singleton instance for the Workspace object.
-    """
-    return cls._instance
-
-
-
-  def __new__(cls, *args, **kwargs):
-    # this class is a singleton
-    if cls._instance is None: 
-      cls._instance = super(Workspace, cls).__new__(cls)
-    return cls._instance
-
-
-
   def __init__(self, 
-               rootDir: str,
-               targetPdbPath: str,
-               targetFastaPath: Optional[str] = None
+               root_dir: str,
+               target_pdb_path: str,
+               target_fasta_path: Optional[str] = None
                ) -> None:
     """
     Interface for managing the file system folder where all the output files 
@@ -48,19 +24,19 @@ class Workspace:
     ----------
     path : str
         The folder where all the output files and folders will be stored.
-    targetPdbPath : str
+    target_pdb_path : str
         The path to the PDB file containing the target protein backbone.
-    targetFastaPath : str, optional
+    target_fasta_path : str, optional
         The path to the FASTA file containing the amino acid sequence of the 
         target protein. Default is `None`.
     """
-    self.root_dir = rootDir
-    self.target_pdb_path = targetPdbPath
+    self.root_dir = root_dir
+    self.target_pdb_path = target_pdb_path
     self.populations_dir = f'{self.root_dir}/populations'
     self.pdbs_dir = f'{self.root_dir}/pdbs'
     self.ilearn_dir = f'{self.root_dir}/ilearn'
     self.esm2_dir = f'{self.root_dir}/esm2'
-    self.target_fasta_path = targetFastaPath
+    self.target_fasta_path = target_fasta_path
   
 
 
@@ -205,14 +181,14 @@ class Workspace:
   
 
 
-  def load_rng_state(self, loadCheckpoint: bool = True) -> Optional[dict]:
+  def load_rng_state(self, checkpoint: bool = True) -> Optional[dict]:
     """
     Loads the RNG state from a previously saved JSON file in the workspace. 
     If no such file is found, then `None` is returned.
 
     Parameters
     ----------
-    loadCheckpoint : bool, optional
+    checkpoint : bool, optional
         If `True`, the workspace is first searched for the JSON file containing 
         the last known RNG state. If `False`, no such search is performed and 
         instead the workspace is immediately searched for the JSON file 
@@ -225,13 +201,13 @@ class Workspace:
         The state object found.
     """
     filename = f'{self.root_dir}/.rng_state_checkpoint'
-    if not (loadCheckpoint and os.path.isfile(filename)):
+    if not (checkpoint and os.path.isfile(filename)):
       filename = f'{self.root_dir}/initial_rng_state.json'
       if not os.path.isfile(filename):
         return None
     with open(filename, 'rt', encoding='utf-8') as json_file:
       state = json.load(json_file)
-    # TODO validate that the loaded json object has the correct format
+    # TODO validar que el json cargado tenga el formato correcto
     return state
   
 

@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
-from ..Workspace import Workspace
-import evodesign.Random as Random
-import evodesign.Chain as Chain
 import evodesign.Population as Population
 from ..Prediction.Predictor import Predictor
 from ..GA.Selection.Selection import Selection
 from ..GA.Recombination.Recombination import Recombination
 from ..GA.Mutation.Mutation import Mutation
-from Bio.PDB.Atom import Atom
 import pandas as pd
-from typing import Tuple, List, Optional
+from typing import List
 import math
+from ..Metrics.Metric import Metric
+from ..Context import Context
 
 
 
@@ -21,33 +19,35 @@ class Algorithm(SettingsRetrievable, ABC):
 
   def _params(self) -> dict:
     return {
-      'maxGenerations': self._max_generations,
-      'popSize': self._pop_size,
+      'max_generations': self._max_generations,
+      'population_size': self._pop_size,
       'predictor': self._predictor.settings(),
       'selection': self._selection.settings(),
       'recombination': self._recombination.settings(),
-      'mutation': self._mutation.settings()
+      'mutation': self._mutation.settings(),
+      'metrics': [ metric.settings() for metric in self._metrics ]
     }
   
 
 
   def __init__(self,
-               maxGenerations: int,
-               popSize: int,
+               max_generations: int,
+               population_size: int,
                predictor: Predictor,
                selection: Selection,
                recombination: Recombination,
-               mutation: Mutation
+               mutation: Mutation,
+               metrics: List[Metric]
                ) -> None:
     """
     The generic workflow of a genetic algorithm for protein design.
 
     Parameters
     ----------
-    maxGenerations : int
+    max_generations : int
         The maximum number of generations for which the algorithm will be 
-        executed.
-    popSize : int
+        executed (unless another termination condition is met first).
+    population_size : int
         The number of sequences in the population in each generation.
     predictor : Predictor
         The protein structure prediction algorithm that will be used.
@@ -57,21 +57,25 @@ class Algorithm(SettingsRetrievable, ABC):
         The parents recombination operation that will be used.
     mutation : Mutation
         The sequence mutation operation that will be used.
+    metrics : List[Metric]
+        The metrics to be computed for each individual in the population, and
+        to be used to compute the fitness function.
     """
-    self._max_generations = maxGenerations
-    self._pop_size = popSize
+    self._max_generations = max_generations
+    self._pop_size = population_size
     self._predictor = predictor
     self._selection = selection
     self._recombination = recombination
     self._mutation = mutation
+    self._metrics = metrics
+    self._context = None
   
 
 
   def setup(self,
-            targetPdbPath: str,
-            workspaceDir: str,
-            targetFastaPath: Optional[str] = None
-            ) -> Tuple[List[Atom], pd.DataFrame, Optional[str]]:
+            context: Context,
+            workspace_root: str,
+            ) -> pd.DataFrame:
     """
     Initializes the workspace and the RNG, as well as the reference backbone
     and the population before running the evolutionary algorithm.
@@ -96,126 +100,60 @@ class Algorithm(SettingsRetrievable, ABC):
         file is also returned. Otherwise, `None` is returned as a the third 
         value.
     """
-    # initialize the workspace
-    self.workspace = Workspace(workspaceDir, targetPdbPath, targetFastaPath)
-
-    # initialize the RNG
-    rng = Random.generator()
-    state = self.workspace.load_rng_state()
-    if state is None:
-      state = self.workspace.load_rng_state(loadCheckpoint=False)
-    if state is not None:
-      rng.bit_generator.state = state
-    else:
-      self.workspace.save_rng_state(rng.bit_generator.state, checkpoint=False)
+    # set the context and initialize the workspace and the RNG
+    self._context = Context(context.duplicate())
+    self._context.init_workspace(workspace_root)
+    self._context.workspace.save_commit_hash()
+    self._context.init_rng()
     
     # save the algorithm's settings
-    self.workspace.save_settings(self.settings())
+    self._context.workspace.save_settings(self.settings())
 
-    # load the target protein
-    reference = Chain.load_structure(targetPdbPath)
-    reference = Chain.backbone_atoms(reference)
+    # store the target PDB in the workspace
+    self._context.workspace.save_target_pdb()
+
+    # store the target FASTA in the workspace
+    self._context.workspace.save_target_fasta()
 
     # check if we are restoring from a previous population
-    population = self.workspace.load_population()
-
-    # load the target sequence if one was provided
-    ref_sequence = None
-    if targetFastaPath is not None:
-      ref_sequence = self.workspace.load_target_fasta()
-    return reference, population, ref_sequence
+    return self._context.workspace.load_population()
 
   
 
-  def __call__(self, 
-               reference: List[Atom], 
-               population: pd.DataFrame,
-               refSequence: Optional[str] = None,
-               **kwargs
-               ) -> None:
+  def __call__(self, population: pd.DataFrame) -> None:
     """
     Starts the execution of the evolutionary algorithm.
 
     Parameters
     ----------
-    reference : List[Bio.PDB.Atom.Atom]
-        The backbone of the target protein.
-    population : pandas.DataFrame, optional
+    population : pandas.DataFrame
         The population from which the evolutionary algorithm will begin its 
         execution.
-    refSequence : str, optional
-        The amino acid sequence of the target protein. Default is `None`. 
-    numGenerations : int, optional
-        If a value greater than zero is provided, the algorithm will be run 
-        for the given amount of generations, unless any other termination
-        condition is met. If a zero or lower value is provided, then the
-        algorithm will until the configured maximum number of generations
-        is met. The default is 0 (run until the maximum is met). 
-    
-    Raises
-    ------
-    Exceptions.HttpBadRequest
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        400.
-    Exceptions.HttpForbidden
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        403.
-    Exceptions.HttpInternalServerError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        500.
-    Exceptions.HttpGatewayTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        504.
-    Exceptions.HttpUnknownError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with any other HTTP
-        error code not listed here.
-    requests.exceptions.ConnectTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when communication attempt with the remote
-        server times out.
-    KeyboardInterrupt
-        Raised any time the user presses Ctrl + C from the standard input.
     """
     # set the limit for how many generations execute
     num_generations = math.inf
-    if 'numGenerations' in kwargs and kwargs['numGenerations'] > 0:
-      num_generations = kwargs['numGenerations']
-    
-    # compute the sequence length
-    sequence_length = len(reference) // len(Chain.BACKBONE_ATOMS)
+    if self._context.num_generations > 0:
+      num_generations = self._context.num_generations
     
     # set the generations counter
     t = 0
 
-    # store the target PDB in the workspace
-    self.workspace.save_target_pdb()
-
-    # store the target FASTA in the workspace
-    self.workspace.save_target_fasta()
-
     # load the statistics file
-    stats = self.workspace.load_statistics()
+    stats = self._context.workspace.load_statistics()
 
     # check if we are starting from an empty population or we are continuing
     # from the last population of an earlier execution
     if population.empty:
-      population = self.initial_population(sequence_length)
-      self.workspace.save_population(population)
-      self.workspace.save_rng_state(Random.generator().bit_generator.state)
+      population = self.initial_population(self._context.sequence_length)
+      self._context.workspace.save_population(population)
+      self._context.workspace.save_rng_state(self._context.rng.bit_generator.state)
       t = 1
     
     # if we are starting fresh, compute the fitness of all the initial 
     # individuals; if we are resuming from a previous population, continue
     # calculating the fitness of the individuals with missing fitness
     # (if there are any)
-    population = self.initial_fitness_computation(population, 
-                                                  reference, 
-                                                  refSequence)
+    population = self.initial_fitness_computation(population)
 
     # compute the statistics if we have not done it yet
     curr_gen_id = population.iloc[0]['generation_id']
@@ -224,9 +162,9 @@ class Algorithm(SettingsRetrievable, ABC):
       stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
     
     # save progress
-    self.workspace.save_population(population)
-    self.workspace.save_statistics(stats)
-    self.save_statistics_graph(stats)
+    self._context.workspace.save_population(population)
+    self._context.workspace.save_statistics(stats)
+    self.save_statistics_graph(stats) # TODO mover la graficacion a Statistics
 
     # main loop
     while True:
@@ -235,57 +173,31 @@ class Algorithm(SettingsRetrievable, ABC):
         break
       if population.iloc[0]['generation_id'] == self._max_generations:
         break
-      if stats.iloc[-1]['sequence_identity'] >= 0.95 * sequence_length:
+      if stats.iloc[-1]['sequence_identity'] >= 0.95 * self._context.sequence_length:
         break
       if self.termination(population):
         break
 
       # check if we are resuming from an earlier execution and the children were
       # already generated; if not, apply the evolutionary operations
-      children = self.workspace.load_population(temporary=True)
+      children = self._context.workspace.load_population(temporary=True)
       if children.empty:
         children = self.next_population(population)
-        self.workspace.save_rng_state(Random.generator().bit_generator.state)
-        self.workspace.save_population(children, temporary=True)
+        self._context.workspace.save_rng_state(self._context.rng.bit_generator.state)
+        self._context.workspace.save_population(children, temporary=True)
       
-      # compute the children's fitness and choose the surviving children
-      children = self.compute_fitness(children, 
-                                      reference,
-                                      refSequence,
-                                      temporary=True)
+      # compute the children's fitness and select the surviving children
+      children = self.compute_fitness(children, temporary=True)
       population = self.replacement(population, children)
       new_stats = self.compute_statistics(population)
       stats = pd.concat([ stats, new_stats.to_frame().T ], ignore_index=True)
 
       # save progress
-      self.workspace.save_population(population)
-      self.workspace.save_statistics(stats)
+      self._context.workspace.save_population(population)
+      self._context.workspace.save_statistics(stats)
       self.save_statistics_graph(stats)
-      self.workspace.delete_temporary_population()
+      self._context.workspace.delete_temporary_population()
       t += 1
-  
-
-
-  @abstractmethod
-  def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
-    raise NotImplementedError
-  
-
-
-  @abstractmethod
-  def save_statistics_graph(self, stats: pd.DataFrame) -> None:
-    raise NotImplementedError
-  
-
-
-  @abstractmethod
-  def compute_fitness(self, 
-                      population: pd.DataFrame,
-                      reference: List[Atom],
-                      refSequence: Optional[str] = None,
-                      **kwargs
-                      ) -> pd.DataFrame:
-    raise NotImplementedError
   
 
 
@@ -315,11 +227,39 @@ class Algorithm(SettingsRetrievable, ABC):
 
   @abstractmethod
   def initial_fitness_computation(self, 
-                                  population: pd.DataFrame,
-                                  reference: List[Atom],
-                                  refSequence: Optional[str] = None
+                                  population: pd.DataFrame
                                   ) -> pd.DataFrame:
     raise NotImplementedError
+  
+
+
+  @abstractmethod
+  def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
+    raise NotImplementedError
+  
+
+
+  @abstractmethod
+  def save_statistics_graph(self, stats: pd.DataFrame) -> None:
+    raise NotImplementedError
+  
+
+
+  def termination(self, population: pd.DataFrame) -> bool:
+    """
+    Checks if any additional termination conditions have been met.
+
+    Parameters
+    ----------
+    population : pandas.DataFrame
+        The population of the current generation.
+
+    Returns
+    -------
+    bool
+        A flag that indicates if any termination condition has been met or not.
+    """
+    return False
   
 
 
@@ -348,26 +288,17 @@ class Algorithm(SettingsRetrievable, ABC):
 
 
   @abstractmethod
+  def compute_fitness(self, 
+                      population: pd.DataFrame,
+                      **kwargs
+                      ) -> pd.DataFrame:
+    raise NotImplementedError
+  
+
+
+  @abstractmethod
   def replacement(self, 
                   population: pd.DataFrame, 
                   children: pd.DataFrame
                   ) -> pd.DataFrame:
     raise NotImplementedError
-  
-
-
-  def termination(self, population: pd.DataFrame) -> bool:
-    """
-    Checks if any additional termination conditions have been met.
-
-    Parameters
-    ----------
-    population : pandas.DataFrame
-        The population of the current generation.
-
-    Returns
-    -------
-    bool
-        A flag that indicates if any termination condition has been met or not.
-    """
-    return False

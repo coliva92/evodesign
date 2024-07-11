@@ -1,10 +1,10 @@
 from argparse import ArgumentParser
-from .Workspace import Workspace
 import evodesign.Settings as Settings
 from .Exceptions import *
 from requests.exceptions import ConnectTimeout
 import sys
 import json
+from .Context import Context
 
 
 
@@ -13,10 +13,10 @@ import json
 parser = ArgumentParser(prog='evodesign',
                         description='A rudimentary suite of evolutionary '
                                     'algorithms for protein design.')
-parser.add_argument('target_pdb',
+parser.add_argument('target_pdb_path',
                     help='path to the PDB file that contains the target '
                          'protein backbone')
-parser.add_argument('settings_filename', 
+parser.add_argument('settings_path', 
                     help='path to the JSON file describing the configuration '
                          'of the evolutionary algorithm to be executed')
 parser.add_argument('workspace_root',
@@ -28,7 +28,7 @@ parser.add_argument('-n', '--num_generations',
                     help='stops algorithm execution after a the specified '
                          'amount of generations are produced, instead of '
                          'the amount specified in the settings file')
-parser.add_argument('-f', '--target_fasta',
+parser.add_argument('-f', '--target_fasta_path',
                     type=str,
                     default=None,
                     help='path to the FASTA file containing the target '
@@ -37,26 +37,23 @@ parser.add_argument('-f', '--target_fasta',
                          'target protein')
 args = parser.parse_args()
 
-with open(args.settings_filename, 'rt', encoding='utf-8') as json_file:
+context = Context.create(args.target_pdb_path, 
+                         args.target_fasta_path, 
+                         args.num_generations)
+with open(args.settings_path, 'rt', encoding='utf-8') as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)
-reference, population, ref_sequence = algorithm.setup(args.target_pdb, 
-                                                      args.workspace_root,
-                                                      args.target_fasta)
-Workspace.instance().save_commit_hash()
+population = algorithm.setup(context, args.workspace_root)
 
 while True:
     try:
-        algorithm(reference, 
-                  population, 
-                  refSequence=ref_sequence, 
-                  numGenerations=args.num_generations)
+        algorithm(population)
         break
     except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
-        temp = f'-s {args.target_fasta} ' if args.target_fasta else ''
+        temp = f'-s {args.target_fasta_path} ' if args.target_fasta_path else ''
         print(f'\nINTERRUPTED.\n'
               f'Run `python -m evodesign {args.workspace_root} '
-              f'{args.target_pdb} {args.settings_filename}` '
+              f'{args.target_pdb_path} {args.settings_path}` '
               f'{temp} to resume later.')
         sys.exit(130) # SIGINT
     except (HttpInternalServerError, 
