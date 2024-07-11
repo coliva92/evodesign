@@ -46,9 +46,9 @@ class Descriptors(Metric):
     super().__init__(column)
     self._weight = weight
     self._ilearn_metric = ilearn_metric
+    if esm2_metric is None:
+      esm2_metric = ESM2Descriptors()
     self._esm2_metric = esm2_metric
-    if self._esm2_metric is None:
-      self._esm2_metric = ESM2Descriptors()
     self._ref_vectors = None
   
 

@@ -25,9 +25,9 @@ class Cyclization(Metric):
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
+    if cyclization_metric is None:
+      cyclization_metric = CyclizationMetric()
     self._cyclization_metric = cyclization_metric
-    if self._cyclization_metric is None:
-      self._cyclization_metric = CyclizationMetric()
   
 
 

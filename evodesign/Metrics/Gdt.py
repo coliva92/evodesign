@@ -35,9 +35,9 @@ class Gdt(Metric):
     """
     super().__init__(column)
     self._cutoffs = cutoffs
+    if rmsd_metric is None:
+      rmsd_metric = Rmsd()
     self._rmsd_metric = rmsd_metric
-    if self._rmsd_metric is None:
-      self._rmsd_metric = Rmsd()
   
 
 

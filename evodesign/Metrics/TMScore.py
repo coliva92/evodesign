@@ -21,9 +21,9 @@ class TMScore(Metric):
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
+    if rmsd_metric is None:
+      rmsd_metric = Rmsd()
     self._rmsd_metric = rmsd_metric
-    if self._rmsd_metric is None:
-      self._rmsd_metric = Rmsd()
   
 
 
