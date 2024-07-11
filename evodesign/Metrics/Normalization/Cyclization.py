@@ -1,5 +1,6 @@
 from ..Metric import Metric
-from ..Cyclization import Cyclization
+from ..Cyclization import Cyclization as CyclizationMetric
+from typing import Optional
 
 
 
@@ -12,28 +13,28 @@ class Cyclization(Metric):
   
 
 
-  def column_name(self) -> str:
-    return 'norm_cyclization'
-  
-
-
   def _params(self) -> dict:
-    return {
-      'cycCalc': self._cyclization.settings()
-    }
+    params = super()._params()
+    params['cyclization_calc'] = self._cyclization_metric.settings()
+    return params
   
 
 
-  def __init__(self, cycCalc: Cyclization) -> None:
-    super().__init__()
-    self._cyclization = cycCalc
+  def __init__(self, 
+               cyclization_metric: Optional[CyclizationMetric] = None,
+               column: Optional[str] = None
+               ) -> None:
+    super().__init__(column)
+    self._cyclization_metric = cyclization_metric
+    if self._cyclization_metric is None:
+      self._cyclization_metric = CyclizationMetric()
   
 
 
   def compute_value(self, **kwargs) -> float:
     otherMetrics = kwargs['otherMetrics']
-    value = self._cyclization(**kwargs)
-    otherMetrics[self._cyclization.column_name()] = value
+    value = self._cyclization_metric(**kwargs)
+    otherMetrics[self._cyclization_metric.column_name()] = value
     return self._z_score(value)
 
     

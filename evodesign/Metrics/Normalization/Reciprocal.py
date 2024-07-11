@@ -1,4 +1,5 @@
 from ..Metric import Metric
+from typing import Optional
 
 
 
@@ -6,13 +7,18 @@ from ..Metric import Metric
 
 class Reciprocal(Metric):
   
-  def column_name(self) -> str:
-    return f'reciprocal_norm_{self._metric.column_name()}'
+  def _params(self) -> dict:
+    params = super()._params()
+    params['metric'] = self._metric.settings()
+    return params
+  
   
 
-
-  def __init__(self, metric: Metric) -> None:
-    super().__init__()
+  def __init__(self, 
+               metric: Metric,
+               column: Optional[str] = None
+               ) -> None:
+    super().__init__(column)
     self._metric = metric
   
 

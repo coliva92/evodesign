@@ -1,5 +1,6 @@
 from .Metric import Metric
 from ..Workspace import Workspace
+from typing import Optional
 
 
 
@@ -10,14 +11,9 @@ class PyRosettaRef2015(Metric):
   score_fn = None
   
 
-  
-  def column_name(self) -> str:
-    return 'ref2015'
-  
 
-
-  def __init__(self) -> None:
-    super().__init__()
+  def __init__(self, column: Optional[str] = None) -> None:
+    super().__init__(column)
     if self.score_fn is not None: return
     import pyrosetta
     pyrosetta.init()

@@ -1,4 +1,5 @@
 from .Metric import Metric
+from typing import Optional
 
 
 
@@ -6,9 +7,9 @@ from .Metric import Metric
 
 class Plddt(Metric):
   
-  def column_name(self) -> str:
-    return 'plddt'
-  
+  def __init__(self, column: Optional[str] = None) -> None:
+    super().__init__(column)
+
 
 
   def compute_value(self, **kwargs) -> float:

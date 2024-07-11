@@ -2,7 +2,7 @@ from ..Metric import Metric
 from ..iLearnDescriptors import iLearnDescriptors
 from ..ESM2Descriptors import ESM2Descriptors
 from ...Workspace import Workspace
-from typing import List
+from typing import List, Optional
 import numpy as np
 import numpy.typing as npt
 import scipy.stats as sp
@@ -28,58 +28,52 @@ class Descriptors(Metric):
   
 
 
-  def column_name(self) -> str:
-    return 'yan24_descriptors'
-  
-
-
   def _params(self) -> dict:
-    return {
-      'weight': self._weight,
-      'ilearnDir': self._ilearn_dir,
-      'ilearnMethods': self._ilearn_methods,
-      'useGpu': self._esm2_model._use_gpu
-    }
+    params = self._params()
+    params['weight'] = self._weight
+    params['ilearm_metric'] = self._ilearn_metric.settings()
+    params['esm2_metric'] = self._esm2_metric.settings()
+    return params
   
 
 
   def __init__(self,
                weight: float,
-               ilearnDir: str,
-               ilearnMethods: List[str],
-               useGpu: bool = True
+               ilearn_metric: iLearnDescriptors,
+               esm2_metric: Optional[ESM2Descriptors] = None,
+               column: Optional[str] = None
                ) -> None:
-    super().__init__()
-    self._ref_vectors = None
-    self._ilearn_model = iLearnDescriptors(ilearnDir, ilearnMethods)
-    self._esm2_model = ESM2Descriptors(useGpu)
-    self._ilearn_dir = ilearnDir
-    self._ilearn_methods = ilearnMethods
+    super().__init__(column)
     self._weight = weight
+    self._ilearn_metric = ilearn_metric
+    self._esm2_metric = esm2_metric
+    if self._esm2_metric is None:
+      self._esm2_metric = ESM2Descriptors()
+    self._ref_vectors = None
   
 
 
   def compute_value(self, **kwargs) -> float:
     workspace = Workspace.instance()
     if self._ref_vectors is None:
-      self._ilearn_model.compute_descriptors(workspace.target_fasta_path, 
+      self._ilearn_metric.compute_descriptors(workspace.target_fasta_path, 
                                              workspace.ilearn_dir)
-      self._ref_vectors = self._ilearn_model.load_vectors(workspace.ilearn_dir)
+      self._ref_vectors = self._ilearn_metric.load_vectors(workspace.ilearn_dir)
       csv_path = f'{workspace.esm2_dir}/reference.csv'
       self._ref_vectors['ESM2'] = \
-        self._esm2_model.compute_descriptor_vector(kwargs['refSequence'], 
+        self._esm2_metric.compute_descriptor_vector(kwargs['refSequence'], 
                                                    csv_path)
-    self._ilearn_model(**kwargs)
-    vectors_dir = self._ilearn_model.vectors_csv_dir(kwargs['sequenceId'])
-    model_vectors = self._ilearn_model.load_vectors(vectors_dir)
+    self._ilearn_metric(**kwargs)
+    vectors_dir = self._ilearn_metric.vectors_csv_dir(kwargs['sequenceId'])
+    model_vectors = self._ilearn_metric.load_vectors(vectors_dir)
     csv_path = f'{workspace.esm2_dir}/{kwargs["sequenceId"]}.csv'
     model_vectors['EMS2'] = \
-      self._esm2_model.compute_descriptor_vector(kwargs['sequence'], csv_path)
+      self._esm2_metric.compute_descriptor_vector(kwargs['sequence'], csv_path)
     divergence_scores = np.array([
       self._symmetric_kullback_leibler(self._ref_vectors[method], 
                                        model_vectors[method], 
                                        self._DESCRIPTOR_METHOD_TYPES[method])
-      for method in self._ilearn_methods
+      for method in self._ilearn_metric._methods
     ])
     return 2 * self._weight / (1 + divergence_scores.mean())
   

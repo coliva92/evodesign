@@ -1,38 +1,37 @@
 from .Metric import Metric
 from .Rmsd import Rmsd
 import numpy as np
+from typing import Optional
 
 
 
 
 
 class TMScore(Metric):
-  
-  def column_name(self) -> str:
-    return 'tm_score'
-  
-
 
   def _params(self) -> dict:
-    return {
-      'rmsdCalculator': self._rmsd_calc.settings()
-    }
-  
+    params = super()._params()
+    params['rmsd_metric'] = self._rmsd_metric.settings()
+    return params
 
 
-  def __init__(self,
-               rmsdCalculator: Rmsd
+
+  def __init__(self, 
+               rmsd_metric: Optional[Rmsd] = None,
+               column: Optional[str] = None
                ) -> None:
-    super().__init__()
-    self._rmsd_calc = rmsdCalculator
+    super().__init__(column)
+    self._rmsd_metric = rmsd_metric
+    if self._rmsd_metric is None:
+      self._rmsd_metric = Rmsd()
   
 
 
   def compute_value(self, **kwargs) -> float:
-    c = self._rmsd_calc.column_name()
+    c = self._rmsd_metric.column_name()
     # check if the structures were already superimposed
     if c not in kwargs['otherMetrics']:
-      kwargs['otherMetrics'][c] = self._rmsd_calc.compute_value(**kwargs)
+      kwargs['otherMetrics'][c] = self._rmsd_metric.compute_value(**kwargs)
     model, reference = kwargs['model'], kwargs['reference']
     d0 = self._normalizing_constant(len(reference))
     distances = np.array([ a - b for a, b in zip(model, reference) ])

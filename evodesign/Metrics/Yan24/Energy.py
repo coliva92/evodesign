@@ -1,8 +1,8 @@
 from ..Metric import Metric
 from ..PyRosettaRef2015 import PyRosettaRef2015
-from .Geometric import Geometric
+from .Geometry import Geometry
 from ...Workspace import Workspace
-from typing import List
+from typing import List, Optional
 import numpy as np
 
 
@@ -12,31 +12,28 @@ import numpy as np
 class Energy(Metric):
 
   _reference_energy = None
-
-
-
-  def column_name(self) -> str:
-    return 'yan24_energy'
   
 
 
   def _params(self) -> dict:
-    return { 
-      'weight': self._weight,
-      'cutoffs': self._cutoffs
-    }
+    params = super()._params()
+    params['weight'] = self._weight
+    params['geometry_metric'] = self._geometry_metric.settings()
+    return params
   
 
 
   def __init__(self, 
                weight: float,
-               cutoffs: List[float] = [ 1.0, 2.0, 4.0, 8.0 ]
+               geometry_metric: Optional[Geometry] = None,
+               column: Optional[str] = None
                ) -> None:
-    super().__init__()
+    super().__init__(column)
     self._weight = weight
-    self._cutoffs = cutoffs
+    self._geometry_metric = geometry_metric
+    if self._geometry_metric is None:
+      self._geometry_metric = Geometry()
     self._energy_calc = PyRosettaRef2015()
-    self._geometric_calc = Geometric(cutoffs)
   
 
 
@@ -49,7 +46,7 @@ class Energy(Metric):
     other_metrics = kwargs['otherMetrics']
     e = other_metrics[self._energy_calc.column_name()] = \
       self._energy_calc(**kwargs)
-    f1 = other_metrics[self._geometric_calc.column_name()] = \
-      self._geometric_calc(**kwargs)
+    f1 = other_metrics[self._geometry_metric.column_name()] = \
+      self._geometry_metric(**kwargs)
     return f1 / 4 + 1 / np.exp(abs(self._reference_energy - e) / self._weight)
   

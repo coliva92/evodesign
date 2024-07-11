@@ -1,5 +1,6 @@
 from .Metric import Metric
 from Bio.PDB import Superimposer
+from typing import Optional
 
 
 
@@ -8,13 +9,13 @@ from Bio.PDB import Superimposer
 class Rmsd(Metric):
 
   _superimposer = None
-  
-
-
-  def column_name(cls) -> str:
-    return 'rmsd'
 
   
+
+  def __init__(self, column: Optional[str] = None) -> None:
+    super().__init__(column)
+  
+
 
   def compute_value(self, **kwargs) -> float:
     """

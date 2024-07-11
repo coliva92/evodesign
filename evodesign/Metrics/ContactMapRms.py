@@ -1,5 +1,5 @@
 from .Metric import Metric
-from typing import List
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 import itertools
 import numpy as np
@@ -14,8 +14,8 @@ class ContactMapRms(Metric):
   
 
 
-  def column_name(self) -> str:
-    return 'contact_map_rms'
+  def __init__(self, column: Optional[str] = None) -> None:
+    super().__init__(column)
   
 
 

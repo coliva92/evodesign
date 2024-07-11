@@ -3,6 +3,7 @@ from ..Workspace import Workspace
 import numpy as np
 import numpy.typing as npt
 import os
+from typing import Optional
 
 
 
@@ -15,18 +16,19 @@ class ESM2Descriptors(Metric):
   
 
 
-  def column_name(self) -> str:
-    return ''
-  
-
-
   def _params(self) -> dict:
-    return { 'useGpu': self._use_gpu }
+    params = super()._params()
+    params['use_gpu'] = self._use_gpu
+    return params
   
 
 
-  def __init__(self, useGpu: bool = True) -> None:
-    self._use_gpu = useGpu
+  def __init__(self, 
+               use_gpu: bool = True,
+               column: Optional[str] = None
+               ) -> None:
+    super().__init__(column)
+    self._use_gpu = use_gpu
   
 
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
-from typing import Dict
+from typing import Dict, Optional
 
 
 
@@ -8,9 +8,13 @@ from typing import Dict
 
 class Metric(SettingsRetrievable, ABC):
 
-  @abstractmethod
+  def _params(self) -> dict:
+    return { 'column': self._column_name }
+
+
+
   def column_name(self) -> str:
-    raise NotImplementedError
+    return self._column_name
   
 
 
@@ -19,6 +23,24 @@ class Metric(SettingsRetrievable, ABC):
     raise NotImplementedError
   
 
+
+  def __init__(self, column: Optional[str] = None) -> None:
+    """
+    Some metric or function to be computed for every sequence in a population
+    in order to compute their fitness value.
+
+    Parameters
+    ----------
+    column : str | None, optional
+        The name that should identify the values of this metric in the CSV file
+        storing the population data. If `None`, then the class name will be 
+        used. Default is `None`.
+    """
+    super().__init__()
+    if column is None or len(column) == 0:
+      self._column_name = self._class_name()
+
+  
 
   def __call__(self, **kwargs):
     """

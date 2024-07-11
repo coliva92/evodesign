@@ -1,4 +1,5 @@
 from .Metric import Metric
+from typing import Optional
 
 
 
@@ -6,8 +7,8 @@ from .Metric import Metric
 
 class Cyclization(Metric):
 
-  def column_name(self) -> str:
-    return 'cyclization'
+  def __init__(self, column: Optional[str] = None) -> None:
+    super().__init__(column)
 
 
 

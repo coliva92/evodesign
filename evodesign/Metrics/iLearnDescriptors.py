@@ -1,7 +1,7 @@
 from .Metric import Metric
 import subprocess
 from ..Workspace import Workspace
-from typing import Dict, List
+from typing import Dict, List, Optional
 import numpy.typing as npt
 import numpy as np
 import os
@@ -12,24 +12,24 @@ import os
 
 class iLearnDescriptors(Metric):
   
-  def column_name(self) -> str:
-    return ''
-  
-
-
   def _params(self) -> dict:
     params = super()._params()
-    params['ilearnDir'] = self._ilearn_dir
+    params['ilearn_dir'] = self._ilearn_dir
     params['methods'] = self._methods
     return params
 
 
 
   def __init__(self, 
-               ilearnDir: str,
-               methods: List[str]
+               ilearn_dir: str,
+               methods: List[str] = [
+                 'GAAC', 'EGAAC', 'CKSAAGP', 'GDPC', 'GTPC', 'BLOSUM62', 'CTDC',
+                 'CTDT', 'CTDD'
+               ],
+               column: Optional[str] = None
                ) -> None:
-    self._ilearn_dir = ilearnDir
+    super().__init__(column)
+    self._ilearn_dir = ilearn_dir
     self._methods = methods
   
 
