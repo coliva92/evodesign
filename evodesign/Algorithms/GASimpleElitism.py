@@ -10,6 +10,19 @@ import pandas as pd
 class GASimpleElitism(GenericGA):
   
   def compute_statistics(self, population: pd.DataFrame) -> pd.Series:
+    """
+    Computes the population statistics.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population which statistics will be computed
+
+    Returns
+    -------
+    pd.Series
+        The top individual in the population, along the computed statistics.
+    """
     top_solution = population.iloc[0].copy()
     survivors = population[population['survivor']]
     top_solution['sequence_identity'] = \
@@ -24,16 +37,33 @@ class GASimpleElitism(GenericGA):
                   population: pd.DataFrame, 
                   children: pd.DataFrame
                   ) -> pd.DataFrame:
+    """
+    Creates a new population by selecting which individuals from last 
+    generation's population and current generation's children should survive
+    to the next generation.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population from last generation.
+    children : pd.DataFrame
+        The children created at the current generation.
+
+    Returns
+    -------
+    pd.DataFrame
+        The population for next generation, composed of the selected survivors.
+    """
     elite = population.iloc[0].copy()
     elite['survivor'] = False
     elite['generation_id'] = children.iloc[0]['generation_id']
     mixed = pd.concat([ elite.to_frame().T, children ], ignore_index=True)
     j, best = 1, mixed.iloc[1]
     for i, row in mixed.iloc[2:].iterrows():
-      if Utils.is_sorted_before(best, row, self._sort_cols, self._sort_ascending):
+      if Utils.is_sorted_before(best, row, self._sort_columns, self._sort_ascending):
         continue
       j, best = i, row
-    if not Utils.is_sorted_before(elite, best, self._sort_cols, self._sort_ascending):
+    if not Utils.is_sorted_before(elite, best, self._sort_columns, self._sort_ascending):
       # put winning row in the elite position
       mixed.iloc[0] = best
       # move last row to the winning row's original position
