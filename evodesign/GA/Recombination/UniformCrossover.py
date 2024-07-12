@@ -1,6 +1,6 @@
 from .Recombination import Recombination
 from typing import List
-import evodesign.Random as Random
+import numpy as np
 
 
 
@@ -9,12 +9,14 @@ import evodesign.Random as Random
 class UniformCrossover(Recombination):
   
   def _params(self) -> dict:
-    return { 'maskBias': self._parent_bias }
+    params = super()._params()
+    params['binary_mask_bias'] = self._binary_mask_bias
+    return params
   
   
 
   def __init__(self,
-               maskBias: float = 0.5
+               binary_mask_bias: float = 0.5
                ) -> None:
     """
     Randomly generates a binary mask of the same length as the parent sequences
@@ -28,17 +30,18 @@ class UniformCrossover(Recombination):
 
     Parameters
     ----------
-    maskBias : float, optional
+    binary_mask_bias : float, optional
         The probability for generating one binary value over the other in the
         random mask. The default is 0.5.
     """
     super().__init__()
-    self._weights = ( maskBias, 1.0 - maskBias )
-    self._parent_bias = maskBias
+    self._weights = ( binary_mask_bias, 1.0 - binary_mask_bias )
+    self._binary_mask_bias = binary_mask_bias
 
 
 
   def offspring_sequences(self, 
+                          rng: np.random.Generator,
                           mother: str,
                           father: str
                           ) -> List[str]:
@@ -51,6 +54,8 @@ class UniformCrossover(Recombination):
 
     Parameters
     ----------
+    rng : numpy.random.Generator
+        The pseudo-random number generator.
     mother : str
         One of the sequences to be mixed.
     father : str
@@ -61,7 +66,6 @@ class UniformCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = Random.generator()
     mask = rng.choice([ 0, 1 ], size=len(mother), p=self._weights)
     parents = ( mother, father )
     sister = ''.join([ parents[p][i] for i, p in enumerate(mask) ])

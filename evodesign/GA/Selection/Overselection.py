@@ -1,5 +1,5 @@
 from .Selection import Selection
-import evodesign.Random as Random
+from ...Context import Context
 import pandas as pd
 
 
@@ -9,23 +9,25 @@ import pandas as pd
 class Overselection(Selection):
   
   def _params(self) -> dict:
-    return {
-      'upperSize': self._upper_size,
-      'upperProb': self._upper_prob,
-      'lowerProb': self._lower_prob
-    }
+    params = super()._params()
+    params['upper_size'] = self._upper_size
+    params['upper_prob'] = self._upper_prob
+    params['lower_prob'] = self._lower_prob
+    params['two_children'] = self._two_children
+    return params
   
 
 
   def __init__(self, 
-               upperSize: int,
-               upperProb: float = 0.8,
-               lowerProb: float = 0.2,
-               twoChildren: bool = True,) -> None:
+               upper_size: int,
+               upper_prob: float = 0.8,
+               lower_prob: float = 0.2,
+               two_children: bool = True
+               ) -> None:
     """
     Selection operator where the population is divided into to groups, which
     we call the "upper bin" and "lower bin". The upper bin contains the top
-    `upperSize` individuals according to their fitness, and the lower bin
+    `upper_size` individuals according to their fitness, and the lower bin
     contains all remaining individuals. Then, individuals are selected in pairs,
     where each pair could be formed by two randomly selected individuals from
     the upper bin, two from the lower bin, or one from each bin. Which of 
@@ -35,35 +37,39 @@ class Overselection(Selection):
 
     Parameters
     ----------
-    upperSize : int
+    upper_size : int
         The number of individuals in the upper bin.
-    upperProb : float, optional
+    upper_prob : float, optional
         The probability for selecting a pair of individuals from the upper bin.
         The default is 0.8.
-    lowerProb : float, optional
+    lower_prob : float, optional
         The probability for selecting a pair of individuals from the lower bin.
         The default is 0.2. The probability for selecting  mixed pair of 
-        individuals is always 1.0 - upperProb - lowerProb.
-    twoChildren : bool, optional.
+        individuals is always 1.0 - upper_prob - lower_prob.
+    two_children : bool, optional.
         A flag that indicates if the recombination operation would produce two
         children or only one child per parent pair. Depending on the case, the
         number of selections performed by this operator will be different in
         order to produce the correct number of individuals for the next 
         generation. The default is True.
     """
-    self._two_children = twoChildren
-    self._upper_size = upperSize
-    self._upper_prob = upperProb
-    self._lower_prob = lowerProb
+    super().__init__()
+    self._two_children = two_children
+    self._upper_size = upper_size
+    self._upper_prob = upper_prob
+    self._lower_prob = lower_prob
     self._weights = [
-      upperProb,
-      lowerProb,
-      1. - upperProb - lowerProb
+      upper_prob,
+      lower_prob,
+      1. - upper_prob - lower_prob
     ]
   
 
 
-  def select_parents(self, population: pd.DataFrame) -> pd.DataFrame:
+  def select_parents(self, 
+                     population: pd.DataFrame,
+                     context: Context
+                     ) -> pd.DataFrame:
     """
     Selects a subset of individuals from the given population.
 
@@ -71,6 +77,8 @@ class Overselection(Selection):
     ----------
     population : pandas.DataFrame
         The population to be sampled.
+    context : Context
+        The context data used by the calling evolutionary algorithm.
 
     Returns
     -------
@@ -82,28 +90,27 @@ class Overselection(Selection):
                      else 2 * len(population)
     
     selected_parents = pd.DataFrame(columns=population.columns)
-    rng = Random.generator()
     upper_bin = population.iloc[:self._upper_size]
     lower_bin = population.iloc[self._upper_size:]
     while len(selected_parents) < selection_size:
-      option = rng.choice([ 0, 1, 2 ], p=self._weights)
+      option = context.rng.choice([ 0, 1, 2 ], p=self._weights)
       if option == 0:
-        selection = rng.choice(upper_bin.index, size=2, replace=False)
+        selection = context.rng.choice(upper_bin.index, size=2, replace=False)
         parents = upper_bin.loc[selection]
       if option == 1:
-        selection = rng.choice(lower_bin.index, size=2, replace=False)
+        selection = context.rng.choice(lower_bin.index, size=2, replace=False)
         parents = lower_bin.loc[selection]
       if option == 2:
-        m = rng.choice(upper_bin.index)
-        f = rng.choice(lower_bin.index)
+        m = context.rng.choice(upper_bin.index)
+        f = context.rng.choice(lower_bin.index)
         mother, father = population.loc[m], population.loc[f]
         parents = pd.concat([ mother, father ], axis=1, ignore_index=True).transpose()
       while parents.iloc[0]['sequence_id'] == parents.iloc[1]['sequence_id']:
         if option == 0:
-          f = rng.choice(upper_bin.index)
+          f = context.rng.choice(upper_bin.index)
           father = upper_bin.loc[f]
         else:
-          f = rng.choice(lower_bin.index)
+          f = context.rng.choice(lower_bin.index)
           father = lower_bin.loc[f]
         parents.iloc[1] = father
       selected_parents = pd.concat([ selected_parents, parents ],

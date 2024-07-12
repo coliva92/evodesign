@@ -1,6 +1,6 @@
 from .Recombination import Recombination
 from typing import List
-import evodesign.Random as Random
+import numpy as np
 
 
 
@@ -18,6 +18,7 @@ operator would produce the sequences 'AAAADD' and 'DDDDAA'.
 class SinglePointCrossover(Recombination):
   
   def offspring_sequences(self, 
+                          rng: np.random.Generator,
                           mother: str,
                           father: str
                           ) -> List[str]:
@@ -30,6 +31,8 @@ class SinglePointCrossover(Recombination):
 
     Parameters
     ----------
+    rng : numpy.random.Generator
+        The pseudo-random number generator.
     mother : str
         One of the sequences to be mixed.
     father : str
@@ -40,7 +43,6 @@ class SinglePointCrossover(Recombination):
     List[str]
         The two sequences produced.
     """
-    rng = Random.generator()
     i = rng.integers(0, len(mother))
     sister = mother[0:i] + father[i:]
     brother = father[0:i] + mother[i:]

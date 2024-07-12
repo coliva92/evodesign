@@ -1,5 +1,6 @@
 from .Recombination import Recombination
 from typing import List
+import numpy as np
 
 
 
@@ -16,6 +17,7 @@ produce the sequences 'AAADDD' and 'DDDAAA'.
 class MiddlePointCrossover(Recombination):
 
   def offspring_sequences(self, 
+                          rng: np.random.Generator,
                           mother: str,
                           father: str
                           ) -> List[str]:
@@ -28,6 +30,8 @@ class MiddlePointCrossover(Recombination):
 
     Parameters
     ----------
+    rng : numpy.random.Generator
+        The pseudo-random number generator.
     mother : str
         One of the sequences to be mixed.
     father : str

@@ -1,6 +1,7 @@
 from .Mutation import Mutation
 import evodesign.Sequence as Sequence
-import evodesign.Random as Random
+import evodesign.Utils as Utils
+import numpy as np
 
 
 
@@ -10,14 +11,14 @@ class RandomResetting(Mutation):
   
   def _params(self) -> dict:
     params = super()._params()
-    params['exchangeProb'] = self._exchange_prob
+    params['swap_prob'] = self._swap_prob
     return params
   
   
 
   def __init__(self, 
-               mutProb: float = 1.0, 
-               exchangeProb: float = 0.1
+               mutation_prob: float = 1.0,
+               swap_prob: float = 0.1
                ) -> None:
     """
     Mutation operation in which a binary mask of the same length as the given 
@@ -31,22 +32,23 @@ class RandomResetting(Mutation):
 
     Parameters
     ----------
-    mutProb : float, optional
+    mutation_prob : float, optional
         The probability for applying this mutation operator over a given
-        sequence. The default is 1.0 (i.e., mutate every and all sequences
-        in a given population).
-    exchangeProb : float, optional
+        sequence. The default is 1.0.
+    swap_prob : float, optional
         The probability for each residue in the sequence to be exchanged
-        for another amino acid. 
-        The default is 0.1.
+        for another amino acid. The default is 0.1.
     """
-    super().__init__(mutProb)
-    self._exchange_prob = exchangeProb
-    self._residue_weights = ( exchangeProb, 1. - exchangeProb )
+    super().__init__(mutation_prob)
+    self._swap_prob = swap_prob
+    self._residue_weights = ( swap_prob, 1.0 - swap_prob )
   
 
 
-  def mutate_sequence(self, sequence: str) -> str:
+  def mutate_sequence(self, 
+                      sequence: str,
+                      rng: np.random.Generator
+                      ) -> str:
     """
     Modifies some amino acids residues in the given sequence.
 
@@ -56,6 +58,8 @@ class RandomResetting(Mutation):
         The amino acid sequence that will be modified. Each residue in this
         sequence must be represented by a single letter corresponding to one 
         of the 20 essential amino acids.
+    rng : numpy.random.Generator
+        The pseudo-random number generator.
 
     Returns
     -------
@@ -63,6 +67,6 @@ class RandomResetting(Mutation):
         The modified sequence.
     """
     return ''.join([
-      Sequence.swap_letter(x) if Random.coin_toss(self._exchange_prob) else x
+      Sequence.swap_letter(rng, x) if Utils.coin_toss(rng, self._swap_prob) else x
       for x in sequence
     ])

@@ -37,7 +37,9 @@ class Algorithm(SettingsRetrievable, ABC):
                  selection: Selection,
                  recombination: Recombination,
                  mutation: Mutation,
-                 metrics: List[Metric]
+                 metrics: List[Metric],
+                 sort_columns: List[str],
+                 sort_ascending: List[bool]
                  ) -> None:
         """
         The generic workflow of a genetic algorithm for protein design.
@@ -60,6 +62,17 @@ class Algorithm(SettingsRetrievable, ABC):
         metrics : List[Metric]
             The metrics to be computed for each individual in the population, and
             to be used to compute the fitness function.
+        sort_columns : List[str]
+            The names of the columns according to which the population table will
+            be sorted. 
+        sort_ascending : List[bool]
+            Indicate which of the columns in `sort_columns` should be sorted by
+            ascending order and which by descending order.
+        
+        Raise
+        -----
+        RuntimeError
+            If `sort_columns` and `sort_ascending` are if different length.
         """
         self._max_generations = max_generations
         self._pop_size = population_size
@@ -68,6 +81,10 @@ class Algorithm(SettingsRetrievable, ABC):
         self._recombination = recombination
         self._mutation = mutation
         self._metrics = metrics
+        if len(sort_columns) != len(sort_ascending):
+            raise RuntimeError
+        self._sort_columns = sort_columns
+        self._sort_ascending = sort_ascending
         self._context = None
 
 
@@ -98,6 +115,10 @@ class Algorithm(SettingsRetrievable, ABC):
         self._context.init_workspace(workspace_root)
         self._context.workspace.save_commit_hash()
         self._context.init_rng()
+
+        # store the sorting columns
+        self._context.sort_columns = self._sort_columns
+        self._context.sort_ascending = self._sort_ascending
 
         # save the algorithm's settings
         self._context.workspace.save_settings(self.settings())
@@ -271,9 +292,9 @@ class Algorithm(SettingsRetrievable, ABC):
             The generated population.
         """
         next_gen_id = population.iloc[0]['generation_id'] + 1
-        parents = self._selection(population)
-        children = self._recombination(parents, next_gen_id)
-        children = self._mutation(children)
+        parents = self._selection(population, self._context)
+        children = self._recombination(self._context.rng, parents, next_gen_id)
+        children = self._mutation(self._context.rng, children)
         return children
 
 

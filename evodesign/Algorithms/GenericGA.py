@@ -40,21 +40,21 @@ class GenericGA(Algorithm, ABC):
                sort_columns: Optional[List[str]] = None,
                sort_ascending: Optional[List[bool]] = None
                ) -> None:
+    if not sort_columns:
+      # if two individuals are tied in fitness, break the tie using the plddt
+      sort_columns = [ fitness_fn.column_name(), 'plddt' ]
+    if not sort_ascending:
+      # by default sort in descending order; higher fitness comes at the top
+      sort_ascending = len(sort_columns) * [ False ]
     super().__init__(max_generations,
                      population_size,
                      predictor,
                      selection,
                      recombination,
                      mutation,
-                     metrics)
-    if not sort_columns:
-      # if two individuals are tied in fitness, break the tie using the plddt
-      sort_columns = [ fitness_fn.column_name(), 'plddt' ]
-    self._sort_columns = sort_columns
-    if not sort_ascending:
-      # by default sort in descending order; higher fitness comes at the top
-      sort_ascending = len(self._sort_columns) * [ False ]
-    self._sort_ascending = sort_ascending
+                     metrics,
+                     sort_columns,
+                     sort_ascending)
     self._fitness_fn = fitness_fn
 
 

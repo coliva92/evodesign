@@ -34,9 +34,6 @@ class Context:
             executed (unless another termination condition is met first).
             If zero, then the algorithm will run for the configured max number
             of generations. Default is 0.
-        rng : numpy.random.Generator, optional
-            The pseudo-random number generator. If none is provided, then a new
-            RNG is created. Default is `None`.
         """
         context = Context()
         context._target_pdb_path = target_pdb_path
@@ -78,6 +75,8 @@ class Context:
         self.num_generations = None
         self.rng = None
         self.workspace = None
+        self.sort_columns = None
+        self.sort_ascending = None
     
 
 
@@ -101,6 +100,8 @@ class Context:
         context_copy.num_generations = self.num_generations
         context_copy.rng = self.rng
         context_copy.workspace = self.workspace
+        context_copy.sort_columns = self.sort_columns
+        context_copy.sort_ascending = self.sort_ascending
         return context_copy
     
 

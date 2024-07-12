@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
@@ -29,6 +29,29 @@ def pad_zeroes(n: int) -> str:
     if n < 100: result = f'{0}{result}'
     if n < 10: result = f'{0}{result}'
     return result
+
+
+
+def coin_toss(rng: np.random.Generator,
+              bias: float = 0.5
+              ) -> bool:
+    """
+    Randomly produce a boolean value.
+
+    Parameters
+    ----------
+    rng : numpy.random.Generator
+        The pseudo-random number generator.
+    bias : float, optional
+        The probability for producing `True`; the default is 0.5. 
+        The probability for producing `False` will be computed as `1.0 - bias`.
+
+    Returns
+    -------
+    bool
+        A randomly produced value.
+    """
+    return rng.choice([ True, False ], p=[ bias, 1. - bias ])
 
 
 
