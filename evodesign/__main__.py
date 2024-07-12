@@ -35,11 +35,17 @@ parser.add_argument('-f', '--target_fasta_path',
                          'amino acid sequence for when the goal is to find '
                          'a different sequence with the same properties as the '
                          'target protein')
+parser.add_argument('-r', '--sequence_restrictions',
+                    type=str,
+                    default=None,
+                    help='path to the JSON file describing the allowed amino acids '
+                         'for certain positions in the designed sequences')
 args = parser.parse_args()
 
 context = Context.create(args.target_pdb_path, 
                          args.target_fasta_path, 
-                         args.num_generations)
+                         args.num_generations,
+                         args.sequence_restrictions)
 with open(args.settings_path, 'rt', encoding='utf-8') as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)

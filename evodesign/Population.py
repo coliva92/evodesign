@@ -1,15 +1,18 @@
-from typing import List
+from typing import List, Dict, Optional
 import evodesign.Sequence as Sequence
 import evodesign.Utils as Utils
 import pandas as pd
+import numpy as np
 
 
 
 
 
 def create_random(size: int,
+                  rng: np.random.Generator,
                   sequence_length: int,
-                  generation_id: int = 0
+                  generation_id: int = 0,
+                  allowed_letters: Optional[Dict[int, List[str]]] = None
                   ) -> pd.DataFrame:
     """
     Creates a table of randomly generated amino acid sequences. 
@@ -19,6 +22,8 @@ def create_random(size: int,
 
     Parameters
     ----------
+    rng : numpy.random.Generator
+        The RNG to be used to create the random sequences.
     size : int
         The size of the population.
     sequence_length : int
@@ -26,6 +31,11 @@ def create_random(size: int,
     generation_id : int, optional
         The unique identifier for the population being created. 
         The default value is 0.
+    allowed_letters : Dict[int, List[str]], optional
+        A description of which letters are allowed to be chosen for certain positions
+        in the sequence. If no letter pool is specified for a given position, then no
+        restrictions in the letter selection will be imposed at that position. Default
+        is `None`, which means that any amino acid letter can be chosen at any position.
 
     Returns
     -------
@@ -38,7 +48,7 @@ def create_random(size: int,
         generation.
     """
     sequences = [ 
-        Sequence.create_random(sequence_length) 
+        Sequence.create_random(rng, sequence_length, allowed_letters) 
         for _ in range(size) 
     ]
     return create(sequences, generation_id)

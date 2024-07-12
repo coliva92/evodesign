@@ -2,6 +2,7 @@ from .Mutation import Mutation
 import evodesign.Sequence as Sequence
 import evodesign.Utils as Utils
 import numpy as np
+from typing import Optional, List, Dict
 
 
 
@@ -47,7 +48,8 @@ class RandomResetting(Mutation):
 
   def mutate_sequence(self, 
                       sequence: str,
-                      rng: np.random.Generator
+                      rng: np.random.Generator,
+                      allowed_letters: Optional[Dict[int, List[str]]] = None
                       ) -> str:
     """
     Modifies some amino acids residues in the given sequence.
@@ -59,7 +61,12 @@ class RandomResetting(Mutation):
         sequence must be represented by a single letter corresponding to one 
         of the 20 essential amino acids.
     rng : numpy.random.Generator
-        The pseudo-random number generator.
+        The RNG used to mutate the sequence.
+    allowed_letters : Dict[int, List[str]], optional
+        A description of which letters are allowed to be chosen for certain positions
+        in the sequence. If no letter pool is specified for a given position, then no
+        restrictions in the letter selection will be imposed at that position. Default
+        is `None`, which means that any amino acid letter can be chosen at any position.
 
     Returns
     -------
@@ -67,6 +74,7 @@ class RandomResetting(Mutation):
         The modified sequence.
     """
     return ''.join([
-      Sequence.swap_letter(rng, x) if Utils.coin_toss(rng, self._swap_prob) else x
-      for x in sequence
+      Sequence.swap_letter(rng, sequence[i], allowed_letters[i]) 
+      if Utils.coin_toss(rng, self._swap_prob) else sequence[i]
+      for i in len(sequence)
     ])

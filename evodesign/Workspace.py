@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import os
 import shutil
-from typing import Optional
+from typing import Optional, Dict, List
 
 
 
@@ -257,6 +257,23 @@ class Workspace:
     filename = f'{self.root_dir}/settings.json'
     with open(filename, 'wt', encoding='utf-8') as json_file:
       json_file.write(json.dumps(settings, indent=4) + '\n')
+    
+  
+
+  def save_sequence_restrictions(self, restrictions_desc: Dict[int, List[str]]) -> None:
+    """
+    Saves the given amino acid sequence letter restrictions in a JSON file in the
+    workspace.
+
+    Parameters
+    ----------
+    restrictions_desc : Dict[int, List[str]]
+        The restrictions description to be saved.
+    """
+    os.makedirs(self._load_from_root_dir, exist_ok=True)
+    file_path = f'{self.root_dir}/sequence_restrictions.json'
+    with open(file_path, 'wt', encoding='utf-8') as json_file:
+      json_file.write(json.dumps(restrictions_desc, indent=4) + '\n')
   
 
 

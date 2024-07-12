@@ -20,7 +20,7 @@ class Algorithm(SettingsRetrievable, ABC):
     def _params(self) -> dict:
         return {
             'max_generations': self._max_generations,
-            'population_size': self._pop_size,
+            'population_size': self._population_size,
             'predictor': self._predictor.settings(),
             'selection': self._selection.settings(),
             'recombination': self._recombination.settings(),
@@ -75,7 +75,7 @@ class Algorithm(SettingsRetrievable, ABC):
             If `sort_columns` and `sort_ascending` are if different length.
         """
         self._max_generations = max_generations
-        self._pop_size = population_size
+        self._population_size = population_size
         self._predictor = predictor
         self._selection = selection
         self._recombination = recombination
@@ -120,14 +120,17 @@ class Algorithm(SettingsRetrievable, ABC):
         self._context.sort_columns = self._sort_columns
         self._context.sort_ascending = self._sort_ascending
 
-        # save the algorithm's settings
+        # save the algorithm's settings in the workspace
         self._context.workspace.save_settings(self.settings())
 
-        # store the target PDB in the workspace
+        # save the target PDB in the workspace
         self._context.workspace.save_target_pdb()
 
-        # store the target FASTA in the workspace
+        # save the target FASTA in the workspace
         self._context.workspace.save_target_fasta()
+
+        # save the sequence restrictions in the workspace
+        self._context.workspace.save_sequence_restrictions(self._context.sequence_allowed_letters)
 
         # check if we are restoring from a previous population
         return self._context.workspace.load_population()
@@ -158,7 +161,7 @@ class Algorithm(SettingsRetrievable, ABC):
         # check if we are starting from an empty population or we are continuing
         # from the last population of an earlier execution
         if population.empty:
-            population = self.initial_population(self._context.sequence_length)
+            population = self.initial_population()
             self._context.workspace.save_population(population)
             self._context.workspace.save_rng_state(self._context.rng.bit_generator.state)
             t = 1
@@ -215,25 +218,21 @@ class Algorithm(SettingsRetrievable, ABC):
 
 
 
-    def initial_population(self, sequenceLength: int) -> pd.DataFrame:
+    def initial_population(self) -> pd.DataFrame:
         """
         Creates a collection of random amino acid sequences to be used as the 
         population for the very first generation of the evolutionary algorithm.
-
-        Parameters
-        ----------
-        sequenceLength : int
-            The number of amino acid residues that each sequence in the generated 
-            population should have.
 
         Returns
         -------
         pandas.DataFrame
             The generated population data.
         """
-        population = Population.create_random(self._pop_size,
-                                              sequenceLength,
-                                              generation_id=1)
+        population = Population.create_random(self._population_size,
+                                              self._context.rng,
+                                              self._context.sequence_length,
+                                              1,
+                                              self._context.sequence_allowed_letters)
         population['survivor'] = True
         return population
 
@@ -294,7 +293,9 @@ class Algorithm(SettingsRetrievable, ABC):
         next_gen_id = population.iloc[0]['generation_id'] + 1
         parents = self._selection(population, self._context)
         children = self._recombination(self._context.rng, parents, next_gen_id)
-        children = self._mutation(self._context.rng, children)
+        children = self._mutation(self._context.rng, 
+                                  children, 
+                                  self._context.sequence_allowed_letters)
         return children
 
 

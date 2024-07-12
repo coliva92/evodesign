@@ -2,8 +2,10 @@ from typing import Optional
 import evodesign.Chain as Chain
 import numpy as np
 import math
-from typing import Any
+from typing import Any, Optional
 from .Workspace import Workspace
+import evodesign.Sequence as Sequence
+import json
 
 
 
@@ -15,7 +17,8 @@ class Context:
     def create(cls, 
                target_pdb_path: str,
                target_fasta_path: Optional[str] = None,
-               num_generations: int = 0
+               num_generations: int = 0,
+               seq_allowed_letters_json_path: Optional[str] = None
                ) -> Any: # Context
         """
         Target protein data and other interfaces that might be required by 
@@ -34,6 +37,10 @@ class Context:
             executed (unless another termination condition is met first).
             If zero, then the algorithm will run for the configured max number
             of generations. Default is 0.
+        seq_allowed_letters_json_path : str, optional
+            The path to the JSON file describing which amino acid letters are allowed
+            for certain positions in the designed sequences. If none is provided, then
+            no letter restrictions will be imposed for any position. Default is `None`.
         """
         context = Context()
         context._target_pdb_path = target_pdb_path
@@ -58,6 +65,16 @@ class Context:
         context.num_generations = math.inf
         if num_generations is not None and num_generations > 0:
             context.num_generations = num_generations
+        
+        # load the sequence restrictions
+        if seq_allowed_letters_json_path is None:
+            desc = Sequence.allowed_letters_desc(context.sequence_length)
+        else:
+            with open(seq_allowed_letters_json_path, 'rt', encoding='utf-8') as json_file:
+                # TODO revisar que el formato del JSON esté correcto
+                desc = json.load(json_file)
+            desc = Sequence.allowed_letters_desc(context.sequence_length, desc)
+        context.sequence_allowed_letters = desc
         return context
     
 
@@ -77,6 +94,7 @@ class Context:
         self.workspace = None
         self.sort_columns = None
         self.sort_ascending = None
+        self.sequence_allowed_letters = None
     
 
 
@@ -102,6 +120,7 @@ class Context:
         context_copy.workspace = self.workspace
         context_copy.sort_columns = self.sort_columns
         context_copy.sort_ascending = self.sort_ascending
+        context_copy.sequence_allowed_letters = self.sequence_allowed_letters
         return context_copy
     
 
