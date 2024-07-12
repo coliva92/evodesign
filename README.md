@@ -117,14 +117,14 @@ All these characteristics can be described in a settings JSON file like the foll
 ```json
 {
     "Algorithms.GASteadyState": {
-        "maxGenerations": 100,
-        "popSize": 100,
+        "max_generations": 100,
+        "population_size": 100,
         "predictor": {
             "Prediction.ESMFoldRemoteApi": {}
         },
         "selection": {
             "GA.Selection.Tournament": {
-                "tournamentSize": 2
+                "tournament_size": 2
             }
         },
         "recombination": {
@@ -132,16 +132,23 @@ All these characteristics can be described in a settings JSON file like the foll
         },
         "mutation": {
             "GA.Mutation.Swap": {
-                "mutProb": 0.1,
-                "numSwaps": 1
+                "mutation_prob": 0.1,
+                "num_swaps": 1
             }
         },
+        "metrics": [
+            {
+                "Metrics.Gdt": {}
+            }
+        ],
         "fitnessFn": {
             "Fitness.LinearCombination": {
-                "upperBound": 0.95,
-                "terms": [{ "Metrics.Gdt": {} }]
+                "upper_bound": 0.95,
+                "metric_columns": [ "Metrics.Gdt" ]
             }
-        }
+        },
+        "sort_columns": [ "Fitness.LinearCombination", "Metrics.Rmsd", "plddt" ],
+        "sort_ascending": [ false, true, false ]
     }
 }
 ```
@@ -168,23 +175,25 @@ from evodesign.Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi
 from evodesign.GA.Selection.Tournament import Tournament
 from evodesign.GA.Recombination.TwoPointsCrossover import TwoPointsCrossover
 from evodesign.GA.Mutation.Swap import Swap
-from evodesign.Metrics.Rmsd import Rmsd
 from evodesign.Metrics.Gdt import Gdt
 from evodesign.Fitness.LinearCombination import LinearCombination
+from evodesign.Context import Context
 
-algorithm = GASteadyState(maxGenerations=100,
-                          popSize=100,
+algorithm = GASteadyState(max_generations=100,
+                          population_size=100,
                           predictor=ESMFoldRemoteApi(),
-                          selection=Tournament(tournamentSize=2),
+                          selection=Tournament(tournament_size=2),
                           recombination=TwoPointsCrossover(),
-                          mutation=Swap(mutProb=0.1,
-                                        numSwaps=1),
-                          fitnessFn=LinearCombination(upperBound=0.95,
-                                                      terms=[
-                                                          Gdt(rmsdCalculator=Rmsd())
-                                                      ]))
-reference, population, _ = algorithm.setup('target_protein.pdb',
-                                           'path/to/workspace',
-                                           'target_protein.fasta')
-algorithm(reference, population) # begin algorithm execution
+                          mutation=Swap(mutation_prob=0.1,
+                                        num_swaps=1),
+                          metrics=[ Gdt() ],
+                          fitness_fn=LinearCombination(upper_bound=0.95,
+                                                       metric_columns=[ 'Metrics.Gdt' ]),
+                          sort_columns=[ 
+                            "Fitness.LinearCombination", "Metrics.Rmsd", "plddt" 
+                          ],
+                          sort_ascending=[ False, True, False ])
+context = Context.create('target_protein.pdb', 'target_protein.fasta')
+population = algorithm.setup(context, 'path/to/workspace')
+algorithm(population) # begin algorithm execution
 ```
