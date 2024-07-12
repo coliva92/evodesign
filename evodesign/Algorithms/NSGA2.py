@@ -17,7 +17,7 @@ import os
 
 
 
-
+# TODO refactorizar para implementar context
 class NSGA2(Algorithm):
 
   def _params(self) -> dict:
@@ -66,7 +66,7 @@ class NSGA2(Algorithm):
 
 
   def save_statistics_graph(self, stats: pd.DataFrame) -> None:
-    os.makedirs(self.workspace.root_dir, exist_ok=True)
+    os.makedirs(self._context.workspace.root_dir, exist_ok=True)
     plt.ioff() # turn off the GUI
     fig, ax1 = plt.subplots()
     series1 = ax1.plot(stats['generation_id'], 
@@ -86,7 +86,7 @@ class NSGA2(Algorithm):
     series = series1 + series2
     labels = [ x.get_label() for x in series ]
     ax1.legend(series, labels, loc='best')
-    plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    plt.savefig(f'{self._context.workspace.root_dir}/fitness_diversity.png')
     plt.close()
 
 
@@ -106,7 +106,7 @@ class NSGA2(Algorithm):
     
     try:
       for idx, row in subset.iterrows():
-        filename = f'{self.workspace.pdbs_dir}/{row["sequence_id"]}.pdb'
+        filename = f'{self._context.workspace.pdbs_dir}/{row["sequence_id"]}.pdb'
         model, row['plddt'] = self._predictor(row['sequence'], filename)
         for f in self._fitness_fns:
           results = f(model=model, 
@@ -119,7 +119,7 @@ class NSGA2(Algorithm):
         for column, value in row.items():
           population.at[idx, column] = value
     except BaseException as e:
-      self.workspace.save_population(population, **kwargs)
+      self._context.workspace.save_population(population, **kwargs)
       raise e
     return population
   

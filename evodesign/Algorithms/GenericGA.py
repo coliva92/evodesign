@@ -11,6 +11,7 @@ from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+from ..Metrics.Metric import Metric
 
 
 
@@ -20,39 +21,41 @@ class GenericGA(Algorithm, ABC):
   
   def _params(self) -> dict:
     params = super()._params()
-    params['sortColumns'] = self._sort_cols
-    params['sortAscending'] = self._sort_ascending
-    params['fitnessFn'] = self._fitness_fn.settings()
+    params['sort_columns'] = self._sort_columns
+    params['sort_ascending'] = self._sort_ascending
+    params['fitness_fn'] = self._fitness_fn.settings()
     return params
   
 
 
   def __init__(self, 
-               maxGenerations: int, 
-               popSize: int, 
+               fitness_fn: FitnessFunction,
+               max_generations: int, 
+               population_size: int, 
                predictor: Predictor, 
-               fitnessFn: FitnessFunction,
                selection: Selection, 
                recombination: Recombination, 
                mutation: Mutation,
-               sortColumns: Optional[List[str]] = None,
-               sortAscending: Optional[List[bool]] = None
+               metrics: List[Metric],
+               sort_columns: Optional[List[str]] = None,
+               sort_ascending: Optional[List[bool]] = None
                ) -> None:
-    super().__init__(maxGenerations,
-                     popSize,
+    super().__init__(max_generations,
+                     population_size,
                      predictor,
                      selection,
                      recombination,
-                     mutation)
-    if not sortColumns:
+                     mutation,
+                     metrics)
+    if not sort_columns:
       # if two individuals are tied in fitness, break the tie using the plddt
-      sortColumns = [ fitnessFn.column_name(), 'plddt' ]
-    self._sort_cols = sortColumns
-    if not sortAscending:
+      sort_columns = [ fitness_fn.column_name(), 'plddt' ]
+    self._sort_columns = sort_columns
+    if not sort_ascending:
       # by default sort in descending order; higher fitness comes at the top
-      sortAscending = len(self._sort_cols) * [ False ]
-    self._sort_ascending = sortAscending
-    self._fitness_fn = fitnessFn
+      sort_ascending = len(self._sort_columns) * [ False ]
+    self._sort_ascending = sort_ascending
+    self._fitness_fn = fitness_fn
 
 
 
@@ -66,10 +69,10 @@ class GenericGA(Algorithm, ABC):
     stats : pandas.DataFrame
         The statistics which data will be graphed and stored.
     """
-    os.makedirs(self.workspace.root_dir, exist_ok=True)
+    os.makedirs(self._context.workspace.root_dir, exist_ok=True)
     plt.ioff() # turn off the GUI
     fig, ax = plt.subplots(ncols=2, figsize=(14, 6))
-    fig.suptitle(self.workspace.root_dir)
+    fig.suptitle(self._context.workspace.root_dir)
     c = self._fitness_fn.column_name()
     series1 = ax[0].plot(stats['generation_id'], stats[c], color='C0', label=c)
     ax[0].tick_params(axis='y', labelcolor='C0')
@@ -101,17 +104,15 @@ class GenericGA(Algorithm, ABC):
     series = series1 + series2
     labels = [ x.get_label() for x in series ]
     ax[1].legend(series, labels, loc='best')
-    plt.savefig(f'{self.workspace.root_dir}/fitness_diversity.png')
+    plt.savefig(f'{self._context.workspace.root_dir}/fitness_diversity.png')
     plt.close()
   
 
-  
-  def compute_fitness(self, 
-                      population: pd.DataFrame,
-                      reference: List[Atom],
-                      refSequence: Optional[str] = None,
-                      **kwargs
-                      ) -> pd.DataFrame:
+
+  def compute_population_fitness(self, 
+                                 population: pd.DataFrame,
+                                 temporary: bool = False
+                                 ) -> pd.DataFrame:
     """
     Computes the fitness for each sequence in the given population.
 
@@ -119,13 +120,6 @@ class GenericGA(Algorithm, ABC):
     ----------
     population : pandas.DataFrame
         The population for which sequences the fitness will be computed.
-    reference : List[Bio.PDB.Atom.Atom]
-        The backbone of the target protein. The fitness of each individual
-        in the population can be computed from this backbone.
-    refSequence: str, optional
-        The amino acid sequence of the target protein. The fitness of each
-        individual in the population can be computed from this sequence.
-        Default is `None`.
     temporary : bool, optional
         Indicates if the data of the current population data should be stored in 
         the temporary storage location or the permanent one in case an exception
@@ -135,69 +129,35 @@ class GenericGA(Algorithm, ABC):
     -------
     pandas.DataFrame
         The original population with added columns to include the computed 
-        fitness value and other associated results.
-
-    Raises
-    ------
-    Exceptions.HttpBadRequest
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        400.
-    Exceptions.HttpForbidden
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code 
-        403.
-    Exceptions.HttpInternalServerError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        500.
-    Exceptions.HttpGatewayTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with HTTP error code
-        504.
-    Exceptions.HttpUnknownError
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when the server responds with any other HTTP
-        error code not listed here.
-    requests.exceptions.ConnectTimeout
-        Raised only if the predictor used is 'Prediction.ESMFold.RemoteApi'.
-        This exception is raised when communication attempt with the remote
-        server times out.
-    KeyboardInterrupt
-        Raised any time the user presses Ctrl + C from the standard input.
+        metrics and fitness values.
     """
     subset = population
-    if self._fitness_fn.column_name() in population.columns:
-      indices = population[self._fitness_fn.column_name()].isna()
+    c = self._fitness_fn.column_name()
+    if c in population.columns:
+      indices = population[c].isna()
       subset = population[indices]
     
-    # this loop makes me sad :( we could use DataFrame.apply, but then we
-    # wouldn't be able to catch exceptions and save the progress mid-loop
+    # we could use DataFrame.apply, but then we wouldn't be able to catch 
+    # exceptions and save the progress mid-loop
     try:
       for idx, row in subset.iterrows():
-        filename = f'{self.workspace.pdbs_dir}/{row["sequence_id"]}.pdb'
-        model, row['plddt'] = self._predictor(row['sequence'], filename)
-        results = self._fitness_fn(model=model, 
-                                   reference=reference, 
-                                   refSequence=refSequence,
-                                   sequence=row['sequence'],
-                                   sequenceId=row['sequence_id'],
-                                   plddt=row['plddt'])
-        row = row.combine_first(results)
+        pdb_path = f'{self._context.workspace.pdbs_dir}/{row["sequence_id"]}.pdb'
+        backbone, row['plddt'] = self._predictor(row['sequence'], pdb_path)
+        # first, compute all metrics
+        for metric in self._metrics:
+          row = metric(backbone, row, self._context)
+        # then, compute the fitness function proper
+        row = self._fitness_fn(row)
         for column, value in row.items():
           population.at[idx, column] = value
     except BaseException as e:
-      self.workspace.save_population(population, **kwargs)
+      self._context.workspace.save_population(population, temporary)
       raise e
     return population
   
 
 
-  def initial_fitness_computation(self, 
-                                  population: pd.DataFrame,
-                                  reference: List[Atom],
-                                  refSequence: Optional[str] = None
-                                  ) -> pd.DataFrame:
+  def compute_initial_fitness(self, population: pd.DataFrame) -> pd.DataFrame:
     """
     Computes the fitness of the population of the first generation, and sorts
     the individuals according to their fitness in descending order. If the
@@ -223,8 +183,8 @@ class GenericGA(Algorithm, ABC):
     """
     c = self._fitness_fn.column_name()
     if c not in population.columns or population[c].isna().sum() > 0:
-      population = self.compute_fitness(population, reference, refSequence)
-      population.sort_values(by=self._sort_cols, 
+      population = self.compute_population_fitness(population)
+      population.sort_values(by=self._sort_columns, 
                              ascending=self._sort_ascending,
                              inplace=True,
                              ignore_index=True)

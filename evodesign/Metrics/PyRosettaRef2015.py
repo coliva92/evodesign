@@ -1,6 +1,8 @@
 from .Metric import Metric
-from ..Workspace import Workspace
-from typing import Optional
+from typing import Optional, List, Dict
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -21,10 +23,15 @@ class PyRosettaRef2015(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    workspace = Workspace.instance()
-    pdb_path = f'{workspace.pdbs_dir}/prot_{kwargs["sequence"]}.pdb'
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    pdb_path = f'{context.workspace.pdbs_dir}/prot_{data['sequence_id']}.pdb'
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(pdb_path)
-    return self.score_fn(pose)
+    score = self.score_fn(pose)
+    data[self.column_name()] = score
+    return data
   

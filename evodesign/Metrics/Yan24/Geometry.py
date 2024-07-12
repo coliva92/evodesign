@@ -4,7 +4,10 @@ from ..Rmsd import Rmsd
 from ..Gdt import Gdt
 from ..ContactMapRms import ContactMapRms
 from ..TMScore import TMScore
-from typing import Optional
+from ...Context import Context
+from typing import Optional, List, Dict
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -46,12 +49,19 @@ class Geometry(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    other_metrics = kwargs['otherMetrics']
-    a = self._rmsd_metric(**kwargs)
-    b = other_metrics[self._gdt_metric.column_name()] = self._gdt_metric(**kwargs)
-    c = self._cm_rms_metric(**kwargs)
-    d = other_metrics[self._tmscore_metric.column_name()] = \
-      self._tmscore_metric(**kwargs)
-    return a + b + c + d
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> Dict[str, float]:
+    data = self._rmsd_metric(backbone, data, context)
+    data = self._gdt_metric(backbone, data, context)
+    data = self._cm_rms_metric(backbone, data, context)
+    data = self._tmscore_metric(backbone, data, context)
+    a = self._rmsd_metric.column_name()
+    b = self._gdt_metric.column_name()
+    c = self._cm_rms_metric.column_name()
+    d = self._tmscore_metric.column_name()
+    data[self.column_name()] = data[a] + data[b] + data[c] + data[d]
+    return data
   

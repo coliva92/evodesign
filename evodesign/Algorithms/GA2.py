@@ -14,6 +14,7 @@ import pandas as pd
 
 
 
+# TODO refactorizar para implementar context
 class GA2(GenericGA):
   
   def _params(self) -> dict:

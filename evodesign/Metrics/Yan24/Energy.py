@@ -1,9 +1,12 @@
 from ..Metric import Metric
 from ..PyRosettaRef2015 import PyRosettaRef2015
 from .Geometry import Geometry
-from ...Workspace import Workspace
-from typing import Optional
+from ...Context import Context
+from typing import Optional, List, Dict
 import numpy as np
+from Bio.PDB.Atom import Atom
+import pandas as pd
+
 
 
 
@@ -38,16 +41,20 @@ class Energy(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> Dict[str, float]:
     if self._ref_energy is None:
-      workspace = Workspace.instance()
       import pyrosetta
-      pose = pyrosetta.pose_from_pdb(workspace.target_pdb_path)
+      pose = pyrosetta.pose_from_pdb(context.workspace.target_pdb_path)
       self._ref_energy = self._energy_metric.score_fn(pose)
-    other_metrics = kwargs['otherMetrics']
-    e = other_metrics[self._energy_metric.column_name()] = \
-      self._energy_metric(**kwargs)
-    f1 = other_metrics[self._geometry_metric.column_name()] = \
-      self._geometry_metric(**kwargs)
-    return f1 / 4 + 1 / np.exp(abs(self._ref_energy - e) / self._weight)
+    data = self._geometry_metric(backbone, data, context)
+    data = self._energy_metric(backbone, data, context)
+    f1 = data[self._geometry_metric.column_name()]
+    e = data[self._energy_metric.column_name()]
+    total = f1 / 4 + 1 / np.exp(abs(self._ref_energy - e) / self._weight)
+    data[self.column_name()] = total
+    return data
   

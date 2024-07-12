@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Union
+import pandas as pd
+from Bio.PDB.Atom import Atom
+from ..Context import Context
 
 
 
@@ -18,12 +21,6 @@ class Metric(SettingsRetrievable, ABC):
   
 
 
-  @abstractmethod
-  def compute_value(self, **kwargs):
-    raise NotImplementedError
-  
-
-
   def __init__(self, column: Optional[str] = None) -> None:
     """
     Some metric or function to be computed for every sequence in a population
@@ -31,7 +28,7 @@ class Metric(SettingsRetrievable, ABC):
 
     Parameters
     ----------
-    column : str | None, optional
+    column : str, optional
         The name that should identify the values of this metric in the CSV file
         storing the population data. If `None`, then the class name will be 
         used. Default is `None`.
@@ -42,38 +39,40 @@ class Metric(SettingsRetrievable, ABC):
 
   
 
-  def __call__(self, **kwargs):
+  def __call__(self, 
+               backbone: List[Atom],
+               data: pd.Series,
+               context: Context
+               ) -> pd.Series:
     """
-    Computes the specified metric for a given model backbone or sequence.
+    Computes the current metric for a given model backbone or sequence.
 
     Parameters
     ----------
-    model : List[Bio.PDB.Atom.Atom]
-        The model backbone for which the fitness will be computed.
-    reference : List[Bio.PDB.Atom.Atom]
-        The backbone of the target protein. The fitness of each individual
-        in the population can be computed from this backbone.
-    refSequence: str, optional
-        The amino acid sequence of the target protein. The fitness of each
-        individual in the population can be computed from this sequence.
-        Default is `None`.
-    sequence : str, optional
-        The amino acid sequence for which the fitness will be computed.
-        Each residue must be represented by a single letter corresponding to
-        one of the 20 essential amino acids.
-    sequence_id : str, optional
-        The unique identifier for the given sequence.
-    otherMetrics : Dict[str, Union[int, float, str]], optional
-        The previously computed values for other metrics. Default is an empty 
-        dictionary.
+    backbone : List[Bio.PDB.Atom.Atom]
+        The backbone for which the metric will be computed.
+    data : pandas.Series
+        Other data associated with the given backbone. Typically consists of the
+        amino acid sequence and other metrics computed from said sequence. 
+    context : Context
+        The context data used by the calling evolutionary algorithm.
 
     Returns
     -------
-    float
-        The final metric value.
+    pandas.Series
+        The original data series with added columns to include the computed metric 
+        value.
     """
-    if 'otherMetrics' not in kwargs:
-      kwargs['otherMetrics'] = {}
-    if self.column_name() in kwargs['otherMetrics']:
-      return kwargs['otherMetrics'][self.column_name()]
-    return self.compute_value(**kwargs)
+    if self.column_name() in data.index:
+      return data
+    return self._compute_values(backbone, data, context)
+  
+
+
+  @abstractmethod
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    raise NotImplementedError

@@ -1,5 +1,8 @@
 from ..Metric import Metric
-from typing import Optional
+from typing import Optional, List, Dict
+from ...Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -23,11 +26,16 @@ class Reciprocal(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    otherMetrics = kwargs['otherMetrics']
-    value = self._metric(**kwargs)
-    otherMetrics[self._metric.column_name()] = value
-    return self._normalize(value)
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    # compute the metric if not already computed
+    data = self._metric(backbone, data, context)
+    value = data[self._metric.column_name()]
+    data[self.column_name()] = self._normalize(value)
+    return data
     
   
 

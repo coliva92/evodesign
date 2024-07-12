@@ -1,7 +1,10 @@
 from .Metric import Metric
-from typing import List, Optional
+from typing import List, Optional, Dict
 from .Rmsd import Rmsd
 import numpy as np
+from Bio.PDB.Atom import Atom
+import pandas as pd
+from ..Context import Context
 
 
 
@@ -41,35 +44,21 @@ class Gdt(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    """
-    Uses the given model and reference backbones to compute the GDT after
-    superimposing the former into the latter.
-
-    Parameters
-    ----------
-    model : List[Bio.PDB.Atom.Atom]
-        The model backbone.
-    reference : List[Bio.PDB.Atom.Atom]
-        The reference backbone.
-    otherMetrics : Dict[str, Union[int, float, str]], optional
-        The previously computed values of other metrics. Default is an empty 
-        dictionary.
-
-    Returns
-    -------
-    float
-        The computed GDT; it's value is between 0 and 1.
-    """
-    c = self._rmsd_metric.column_name()
-    # check if the structures were already superimposed
-    if c not in kwargs['otherMetrics']:
-      kwargs['otherMetrics'][c] = self._rmsd_metric.compute_value(**kwargs)
-    model, reference = kwargs['model'], kwargs['reference']
-    distances = np.array([ a - b for a, b in zip(model, reference) ])
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    # superimpose the structures are not already superimposed
+    data = self._rmsd_metric(backbone, data, context)
+    distances = np.array([ 
+      a - b 
+      for a, b in zip(backbone, context.ref_backbone) 
+    ])
     gdt = np.mean([
       np.mean([ d <= c for d in distances ])
       for c in self._cutoffs
     ])
-    return gdt
+    data[self.column_name()] = gdt
+    return data
   

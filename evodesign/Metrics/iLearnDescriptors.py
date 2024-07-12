@@ -5,6 +5,9 @@ from typing import Dict, List, Optional
 import numpy.typing as npt
 import numpy as np
 import os
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -34,72 +37,68 @@ class iLearnDescriptors(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> None:
-    other_metrics = kwargs['otherMetrics']
-    sequence = kwargs['sequence']
-    sequence_id = kwargs['sequenceId']
-    workspace = Workspace.instance()
-    fasta_path = f'{workspace.root_dir}/.temp.fasta'
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> Dict[str, str]:
+    fasta_path = f'{context.workspace.root_dir}/.temp.fasta'
+    sequence_id, sequence = data['sequence_id'], data['sequence']
     with open(fasta_path, 'wt', encoding='utf-8') as fasta_file:
       fasta_file.write(f'>{sequence_id}|null|null|null\n{sequence}\n')
-    csv_dir = self.vectors_csv_dir(sequence_id)
-    vector_paths = self.compute_descriptors(fasta_path, csv_dir)
-    for method, filepath in vector_paths.items():
-      other_metrics[method] = filepath
     os.remove(fasta_path)
+    csv_dir = f'{context.workspace.ilearn_dir}/{sequence_id}'
+    vector_paths = self.compute_descriptor_vectors(fasta_path, csv_dir)
+    data = data.combine_first(vector_paths)
+    data[self.column_name()] = True
+    return data
   
 
 
-  def vectors_csv_dir(self, sequence_id: str) -> str:
-    workspace = Workspace.instance()
-    return f'{workspace.ilearn_dir}/{sequence_id}'
+  def compute_descriptor_vectors(self, 
+                                 fasta_path: str,
+                                 csv_dir: str
+                                 ) -> pd.Series:
+    os.makedirs(csv_dir, exist_ok=True)
+    output = {}
+    for method in self._methods:
+      csv_path = f'{csv_dir}/{method}.csv'
+      for line in self._run_ilearn_cmd(method, fasta_path, csv_path):
+        print(line, end='')
+      output[method] = csv_path
+    return pd.Series(output)
   
 
-  
-  def load_vectors(self, vectorsDir: str) -> Dict[str, npt.NDArray[np.float64]]:
-    descriptors = {
-      method: self.load_vector_from_csv(f'{vectorsDir}/{method}.csv')
-      for method in self._methods
+
+  def load_descriptor_vectors(self, vector_paths: pd.Series) -> Dict[str, npt.NDArray[np.float64]]:
+    vectors = {
+      method: self.load_vector_csv(csv_path)
+      for method, csv_path in vector_paths.items()
     }
-    return descriptors
+    return vectors
   
 
 
-  def load_vector_from_csv(self, csvPath: str) -> npt.NDArray[np.float64]:
-    for line in open(csvPath, 'rt'):
+  def load_vector_csv(self, csv_path: str) -> npt.NDArray[np.float64]:
+    for line in open(csv_path, 'rt'):
       values = line.split(',')
     vector = np.array([ float(x.strip()) for x in values if x.find('null') == -1 ])
     return vector
-  
-
-
-  def compute_descriptors(self, 
-                          fastaPath: str,
-                          csvDir: str
-                          ) -> Dict[str, str]:
-    os.makedirs(csvDir, exist_ok=True)
-    output = {}
-    for method in self._methods:
-      csv_path = f'{csvDir}/{method}.csv'
-      output[method] = csv_path
-      for line in self._descriptor_method_cmd(method, fastaPath, csv_path):
-        print(line, end='')
-    return output
 
 
 
-  def _descriptor_method_cmd(self,
-                             method: str,
-                             inputFastaPath: str,
-                             outputCsvPath: str
-                             ):
+  def _run_ilearn_cmd(self,
+                      method: str,
+                      input_fasta_path: str,
+                      output_csv_path: str
+                      ):
     cmd = [
       'python3',
       f'{self._ilearn_dir}/iLearn-protein-basic.py',
       '--method', method,
       '--format', 'csv',
-      '--file', inputFastaPath,
-      '--out', outputCsvPath
+      '--file', input_fasta_path,
+      '--out', output_csv_path
     ]
     popen = subprocess.Popen(cmd, 
                              stdout=subprocess.PIPE,

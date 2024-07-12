@@ -1,5 +1,8 @@
 from .Metric import Metric
-from typing import Optional
+from typing import Optional, List, Dict
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -12,7 +15,12 @@ class Cyclization(Metric):
 
 
 
-  def compute_value(self, **kwargs) -> float:
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
     # distance between the N atom of the first residue and the C 
     # atom of the last
-    return kwargs['model'][0] - kwargs['model'][-2]
+    data[self.column_name()] = backbone[0] - backbone[-2]
+    return data

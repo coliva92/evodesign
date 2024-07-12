@@ -1,6 +1,7 @@
 from .FitnessFunction import FitnessFunction
-from ..Metrics.Metric import Metric
-from typing import Dict, List, Optional, Union
+from typing import List, Optional
+import numpy as np
+import numpy.typing as npt
 
 
 
@@ -8,23 +9,18 @@ from typing import Dict, List, Optional, Union
 
 class LinearCombination(FitnessFunction):
   
-  @classmethod
-  def column_name(cls) -> str:
-    return 'fitness_linear'
-  
-
-
   def _params(self) -> dict:
     params = super()._params()
-    params['coefficients'] = self._coefficients
+    params['coefficients'] = self._coefficients.tolist()
     return params
   
 
 
   def __init__(self, 
-               terms: List[Metric],
-               upperBound: float,
-               coefficients: Optional[List[float]] = None
+               upper_bound: float,
+               metric_columns: List[str],
+               coefficients: Optional[List[float]] = None,
+               column: Optional[str] = None
                ) -> None:
     """
     Computes the fitness of a given individual as a linear combination of the
@@ -32,50 +28,48 @@ class LinearCombination(FitnessFunction):
 
     Parameters
     ----------
-    terms : List[Metric]
-        The terms for computing the fitness value.
-    upperBound : float
+    upper_bound : float
         The maximum allowed fitness value before triggering a stop condition
         in the evolutionary algorithm.
-    coefficients : Optional[List[float]], optional
-        The coefficients for each individual term. If no coefficients are
-        specified, all terms are assigned a coefficient of 1.0, turning this
-        fitness function into a simple addition of the terms.
+    metric_columns : List[str]
+        The names that identify the metrics required for computing the fitness value in
+        the CSV storing the population data.
+    coefficients : List[float], optional
+        The coefficients for each individual metric. If no coefficients are
+        specified, all metrics are assigned a coefficient of 1.0, turning this
+        fitness function into a simple addition of the metrics. Default is `None`.
+    column : str, optional
+        The name that should identify the values of this metric in the CSV file
+        storing the population data. If `None`, then the class name will be 
+        used. Default is `None`.
 
     Raises
     ------
     RuntimeError
-        If the length of `terms` and `coefficients` are not the same.
+        If the length of `metric_columns` and `coefficients` are not the same.
     """
-    super().__init__(terms, upperBound)
+    super().__init__(upper_bound, metric_columns, column)
     if coefficients is None or len(coefficients) == 0:
-      coefficients = len(self._terms) * [ 1.0 ]
-    if len(coefficients) != len(self._terms):
+      coefficients = len(self._metric_columns) * [ 1.0 ]
+    if len(coefficients) != len(self._metric_columns):
       raise RuntimeError
-    self._coefficients = coefficients
+    self._coefficients = np.array(coefficients)
   
 
 
-  def compute_fitness(self, 
-                      termValues: Dict[str, Union[int, float, str]] = {}
-                      ) -> float:
+  def compute_fitness(self, metrics: npt.NDArray[np.float64]) -> float:
     """
-    Uses the provided term values and the configured coefficients to compute the
-    final fitness value as a linear combination of said term values.
+    Computes a linear combination of the given metric values using the given 
+    coefficients.
 
     Parameters
     ----------
-    termValues : Dict[str, Union[int, float, str]], optional
-        The values of all the individual terms required for the computation 
-        of the fitness value. Default is an empty dictionary. 
+    metrics : numpy.typing.NDArray[numpy.float64]
+        The metric values to be used to compute the fitness value.
 
     Returns
     -------
     float
-        The final fitness value.
+        The computed fitness value.
     """
-    variables = [ termValues[term.column_name()] for term in self._terms ]
-    result = 0
-    for c, x in zip(self._coefficients, variables):
-      result += c * x
-    return result
+    return (self._coefficients * metrics).sum()

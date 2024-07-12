@@ -1,6 +1,9 @@
 from .Metric import Metric
 from Bio.PDB import Superimposer
-from typing import Optional
+from typing import Optional, List, Dict
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -17,29 +20,41 @@ class Rmsd(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
     """
     Computes the root-mean-squared of the distance between the atom coordinates 
     of a model backbone and a reference backbone after superimposing the former 
     into the latter. Both backbones must contain equal number of atoms.
 
+    This function transforms the coordinates stored in `backbone` so that this
+    backbone moves towards the reference backbone (stored in the given context)
+    during superposition.
+
     Parameters
     ----------
-    model : List[Bio.PDB.Atom.Atom]
+    backbone : List[Bio.PDB.Atom.Atom]
         The model backbone. In this case, the model backbone will be moved 
         towards the reference backbone during the superposition.
-    reference : List[Bio.PDB.Atom.Atom]
-        The reference backbone. In this case, the reference backbone remains
-        fixed in position during the superposition.
+    data : pandas.Series
+        Other data associated with the given backbone. Typically consists of the
+        amino acid sequence and other metrics computed from said sequence. 
+    context : Context
+        The context data used by the calling evolutionary algorithm.
 
     Returns
     -------
-    float
-        The computed RMSD measured in Angstroms.
+    Dict[str, float]
+        A dictionary containing the computed RMSD value with the current metric's
+        column name as the RMSD's key.
     """
     if not self._superimposer:
       self._superimposer = Superimposer()
-    self._superimposer.set_atoms(kwargs['reference'], kwargs['model'])
-    self._superimposer.apply(kwargs['model'])
-    return self._superimposer.rms
+    self._superimposer.set_atoms(context.ref_backbone, backbone)
+    self._superimposer.apply(backbone)
+    data[self.column_name()] = self._superimposer.rms
+    return data
   

@@ -1,5 +1,8 @@
 from .Metric import Metric
-from typing import Optional
+from typing import Optional, Dict, List
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -12,7 +15,11 @@ class Plddt(Metric):
 
 
 
-  def compute_value(self, **kwargs) -> float:
+  def compute_value(self, 
+                    backbone: List[Atom],
+                    data: pd.Series,
+                    context: Context
+                    ) -> Dict[str, float]:
     """
     Wrapper for retrieving the predicted lDDT value when computing the fitness
     value of an individual. The predicted lDDT values is provided by the 
@@ -32,6 +39,6 @@ class Plddt(Metric):
     """
     if 'otherMetrics' in kwargs and 'plddt' in kwargs['otherMetrics']:
       return kwargs['otherMetrics']['plddt']
-    if 'plddt' in kwargs:
+    if 'plddt' in data.index:
       return kwargs['plddt']
     raise RuntimeError

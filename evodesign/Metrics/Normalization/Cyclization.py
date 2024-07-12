@@ -1,6 +1,9 @@
 from ..Metric import Metric
 from ..Cyclization import Cyclization as CyclizationMetric
-from typing import Optional
+from typing import Optional, List, Dict
+from ...Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -15,7 +18,7 @@ class Cyclization(Metric):
 
   def _params(self) -> dict:
     params = super()._params()
-    params['cyclization_calc'] = self._cyclization_metric.settings()
+    params['cyclization_metric'] = self._cyclization_metric.settings()
     return params
   
 
@@ -31,11 +34,16 @@ class Cyclization(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    otherMetrics = kwargs['otherMetrics']
-    value = self._cyclization_metric(**kwargs)
-    otherMetrics[self._cyclization_metric.column_name()] = value
-    return self._z_score(value)
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    # compute the cyclization if not already computed
+    data = self._cyclization_metric(backbone, data, context)
+    z_score =  self._z_score(data[self._cyclization_metric.column_name()])
+    data[self.column_name()] = z_score
+    return data
 
     
   

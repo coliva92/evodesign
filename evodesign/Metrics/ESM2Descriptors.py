@@ -3,7 +3,10 @@ from ..Workspace import Workspace
 import numpy as np
 import numpy.typing as npt
 import os
-from typing import Optional
+from typing import Optional, List, Dict
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -32,37 +35,25 @@ class ESM2Descriptors(Metric):
   
 
 
-  def compute_value(self, **kwargs) -> None:
-    sequence, sequence_id = kwargs['sequence'], kwargs['sequenceId']
-    other_metrics = kwargs['otherMetrics']
-    if self.model is None or self.batch_converter is None:
-      import esm
-      import torch
-      self.model, alphabet = esm.pretrained.esm2_t36_3B_UR50D()
-      self.batch_converter = alphabet.get_batch_converter()
-      self.model.eval()
-      if self._use_gpu and torch.cuda.is_available(): 
-        self.model = self.model.cuda()
-    workspace = Workspace.instance()
-    csv_path = f'{workspace.esm2_dir}/{sequence_id}.csv'
-    self.compute_descriptor_vector(sequence, csv_path)
-    other_metrics['esm2_descriptor'] = csv_path
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    sequence, sequence_id = data['sequence'], data['sequence_id']
+    vectors = self.compute_descriptor_vectors(sequence, sequence_id)
+    txt_path = f'{context.workspace.esm2_dir}/{sequence_id}.txt'
+    self.save_descriptor_vectors_txt(vectors, txt_path)
+    data[self.column_name()] = txt_path
+    return data
   
 
 
-  def load_vector_from_csv(self, csvPath: str) -> npt.NDArray[np.float64]:
-    for line in open(csvPath, 'rt'):
-      values = line.split(',')
-    vector = np.array([ float(x.strip()) for x in values ])
-    return vector
-  
-
-
-  def compute_descriptor_vector(self, 
-                                sequence: str,
-                                csvPath: str,
-                                sequence_id: str = 'prot_0000_0000'
-                                ) -> npt.NDArray[np.float64]:
+  def compute_descriptor_vectors(self, 
+                                 sequence: str,
+                                 sequence_id: str = 'prot_0000_0000'
+                                 ) -> npt.NDArray[np.float64]:
+    # initialize the model if not yet initialized
     import torch
     if self.model is None or self.batch_converter is None:
       import esm
@@ -71,8 +62,7 @@ class ESM2Descriptors(Metric):
       self.model.eval()
       if self._use_gpu and torch.cuda.is_available(): 
         self.model = self.model.cuda()
-    workspace = Workspace.instance()
-    os.makedirs(workspace.esm2_dir, exist_ok=True)
+    
     data = [( sequence_id, sequence )]
     seq_ids, seqs, tokens = self.batch_converter(data)
     if self._use_gpu and torch.cuda.is_available():
@@ -97,12 +87,26 @@ class ESM2Descriptors(Metric):
     del tokens
     del result
 
-    # collapse all weights into a single vector
-    vector = np.concatenate(matrix, axis=0)
+    return matrix
+  
 
-    # save the descriptors to a file
-    with open(csvPath, 'wt', encoding='utf-8') as csv_file:
-      values = vector.tolist()
-      csv_file.write(','.join(map(str, values)) + '\n')
-    return vector
+
+  def save_descriptor_vectors_txt(self, 
+                                  vectors: npt.NDArray[np.float64], 
+                                  txt_path: str
+                                  ) -> None:
+    os.makedirs(os.path.dirname(os.path.abspath(txt_path)), exist_ok=True)
+    with open(txt_path, 'wt', encoding='utf-8') as txt_file:
+      for i in range(vectors.shape[0]):
+        vector = vectors[i].tolist()
+        txt_file.write(','.join(map(str, vector)) + '\n')
+
+  
+
+  def load_descriptor_vectors_txt(self, txt_path: str) -> npt.NDArray[np.float64]:
+    vectors = np.array([
+      [ float(value.strip()) for value in line.split(',') ]
+      for line in open(txt_path, 'rt', encoding='utf-8')
+    ])
+    return vectors
   

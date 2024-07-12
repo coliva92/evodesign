@@ -1,7 +1,10 @@
 from .Metric import Metric
 from .ESM2Descriptors import ESM2Descriptors
-from ..Workspace import Workspace
 import numpy as np
+from typing import Optional, List
+from ..Context import Context
+from Bio.PDB.Atom import Atom
+import pandas as pd
 
 
 
@@ -9,32 +12,48 @@ import numpy as np
 
 class ESM2DescriptorsRms(Metric):
 
-  def column_name(self) -> str:
-    return 'esm2_rms'
-  
-
-
   def _params(self) -> dict:
-    return { 'useGpu': self._descriptor_calc._use_gpu }
+    params = super()._params()
+    params['esm2_metric'] = self._esm2_metric.settings()
+    return params
   
 
 
-  def __init__(self, useGpu: bool = True) -> None:
-    super().__init__()
-    self._ref_vector = None
-    self._descriptor_calc = ESM2Descriptors(useGpu) 
+  def __init__(self, 
+               esm2_metric: Optional[ESM2Descriptors] = None,
+               column: Optional[str] = None
+               ) -> None:
+    super().__init__(column)
+    if esm2_metric is None:
+      esm2_metric = ESM2Descriptors()
+    self._esm2_metric = esm2_metric 
+    self._ref_vectors = None
   
 
 
-  def compute_value(self, **kwargs) -> float:
-    if self._ref_vector is None:
-      ref_seq = kwargs['refSequence']
-      workspace = Workspace.instance()
-      ref_csv_path = f'{workspace.esm2_dir}/reference.csv'
-      self._ref_vector = \
-        self._descriptor_calc.compute_descriptor_vector(ref_seq, ref_csv_path)
-    other_metrics = kwargs['otherMetrics']
-    self._descriptor_calc(**kwargs)
-    csv_path = other_metrics['esm2_descriptor']
-    vector = self._descriptor_calc.load_vector_from_csv(csv_path)
-    return np.sqrt(np.mean((self._ref_vector - vector) ** 2))
+  def _compute_values(self,
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
+    # TODO cargar los descriptores del archivo almacenado si este ya existe
+    if self._ref_vectors is None:
+      # compute the ESM2 descriptors
+      self._ref_vectors = self._esm2_metric.compute_descriptor_vectors(context.ref_sequence)
+      txt_path = f'{context.workspace.esm2_dir}/reference.txt'
+      self._esm2_metric.save_descriptor_vectors_txt(self._ref_vectors, txt_path)
+    
+    # compute the ESM2 descriptors for the model
+    data = self._esm2_metric(backbone, data, context)
+    c = self._esm2_metric.column_name()
+    model_vectors = self._esm2_metric.load_descriptor_vectors_txt(data[c])
+
+    # compute the RMS of each residue
+    rms = np.array([
+      np.sqrt(np.mean((self._ref_vectors[i] - model_vectors[i]) ** 2))
+      for i in range(self._ref_vectors.shape[0])
+    ])
+
+    # then compute the average of the RMS of all residues
+    data[self.column_name()] = np.average(rms)
+    return data

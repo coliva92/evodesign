@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Union
-from ..Metrics.Metric import Metric
+from typing import List, Optional
 from ..SettingsRetrievable import SettingsRetrievable
 import pandas as pd
+import numpy.typing as npt
+import numpy as np
 
 
 
@@ -10,87 +11,57 @@ import pandas as pd
 
 class FitnessFunction(SettingsRetrievable, ABC):
 
-  @classmethod
-  @abstractmethod
-  def column_name(cls) -> str:
-    raise NotImplementedError
+  def column_name(self) -> str:
+    return self._column_name
   
 
 
   def _params(self) -> dict:
     return {
-      'upperBound': self._upper_bound,
-      'terms': [ term.settings() for term in self._terms ]
+      'column': self._column_name,
+      'upper_bound': self.upper_bound,
+      'metric_columns': self._metric_columns
     }
   
 
 
   def __init__(self, 
-               terms: List[Metric],
-               upperBound: float
+               upper_bound: float,
+               metric_columns: List[str],
+               column: Optional[str] = None
                ) -> None:
     super().__init__()
-    self._upper_bound = upperBound
-    self._terms = terms
+    self.upper_bound = upper_bound
+    self._metric_columns = metric_columns
+    if column is None or len(column) == 0:
+      self._column_name = self._class_name()
   
 
 
-  def upper_bound(self) -> float:
+  def __call__(self, data: pd.Series) -> pd.Series:
     """
-    Returns
-    -------
-    float
-        The highest value the fitness function can achieve before triggering
-        the termination of the evolutionary algorithm.
-    """
-    return self._upper_bound
-
-
-  
-  @abstractmethod
-  def compute_fitness(self, 
-                      termValues: Dict[str, Union[int, float, str]] = {}
-                      ) -> float:
-    raise NotImplementedError
-
-
-
-  def __call__(self, **kwargs) -> pd.Series:
-    """
-    Computes the fitness for a given model backbone or sequence.
+    Computes the fitness value.
 
     Parameters
     ----------
-    model : List[Bio.PDB.Atom.Atom]
-        The model backbone for which the fitness will be computed.
-    reference : List[Bio.PDB.Atom.Atom]
-        The backbone of the target protein. The fitness of each individual
-        in the population can be computed from this backbone.
-    refSequence: str, optional
-        The amino acid sequence of the target protein. The fitness of each
-        individual in the population can be computed from this sequence.
-        Default is `None`.
-    sequence : str, optional
-        The amino acid sequence for which the fitness will be computed.
-        Each residue must be represented by a single letter corresponding to
-        one of the 20 essential amino acids.
-    sequence_id : str, optional
-        The unique identifier for the given sequence.
-    plddt : float, optional
-        The predicted lDDT value computed by the protein structure prediction
-        algorithm that was used for obtaining the given model backbone.
+    data : pandas.Series
+        The population data corresponding to the individual which fitness 
+        value is being computed. It is assumed that this data also includes the values 
+        of the metrics required by the current fitness function.
 
     Returns
     -------
     pandas.Series
-        The computed term and fitness values for the given model or sequence.
+        The original data series with added columns to include the computed fitness 
+        value.
     """
-    kwargs['otherMetrics'] = term_values = {}
-    if 'plddt' in kwargs: 
-      term_values['plddt'] = kwargs['plddt']
-    for term in self._terms:
-      value = term(**kwargs)
-      if value is not None:
-        term_values[term.column_name()] = value
-    term_values[self.column_name()] = self.compute_fitness(term_values)
-    return pd.Series(term_values)
+    metric_values = data[self._metric_columns].to_numpy()
+    result = self.compute_fitness(metric_values)
+    data[self.column_name()] = result
+    return data
+  
+
+
+  @abstractmethod
+  def compute_fitness(self, metrics: npt.NDArray[np.float64]) -> float:
+    raise NotImplementedError
