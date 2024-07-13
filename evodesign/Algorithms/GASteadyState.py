@@ -65,5 +65,5 @@ class GASteadyState(GenericGA):
                             children,
                             self._sort_columns,
                             self._sort_ascending)
-        mixed.loc[:self._pop_size - 1, 'survivor'] = True
+        mixed.loc[:self._population_size - 1, 'survivor'] = True
         return mixed

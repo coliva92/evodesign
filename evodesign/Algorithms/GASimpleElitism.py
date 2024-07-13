@@ -73,5 +73,5 @@ class GASimpleElitism(GenericGA):
         # if last pop's elite solution wins, it is preserved;
         # if it loses to another solution in children, it is removed and all
         # children survive to the next generation
-        mixed.loc[:self._pop_size - 1, 'survivor'] = True
+        mixed.loc[:self._population_size - 1, 'survivor'] = True
         return mixed

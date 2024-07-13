@@ -157,7 +157,7 @@ class NSGA2(Algorithm):
     # we create the next population by filling it row by row
     next_pop = pd.DataFrame(columns=mixed.columns)
     i, front = 0, fronts[0]
-    while len(next_pop) + len(front) < self._pop_size:
+    while len(next_pop) + len(front) < self._population_size:
       front = self.compute_crowding_distance(front)
       next_pop = pd.concat([ next_pop, front ], ignore_index=True)
       i += 1
@@ -170,7 +170,7 @@ class NSGA2(Algorithm):
                       ascending=[ True, False ],
                       inplace=True,
                       ignore_index=True)
-    n = self._pop_size - len(next_pop)
+    n = self._population_size - len(next_pop)
     next_pop = pd.concat([ next_pop, front.iloc[:n] ], ignore_index=True)
 
     # finish by marking all these sequences as survivors and appending the rest
