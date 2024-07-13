@@ -7,17 +7,21 @@ import requests
 from ..Exceptions import *
 from .ESM2Descriptors import ESM2Descriptors
 import time
+import numpy as np
+import numpy.typing as npt
 
 
 
 
 
-class ESM2DescriptorsRemoteApi(Metric):
+class ESM2DescriptorsRemoteApi(ESM2Descriptors):
 
     def _params(self) -> dict:
-        params = super()._params()
-        params['url'] = self._url
-        return params
+        return {
+            "column": self._column_name,
+            "url": self._url,
+            "sleep_time": self._sleep_time
+        }
 
 
 
@@ -32,12 +36,10 @@ class ESM2DescriptorsRemoteApi(Metric):
     
 
 
-    def _compute_values(self, 
-                        backbone: List[Atom],
-                        data: pd.Series,
-                        context: Context
-                        ) -> pd.Series:
-        sequence, sequence_id = data["sequence"], data["sequence_id"]
+    def compute_descriptor_vectors(self, 
+                                   sequence: str,
+                                   sequence_id: str = 'prot_0000_0000'
+                                   ) -> npt.NDArray[np.float64]:
         if self._sleep_time > 0.0:
             time.sleep(self._sleep_time)
         response = requests.post(self._url, 
@@ -55,8 +57,4 @@ class ESM2DescriptorsRemoteApi(Metric):
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
-        vectors = response.json()["descriptors"]
-        txt_path = f"{context.workspace.esm2_dir}/{sequence_id}.txt"
-        ESM2Descriptors.save_descriptor_vectors_txt(vectors, txt_path)
-        data[self.column_name()] = txt_path
-        return data
+        return response.json()["descriptors"]
