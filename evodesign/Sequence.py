@@ -70,6 +70,8 @@ def swap_letter(rng: np.random.Generator,
         The produced letter also corresponds to one of the 20 standard amino 
         acids.
     """
+    if len(allowed_letters) < 2:
+        return letter
     new_letter = letter
     while new_letter == letter:
         new_letter = allowed_letters[rng.choice(len(allowed_letters))]
