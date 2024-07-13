@@ -270,7 +270,7 @@ class Workspace:
     restrictions_desc : Dict[int, List[str]]
         The restrictions description to be saved.
     """
-    os.makedirs(self._load_from_root_dir, exist_ok=True)
+    os.makedirs(self.root_dir, exist_ok=True)
     file_path = f'{self.root_dir}/sequence_restrictions.json'
     with open(file_path, 'wt', encoding='utf-8') as json_file:
       json_file.write(json.dumps(restrictions_desc, indent=4) + '\n')
