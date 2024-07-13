@@ -1,11 +1,6 @@
-from .Metric import Metric
-from typing import Optional, List
-from Bio.PDB.Atom import Atom
-import pandas as pd
-from ..Context import Context
+from .ESM2Descriptors import ESM2Descriptors
 import requests
 from ..Exceptions import *
-from .ESM2Descriptors import ESM2Descriptors
 import time
 import numpy as np
 import numpy.typing as npt
@@ -58,4 +53,4 @@ class ESM2DescriptorsRemoteApi(ESM2Descriptors):
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
-        return response.json()["descriptors"]
+        return np.array(response.json()["descriptors"])
