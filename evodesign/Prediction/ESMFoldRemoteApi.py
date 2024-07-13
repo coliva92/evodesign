@@ -72,7 +72,7 @@ class ESMFoldRemoteApi(Predictor):
 
 
 
-    def predict_raw_pdb(self, sequence: str) -> str:
+    def predict_pdb_str(self, sequence: str) -> str:
         """
         Calls the remote API at the given URL to predict the 3D structure
         of a given amino acid sequence.

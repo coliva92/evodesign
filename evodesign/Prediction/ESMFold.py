@@ -31,7 +31,7 @@ class ESMFold(Predictor):
   
 
 
-    def predict_raw_pdb(self, sequence: str) -> str:
+    def predict_pdb_str(self, sequence: str) -> str:
         """
         Predicts the 3D structure of a given amino acid sequence using the 
         ESMFold v1 model.

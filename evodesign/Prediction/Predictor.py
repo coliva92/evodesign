@@ -13,7 +13,7 @@ import os
 class Predictor(SettingsRetrievable, ABC):
 
     @abstractmethod
-    def predict_raw_pdb(self, sequence: str) -> str:
+    def predict_pdb_str(self, sequence: str) -> str:
         raise NotImplementedError
   
 
@@ -39,7 +39,7 @@ class Predictor(SettingsRetrievable, ABC):
         """
         if not os.path.isfile(pdb_path):
             os.makedirs(os.path.dirname(os.path.abspath(pdb_path)), exist_ok=True)
-        prediction = self.predict_raw_pdb(sequence)
+        prediction = self.predict_pdb_str(sequence)
         with open(pdb_path, 'wt', encoding='utf-8') as pdb_file:
             pdb_file.write(prediction) 
   

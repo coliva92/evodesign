@@ -8,7 +8,7 @@ from Bio.PDB.Atom import Atom
 
 class Null(Predictor):
   
-    def predict_raw_pdb(self, sequence: str) -> str:
+    def predict_pdb_str(self, sequence: str) -> str:
         """
         Does nothing.
 
