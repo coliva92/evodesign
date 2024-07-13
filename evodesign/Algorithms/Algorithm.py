@@ -111,7 +111,7 @@ class Algorithm(SettingsRetrievable, ABC):
             The population from which the algorithm should begin its execution.
         """
         # set the context and initialize the workspace and the RNG
-        self._context = Context(context.duplicate())
+        self._context = context.duplicate()
         self._context.init_workspace(workspace_root)
         self._context.workspace.save_commit_hash()
         self._context.init_rng()
