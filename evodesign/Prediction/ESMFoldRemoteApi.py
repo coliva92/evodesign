@@ -2,7 +2,6 @@ from .Predictor import Predictor
 from ..Exceptions import *
 import requests
 import time
-from typing import Optional
 
 
 
