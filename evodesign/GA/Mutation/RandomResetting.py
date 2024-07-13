@@ -76,5 +76,5 @@ class RandomResetting(Mutation):
     return ''.join([
       Sequence.swap_letter(rng, sequence[i], allowed_letters[i]) 
       if Utils.coin_toss(rng, self._swap_prob) else sequence[i]
-      for i in len(sequence)
+      for i in range(len(sequence))
     ])
