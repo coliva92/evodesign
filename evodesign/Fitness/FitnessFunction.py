@@ -33,6 +33,7 @@ class FitnessFunction(SettingsRetrievable, ABC):
     super().__init__()
     self.upper_bound = upper_bound
     self._metric_columns = metric_columns
+    self._column_name = column
     if column is None or len(column) == 0:
       self._column_name = self._class_name()
   

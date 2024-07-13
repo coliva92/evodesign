@@ -34,6 +34,7 @@ class Metric(SettingsRetrievable, ABC):
         used. Default is `None`.
     """
     super().__init__()
+    self._column_name = column
     if column is None or len(column) == 0:
       self._column_name = self._class_name()
 
