@@ -40,7 +40,7 @@ def create_random(rng: np.random.Generator,
     allowed_letters = allowed_letters_desc(length, allowed_letters)
     return ''.join([
         rng.choice(letter_pool)
-        for letter_pool in allowed_letters
+        for i, letter_pool in allowed_letters.items()
     ])
 
 
