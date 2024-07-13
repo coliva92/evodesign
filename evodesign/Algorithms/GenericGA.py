@@ -208,5 +208,5 @@ class GenericGA(Algorithm, ABC):
         A flag that indicates if the fitness upper bound has been reached.
     """
     f = self._fitness_fn
-    return population.iloc[0][f.column_name()] >= f.upper_bound()
+    return population.iloc[0][f.column_name()] >= f.upper_bound
   
