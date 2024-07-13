@@ -6,6 +6,7 @@ from ..Context import Context
 import requests
 from ..Exceptions import *
 from .ESM2Descriptors import ESM2Descriptors
+import time
 
 
 
@@ -22,10 +23,12 @@ class ESM2DescriptorsRemoteApi(Metric):
 
     def __init__(self, 
                  url: str = "http://127.0.0.1:5000/esm",
+                 sleep_time: float = 0.5,
                  column: Optional[str] = None
                  ) -> None:
         super().__init__(column)
         self._url = url
+        self._sleep_time = sleep_time
     
 
 
@@ -35,6 +38,8 @@ class ESM2DescriptorsRemoteApi(Metric):
                         context: Context
                         ) -> pd.Series:
         sequence, sequence_id = data["sequence"], data["sequence_id"]
+        if self._sleep_time > 0.0:
+            time.sleep(self._sleep_time)
         response = requests.post(self._url, 
                                  json={ "sequence": sequence },
                                  timeout=30)
