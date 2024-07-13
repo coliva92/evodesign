@@ -110,7 +110,7 @@ def allowed_letters_desc(length: int,
         return { i: AMINO_ACIDS for i in range(length) }
     if len(list(desc.keys())) >= length:
         return desc
-    return [
-        desc[i] if i in desc else AMINO_ACIDS
+    return {
+        i: desc[i] if i in desc else AMINO_ACIDS
         for i in range(length)
-    ]
+    }
