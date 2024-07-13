@@ -10,7 +10,8 @@ import time
 class ESMFoldRemoteApi(Predictor):
 
     def _params(self) -> dict:
-        return { 
+        parent_params = super()._params()
+        params = { 
             'url': self._url,
             'request_is_json': self._request_is_json,
             'response_is_json': self._response_is_json,
@@ -18,6 +19,7 @@ class ESMFoldRemoteApi(Predictor):
             'prediction_json_key': self._prediction_json_key,
             'sleep_time': self._sleep_time
         }
+        return { **parent_params, **params }
     
 
 
@@ -25,8 +27,8 @@ class ESMFoldRemoteApi(Predictor):
                  url: str = 'https://api.esmatlas.com/foldSequence/v1/pdb/',
                  request_is_json: bool = False,
                  response_is_json: bool = False,
-                 sequence_json_key: str = 'input',
-                 prediction_json_key: str = 'output',
+                 sequence_json_key: str = 'sequence',
+                 prediction_json_key: str = 'pdb',
                  sleep_time: float = 1.5
                  ) -> None:
         """
@@ -61,6 +63,7 @@ class ESMFoldRemoteApi(Predictor):
             which it admits requests. Set to zero to send requests with no wait
             time between them. Default is 1.5 seconds.
         """
+        super().__init__()
         self._url = url
         self._request_is_json = request_is_json
         self._response_is_json = response_is_json
