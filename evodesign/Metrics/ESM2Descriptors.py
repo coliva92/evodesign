@@ -91,7 +91,8 @@ class ESM2Descriptors(Metric):
   
 
 
-  def save_descriptor_vectors_txt(self, 
+  @classmethod
+  def save_descriptor_vectors_txt(cls, 
                                   vectors: npt.NDArray[np.float64], 
                                   txt_path: str
                                   ) -> None:
@@ -103,7 +104,8 @@ class ESM2Descriptors(Metric):
 
   
 
-  def load_descriptor_vectors_txt(self, txt_path: str) -> npt.NDArray[np.float64]:
+  @classmethod
+  def load_descriptor_vectors_txt(cls, txt_path: str) -> npt.NDArray[np.float64]:
     vectors = np.array([
       [ float(value.strip()) for value in line.split(',') ]
       for line in open(txt_path, 'rt', encoding='utf-8')

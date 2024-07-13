@@ -70,16 +70,18 @@ class iLearnDescriptors(Metric):
   
 
 
-  def load_descriptor_vectors(self, vector_paths: pd.Series) -> Dict[str, npt.NDArray[np.float64]]:
+  @classmethod
+  def load_descriptor_vectors(cls, vector_paths: pd.Series) -> Dict[str, npt.NDArray[np.float64]]:
     vectors = {
-      method: self.load_vector_csv(csv_path)
+      method: cls.load_vector_csv(csv_path)
       for method, csv_path in vector_paths.items()
     }
     return vectors
   
 
 
-  def load_vector_csv(self, csv_path: str) -> npt.NDArray[np.float64]:
+  @classmethod
+  def load_vector_csv(cls, csv_path: str) -> npt.NDArray[np.float64]:
     for line in open(csv_path, 'rt'):
       values = line.split(',')
     vector = np.array([ float(x.strip()) for x in values if x.find('null') == -1 ])
