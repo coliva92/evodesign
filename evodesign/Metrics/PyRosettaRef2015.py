@@ -28,7 +28,7 @@ class PyRosettaRef2015(Metric):
                       data: pd.Series,
                       context: Context
                       ) -> pd.Series:
-    pdb_path = f'{context.workspace.pdbs_dir}/prot_{data['sequence_id']}.pdb'
+    pdb_path = f'{context.workspace.pdbs_dir}/prot_{data["sequence_id"]}.pdb'
     import pyrosetta
     pose = pyrosetta.pose_from_pdb(pdb_path)
     score = self.score_fn(pose)
