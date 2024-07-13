@@ -69,7 +69,7 @@ class Tournament(Selection):
       winner = self._tournament_selection(population, context, elitist)
       while i % 2 != 0 and \
           selected_parents.at[i - 1, 'sequence_id'] == winner['sequence_id']:
-        winner = self._tournament_selection(population)
+        winner = self._tournament_selection(population, context)
       selected_parents = pd.concat([ selected_parents, winner.to_frame().T ],
                                    ignore_index=True)
     return selected_parents
