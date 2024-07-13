@@ -16,6 +16,8 @@ from .Metrics.iLearnDescriptors import iLearnDescriptors \
 from .Metrics.ESM2Descriptors import ESM2Descriptors as Metrics_ESM2Descriptors
 from .Metrics.ESM2DescriptorsRms import ESM2DescriptorsRms \
   as Metrics_ESM2DescriptorsRms
+from .Metrics.ESM2DescriptorsRemoteApi import ESM2DescriptorsRemoteApi \
+  as Metrics_ESM2DescriptorsRemoteApi
 from .Metrics.Normalization.Reciprocal import Reciprocal \
   as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
