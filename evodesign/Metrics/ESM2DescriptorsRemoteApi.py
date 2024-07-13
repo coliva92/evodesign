@@ -44,7 +44,7 @@ class ESM2DescriptorsRemoteApi(ESM2Descriptors):
             time.sleep(self._sleep_time)
         response = requests.post(self._url, 
                                  json={ "sequence": sequence },
-                                 timeout=30)
+                                 timeout=120)
         if response.status_code == 400:
             raise HttpBadRequest
         if response.status_code == 403:
