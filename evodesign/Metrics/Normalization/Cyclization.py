@@ -49,4 +49,4 @@ class Cyclization(Metric):
   
   def _z_score(self, x: float) -> float:
     z = abs(x - self._MEAN) / self._STANDARD_DEVIATION
-    return z
+    return 1.0 / 1.0 + z
