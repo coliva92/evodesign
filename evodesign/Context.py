@@ -73,6 +73,10 @@ class Context:
             with open(seq_allowed_letters_json_path, 'rt', encoding='utf-8') as json_file:
                 # TODO revisar que el formato del JSON esté correcto
                 desc = json.load(json_file)
+            desc = {
+                int(float(key)): value
+                for key, value in desc.items()
+            }
             desc = Sequence.allowed_letters_desc(context.sequence_length, desc)
         context.sequence_allowed_letters = desc
         return context
