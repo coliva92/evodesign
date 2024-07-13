@@ -55,7 +55,7 @@ class Context:
         if target_fasta_path is not None:
             for line in open(target_fasta_path, 'rt', encoding='utf-8'):
                 if line.find('>') != -1: continue
-                context.ref_sequence = line
+                context.ref_sequence = line.strip()
                 break
         
         # compute the sequence length
