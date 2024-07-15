@@ -54,6 +54,7 @@ class ESM2DescriptorsRms(Metric):
       for i in range(self._ref_vectors.shape[0])
     ])
 
-    # then compute the average of the RMS of all residues
+    # then compute the average of the RMS of all residues; this is the same as computing
+    # the weighted mean since all residues have the same number of descriptors
     data[self.column_name()] = np.average(rms)
     return data
