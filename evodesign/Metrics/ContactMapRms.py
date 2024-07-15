@@ -28,6 +28,8 @@ class ContactMapRms(Metric):
       self._ref_map = self._contact_map(context.ref_backbone)
     model_map = self._contact_map(backbone)
     difference = self._ref_map - model_map
+    # computing the mean over all individual values is the equivalent as computing
+    # the weighted mean of the means of each value group
     rms = np.sqrt(np.mean(difference**2))
     data[self.column_name()] = rms
     return data
