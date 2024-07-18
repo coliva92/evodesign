@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..SettingsRetrievable import SettingsRetrievable
-from typing import Dict, Optional, List, Union
+from typing import Optional, List
 import pandas as pd
 from Bio.PDB.Atom import Atom
 from ..Context import Context
