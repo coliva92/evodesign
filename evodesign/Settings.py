@@ -22,13 +22,13 @@ from .Metrics.Normalization.Reciprocal import Reciprocal \
   as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
   as Metrics_Normalization_Cyclization
+from .Metrics.Rastrigin import Rastrigin as Metrics_Rastrigin
 from .Metrics.Yan24.Geometry import Geometry as Metrics_Yan24_Geometry
 from .Metrics.Yan24.Energy import Energy as Metrics_Yan24_Energy
 from .Metrics.Yan24.Descriptors import Descriptors as Metrics_Yan24_Descriptors
 from .Fitness.WeightedMean import WeightedMean as Fitness_WeightedMean
 from .Fitness.LinearCombination import LinearCombination \
   as Fitness_LinearCombination
-from .Fitness.Experimental.Rastrigin import Rastrigin as Fitness_Rastrigin
 from .GA.Mutation.RandomResetting import RandomResetting \
   as GA_Mutation_RandomResetting
 from .GA.Mutation.Swap import Swap as GA_Mutation_Swap

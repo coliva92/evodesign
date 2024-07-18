@@ -1,17 +1,19 @@
-from ..FitnessFunction import FitnessFunction
-from typing import Dict, List
+from .Metric import Metric
+from typing import Dict, List, Optional
 import evodesign.Sequence as Sequence
-from ...Workspace import Workspace
 import evodesign.Chain as Chain
 from Bio.Align import substitution_matrices
 import math
 import operator
+import pandas as pd
+from Bio.PDB.Atom import Atom
+from ..Context import Context
 
 
 
 
 
-class Rastrigin(FitnessFunction):
+class Rastrigin(Metric):
 
   """[Función de Rastrigin](https://www.sfu.ca/~ssurjano/rastr.html) para 
   realizar pruebas sin utilizar directamente el predictor de la estructura de 
@@ -19,49 +21,49 @@ class Rastrigin(FitnessFunction):
   con `Predictor_Null`
   """
   
-  @classmethod
-  def column_name(cls) -> str:
-    return 'fitness_rastrigin'
-  
 
 
+  _VALID_WINDOW_WIDTH_VALUES = { 1, 3, 5, 7, 9 }
   def _params(self) -> dict:
     params = super()._params()
-    params['windowWidth'] = self._window_width
+    params['window_width'] = self._window_width
     return params
   
 
 
   def __init__(self,
-               upperBound: float = 0.0,
-               windowWidth: int = 3
+               window_width: int = 3,
+               column: Optional[str] = None
                ) -> None:
-    super().__init__([], upperBound)
+    super().__init__(column)
 
-    # acotamos los valores permitidos para la variable `windowWidth`...
-    if windowWidth < 3: windowWidth = 3
-    if windowWidth > 9: windowWidth = 9
+    # acotamos los valores permitidos para la variable `window_width`...
+    if window_width not in self._VALID_WINDOW_WIDTH_VALUES:
+      raise RuntimeError
 
-    self._window_width = windowWidth
-    self._wing_length = (windowWidth - 1) // 2
+    self._window_width = window_width
+    self._wing_size = (window_width - 1) // 2
     self._residue_ordinals = None
     self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_width
 
 
 
-  def compute_fitness(self, **kwargs) -> float:
+  def _compute_values(self, 
+                      backbone: List[Atom],
+                      data: pd.Series,
+                      context: Context
+                      ) -> pd.Series:
     if not self._residue_ordinals:
-      workspace = Workspace.instance()
-      structure = Chain.load_structure(workspace.target_pdb_path)
-      self._target_sequence = Sequence.create_random(Chain.length(structure))
+      self._target_sequence = context.ref_sequence
       blosum_matrix = substitution_matrices.load("BLOSUM62")
       self._residue_ordinals = self._compute_residue_ordinals(blosum_matrix)
-    x = self._to_rastrigin_domain(kwargs['sequence'])
+    x = self._to_rastrigin_domain(data['sequence'])
     sigma = sum([ 
       x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
       for x_i in x 
     ])
-    return -10.0 * len(kwargs['sequence']) - sigma # queremos el valor negativo
+    data[self.column_name()] = -10.0 * len(data['sequence']) - sigma # queremos el valor negativo
+    return data
   
 
 
@@ -118,8 +120,8 @@ class Rastrigin(FitnessFunction):
     # ventana (en lugar de un solo aminoácido) por cada posición o residuo en 
     # la secuencia.
     n = len(sequence)
-    a = pivot - self._wing_length
-    b = pivot + self._wing_length + 1
+    a = pivot - self._wing_size
+    b = pivot + self._wing_size + 1
     indices = [ i % n for i in range(a, b) ]
     ordinals = [
       self._residue_ordinals[j][sequence[j]] * 20**(self._window_width - 1 - i)
