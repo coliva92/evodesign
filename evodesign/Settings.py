@@ -4,6 +4,7 @@ from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Algorithms.GASteadyState import GASteadyState as Algorithms_GASteadyState
 from .Algorithms.GASimpleElitism import GASimpleElitism as Algorithms_GASimpleElitism
+from .Algorithms.GASimple import GASimple as Algorithms_GASimple
 from .Metrics.Rmsd import Rmsd as Metrics_Rmsd
 from .Metrics.Gdt import Gdt as Metrics_Gdt
 from .Metrics.ContactMapRms import ContactMapRms as Metrics_ContactMapRms

@@ -182,3 +182,38 @@ def merge(a: pd.DataFrame,
                            axis=0, 
                            ignore_index=True)
     return merged
+
+
+
+def find_top_solution(population: pd.DataFrame,
+                      columns: List[str],
+                      ascending: List[bool]
+                      ) -> pd.Series:
+    """
+    Returns the data of the fittest individual in the given population.
+
+    Parameters
+    ----------
+    population : pd.DataFrame
+        The population to be searched.
+    columns : List[str]
+        The columns which values will be considered to determine the relative
+        order of `a` and `b`.
+    ascending : List[bool]
+        If `True`, it indicates that the values in the corresponding column will 
+        be sorted in _ascending_ order. And if `False`, indicates that the values 
+        will be sorted in _descending_ order. It is _assumed_ that both `columns`
+        and `ascending` have the same length.
+
+    Returns
+    -------
+    pd.Series
+        A copy of the data of the found individual. Modifications on this data will 
+        not be reflected in the original individual's data.
+    """
+    top_solution = population.iloc[0].copy()
+    for _, row in population.iterrows():
+        if is_sorted_before(top_solution, row, columns, ascending):
+            continue
+        top_solution = row.copy()
+    return top_solution
