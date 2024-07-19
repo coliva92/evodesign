@@ -7,7 +7,6 @@ from ..GA.Selection.Selection import Selection
 from ..Prediction.Predictor import Predictor
 from ..Fitness.FitnessFunction import FitnessFunction
 import evodesign.Sequence as Sequence
-from Bio.PDB.Atom import Atom
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
