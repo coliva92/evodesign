@@ -54,13 +54,19 @@ population = algorithm.setup(context, args.workspace_root)
 while True:
     try:
         algorithm(population)
+        import evodesign.debug as dbg
+        dbg.counters_df.to_csv("selection_test3.csv")
+        print(dbg.selections_count)
         break
     except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
-        temp = f'-s {args.target_fasta_path} ' if args.target_fasta_path else ''
+        fasta_option = f'-f {args.target_fasta_path} ' if args.target_fasta_path else ''
+        restrictions_option = f'-r {args.sequence_restrictions} ' \
+                              if args.sequence_restrictions \
+                              else ''
         print(f'\nINTERRUPTED.\n'
               f'Run `python -m evodesign {args.workspace_root} '
               f'{args.target_pdb_path} {args.settings_path}` '
-              f'{temp} to resume later.')
+              f'{fasta_option}{restrictions_option} to resume later.')
         sys.exit(130) # SIGINT
     except (HttpInternalServerError, 
             HttpGatewayTimeout,
