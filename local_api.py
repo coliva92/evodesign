@@ -38,7 +38,7 @@ def esm():
     data = request.get_json()  # Get data from the request
     sequence = data['sequence']
     matrix = esm_model.compute_descriptor_vectors(sequence)
-    return jsonify({ 'descriptors': json.dumps(matrix.tolist()) })
+    return jsonify({ 'descriptors': matrix.tolist() })
 
 
 
