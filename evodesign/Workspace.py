@@ -71,11 +71,11 @@ class Workspace:
     If no such file was provided, then this function does nothing.
     """
     if self.target_fasta_path is None: return
-    name = os.path.basename(self.target_pdb_path)
+    name = os.path.basename(self.target_fasta_path)
     destination = f'{self.root_dir}/{name}'
     if self.target_pdb_path != destination:
       os.makedirs(self.root_dir, exist_ok=True)
-      shutil.copy(self.target_pdb_path, destination)
+      shutil.copy(self.target_fasta_path, destination)
     return
   
 
