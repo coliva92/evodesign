@@ -98,6 +98,7 @@ class GASimple(GASimpleElitism):
         if self._top_solution is None:
             self._top_solution = top_offspring
             return children
+        self._top_solution["generation_id"] = top_offspring["generation_id"]
         if Utils.is_sorted_before(top_offspring, 
                                   self._top_solution, 
                                   self._sort_columns, 
