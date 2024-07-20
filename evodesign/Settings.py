@@ -45,6 +45,8 @@ from .GA.Selection.Overselection import Overselection \
   as GA_Selection_Overselection
 from .GA.Selection.Tournament import Tournament as GA_Selection_Tournament
 from .GA.Selection.Uniform import Uniform as GA_Selection_Uniform
+from .GA.Selection.StochasticUniversalSampling import StochasticUniversalSampling \
+  as GA_Selection_StochasticUniversalSampling
 from .Prediction.AlphaFold import AlphaFold as Prediction_AlphaFold
 from .Prediction.ESMFold import ESMFold as Prediction_ESMFold
 from .Prediction.ESMFoldColab import ESMFoldColab as Prediction_ESMFoldColab
