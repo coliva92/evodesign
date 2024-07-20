@@ -54,9 +54,6 @@ population = algorithm.setup(context, args.workspace_root)
 while True:
     try:
         algorithm(population)
-        import evodesign.debug as dbg
-        dbg.counters_df.to_csv("selection_test3.csv")
-        print(dbg.selections_count)
         break
     except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
         fasta_option = f'-f {args.target_fasta_path} ' if args.target_fasta_path else ''
