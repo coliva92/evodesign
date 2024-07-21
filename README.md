@@ -61,8 +61,8 @@ Follow these steps to run a custom evolutionary algorithm using EvoDesign:
 3. Run the following command: 
 
 ```
-python -m evodesign path/to/target.pdb \
-                    path/to/settings.json \
+python -m evodesign path/to/settings.json \
+                    path/to/target.pdb \
                     path/to/output/folder \
                     -f path/to/target.fasta 
 ```

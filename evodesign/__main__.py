@@ -13,12 +13,12 @@ from .Context import Context
 parser = ArgumentParser(prog='evodesign',
                         description='A rudimentary suite of evolutionary '
                                     'algorithms for protein design.')
-parser.add_argument('target_pdb_path',
-                    help='path to the PDB file that contains the target '
-                         'protein backbone')
 parser.add_argument('settings_path', 
                     help='path to the JSON file describing the configuration '
                          'of the evolutionary algorithm to be executed')
+parser.add_argument('target_pdb_path',
+                    help='path to the PDB file that contains the target '
+                         'protein backbone')
 parser.add_argument('workspace_root',
                     help='path to the folder where all the output files will '
                          'be written')
@@ -61,9 +61,9 @@ while True:
                               if args.sequence_restrictions \
                               else ''
         print(f'\nINTERRUPTED.\n'
-              f'Run `python -m evodesign {args.workspace_root} '
-              f'{args.target_pdb_path} {args.settings_path}` '
-              f'{fasta_option}{restrictions_option} to resume later.')
+              f'Run `python -m evodesign {args.settings_path} {args.target_pdb_path} '
+              f'{args.workspace_root} '
+              f'{fasta_option}{restrictions_option}` to resume later.')
         sys.exit(130) # SIGINT
     except (HttpInternalServerError, 
             HttpGatewayTimeout,
