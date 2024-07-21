@@ -50,7 +50,7 @@ class StochasticUniversalSampling(Selection):
                 selections_count += 1
                 r += inc
             i -= 1
-        return selected_parents
+        return selected_parents.sample(frac=1).reset_index(drop=True)
     
 
 
