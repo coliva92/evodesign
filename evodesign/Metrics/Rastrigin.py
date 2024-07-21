@@ -32,17 +32,11 @@ class Rastrigin(Metric):
 
 
   def __init__(self,
-               window_width: int = 3,
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
-
-    # acotamos los valores permitidos para la variable `window_width`...
-    if window_width not in self._VALID_WINDOW_WIDTH_VALUES:
-      raise RuntimeError
-
-    self._window_width = window_width
-    self._wing_size = (window_width - 1) // 2
+    self._window_width = 3
+    self._wing_size = (self._window_width - 1) // 2
     self._residue_ordinals = None
     self._STEP_SIZE = 2 * 5.12 / 20 ** self._window_width
 
@@ -122,7 +116,11 @@ class Rastrigin(Metric):
     n = len(sequence)
     a = pivot - self._wing_size
     b = pivot + self._wing_size + 1
-    indices = [ i % n for i in range(a, b) ]
+    indices = [ (a - 5) % n ] + \
+              [ (a - 2) % n ] + \
+              [ i % n for i in range(a, b) ] + \
+              [ (b + 2) % n ] + \
+              [ (b + 5) % n ]
     ordinals = [
       self._residue_ordinals[j][sequence[j]] * 20**(self._window_width - 1 - i)
       for i, j in enumerate(indices)

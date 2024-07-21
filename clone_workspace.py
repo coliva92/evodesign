@@ -27,6 +27,11 @@ def reproduce_workspace(source_dir: str,
     shutil.copy(f'{source_dir}/settings.json', destination_dir)
     for pdb_path in glob.glob(f'{source_dir}/*.pdb'):
         shutil.copy(pdb_path, destination_dir)
+    for fasta_path in glob.glob(f'{source_dir}/*.fasta'):
+        shutil.copy(fasta_path, destination_dir)
+    restrictions_path = f'{source_dir}/sequence_restrictions.json'
+    if os.path.isfile(restrictions_path):
+        shutil.copy(restrictions_path, destination_dir)
 
 
 
