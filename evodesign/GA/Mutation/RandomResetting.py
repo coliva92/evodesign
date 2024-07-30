@@ -73,6 +73,12 @@ class RandomResetting(Mutation):
     str
         The modified sequence.
     """
+    if allowed_letters is None:
+      return ''.join([
+        Sequence.swap_letter(rng, sequence[i]) 
+        if Utils.coin_toss(rng, self._swap_prob) else sequence[i]
+        for i in range(len(sequence))
+      ])
     return ''.join([
       Sequence.swap_letter(rng, sequence[i], allowed_letters[i]) 
       if Utils.coin_toss(rng, self._swap_prob) else sequence[i]

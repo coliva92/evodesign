@@ -75,6 +75,10 @@ class Swap(Mutation):
     indices = rng.choice(len(sequence), self._num_swaps, replace=False)
     # in Python, strings are immutable
     seq_list = list(sequence)
+    if allowed_letters is None:
+      for i in indices:
+        seq_list[i] = Sequence.swap_letter(rng, seq_list[i])
+      return ''.join(seq_list)
     for i in indices:
       seq_list[i] = Sequence.swap_letter(rng, seq_list[i], allowed_letters[i])
     return ''.join(seq_list)
