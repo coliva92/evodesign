@@ -194,6 +194,6 @@ algorithm = GASteadyState(max_generations=100,
                           ],
                           sort_ascending=[ False, True, False ])
 context = Context.create('target_protein.pdb', 'target_protein.fasta')
-population = algorithm.setup(context, 'path/to/workspace')
-algorithm(population) # begin algorithm execution
+algorithm.setup(context, 'path/to/workspace')
+algorithm() # begin algorithm execution
 ```

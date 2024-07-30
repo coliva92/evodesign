@@ -91,8 +91,8 @@ class Algorithm(SettingsRetrievable, ABC):
 
     def setup(self,
               context: Context,
-              workspace_root: str,
-              ) -> pd.DataFrame:
+              workspace_root: str
+              ) -> None:
         """
         Initializes the workspace and the RNG, as well as the reference backbone
         and the population before running the evolutionary algorithm.
@@ -132,12 +132,9 @@ class Algorithm(SettingsRetrievable, ABC):
         # save the sequence restrictions in the workspace
         self._context.workspace.save_sequence_restrictions(self._context.sequence_allowed_letters)
 
-        # check if we are restoring from a previous population
-        return self._context.workspace.load_population()
 
 
-
-    def __call__(self, population: pd.DataFrame) -> None:
+    def __call__(self, save_prediction_pdbs: bool = False) -> None:
         """
         Starts the execution of the evolutionary algorithm.
 
@@ -160,6 +157,7 @@ class Algorithm(SettingsRetrievable, ABC):
 
         # check if we are starting from an empty population or we are continuing
         # from the last population of an earlier execution
+        population = self._context.workspace.load_population()
         if population.empty:
             population = self.initial_population()
             self._context.workspace.save_population(population)
@@ -182,6 +180,8 @@ class Algorithm(SettingsRetrievable, ABC):
         self._context.workspace.save_population(population)
         self._context.workspace.save_statistics(stats)
         self.save_statistics_graph(stats)  # TODO mover la graficacion a Statistics
+        if not save_prediction_pdbs:
+            self._context.workspace.delete_pdb_files()
 
         # main loop
         while True:
@@ -214,6 +214,8 @@ class Algorithm(SettingsRetrievable, ABC):
             self._context.workspace.save_statistics(stats)
             self.save_statistics_graph(stats)
             self._context.workspace.delete_temporary_population()
+            if not save_prediction_pdbs:
+                self._context.workspace.delete_pdb_files()
             t += 1
 
 

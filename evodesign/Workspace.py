@@ -277,6 +277,13 @@ class Workspace:
   
 
 
+  def delete_pdb_files(self) -> None:
+    if not os.path.isdir(self.pdbs_dir):
+      return
+    shutil.rmtree(self.pdbs_dir)
+  
+
+
   def _load_from_populations_dir(self) -> pd.DataFrame:
     if not os.path.isdir(self.populations_dir):
       return pd.DataFrame()

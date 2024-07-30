@@ -40,6 +40,11 @@ parser.add_argument('-r', '--sequence_restrictions',
                     default=None,
                     help='path to the JSON file describing the allowed amino acids '
                          'for certain positions in the designed sequences')
+parser.add_argument('-s', '--save_prediction_pdbs',
+                    action='store_true',
+                    default=False,
+                    help='indicates if the PDB files of the protein structure '
+                         'predictions in the workspace')
 args = parser.parse_args()
 
 context = Context.create(args.target_pdb_path, 
@@ -49,11 +54,11 @@ context = Context.create(args.target_pdb_path,
 with open(args.settings_path, 'rt', encoding='utf-8') as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)
-population = algorithm.setup(context, args.workspace_root)
+algorithm.setup(context, args.workspace_root)
 
 while True:
     try:
-        algorithm(population)
+        algorithm(args.save_prediction_pdbs)
         break
     except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
         fasta_option = f'-f {args.target_fasta_path} ' if args.target_fasta_path else ''
