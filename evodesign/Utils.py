@@ -2,6 +2,9 @@ from typing import List, Optional
 import pandas as pd
 import numpy as np
 import numpy.typing as npt
+import os
+import shutil
+import glob
 
 
 
@@ -217,3 +220,54 @@ def find_top_solution(population: pd.DataFrame,
             continue
         top_solution = row.copy()
     return top_solution
+
+
+
+def clone_workspace(source_dir: str, 
+                    destination_dir: str
+                    ) -> None:
+    pdbs_dir = f'{destination_dir}/pdbs'
+    os.makedirs(pdbs_dir)
+    source_pdbs_dir = f'{source_dir}/pdbs'
+    if os.path.isdir(source_pdbs_dir) and len(os.listdir(source_pdbs_dir)) > 0:
+        for pdb_path in glob.glob(f'{source_dir}/pdbs/prot_0001_*.pdb'):
+            shutil.copy(pdb_path, pdbs_dir)
+    populations_dir = f'{destination_dir}/populations'
+    os.makedirs(populations_dir)
+    shutil.copy(f'{source_dir}/populations/pop_0001.csv', 
+                populations_dir)
+    # remove fitness columns
+    df = pd.read_csv(f'{populations_dir}/pop_0001.csv')
+    df = df[[ 'generation_id', 'sequence_id', 'sequence', 'survivor' ]]
+    df.to_csv(f'{populations_dir}/pop_0001.csv', index=False)
+    shutil.copy(f'{source_dir}/initial_rng_state.json', destination_dir)
+    shutil.copy(f'{source_dir}/settings.json', destination_dir)
+    for pdb_path in glob.glob(f'{source_dir}/*.pdb'):
+        shutil.copy(pdb_path, destination_dir)
+    for fasta_path in glob.glob(f'{source_dir}/*.fasta'):
+        shutil.copy(fasta_path, destination_dir)
+    restrictions_path = f'{source_dir}/sequence_restrictions.json'
+    if os.path.isfile(restrictions_path):
+        shutil.copy(restrictions_path, destination_dir)
+
+
+
+def workspace_average_fitness(workspace_dir: str,
+                              fitness_column: Optional[str] = None
+                              ) -> pd.DataFrame:
+    stats = pd.DataFrame(columns=[ "generation_id", "average_fitness"])
+    pop_files = os.listdir(f"{workspace_dir}/populations")
+    for i in range(len(pop_files)):
+        pop_path = f"{workspace_dir}/populations/pop_{pad_zeroes(i + 1)}.csv"
+        df = pd.read_csv(pop_path)
+        df = df[df["survivor"] == True]
+        if fitness_column is None:
+            mask = np.array(list(map(lambda c: c.find("Fitness.") != -1, df.columns)))
+            indices = np.array(list(range(1, len(df.columns) + 1)))
+            j = (mask * indices).sum()
+            if j == 0: raise RuntimeError
+            fitness_column = list(df.columns)[j - 1]
+        avg_fitness = df[fitness_column].mean()
+        row = pd.Series({ "generation_id": i + 1, "average_fitness": avg_fitness })
+        stats = pd.concat([ stats, row.to_frame().T ], ignore_index=True)
+    return stats

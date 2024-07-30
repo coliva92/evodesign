@@ -1,37 +1,7 @@
-import os
-import shutil
-import glob
-import pandas as pd
 from argparse import ArgumentParser
+import evodesign.Utils as Utils
 
 
-
-
-
-def reproduce_workspace(source_dir: str, 
-                        destination_dir: str
-                        ) -> None:
-    pdbs_dir = f'{destination_dir}/pdbs'
-    os.makedirs(pdbs_dir)
-    for pdb_path in glob.glob(f'{source_dir}/pdbs/prot_0001_*.pdb'):
-        shutil.copy(pdb_path, pdbs_dir)
-    populations_dir = f'{destination_dir}/populations'
-    os.makedirs(populations_dir)
-    shutil.copy(f'{source_dir}/populations/pop_0001.csv', 
-                populations_dir)
-    # remove fitness columns
-    df = pd.read_csv(f'{populations_dir}/pop_0001.csv')
-    df = df[[ 'generation_id', 'sequence_id', 'sequence', 'survivor' ]]
-    df.to_csv(f'{populations_dir}/pop_0001.csv', index=False)
-    shutil.copy(f'{source_dir}/initial_rng_state.json', destination_dir)
-    shutil.copy(f'{source_dir}/settings.json', destination_dir)
-    for pdb_path in glob.glob(f'{source_dir}/*.pdb'):
-        shutil.copy(pdb_path, destination_dir)
-    for fasta_path in glob.glob(f'{source_dir}/*.fasta'):
-        shutil.copy(fasta_path, destination_dir)
-    restrictions_path = f'{source_dir}/sequence_restrictions.json'
-    if os.path.isfile(restrictions_path):
-        shutil.copy(restrictions_path, destination_dir)
 
 
 
@@ -46,4 +16,4 @@ if __name__ == '__main__':
                         help='path to the folder where the workspace clone '
                              'will be stored')
     args = parser.parse_args()
-    reproduce_workspace(args.source_workspace, args.destination_workspace)
+    Utils.clone_workspace(args.source_workspace, args.destination_workspace)
