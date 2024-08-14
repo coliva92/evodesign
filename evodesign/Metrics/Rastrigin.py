@@ -1,13 +1,12 @@
 from .Metric import Metric
-from typing import Dict, List, Optional
+from typing import List, Optional
 import evodesign.Sequence as Sequence
-from Bio.Align import substitution_matrices
 import math
-import operator
 import pandas as pd
 from Bio.PDB.Atom import Atom
 from ..Context import Context
 import numpy as np
+import numpy.typing as npt
 
 
 
@@ -23,15 +22,28 @@ class Rastrigin(Metric):
   
 
 
+  def _params(self) -> dict:
+    params = super()._params()
+    params['sub_sequence_length'] = self._SUB_SEQ_LENGTH
+    return params
+  
+
+
   def __init__(self,
-               column: Optional[str] = None
+               column: Optional[str] = None,
+               sub_sequence_length: int = 5
                ) -> None:
     super().__init__(column)
-    self._STEP_SIZE = 2 * 5.12 / 20 ** 6
-    self._residue_ordinals = None
-    self._subsequence_indices = None
-    self._subsequence_ordinals = None
-    self._rng = np.random.default_rng()
+    if sub_sequence_length < 0:
+      sub_sequence_length = -sub_sequence_length
+    if sub_sequence_length % 2 == 0:
+      sub_sequence_length += 1
+    self._SUB_SEQ_LENGTH = sub_sequence_length
+    self._MIN_SUB_SEQ_VALUE = self._to_ordinal_value("".join(self._SUB_SEQ_LENGTH * [ "A" ]))
+    self._MAX_SUB_SEQ_VALUE = self._to_ordinal_value("".join(self._SUB_SEQ_LENGTH * [ "Y" ]))
+    self._LOWER_BOUND = -5.12
+    self._UPPER_BOUND = 5.12
+    self._ref_ordinal_values = None
 
 
 
@@ -40,96 +52,35 @@ class Rastrigin(Metric):
                       data: pd.Series,
                       context: Context
                       ) -> pd.Series:
-    if self._subsequence_indices is None:
-      n = len(data["sequence"])
-      self._subsequence_indices = [
-        self._get_subsequence_indices(i, n)
-        for i in range(len(data["sequence"]))
-      ]
-    if self._residue_ordinals is None:
-      blosum_matrix = substitution_matrices.load("BLOSUM62")
-      self._residue_ordinals = self._compute_residue_ordinals(context.ref_sequence, 
-                                                              blosum_matrix)
-    if self._subsequence_ordinals is None:
-      self._subsequence_ordinals = [
-        [
-          self._residue_ordinals[indices[0]],
-          self._residue_ordinals[indices[1]],
-          self._reverse_ordinals(self._residue_ordinals[indices[2]]),
-          self._reverse_ordinals(self._residue_ordinals[indices[3]]),
-          self._residue_ordinals[indices[4]],
-          self._reverse_ordinals(self._residue_ordinals[indices[5]])
-        ]
-        for indices in self._subsequence_indices
-      ]
-    x = self._to_rastrigin_domain(data['sequence'])
-    data[self.column_name()] = self._compute_rastrigin_value(len(data['sequence']), x)
+    if self._ref_ordinal_values is None:
+      self._ref_ordinal_values = self._ordinal_values(context.ref_sequence)
+    ordinal_values = self._ordinal_values(data["sequence"])
+    x = self._to_rastrigin_domain(ordinal_values, self._ref_ordinal_values)
+    data[self.column_name()] = self._compute_rastrigin_value(x)
     return data
-  
-
-
-  def _compute_rastrigin_value(self, d: int, x: List[float]) -> float:
-    sigma = sum([ 
-      x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i) 
-      for x_i in x 
-    ])
-    return -10.0 * d - sigma # queremos el valor negativo
 
 
 
-  def _compute_residue_ordinals(self, 
-                                target_sequence: str,
-                                blosum_matrix: substitution_matrices.Array
-                                ) -> List[Dict[str, float]]:
-    # Para convertir una secuencia de aminoácidos a un vector de la misma
-    # longitud que contiene números en el intervalo [-5.12, 5.12], vamos a 
-    # apoyarnos de la matriz BLOSUM. El objetivo es lograr que, entre más se 
-    # parezca una secuencia a la secuencia objetivo, mayor sea su aptitud. 
-    # Entonces, por cada posición en la secuencia, vamos a ordenar los 
-    # aminoácidos de manera ascendente según su score BLOSUM62, usando
-    # como referencia el aminoácido correspondiente en la secuencia objetivo. 
-    residue_ordinals = []
-    for residue in target_sequence:
-      amino_acid_scores = [
-        (amino_acid, blosum_matrix[residue][amino_acid])
-        for amino_acid in blosum_matrix[residue].keys()
-        if amino_acid in Sequence.AMINO_ACIDS
-      ]
-      amino_acid_scores.sort(key=operator.itemgetter(1), reverse=True)
-      residue_ordinals.append({
-        score[0]: i # la clave es el aminoácido
-        for i, score in enumerate(amino_acid_scores)
-      })
-    return residue_ordinals
-
-
-
-  def _to_rastrigin_domain(self, sequence: str) -> List[float]:
+  def compute_rastrigin_from_sequences(self, 
+                                       sequence: str, 
+                                       ref_sequence: str
+                                       ) -> float:
     # La función de Rastrigin toma como entrada un vector x de
     # d componentes, donde cada componente x_i es un número real en el 
     # intervalo cerrado [-5.12, 5.12]. El óptimo global se encuentra en 
     # x = (0, ..., 0), y su valor es f(x) = 0.
-    # El objetivo de `_to_rastrigin_domain` es transformar una secuencia de 
+    # El objetivo de esta función es transformar una secuencia de 
     # aminoácidos a un vector de números reales para la función de Rastrigin, 
     # de tal manera que el vector para el óptimo global corresponda con la 
     # secuencia de la estructura objetivo.
-    subsequences = [ self._get_subsequence(sequence, i) for i in range(len(sequence)) ]
-    decimals = [ self._to_decimal(i, subseq) for i, subseq in enumerate(subsequences) ]
-    reals = [ self._to_real(d) for d in decimals ]
-    return reals
-  
-
-
-  def _get_subsequence(self, 
-                       sequence: str, 
-                       idx: int
-                       ) -> str:
-    subsequence = [ sequence[i] for i in self._subsequence_indices[idx] ]
-    return ''.join(subsequence)
+    ref_ordinal_values = self._ordinal_values(ref_sequence)
+    ordinal_values = self._ordinal_values(sequence)
+    x = self._to_rastrigin_domain(ordinal_values, ref_ordinal_values)
+    return self._compute_rastrigin_value(x)
 
 
 
-  def _to_decimal(self, idx: int, sequence: str) -> int:
+  def _ordinal_values(self, sequence: str) -> List[int]:
     # Dado que el conjunto de aminoácidos que se permiten en cada residuo es
     # discreto y finito, si deseamos asociar cada aminoácido en dicho conjunto 
     # con un número real en el intervalo [-5.12, 5.12], inevitablemente algunos 
@@ -137,50 +88,76 @@ class Rastrigin(Metric):
     # discretización). Este problema se amortigua al usar una subsecuencia o 
     # ventana (en lugar de un solo aminoácido) por cada posición o residuo en 
     # la secuencia.
-    digits = [
-      self._subsequence_ordinals[idx][j][sequence[j]] * 20 ** (5 - j)
-      for j in range(len(sequence))
+    return list(map(self._to_ordinal_value, self._get_sub_sequences(sequence)))
+  
+
+
+  def _get_sub_sequences(self, sequence: str) -> List[str]:
+    # en este caso, las subsecuencias no se traslapan
+    sub_sequences = [
+      sequence[i : i + self._SUB_SEQ_LENGTH]
+      for i in range(0, len(sequence), self._SUB_SEQ_LENGTH)
     ]
-    return sum(digits)
-
-  
-
-  def _to_real(self, decimal_residue: int) -> float:
-    if decimal_residue % 2 == 0:
-      return decimal_residue / 2 * self._STEP_SIZE
-    return (decimal_residue + 1) / 2 * -self._STEP_SIZE
-
-
-
-  def _get_subsequence_indices(self, idx: int, N: int) -> List[int]:
-    neighbor_indices = [ idx, (idx - 1) % N, (idx + 1) % N ]
-    indices = list(range(N))
-    long_distance_indices = self._rng.choice(indices, size=3, replace=False)
-    for i in range(3):
-      while long_distance_indices[i] in neighbor_indices:
-        long_distance_indices[i] = self._rng.choice(indices)
-    return [
-      neighbor_indices[0], neighbor_indices[1], long_distance_indices[0],
-      long_distance_indices[1], neighbor_indices[2], long_distance_indices[2]
-    ]
+    # si el tamaño de las subsecuencias no alcanza a cubrir por completo la secuencia
+    # de entrada, completamos la última subsecuencia tomando los primeros caracteres
+    # de la secuencia de entrada
+    n = len(sequence) % self._SUB_SEQ_LENGTH
+    if n > 0:
+      sub_sequences[-1] += sequence[0 : self._SUB_SEQ_LENGTH - n]
+    return sub_sequences
   
 
 
-  def _shuffle_ordinals(self, 
-                        ordinals: Dict[str, float]
-                        ) -> Dict[str, float]:
-    indices = list(range(1, 20))
-    sorted_amino_acids = { i: letter for letter, i in ordinals.items() }
-    shuffled_positions = self._rng.choice(indices, size=19, replace=False)
-    amino_acids = [ sorted_amino_acids[0] ] + \
-                  [ sorted_amino_acids[i] for i in shuffled_positions ]
-    return { letter: i for i, letter in enumerate(amino_acids) }
+  def _to_ordinal_value(self, sub_sequence: str) -> int:
+    # Esta función convierte la subsecuencia de entrada en un valor ordinal de 
+    # base 10 usando el valor en ASCII de cada letra
+    ordinal_value = sum([
+      ord(letter) * len(Sequence.AMINO_ACIDS) ** i
+      for i, letter in enumerate(reversed(sub_sequence))
+    ])
+    return ordinal_value
   
 
 
-  def _reverse_ordinals(self, ordinals: Dict[str, float]) -> Dict[str, float]:
-    indices = list(reversed(range(1, 20)))
-    sorted_amino_acids = { i: letter for letter, i in ordinals.items() }
-    reversed_amino_acids = [ sorted_amino_acids[0] ] + \
-                           [ sorted_amino_acids[i] for i in indices ]
-    return { letter: i for i, letter in enumerate(reversed_amino_acids) }
+  def _to_rastrigin_domain(self, 
+                           ordinal_values: List[int],
+                           ref_ordinal_values: List[int]
+                           ) -> npt.NDArray[np.float64]:
+    # Esta función toma los valores ordinales de cada subsecuencia (estos valores
+    # fueron calculados previamente) y los normaliza llevándolos al intervalo de 
+    # [-5.12, 5.12].
+    a = self._LOWER_BOUND
+    b_minus_a = self._UPPER_BOUND - self._LOWER_BOUND
+    n_min = self._MIN_SUB_SEQ_VALUE
+    n_max = self._MAX_SUB_SEQ_VALUE
+    x = np.array([
+      a + b_minus_a * self._normalize(n, n_ref, n_min, n_max)
+      for n, n_ref in zip(ordinal_values, ref_ordinal_values)
+    ])
+    return x
+  
+
+
+  def _normalize(self, n: int, n_ref: int, n_min: int, n_max: int) -> float:
+    # Para que esta función pueda usarse en conjunto con la normalización al intervalo
+    # [-5.12, 5.12], debe cumplir con las sigs. propiedades:
+    # i)   f(n) = 0 si n_min <= n <= n_ref
+    # ii)  f(n) = 0.5 si n = n_ref
+    # iii) f(n) = 1 si n_ref < n <= n_max
+    # donde n_min es el valor ordinal correspondiente a la subsecuencia de puras As (la
+    # letra con el valor más pequeño), n_max es el valor ordinal correspondiente a la
+    # subsecuencia de puras Ys (la letra con el valor más grande), y n_ref es el valor
+    # ordinal correspondiente a la subsecuencia en la secuencia de referencia.
+    # Obsérvese que se está suponiendo que n_min <= n_mid <= n_max y que 
+    # n_min <= n <= n_max
+    if n <= n_ref:
+      return (0.5 / (n_ref - n_min)) * (n - n_min)
+    return (0.5 / (n_max - n_ref)) * (n - n_ref) + 0.5
+  
+
+
+  def _compute_rastrigin_value(self, x: npt.NDArray[np.float64]) -> float:
+    d = x.shape[0]
+    rastrigin = lambda x_i: x_i ** 2 - 10.0 * math.cos(2.0 * math.pi * x_i)
+    sigma = np.sum(np.vectorize(rastrigin)(x))
+    return -10.0 * d - sigma # queremos el valor negativo
