@@ -1,3 +1,4 @@
+from evodesign.Context import Context
 from .GASimpleElitism import GASimpleElitism
 from ..GA.Mutation.Mutation import Mutation
 from ..GA.Recombination.Recombination import Recombination
@@ -38,6 +39,16 @@ class GASimple(GASimpleElitism):
                          metrics,
                          sort_columns,
                          sort_ascending)
+        self._top_solution = None
+    
+
+
+    def setup(self, 
+              context: Context, 
+              workspace_root: str, 
+              rng_seed: Optional[int] = None
+              ) -> None:
+        super().setup(context, workspace_root, rng_seed)
         self._top_solution = None
     
 
