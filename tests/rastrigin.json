@@ -6,18 +6,18 @@
             "Prediction.Null": {}
         },
         "selection": {
-            "GA.Selection.StochasticUniversalSampling": {
-                "scaling_factor": 1.2
+            "GA.Selection.Tournament": {
+                "tournament_size": 2
             }
         },
         "recombination": {
             "GA.Recombination.UniformCrossover": {
-                "binary_mask_bias": 0.65
+                "binary_mask_bias": 0.5
             }
         },
         "mutation": {
             "GA.Mutation.RandomResetting": {
-                "mutation_prob": 0.05,
+                "mutation_prob": -0.05,
                 "swap_prob": 0.1
             }
         },
