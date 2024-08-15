@@ -63,7 +63,7 @@ class GASimple(GASimpleElitism):
                                                     self._sort_ascending)
         survivors = population[population['survivor']]
         sample = survivors.sample(30, replace=False)
-        top_solution['est_sequence_identity'] = \
+        top_solution['sequence_identity'] = \
             Statistics.average_sequence_identity(sample)
         top_solution['lost_amino_acids'] = \
             Statistics.average_amino_acid_loss(survivors)
