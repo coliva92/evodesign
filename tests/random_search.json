@@ -7,7 +7,7 @@
         },
         "selection": {
             "GA.Selection.Uniform": {
-                "replacement": true
+                "replacement": false
             }
         },
         "recombination": {
