@@ -48,7 +48,7 @@ class Workspace:
     os.makedirs(self.root_dir, exist_ok=True)
     filepath = f'{self.root_dir}/commit_hash.txt'
     with open(filepath, 'wt', encoding='utf-8') as txt_file:
-      txt_file.write('https://github.com/coliva92/evodesign/commit/ac579d344baa6b0f56d96d70ca06e4782a88b929\n')
+      txt_file.write('https://github.com/coliva92/evodesign/commit/90c417623f2fc248e9e151815a0ebf00778f7990\n')
 
 
 
