@@ -15,7 +15,7 @@ class Uniform(Selection):
     
 
 
-    def __init__(self, replacement: bool = False) -> None:
+    def __init__(self, replacement: bool = True) -> None:
         """
         Selection operation in which a subset of population individuals is choosed
         randomly with uniform probability. 
