@@ -1,0 +1,40 @@
+{
+    "Algorithms.GASimple": {
+        "max_generations": 200,
+        "population_size": 200,
+        "predictor": {
+            "Prediction.Null": {}
+        },
+        "selection": {
+            "GA.Selection.Uniform": {
+                "replacement": true
+            }
+        },
+        "recombination": {
+            "GA.Recombination.UniformCrossover": {
+                "binary_mask_bias": 1.0
+            }
+        },
+        "mutation": {
+            "GA.Mutation.RandomResetting": {
+                "mutation_prob": 1.0,
+                "swap_prob": 1.0
+            }
+        },
+        "metrics": [
+            {
+                "Metrics.Rastrigin": {}
+            }
+        ],
+        "fitness_fn": {
+            "Fitness.LinearCombination": {
+                "upper_bound": -0.05,
+                "metric_columns": [ 
+                    "Metrics.Rastrigin"
+                ]
+            }
+        },
+        "sort_columns": [ "Fitness.LinearCombination" ],
+        "sort_ascending": [ false ]
+    }
+}
