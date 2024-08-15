@@ -145,7 +145,7 @@ class Context:
     
 
 
-    def init_rng(self) -> None:
+    def init_rng(self, seed: Optional[int] = None) -> None:
         """
         Initializes the RNG held by this context instance.
 
@@ -155,8 +155,13 @@ class Context:
         workspace does not yet exists in the file system, then a new RNG 
         instance is created with the default seed and its state is stored in 
         the workspace. 
+
+        Parameters
+        ----------
+        seed : int
+            A custom seed for the RNG.
         """
-        self.rng = np.random.default_rng()
+        self.rng = np.random.default_rng(seed)
         if self.workspace is None: return
         state = self.workspace.load_rng_state(checkpoint=True)
         if state is None:
