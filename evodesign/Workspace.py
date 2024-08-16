@@ -58,9 +58,11 @@ class Workspace:
     """
     name = os.path.basename(self.target_pdb_path)
     destination = f'{self.root_dir}/{name}'
-    if self.target_pdb_path != destination:
-      os.makedirs(self.root_dir, exist_ok=True)
+    os.makedirs(self.root_dir, exist_ok=True)
+    try:
       shutil.copy(self.target_pdb_path, destination)
+    except shutil.SameFileError:
+      pass
     return
 
   
@@ -73,9 +75,11 @@ class Workspace:
     if self.target_fasta_path is None: return
     name = os.path.basename(self.target_fasta_path)
     destination = f'{self.root_dir}/{name}'
-    if self.target_pdb_path != destination:
-      os.makedirs(self.root_dir, exist_ok=True)
+    os.makedirs(self.root_dir, exist_ok=True)
+    try:
       shutil.copy(self.target_fasta_path, destination)
+    except shutil.SameFileError:
+      pass
     return
   
 
