@@ -67,11 +67,11 @@ class GASimple(GASimpleElitism):
         pd.Series
             The top individual in the population, along the computed statistics.
         """
-        top_solution = self._top_solution.copy() \
-                       if self._top_solution is not None \
-                       else Utils.find_top_solution(population, 
-                                                    self._sort_columns, 
-                                                    self._sort_ascending)
+        if self._top_solution is None:
+            self._top_solution = Utils.find_top_solution(population, 
+                                                         self._sort_columns, 
+                                                         self._sort_ascending)
+        top_solution = self._top_solution.copy()
         survivors = population[population['survivor']]
         sample = survivors.sample(30, replace=False)
         top_solution['sequence_identity'] = \
