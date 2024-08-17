@@ -10,6 +10,19 @@ import glob
 
 
 
+def df_append(df: pd.DataFrame, series: pd.Series) -> pd.DataFrame:
+    """
+    Appends the given Series as a new row in the given Data Frame.
+
+    Returns
+    -------
+    pd.DataFrame
+        The modified Data Frame.
+    """
+    return pd.concat([ df, series.to_frame().T ], ignore_index=True)
+
+
+
 def pad_zeroes(n: int) -> str:
     """
     Adds up to three zeroes to the left of the integer specified by `n`
