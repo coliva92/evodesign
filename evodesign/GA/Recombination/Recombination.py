@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from ...SettingsRetrievable import SettingsRetrievable
 from typing import List
 import evodesign.Population as Population
+import evodesign.Utils as Utils
 import pandas as pd
 import numpy as np
 
@@ -10,6 +11,18 @@ import numpy as np
 
 
 class Recombination(SettingsRetrievable, ABC):
+
+  def _params(self) -> dict:
+    params = super()._params()
+    params["two_offspring"] = self._two_offspring
+  
+
+
+  def __init__(self, two_offspring: bool = True) -> None:
+    super().__init__()
+    self._two_offspring = two_offspring
+  
+
   
   def __call__(self, 
                rng: np.random.Generator,
@@ -43,7 +56,11 @@ class Recombination(SettingsRetrievable, ABC):
     for i in range(0, len(parents), 2):
       mother = parents.iloc[i]['sequence']
       father = parents.iloc[i + 1]['sequence']
-      children += self.offspring_sequences(rng, mother, father)
+      temp = self.offspring_sequences(rng, mother, father)
+      if self._two_offspring:
+        children += temp
+      else:
+        children.append(temp[Utils.coin_toss(rng)])
     return Population.create(children, generation_id)
   
 
