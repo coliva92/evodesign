@@ -7,12 +7,14 @@
         },
         "selection": {
             "GA.Selection.Tournament": {
-                "tournament_size": 2
+                "tournament_size": 2,
+                "two_offspring": false
             }
         },
         "recombination": {
             "GA.Recombination.UniformCrossover": {
-                "binary_mask_bias": 0.5
+                "binary_mask_bias": 0.5,
+                "two_offspring": false
             }
         },
         "mutation": {

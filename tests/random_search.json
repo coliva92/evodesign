@@ -6,14 +6,10 @@
             "Prediction.Null": {}
         },
         "selection": {
-            "GA.Selection.Uniform": {
-                "replacement": false
-            }
+            "GA.Selection.Null": {}
         },
         "recombination": {
-            "GA.Recombination.UniformCrossover": {
-                "binary_mask_bias": 1.0
-            }
+            "GA.Recombination.Null": {}
         },
         "mutation": {
             "GA.Mutation.RandomResetting": {
