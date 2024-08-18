@@ -16,7 +16,10 @@ class Tournament(Selection):
     
     
     
-    def __init__(self, tournament_size: int) -> None:
+    def __init__(self, 
+                 tournament_size: int,
+                 two_offspring: bool = True
+                 ) -> None:
         """
         Selection operator in which a random uniform sample of size 
         `tournament_size`, without replacement, is taken from the population, and 
@@ -32,7 +35,7 @@ class Tournament(Selection):
             The number of individuals to be randomly chosen to participate in 
             a tournament. Only one of these individuals will be chosen.
         """
-        super().__init__()
+        super().__init__(two_offspring)
         self._tournament_size = tournament_size
   
   
@@ -59,7 +62,7 @@ class Tournament(Selection):
         mother = self.tournament_selection(population, context)
         father = self.tournament_selection(population, context)
         while mother["sequence_id"] == father["sequence_id"]:
-          father = self._tournament_selection(population, context)
+          father = self.tournament_selection(population, context)
         return [ mother, father ]
     
   
