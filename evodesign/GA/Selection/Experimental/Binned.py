@@ -21,7 +21,8 @@ class Binned(Selection):
     def __init__(self, 
                  upper_size: int,
                  upper_prob: float = 0.8,
-                 lower_prob: float = 0.2
+                 lower_prob: float = 0.2,
+                 two_offspring: bool = True
                  ) -> None:
         """
         Selection operator where the population is divided into to groups, which
@@ -46,7 +47,7 @@ class Binned(Selection):
             The default is 0.2. The probability for selecting  mixed pair of 
             individuals is always 1.0 - upper_prob - lower_prob.
         """
-        super().__init__()
+        super().__init__(two_offspring)
         self._upper_size = upper_size
         self._upper_prob = upper_prob
         self._lower_prob = lower_prob
