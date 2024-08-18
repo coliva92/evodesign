@@ -15,6 +15,7 @@ class Recombination(SettingsRetrievable, ABC):
   def _params(self) -> dict:
     params = super()._params()
     params["two_offspring"] = self._two_offspring
+    return params
   
 
 
