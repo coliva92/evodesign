@@ -19,7 +19,7 @@
         },
         "mutation": {
             "GA.Mutation.RandomResetting": {
-                "mutation_prob": -0.05,
+                "mutation_prob": 0.05,
                 "swap_prob": 0.1
             }
         },
@@ -30,7 +30,7 @@
         ],
         "fitness_fn": {
             "Fitness.LinearCombination": {
-                "upper_bound": 0.01,
+                "upper_bound": -0.05,
                 "metric_columns": [ 
                     "Metrics.Rastrigin"
                 ]
