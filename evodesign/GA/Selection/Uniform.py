@@ -28,6 +28,6 @@ class Uniform(Selection):
         List[pandas.DataFrame]
             The selected individuals.
         """
-        i = context.rng.choice(population.index, replace=False)
-        selection = population.loc[i]
+        i = context.rng.choice(population.index, size=2, replace=False)
+        selection = population.iloc[i]
         return [ selection.iloc[0], selection.iloc[1] ]
