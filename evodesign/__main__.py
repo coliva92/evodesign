@@ -49,6 +49,12 @@ parser.add_argument('-s', '--seed_rng',
                     type=int,
                     default=None,
                     help='sets a custom seed for the pseudo-random number generator')
+parser.add_argument("-g", "--save_graph_png",
+                    action="store_true",
+                    default=False,
+                    help="indicates if the graph showing how the fitness and "
+                         "diversity change over each generation should be saved in a"
+                         "PNG file or not saved at all")
 args = parser.parse_args()
 
 context = Context.create(args.target_pdb_path, 
@@ -62,7 +68,7 @@ algorithm.setup(context, args.workspace_root, args.seed_rng)
 
 while True:
     try:
-        algorithm(args.save_prediction_pdbs)
+        algorithm(args.save_prediction_pdbs, args.save_graph_png)
         break
     except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
         fasta_option = f'-f {args.target_fasta_path} ' if args.target_fasta_path else ''

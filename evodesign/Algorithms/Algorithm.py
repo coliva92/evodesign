@@ -137,7 +137,10 @@ class Algorithm(SettingsRetrievable, ABC):
 
 
 
-    def __call__(self, save_prediction_pdbs: bool = False) -> None:
+    def __call__(self, 
+                 save_prediction_pdbs: bool = False,
+                 save_graph_png: bool = False
+                 ) -> None:
         """
         Starts the execution of the evolutionary algorithm.
 
@@ -182,7 +185,8 @@ class Algorithm(SettingsRetrievable, ABC):
         # save progress
         self._context.workspace.save_population(population)
         self._context.workspace.save_statistics(stats)
-        self.save_statistics_graph(stats)  # TODO mover la graficacion a Statistics
+        if save_graph_png:
+            self.save_statistics_graph(stats)  # TODO mover la graficacion a Statistics
         if not save_prediction_pdbs:
             self._context.workspace.delete_pdb_files()
 
@@ -193,8 +197,8 @@ class Algorithm(SettingsRetrievable, ABC):
                 break
             if population.iloc[0]['generation_id'] == self._max_generations:
                 break
-            if stats.iloc[-1]['sequence_identity'] >= 0.95 * self._context.sequence_length:
-                break
+            # if stats.iloc[-1]['sequence_identity'] >= 0.95 * self._context.sequence_length:
+            #     break
             if self.termination(population):
                 break
 
@@ -215,7 +219,8 @@ class Algorithm(SettingsRetrievable, ABC):
             # save progress
             self._context.workspace.save_population(population)
             self._context.workspace.save_statistics(stats)
-            self.save_statistics_graph(stats)
+            if save_graph_png:
+                self.save_statistics_graph(stats)
             self._context.workspace.delete_temporary_population()
             if not save_prediction_pdbs:
                 self._context.workspace.delete_pdb_files()
