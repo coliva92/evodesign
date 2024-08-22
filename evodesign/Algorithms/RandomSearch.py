@@ -62,4 +62,6 @@ class RandomSearch(GASimple):
         pandas.DataFrame
             The generated population.
         """
-        return self.initial_population()
+        children = self.initial_population()
+        children["generation_id"] = population["generation_id"] + 1
+        return children
