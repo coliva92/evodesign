@@ -11,6 +11,19 @@ from typing import List, Optional
 
 class RandomSearch(GASimple):
 
+    def _params(self) -> dict:
+        return {
+            'max_generations': self._max_generations,
+            'population_size': self._population_size,
+            'predictor': self._predictor.settings(),
+            'metrics': [ metric.settings() for metric in self._metrics ],
+            'sort_columns': self._sort_columns,
+            'sort_ascending': self._sort_ascending,
+            'fitness_fn': self._fitness_fn.settings()
+        }
+
+
+
     def __init__(self, 
                  fitness_fn: FitnessFunction,
                  max_generations: int, 
