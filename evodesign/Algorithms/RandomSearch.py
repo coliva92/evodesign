@@ -1,4 +1,4 @@
-from .GenericGA import GenericGA
+from .GASimple import GASimple
 from ..Fitness.FitnessFunction import FitnessFunction
 from ..Metrics.Metric import Metric
 from ..Prediction.Predictor import Predictor
@@ -9,7 +9,7 @@ from typing import List, Optional
 
 
 
-class RandomSearch(GenericGA):
+class RandomSearch(GASimple):
 
     def __init__(self, 
                  fitness_fn: FitnessFunction,
@@ -50,11 +50,3 @@ class RandomSearch(GenericGA):
             The generated population.
         """
         return self.initial_population()
-    
-
-
-    def replacement(self,
-                    population: pd.DataFrame,
-                    children: pd.DataFrame
-                    ) -> pd.DataFrame:
-        return children
