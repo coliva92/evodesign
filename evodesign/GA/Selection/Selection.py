@@ -3,26 +3,13 @@ from ...SettingsRetrievable import SettingsRetrievable
 from ...Context import Context
 import evodesign.Utils as Utils
 import pandas as pd
-from typing import List
+from typing import Tuple
 
 
 
 
 
 class Selection(SettingsRetrievable, ABC):
-  
-    def _params(self) -> dict:
-        params = super()._params()
-        params["two_offspring"] = self._two_offspring
-        return params
-  
-
-
-    def __init__(self, two_offspring: bool = True) -> None:
-        super().__init__()
-        self._two_offspring = two_offspring
-    
-
 
     def __call__(self,
                  population: pd.DataFrame,
@@ -45,11 +32,8 @@ class Selection(SettingsRetrievable, ABC):
             The selected subset of individuals.
         """
         survivors = population[population['survivor']]
-        num_couple_selections = len(survivors) // 2 \
-                                if self._two_offspring \
-                                else len(survivors)
         parents = pd.DataFrame(columns=survivors.columns)
-        for _ in range(num_couple_selections):
+        for _ in range(len(survivors)):
             selection = self.select_parent_couple(population, context)
             parents = Utils.df_append(parents, selection[0])
             parents = Utils.df_append(parents, selection[1])
@@ -61,5 +45,5 @@ class Selection(SettingsRetrievable, ABC):
     def select_parent_couple(self, 
                              population: pd.DataFrame,
                              context: Context
-                             ) -> List[pd.Series]:
+                             ) -> Tuple[pd.Series]:
         raise NotImplementedError

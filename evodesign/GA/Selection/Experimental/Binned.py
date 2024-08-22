@@ -1,7 +1,7 @@
 from ..Selection import Selection
 from ....Context import Context
 import pandas as pd
-from typing import List
+from typing import Tuple
 
 
 
@@ -21,8 +21,7 @@ class Binned(Selection):
     def __init__(self, 
                  upper_size: int,
                  upper_prob: float = 0.8,
-                 lower_prob: float = 0.2,
-                 two_offspring: bool = True
+                 lower_prob: float = 0.2
                  ) -> None:
         """
         Selection operator where the population is divided into to groups, which
@@ -47,7 +46,7 @@ class Binned(Selection):
             The default is 0.2. The probability for selecting  mixed pair of 
             individuals is always 1.0 - upper_prob - lower_prob.
         """
-        super().__init__(two_offspring)
+        super().__init__()
         self._upper_size = upper_size
         self._upper_prob = upper_prob
         self._lower_prob = lower_prob
@@ -62,7 +61,7 @@ class Binned(Selection):
     def select_parent_couple(self, 
                              population: pd.DataFrame,
                              context: Context
-                             ) -> List[pd.Series]:
+                             ) -> Tuple[pd.Series]:
         """
         Selects a subset of individuals from the given population.
     
@@ -83,19 +82,12 @@ class Binned(Selection):
         option = context.rng.choice([ 0, 1, 2 ], p=self._weights)
         if option == 0:
             selection = context.rng.choice(upper_bin.index, size=2, replace=False)
-            parents = [ upper_bin.iloc[selection[0]], upper_bin.iloc[selection[1]] ]
+            parents = ( upper_bin.iloc[selection[0]], upper_bin.iloc[selection[1]] )
         if option == 1:
             selection = context.rng.choice(lower_bin.index, size=2, replace=False)
-            parents = [ lower_bin.iloc[selection[0]], lower_bin.iloc[selection[1]] ]
+            parents = ( lower_bin.iloc[selection[0]], lower_bin.iloc[selection[1]] )
         if option == 2:
             m = context.rng.choice(upper_bin.index)
             f = context.rng.choice(lower_bin.index)
-            parents = [ population.iloc[m], population.iloc[f] ]
-        while parents[0]['sequence_id'] == parents[1]['sequence_id']:
-            if option == 0:
-                f = context.rng.choice(upper_bin.index)
-                parents[1] = upper_bin.iloc[f]
-            else:
-                f = context.rng.choice(lower_bin.index)
-                parents[1] = lower_bin.iloc[f]
+            parents = ( population.iloc[m], population.iloc[f] )
         return parents

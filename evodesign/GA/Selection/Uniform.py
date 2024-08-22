@@ -1,7 +1,7 @@
 from .Selection import Selection
 from ...Context import Context
 import pandas as pd
-from typing import List
+from typing import Tuple
 
 
 
@@ -12,7 +12,7 @@ class Uniform(Selection):
     def select_parent_couple(self, 
                              population: pd.DataFrame,
                              context: Context
-                             ) -> List[pd.Series]:
+                             ) -> Tuple[pd.Series]:
         """
         Selects a couple of individuals from the given population.
     
@@ -28,6 +28,6 @@ class Uniform(Selection):
         List[pandas.DataFrame]
             The selected individuals.
         """
-        i = context.rng.choice(population.index, size=2, replace=False)
+        i = context.rng.choice(population.index, size=2, replace=True)
         selection = population.iloc[i]
-        return [ selection.iloc[0], selection.iloc[1] ]
+        return ( selection.iloc[0], selection.iloc[1] )

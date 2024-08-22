@@ -1,7 +1,7 @@
 from .Selection import Selection
 from ...Context import Context
 import pandas as pd
-from typing import List
+from typing import List, Tuple
 
 
 
@@ -17,8 +17,7 @@ class Tournament(Selection):
     
     
     def __init__(self, 
-                 tournament_size: int,
-                 two_offspring: bool = True
+                 tournament_size: int
                  ) -> None:
         """
         Selection operator in which a random uniform sample of size 
@@ -35,7 +34,7 @@ class Tournament(Selection):
             The number of individuals to be randomly chosen to participate in 
             a tournament. Only one of these individuals will be chosen.
         """
-        super().__init__(two_offspring)
+        super().__init__()
         self._tournament_size = tournament_size
   
   
@@ -43,7 +42,7 @@ class Tournament(Selection):
     def select_parent_couple(self, 
                              population: pd.DataFrame,
                              context: Context
-                             ) -> pd.DataFrame:
+                             ) -> Tuple[pd.Series]:
         """
         Selects a subset of individuals from the given population.
     
@@ -61,16 +60,14 @@ class Tournament(Selection):
         """
         mother = self.tournament_selection(population, context)
         father = self.tournament_selection(population, context)
-        while mother["sequence_id"] == father["sequence_id"]:
-          father = self.tournament_selection(population, context)
-        return [ mother, father ]
+        return ( mother, father )
     
   
   
     def tournament_selection(self, 
                              population: pd.DataFrame,
                              context: Context
-                             ) -> List[pd.Series]:
+                             ) -> pd.Series:
         selection = context.rng.choice(population.index, 
                                        size=self._tournament_size, 
                                        replace=False)
