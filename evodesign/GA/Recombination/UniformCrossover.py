@@ -16,8 +16,7 @@ class UniformCrossover(Recombination):
   
 
   def __init__(self,
-               binary_mask_bias: float = 0.5,
-               two_offspring: bool = True
+               binary_mask_bias: float = 0.5
                ) -> None:
     """
     Randomly generates a binary mask of the same length as the parent sequences
@@ -35,7 +34,7 @@ class UniformCrossover(Recombination):
         The probability for generating one binary value over the other in the
         random mask. The default is 0.5.
     """
-    super().__init__(two_offspring)
+    super().__init__()
     self._weights = ( binary_mask_bias, 1.0 - binary_mask_bias )
     self._binary_mask_bias = binary_mask_bias
 
@@ -72,4 +71,4 @@ class UniformCrossover(Recombination):
     sister = ''.join([ parents[p][i] for i, p in enumerate(mask) ])
     parents = ( father, mother )
     brother = ''.join([ parents[p][i] for i, p in enumerate(mask) ])
-    return [ sister, brother ]
+    return ( sister, brother )

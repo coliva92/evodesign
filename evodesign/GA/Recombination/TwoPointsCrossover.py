@@ -1,5 +1,5 @@
 from .Recombination import Recombination
-from typing import List
+from typing import Tuple
 import numpy as np
 
 
@@ -21,7 +21,7 @@ class TwoPointsCrossover(Recombination):
                           rng: np.random.Generator,
                           mother: str,
                           father: str
-                          ) -> List[str]:
+                          ) -> Tuple[str]:
     """
     Mix partial information from the two given sequences to create two new
     sequences. It is assumed that both sequences have equal length.
@@ -48,4 +48,4 @@ class TwoPointsCrossover(Recombination):
     j = rng.integers(i, n)
     sister = mother[0:i] + father[i:j] + mother[j:]
     brother = father[0:i] + mother[i:j] + father[j:]
-    return [ sister, brother ]
+    return ( sister, brother )
