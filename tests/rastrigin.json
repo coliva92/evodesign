@@ -1,20 +1,18 @@
 {
     "Algorithms.GASimple": {
-        "max_generations": 200,
+        "max_generations": 300,
         "population_size": 200,
         "predictor": {
             "Prediction.Null": {}
         },
         "selection": {
             "GA.Selection.Tournament": {
-                "tournament_size": 2,
-                "two_offspring": false
+                "tournament_size": 2
             }
         },
         "recombination": {
             "GA.Recombination.UniformCrossover": {
-                "binary_mask_bias": 0.5,
-                "two_offspring": false
+                "binary_mask_bias": 0.5
             }
         },
         "mutation": {

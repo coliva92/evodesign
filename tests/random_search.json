@@ -1,21 +1,9 @@
 {
-    "Algorithms.GASimple": {
-        "max_generations": 200,
+    "Algorithms.RandomSearch": {
+        "max_generations": 100,
         "population_size": 200,
         "predictor": {
             "Prediction.Null": {}
-        },
-        "selection": {
-            "GA.Selection.Null": {}
-        },
-        "recombination": {
-            "GA.Recombination.Null": {}
-        },
-        "mutation": {
-            "GA.Mutation.RandomResetting": {
-                "mutation_prob": 1.0,
-                "swap_prob": 1.0
-            }
         },
         "metrics": [
             {
