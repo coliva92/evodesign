@@ -99,7 +99,7 @@ class GenericGA(Algorithm, ABC):
                        color='C3',
                        label='lost_amino_acids')
     ax2.tick_params(axis='y', labelcolor='C3')
-    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS))
+    ax2.set_ylim(bottom=0, top=len(Sequence.AMINO_ACIDS) - 1)
     series = series1 + series2
     labels = [ x.get_label() for x in series ]
     ax[1].legend(series, labels, loc='best')
