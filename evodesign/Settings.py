@@ -1,5 +1,6 @@
 import sys
 import copy
+import json
 from .Algorithms.GA2 import GA2 as Algorithms_GA2
 from .Algorithms.NSGA2 import NSGA2 as Algorithms_NSGA2
 from .Algorithms.GASteadyState import GASteadyState as Algorithms_GASteadyState
@@ -70,3 +71,10 @@ def parse(settings: dict):
                           if type(item[0]) == dict \
                           else item
     return actual_class(**params)
+
+
+
+def load(settings_path: str):
+    with open(settings_path, "rt", encoding="utf-8") as json_file:
+        settings = json.load(json_file)
+    return parse(settings)
