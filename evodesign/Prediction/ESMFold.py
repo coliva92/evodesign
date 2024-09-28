@@ -11,11 +11,17 @@ class ESMFold(Predictor):
 
 
     def _params(self) -> dict:
-        return { 'use_gpu': self._use_gpu }
+        return { 
+            'use_gpu': self._use_gpu,
+            'gpu_device': self._gpu_device
+        }
   
 
 
-    def __init__(self, use_gpu: bool = True) -> None:
+    def __init__(self, 
+                 use_gpu: bool = True,
+                 gpu_device: str = "cuda:0"
+                 ) -> None:
         """
         Interface for interacting with the ESMFold v1 model for protein structure 
         prediction.
@@ -28,7 +34,8 @@ class ESMFold(Predictor):
         """
         super().__init__()
         self._use_gpu = use_gpu
-  
+        self._gpu_device = gpu_device
+
 
 
     def predict_pdb_str(self, sequence: str) -> str:
@@ -54,7 +61,8 @@ class ESMFold(Predictor):
             self.model = esm.pretrained.esmfold_v1()
             self.model.eval()
         if self._use_gpu and torch.cuda.is_available():
-            self.model = self.model.cuda()
+            device = torch.device(self._gpu_device)
+            self.model = self.model.to(device)
             self.model.set_chunk_size(128)
         with torch.no_grad():
             prediction = self.model.infer_pdb(sequence)
