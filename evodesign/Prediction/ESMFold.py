@@ -1,4 +1,5 @@
 from .Predictor import Predictor
+from typing import Optional
 
 
 
@@ -11,16 +12,14 @@ class ESMFold(Predictor):
 
 
     def _params(self) -> dict:
-        return { 
-            'use_gpu': self._use_gpu,
+        return {
             'gpu_device': self._gpu_device
         }
   
 
 
     def __init__(self, 
-                 use_gpu: bool = True,
-                 gpu_device: str = "cuda:0"
+                 gpu_device: Optional[str] = "cuda:0"
                  ) -> None:
         """
         Interface for interacting with the ESMFold v1 model for protein structure 
@@ -28,12 +27,13 @@ class ESMFold(Predictor):
 
         Parameters
         ----------
-        use_gpu : bool
-            If true, the model will run in the first GPU available. Otherwise, the
-            model will run entirely on the CPU.
+        gpu_device : str, optional
+            If not `None`, then the predictor model will run in the 
+            specified GPU device (if Nvidia CUDA is available). If this
+            value is `None` or Nvidia CUDA is not available, the model will 
+            run entirely on the CPU. Default is "cuda:0".
         """
         super().__init__()
-        self._use_gpu = use_gpu
         self._gpu_device = gpu_device
 
 
@@ -60,10 +60,10 @@ class ESMFold(Predictor):
             import esm
             self.model = esm.pretrained.esmfold_v1()
             self.model.eval()
-        if self._use_gpu and torch.cuda.is_available():
-            device = torch.device(self._gpu_device)
-            self.model = self.model.to(device)
-            self.model.set_chunk_size(128)
+            if torch.cuda.is_available() and self._gpu_device is not None:
+                device = torch.device(self._gpu_device)
+                self.model = self.model.to(device)
+                self.model.set_chunk_size(128)
         with torch.no_grad():
             prediction = self.model.infer_pdb(sequence)
         return prediction

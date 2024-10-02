@@ -21,17 +21,17 @@ class ESM2Descriptors(Metric):
 
   def _params(self) -> dict:
     params = super()._params()
-    params['use_gpu'] = self._use_gpu
+    params['gpu_device'] = self._gpu_device
     return params
   
 
 
   def __init__(self, 
-               use_gpu: bool = True,
+               gpu_device: Optional[str] = "cuda:0",
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
-    self._use_gpu = use_gpu
+    self._gpu_device = gpu_device
   
 
 
@@ -57,15 +57,16 @@ class ESM2Descriptors(Metric):
     import torch
     if self.model is None or self.batch_converter is None:
       import esm
-      self.model, alphabet = esm.pretrained.esm2_t36_3B_UR50D()
+      self.model, alphabet = esm.pretrained.esm2_t33_650M_UR50D()
       self.batch_converter = alphabet.get_batch_converter()
       self.model.eval()
-      if self._use_gpu and torch.cuda.is_available(): 
-        self.model = self.model.cuda()
+      if torch.cuda.is_available() and self._gpu_device is not None:
+        device = torch.device(self._gpu_device)
+        self.model = self.model.to(device)
     
     data = [( sequence_id, sequence )]
     seq_ids, seqs, tokens = self.batch_converter(data)
-    if self._use_gpu and torch.cuda.is_available():
+    if torch.cuda.is_available() and self._gpu_device is not None:
       tokens = tokens.to(device='cuda', non_blocking=True)
     with torch.no_grad():
       result = self.model(tokens, 

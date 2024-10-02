@@ -16,19 +16,28 @@ class ESM2DescriptorsRemoteApi(ESM2Descriptors):
         return {
             "column": self._column_name,
             "url": self._url,
-            "sleep_time": self._sleep_time
+            'json_request_key': self._json_request_key,
+            'json_response_key': self._json_response_key,
+            "sleep_time": self._sleep_time,
+            'connection_timeout': self._connection_timeout
         }
 
 
 
     def __init__(self, 
                  url: str = "http://127.0.0.1:5000/esm",
+                 json_request_key: Optional[str] = 'sequence',
+                 json_response_key: Optional[str] = 'descriptors',
                  sleep_time: float = 0.5,
+                 connection_timeout: int = 30,
                  column: Optional[str] = None
                  ) -> None:
         super().__init__(column)
         self._url = url
+        self._json_request_key = json_request_key
+        self._json_response_key = json_response_key
         self._sleep_time = sleep_time
+        self._connection_timeout = connection_timeout
     
 
 
@@ -39,8 +48,8 @@ class ESM2DescriptorsRemoteApi(ESM2Descriptors):
         if self._sleep_time > 0.0:
             time.sleep(self._sleep_time)
         response = requests.post(self._url, 
-                                 json={ "sequence": sequence },
-                                 timeout=30,
+                                 json={ self._json_request_key: sequence },
+                                 timeout=self._connection_timeout,
                                  verify=False)
         if response.status_code == 400:
             raise HttpBadRequest
@@ -54,4 +63,4 @@ class ESM2DescriptorsRemoteApi(ESM2Descriptors):
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
-        return np.array(response.json()["descriptors"])
+        return np.array(response.json()[self._json_response_key])
