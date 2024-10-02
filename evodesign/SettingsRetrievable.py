@@ -25,3 +25,12 @@ class SettingsRetrievable(ABC):
 
     def settings(self) -> dict:
         return { f'{self._class_name()}': self._params() }
+        # con este código, ya no debería ser necesario sobreescribir la función 
+        # _params en cada clase derivada
+        settings_dict = {}
+        for key, value in self.__dict__.items():
+            if isinstance(value, SettingsRetrievable):
+                settings_dict[key] = value.settings()
+            elif not key.startswith('_'):
+                settings_dict[key] = value
+        return { self._class_name(): settings_dict }
