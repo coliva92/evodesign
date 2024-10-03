@@ -25,6 +25,8 @@ from .Metrics.Normalization.Reciprocal import Reciprocal \
     as Metrics_Normalization_Reciprocal
 from .Metrics.Normalization.Cyclization import Cyclization \
     as Metrics_Normalization_Cyclization
+from .Metrics.Normalization.Sigmoid import Sigmoid as \
+    Metrics_Normalization_Sigmoid
 from .Metrics.Rastrigin import Rastrigin as Metrics_Rastrigin
 from .Metrics.Experimental.Rastrigin2 import Rastrigin2 as Metrics_Experimental_Rastrigin2
 from .Metrics.Yan24.Geometry import Geometry as Metrics_Yan24_Geometry
