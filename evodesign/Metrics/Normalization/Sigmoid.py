@@ -15,17 +15,20 @@ class Sigmoid(Metric):
         params = super()._params()
         params["metric"] = self._metric.settings()
         params["scaling_factor"] = self._scaling_factor
+        params["offset"] = self._offset
         return params
     
 
 
     def __init__(self, 
                  metric: Metric,
-                 x_scaling_factor: float = -1.0,
+                 scaling_factor: float = -1.0,
+                 offset: float = 0.0,
                  column: Optional[str] = None
                  ) -> None:
         super().__init__(column)
-        self._x_scaling_factor = x_scaling_factor
+        self._scaling_factor = scaling_factor
+        self._offset = offset
         self._metric = metric
 
 
@@ -44,4 +47,4 @@ class Sigmoid(Metric):
 
 
     def _normalize(self, x: float) -> float:
-        return 1.0 / (1.0 + np.exp(self._x_scaling_factor * x))
+        return 1.0 / (1.0 + np.exp(self._scaling_factor * x + self._offset))
