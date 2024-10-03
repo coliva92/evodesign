@@ -22,5 +22,10 @@ class Cyclization(Metric):
                       ) -> pd.Series:
     # distance between the N atom of the first residue and the C 
     # atom of the last
-    data[self.column_name()] = backbone[0] - backbone[-2]
+    data[self.column_name()] = self._cyclization(backbone)
     return data
+
+
+
+  def _cyclization(self, backbone: List[Atom]) -> float:
+    return backbone[0] - backbone[-2]

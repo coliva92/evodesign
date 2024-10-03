@@ -24,14 +24,7 @@ class ContactMapRms(Metric):
                       context: Context
                       ) -> pd.Series:
     # TODO: guardar los mapas de contacto en un archivo
-    if self._ref_map is None:
-      self._ref_map = self._contact_map(context.ref_backbone)
-    model_map = self._contact_map(backbone)
-    difference = self._ref_map - model_map
-    # computing the mean over all individual values is the equivalent as computing
-    # the weighted mean of the means of each value group
-    rms = np.sqrt(np.mean(difference**2))
-    data[self.column_name()] = rms
+    data[self.column_name()] = self._contact_map_rms(backbone, context.ref_backbone)
     return data
   
 
@@ -42,3 +35,18 @@ class ContactMapRms(Metric):
       for (a, b) in itertools.combinations(backbone, 2) 
     ])
     return map_values
+  
+
+
+  def _contact_map_rms(self, 
+                       backbone: List[Atom],
+                       ref_backbone: List[Atom]
+                       ) -> float:
+    if self._ref_map is None:
+      self._ref_map = self._contact_map(ref_backbone)
+    model_map = self._contact_map(backbone)
+    difference = self._ref_map - model_map
+    # computing the mean over all individual values is the equivalent as computing
+    # the weighted mean of the means of each value group
+    rms = np.sqrt(np.mean(difference**2))
+    return rms

@@ -49,16 +49,25 @@ class Gdt(Metric):
                       data: pd.Series,
                       context: Context
                       ) -> pd.Series:
-    # superimpose the structures are not already superimposed
+    # superimpose the structures if not already superimposed
     data = self._rmsd_metric(backbone, data, context)
+    data[self.column_name()] = self._gdt(backbone, context.ref_backbone)
+    return data
+
+
+
+  def _gdt(self, 
+           backbone: List[Atom], 
+           ref_backbone: List[Atom]
+           ) -> float:
+    # assuming the structures are already superimposed
     distances = np.array([ 
       a - b 
-      for a, b in zip(backbone, context.ref_backbone) 
+      for a, b in zip(backbone, ref_backbone) 
     ])
     gdt = np.mean([
       np.mean([ d <= c for d in distances ])
       for c in self._cutoffs
     ])
-    data[self.column_name()] = gdt
-    return data
+    return gdt
   

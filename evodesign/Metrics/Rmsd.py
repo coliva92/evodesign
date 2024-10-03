@@ -51,10 +51,18 @@ class Rmsd(Metric):
         A dictionary containing the computed RMSD value with the current metric's
         column name as the RMSD's key.
     """
+    data[self.column_name()] = self._rmsd(backbone, context.ref_backbone)
+    return data
+  
+
+
+  def _rmsd(self, 
+            backbone: List[Atom], 
+            ref_backbone: List[Atom]
+            ) -> float:
     if not self._superimposer:
       self._superimposer = Superimposer()
-    self._superimposer.set_atoms(context.ref_backbone, backbone)
+    self._superimposer.set_atoms(ref_backbone, backbone)
     self._superimposer.apply(backbone)
-    data[self.column_name()] = self._superimposer.rms
-    return data
+    return self._superimposer.rms
   
