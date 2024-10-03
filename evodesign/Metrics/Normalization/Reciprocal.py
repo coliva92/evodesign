@@ -1,5 +1,5 @@
 from ..Metric import Metric
-from typing import Optional, List, Dict
+from typing import Optional, List
 from ...Context import Context
 from Bio.PDB.Atom import Atom
 import pandas as pd
@@ -13,16 +13,19 @@ class Reciprocal(Metric):
   def _params(self) -> dict:
     params = super()._params()
     params['metric'] = self._metric.settings()
+    params['scaling_factor'] = self._scaling_factor
     return params
   
   
 
   def __init__(self, 
                metric: Metric,
+               scaling_factor: float = 1.0,
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
     self._metric = metric
+    self._scaling_factor = scaling_factor
   
 
 
@@ -40,5 +43,5 @@ class Reciprocal(Metric):
   
 
   def _normalize(self, x: float) -> float:
-    return 1.0 / (1.0 + x)
+    return 1.0 / (1.0 + self._scaling_factor * x)
   
