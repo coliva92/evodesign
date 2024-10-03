@@ -13,6 +13,14 @@ import numpy as np
 
 class CyclizationNormalized(Metric):
 
+    def _params(self) -> dict:
+        params = super()._params()
+        params["scaling_factor"] = self._scaling_factor
+        params["metric"] = self._metric.settings()
+        return params
+
+
+
     def __init__(self, 
                  scaling_factor: float = 1.0,
                  metric: Optional[ZScore] = None,
