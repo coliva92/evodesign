@@ -1,5 +1,5 @@
 from ..Metric import Metric
-from ..PyRosettaRef2015 import PyRosettaRef2015
+from ..RosettaEnergyFunction import RosettaEnergyFunction
 from .Geometry import Geometry
 from ...Context import Context
 from typing import Optional, List, Dict
@@ -26,7 +26,7 @@ class Energy(Metric):
   def __init__(self, 
                weight: float,
                geometry_metric: Optional[Geometry] = None,
-               energy_metric: Optional[PyRosettaRef2015] = None,
+               energy_metric: Optional[RosettaEnergyFunction] = None,
                column: Optional[str] = None
                ) -> None:
     super().__init__(column)
@@ -35,7 +35,7 @@ class Energy(Metric):
       geometry_metric = Geometry()
     self._geometry_metric = geometry_metric
     if energy_metric is None:
-      energy_metric = PyRosettaRef2015()
+      energy_metric = RosettaEnergyFunction()
     self._energy_metric = energy_metric
     self._ref_energy = None
   
