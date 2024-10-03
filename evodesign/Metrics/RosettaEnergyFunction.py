@@ -9,7 +9,7 @@ import pyrosetta
 
 
 
-class PyRosettaRef2015(Metric):
+class RosettaEnergyFunction(Metric):
 
   _score_fn = None
   

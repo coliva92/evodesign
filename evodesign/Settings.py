@@ -12,7 +12,7 @@ from .Metrics.Gdt import Gdt as Metrics_Gdt
 from .Metrics.ContactMapRms import ContactMapRms as Metrics_ContactMapRms
 from .Metrics.Cyclization import Cyclization as Metrics_Cyclization
 from .Metrics.TMScore import TMScore as Metrics_TMScore
-from .Metrics.PyRosettaRef2015 import PyRosettaRef2015 \
+from .Metrics.RosettaEnergyFunction import RosettaEnergyFunction \
     as Metrics_PyRosettaRef2015
 from .Metrics.iLearnDescriptors import iLearnDescriptors \
     as Metrics_iLearnDescriptors
