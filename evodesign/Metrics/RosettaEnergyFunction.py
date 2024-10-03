@@ -17,10 +17,6 @@ class RosettaEnergyFunction(Metric):
 
   def __init__(self, column: Optional[str] = None) -> None:
     super().__init__(column)
-    if self.score_fn is not None: return
-    import pyrosetta
-    pyrosetta.init()
-    self.score_fn = pyrosetta.get_score_function(True)
   
 
 
