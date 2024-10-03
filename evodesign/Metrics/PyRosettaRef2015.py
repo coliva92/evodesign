@@ -3,6 +3,7 @@ from typing import Optional, List, Dict
 from ..Context import Context
 from Bio.PDB.Atom import Atom
 import pandas as pd
+import pyrosetta
 
 
 
@@ -10,7 +11,7 @@ import pandas as pd
 
 class PyRosettaRef2015(Metric):
 
-  score_fn = None
+  _score_fn = None
   
 
 
@@ -29,9 +30,17 @@ class PyRosettaRef2015(Metric):
                       context: Context
                       ) -> pd.Series:
     pdb_path = f'{context.workspace.pdbs_dir}/prot_{data["sequence_id"]}.pdb'
-    import pyrosetta
-    pose = pyrosetta.pose_from_pdb(pdb_path)
-    score = self.score_fn(pose)
+    score = self._ref2015(pdb_path)
     data[self.column_name()] = score
     return data
+  
+
+
+  def _ref2015(self, pdb_path: str) -> float:
+    if self._score_fn is None:
+      pyrosetta.init()
+      self._score_fn = pyrosetta.get_score_function(True)
+    pose = pyrosetta.pose_from_pdb(pdb_path)
+    score = self._score_fn(pose)
+    return score
   
