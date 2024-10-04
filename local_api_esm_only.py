@@ -1,5 +1,5 @@
 """
-gunicorn -w 1 -b 127.0.0.1:8000 esm_only:app
+gunicorn -w 1 -b 127.0.0.1:8000 local_api_esm_only:app
 """
 from flask import Flask, request, jsonify
 from ..evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
