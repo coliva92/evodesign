@@ -6,7 +6,7 @@ gunicorn -w 1 -b 127.0.0.1:8000 local_api_full_esm_family:app
 """
 from flask import Flask, request, jsonify
 from evodesign.Prediction.ESMFold import ESMFold
-from ..evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
+from evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
 
 
 
