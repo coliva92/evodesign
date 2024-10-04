@@ -3,7 +3,7 @@ from evodesign.Prediction.ESMFold import ESMFold
 
 
 
-esmfold_model = ESMFold()
+esmfold_model = ESMFold(gpu_device="cuda:0")
 esmfold_model.predict_pdb_str('GREETINGS')
 
 

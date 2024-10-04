@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
-from evodesign.Prediction.ESMFold import ESMFold
 from evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
 
 
 
-esm_model = ESM2Descriptors()
+esm_model = ESM2Descriptors(gpu_device="cuda:0")
 esm_model.compute_descriptor_vectors('GREETINGS')
 
 

@@ -10,10 +10,10 @@ from evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
 
 
 
-esmfold_model = ESMFold()
+esmfold_model = ESMFold(gpu_device="cuda:0")
 # cargamos el modelo a la GPU de una vez
 esmfold_model.predict_pdb_str('GREETINGS')
-esm_model = ESM2Descriptors()
+esm_model = ESM2Descriptors(gpu_device="cuda:0")
 # cargamos el modelo a la GPU de una vez
 esm_model.compute_descriptor_vectors('GREETINGS')
 
