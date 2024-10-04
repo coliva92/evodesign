@@ -2,11 +2,11 @@
 conda activate esmfold
 pip install flask
 pip install gunicorn
-gunicorn -w 1 -b 127.0.0.1:8000 local_api:app
+gunicorn -w 1 -b 127.0.0.1:8000 full_esm_family:app
 """
 from flask import Flask, request, jsonify
 from evodesign.Prediction.ESMFold import ESMFold
-from evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
+from ..evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
 
 
 
