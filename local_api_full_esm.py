@@ -7,7 +7,6 @@ gunicorn -w 1 -b 127.0.0.1:8000 local_api:app
 from flask import Flask, request, jsonify
 from evodesign.Prediction.ESMFold import ESMFold
 from evodesign.Metrics.ESM2Descriptors import ESM2Descriptors
-import json
 
 
 
@@ -35,7 +34,7 @@ def esmfold():
 
 @app.route('/esm', methods=[ 'POST' ])
 def esm():
-    data = request.get_json()  # Get data from the request
+    data = request.get_json()
     sequence = data['sequence']
     matrix = esm_model.compute_descriptor_vectors(sequence)
     return jsonify({ 'descriptors': matrix.tolist() })
