@@ -2,18 +2,20 @@ from typing import List
 from Bio.PDB.Structure import Structure
 from Bio.PDB.Atom import Atom
 from Bio.PDB import PDBParser
+from typing import Optional
 import os
 
 
 
 BACKBONE_ATOMS = dict.fromkeys([ 'N', 'CA', 'C', 'O' ])
-_pdb_parser = None
 
 
 
 
 
-def load_structure(pdb_path: str) -> Structure:
+def load_structure(pdb_path: str, 
+                   parser: Optional[PDBParser] = None
+                   ) -> Structure:
     """
     Loads a BioPython Structure instance from the specified PDB file.
 
@@ -27,11 +29,10 @@ def load_structure(pdb_path: str) -> Structure:
     Bio.PDB.Structure.Structure
         The loaded Structure instance.
     """
-    global _pdb_parser
-    if _pdb_parser is None: 
-        _pdb_parser = PDBParser()
+    if parser is None: 
+        parser = PDBParser()
     structure_id = os.path.splitext(os.path.basename(pdb_path))[0]
-    return _pdb_parser.get_structure(structure_id, pdb_path)
+    return parser.get_structure(structure_id, pdb_path)
 
 
 
