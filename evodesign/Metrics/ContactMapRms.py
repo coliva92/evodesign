@@ -1,5 +1,5 @@
 from .Metric import Metric
-from typing import List, Optional, Dict
+from typing import List, Optional
 from Bio.PDB.Atom import Atom
 import itertools
 import numpy as np
@@ -30,9 +30,14 @@ class ContactMapRms(Metric):
 
 
   def _contact_map(self, backbone: List[Atom]):
+    ca_atoms = [ 
+      atom 
+      for atom in backbone 
+      if atom.get_name() == "CA" 
+    ]
     map_values = np.array([ 
       a - b 
-      for (a, b) in itertools.combinations(backbone, 2) 
+      for (a, b) in itertools.combinations(ca_atoms, 2) 
     ])
     return map_values
   
@@ -45,8 +50,7 @@ class ContactMapRms(Metric):
     if self._ref_map is None:
       self._ref_map = self._contact_map(ref_backbone)
     model_map = self._contact_map(backbone)
-    difference = self._ref_map - model_map
     # computing the mean over all individual values is the equivalent as computing
     # the weighted mean of the means of each value group
-    rms = np.sqrt(np.mean(difference**2))
+    rms = np.sqrt(np.mean((self._ref_map - model_map)**2))
     return rms
