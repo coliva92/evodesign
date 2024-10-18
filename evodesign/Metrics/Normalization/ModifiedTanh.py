@@ -49,5 +49,5 @@ class ModifiedTanh(Metric):
     def _normalize(self, x: float) -> float:
         x2 = x * self._scaling_factor + self._offset
         a = np.exp(x2) - np.exp(-x2)
-        b = np.exp(x2) + np.exp(x2)
-        return a / (2*b) + 0.5
+        b = np.exp(x2) + np.exp(-x2)
+        return 0.5 * (a / b) + 0.5
