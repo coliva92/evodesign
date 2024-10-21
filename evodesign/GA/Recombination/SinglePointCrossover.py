@@ -5,7 +5,7 @@ import numpy.typing as npt
 
 class SinglePointCrossover(Recombination):
 
-    def _do(
+    def get_offspring(
         self,
         rng: np.random.Generator,
         mothers: npt.NDArray[np.int64],

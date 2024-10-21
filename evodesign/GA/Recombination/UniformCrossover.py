@@ -1,12 +1,11 @@
 from .Recombination import Recombination
-from typing import List
 import numpy as np
 import numpy.typing as npt
 
 
 class UniformCrossover(Recombination):
 
-    def _do(
+    def get_offspring(
         self,
         rng: np.random.Generator,
         mothers: npt.NDArray[np.int64],
