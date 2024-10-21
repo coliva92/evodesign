@@ -10,12 +10,11 @@ class MiddlePointCrossover(Recombination):
         rng: np.random.Generator,
         mothers: npt.NDArray[np.int64],
         fathers: npt.NDArray[np.int64],
-        recombine_indices: npt.NDArray[np._bool],
+        offspring_mask: npt.NDArray[np._bool],
     ) -> npt.NDArray[np.int64]:
-        offspring = mothers.copy()
         crossover_point = mothers.shape[1] // 2
-        temp_chromosomes = np.hstack(
-            (mothers[:crossover_point], fathers[crossover_point:])
-        )
-        offspring[recombine_indices] = temp_chromosomes[recombine_indices]
+        offspring = mothers.copy()
+        offspring[offspring_mask, crossover_point:] = fathers[
+            offspring_mask, crossover_point:
+        ]
         return offspring

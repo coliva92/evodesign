@@ -26,10 +26,10 @@ class Recombination(RetrievableSettings, ABC):
         if parent_indices.shape[0] % self._num_parents_per_offspring != 0:
             raise RuntimeError
         num_offspring = parent_indices.shape[0] // self._num_parents_per_offspring
-        recombine_indices = rng.random(num_offspring) < self.recombination_probability
+        offspring_mask = rng.random(num_offspring) < self.recombination_probability
         mothers = population[parent_indices[::2]]
         fathers = population[parent_indices[1::2]]
-        return self._do(rng, mothers, fathers, recombine_indices)
+        return self._do(rng, mothers, fathers, offspring_mask)
 
     @abstractmethod
     def _do(
@@ -37,6 +37,6 @@ class Recombination(RetrievableSettings, ABC):
         rng: np.random.Generator,
         mothers: npt.NDArray[np.int64],
         fathers: npt.NDArray[np.int64],
-        recombine_indices: npt.NDArray[np.bool_]
+        offspring_mask: npt.NDArray[np.bool_]
     ) -> npt.NDArray[np.int64]:
         raise NotImplementedError
