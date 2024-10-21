@@ -1,33 +1,20 @@
 from .Selection import Selection
-from ...Context import Context
-import pandas as pd
-from typing import Tuple
-
-
-
+import numpy as np
+import numpy.typing as npt
 
 
 class Uniform(Selection):
 
-    def select_parent_couple(self, 
-                             population: pd.DataFrame,
-                             context: Context
-                             ) -> Tuple[pd.Series]:
-        """
-        Selects a couple of individuals from the given population.
-    
-        Parameters
-        ----------
-        population : pandas.DataFrame
-            The population to be sampled.
-        context : Context
-            The context data used by the calling evolutionary algorithm.
-    
-        Returns
-        -------
-        List[pandas.DataFrame]
-            The selected individuals.
-        """
-        i = context.rng.choice(population.index, size=2, replace=True)
-        selection = population.iloc[i]
-        return ( selection.iloc[0], selection.iloc[1] )
+    def do(
+        self,
+        rng: np.random.Generator,
+        population: npt.NDArray[np.int64],
+        fitness_values: npt.NDArray[np.float64],
+    ) -> npt.NDArray[np.int64]:
+        parent_indices = np.concatenate(
+            [
+                rng.permutation(population.shape[0])
+                for _ in range(self._num_parents_per_child)
+            ]
+        )
+        return parent_indices

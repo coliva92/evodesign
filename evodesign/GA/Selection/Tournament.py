@@ -1,80 +1,30 @@
 from .Selection import Selection
-from ...Context import Context
-import pandas as pd
-from typing import List, Tuple
-
-
-
+import numpy as np
+import numpy.typing as npt
 
 
 class Tournament(Selection):
-  
-    def _params(self) -> dict:
-        params = super()._params()
-        params['tournament_size'] = self._tournament_size
-        return params
-    
-    
-    
-    def __init__(self, 
-                 tournament_size: int
-                 ) -> None:
-        """
-        Selection operator in which a random uniform sample of size 
-        `tournament_size`, without replacement, is taken from the population, and 
-        the individual with higher fitness from this sample is then selected. 
-    
-        Notice that it is possible for the same individual to be chosen multiple
-        times. However, it is guaranteed that each consecutive pairs of 
-        individuals will be distinct.
-    
-        Parameters
-        ----------
-        tournament_size : int
-            The number of individuals to be randomly chosen to participate in 
-            a tournament. Only one of these individuals will be chosen.
-        """
+
+    def __init__(self, tournament_size: int) -> None:
         super().__init__()
-        self._tournament_size = tournament_size
-  
-  
-  
-    def select_parent_couple(self, 
-                             population: pd.DataFrame,
-                             context: Context
-                             ) -> Tuple[pd.Series]:
-        """
-        Selects a subset of individuals from the given population.
-    
-        Parameters
-        ----------
-        population : pandas.DataFrame
-            The population to be sampled.
-        context : Context
-            The context data used by the calling evolutionary algorithm.
-    
-        Returns
-        -------
-        pandas.DataFrame
-            The selected subset of individuals.
-        """
-        mother = self.tournament_selection(population, context)
-        father = self.tournament_selection(population, context)
-        return ( mother, father )
-    
-  
-  
-    def tournament_selection(self, 
-                             population: pd.DataFrame,
-                             context: Context
-                             ) -> pd.Series:
-        selection = context.rng.choice(population.index, 
-                                       size=self._tournament_size, 
-                                       replace=False)
-        tournament = population.loc[selection]
-        tournament.sort_values(by=context.sort_columns, 
-                               ascending=context.sort_ascending,
-                               inplace=True, 
-                               ignore_index=True)
-        return tournament.iloc[0]
-    
+        self.tournament_size = tournament_size
+
+    def do(
+        self,
+        rng: np.random.Generator,
+        population: npt.NDArray[np.int64],
+        fitness_values: npt.NDArray[np.float64],
+    ) -> npt.NDArray[np.int64]:
+        num_permutations = self._num_parents_per_child * self.tournament_size
+        permutations = np.concatenate(
+            [rng.permutation(population.shape[0]) for _ in range(num_permutations)]
+        )
+        tournament_groups = permutations.reshape(
+            self._num_parents_per_child * population.shape[0], self.tournament_size
+        )
+        parent_indices = np.apply_along_axis(
+            lambda group_indices: group_indices[fitness_values[group_indices].argmax()],
+            1,
+            tournament_groups,
+        )
+        return parent_indices

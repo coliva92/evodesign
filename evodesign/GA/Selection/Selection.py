@@ -1,49 +1,20 @@
 from abc import ABC, abstractmethod
-from ...SettingsRetrievable import SettingsRetrievable
-from ...Context import Context
-import evodesign.Utils as Utils
-import pandas as pd
-from typing import Tuple
+from ...RetrievableSettings import RetrievableSettings
+import numpy as np
+import numpy.typing as npt
 
 
+class Selection(RetrievableSettings, ABC):
 
-
-
-class Selection(SettingsRetrievable, ABC):
-
-    def __call__(self,
-                 population: pd.DataFrame,
-                 context: Context
-                 ) -> pd.DataFrame:
-        """
-        Selects a subset of individuals from the given population. Only those
-        rows with a `True` value in the 'survivor' column are considered.
-    
-        Parameters
-        ----------
-        population : pandas.DataFrame
-            The population to be sampled.
-        context : Context
-            The context data used by the calling evolutionary algorithm.
-    
-        Returns
-        -------
-        pandas.DataFrame
-            The selected subset of individuals.
-        """
-        survivors = population[population['survivor']]
-        parents = pd.DataFrame(columns=survivors.columns)
-        for _ in range(len(survivors)):
-            selection = self.select_parent_couple(population, context)
-            parents = Utils.df_append(parents, selection[0])
-            parents = Utils.df_append(parents, selection[1])
-        return parents
-  
-
+    def __init__(self, num_parents_per_child: int = 2) -> None:
+        super().__init__()
+        self._num_parents_per_child = num_parents_per_child
 
     @abstractmethod
-    def select_parent_couple(self, 
-                             population: pd.DataFrame,
-                             context: Context
-                             ) -> Tuple[pd.Series]:
+    def do(
+        self,
+        rng: np.random.Generator,
+        population: npt.NDArray[np.int64],
+        fitness_values: npt.NDArray[np.float64],
+    ) -> npt.NDArray[np.int64]:
         raise NotImplementedError
