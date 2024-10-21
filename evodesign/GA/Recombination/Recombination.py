@@ -10,12 +10,12 @@ class Recombination(RetrievableSettings, ABC):
         self,
         recombination_probability: float = 1.0,
         num_parents_per_child: int = 2,
-        num_offspring_per_parent_couple: int = 1,
+        num_offspring_per_parents_group: int = 1,
     ) -> None:
         super().__init__()
         self.recombination_probability = recombination_probability
         self._num_parents_per_child = num_parents_per_child
-        self._num_offspring_per_parent_couple = num_offspring_per_parent_couple
+        self._num_offspring_per_parents_group = num_offspring_per_parents_group
 
     def do(
         self,
