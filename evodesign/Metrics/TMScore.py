@@ -37,11 +37,15 @@ class TMScore(Metric):
                      ) -> pd.Series:
     # superimpose the structures are not already superimposed
     data = self._rmsd_metric(backbone, data, context)
-    d0 = self._normalizing_constant(len(context.ref_backbone))
-    distances = np.array([ a - b for a, b in zip(backbone, context.ref_backbone) ])
-    tmscore = np.mean(1 / (1 + (distances / d0) ** 2))
-    data[self.column_name()] = tmscore
+    data[self.column_name()] = self._tmscore(backbone, context.ref_backbone)
     return data
+  
+
+
+  def _tmscore(self, backbone: List[Atom], ref_backbone: List[Atom]) -> float:
+    d0 = self._normalizing_constant(len(ref_backbone))
+    distances = np.array([ a - b for a, b in zip(backbone, ref_backbone) ])
+    return np.mean(1 / (1 + (distances / d0) ** 2))
     
   
 
