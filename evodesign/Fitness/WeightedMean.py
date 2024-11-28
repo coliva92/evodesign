@@ -1,76 +1,72 @@
 from .FitnessFunction import FitnessFunction
-from ..Metrics.Metric import Metric
 import numpy as np
-from typing import List, Optional
-import pandas as pd
+from typing import List
 import numpy.typing as npt
-
-
-
+from Bio.PDB.Structure import Structure
+from Bio.PDB.Atom import Atom
 
 
 class WeightedMean(FitnessFunction):
-  
-  def _params(self) -> dict:
-    params = super()._params()
-    params['weights'] = self._weights
-    return params
-  
 
+    _terms = {
+        "rmsd_weight": 0,
+        "gdt_weight": 1,
+        "tm_score_weight": 2,
+        "distance_map_weight": 3,
+        "cyclization_weight": 4,
+        "rosetta_energy_weight": 5,
+        "plddt_weight": 6,
+    }
 
-  def __init__(self, 
-               upper_bound: float,
-               metric_columns: List[Metric],
-               weights: Optional[List[float]] = None,
-               column: Optional[str] = None
-               ) -> None:
-    """
-    Computes the fitness of a given individual as the weighted mean of the 
-    specified terms.
+    def __init__(
+        self,
+        upper_bound: float = 1.0,
+        rmsd_weight: float = 1.0,
+        gdt_weight: float = 1.0,
+        tm_score_weight: float = 1.0,
+        distance_map_weight: float = 1.0,
+        cyclization_weight: float = 1.0,
+        rosetta_energy_weight: float = 1.0,
+        plddt_weight: float = 1.0,
+    ) -> None:
+        super().__init__(upper_bound)
+        self.rmsd_weight = rmsd_weight
+        self.gdt_weight = gdt_weight
+        self.tm_score_weight = tm_score_weight
+        self.distance_map_weight = distance_map_weight
+        self.cyclization_weight = cyclization_weight
+        self.rosetta_energy_weight = rosetta_energy_weight
+        self.plddt_weight = plddt_weight
+        self._weights = np.array(
+            [
+                self.rmsd_weight,
+                self.gdt_weight,
+                self.tm_score_weight,
+                self.distance_map_weight,
+                self.cyclization_weight,
+                self.rosetta_energy_weight,
+                self.plddt_weight,
+            ]
+        )
 
-    Parameters
-    ----------
-    upper_bound : float
-        The maximum allowed fitness value before triggering a stop condition
-        in the evolutionary algorithm.
-    metric_columns : List[str]
-        The names that identify the metrics required for computing the fitness value in
-        the CSV storing the population data.
-    weights : Optional[List[float]], optional
-        The weights for each individual term. If no weights are specified,
-        equal weights are used for all terms, turning this fitness function 
-        into a simple mean.
-    column : str, optional
-        The name that should identify the values of this metric in the CSV file
-        storing the population data. If `None`, then the class name will be 
-        used. Default is `None`.
+    def compute_term_values(
+        self,
+        model_sequence: npt.NDArray[np.int64],
+        model_structure: Structure,
+        model_backbone: List[Atom],
+        model_ca_atoms: List[Atom],
+        ref_sequence: npt.NDArray[np.int64],
+        ref_structure: Structure,
+        ref_backbone: List[Atom],
+        ref_ca_atoms: List[Atom],
+    ) -> npt.NDArray[np.float64]:
+        # TODO después de refactorizar los metrics, incluirlos aquí
+        return np.array(
+            [rmsd, gdt, tm_score, distance_map_rms, cyc_z_score, energy_norm, plddt]
+        )
 
-    Raises
-    ------
-    RuntimeError
-        If the length for `metric_columns` and `weights` are not the same.
-    """
-    super().__init__(upper_bound, metric_columns, column)
-    if weights is None or len(weights) == 0:
-      weights = len(self._metric_columns) * [ 1.0 ]
-    if len(weights) != len(self._metric_columns):
-      raise RuntimeError
-    self._weights = weights
-  
+    def compute_fitness(self, term_values: npt.NDArray[np.float64]) -> float:
+        return np.average(term_values, weights=self._weights)
 
-
-  def compute_fitness(self, metrics: npt.NDArray[np.float64]) -> float:
-    """
-    Computes a weighted mean of the given metric values using the given weights.
-
-    Parameters
-    ----------
-    metrics : numpy.typing.NDArray[numpy.float64]
-        The metric values to be used to compute the fitness value.
-
-    Returns
-    -------
-    float
-        The computed fitness value.
-    """
-    return np.average(metrics, weights=self._weights)
+    def set_weight(self, term_name: str, weight: float) -> None:
+        self._weights[self._terms[term_name]] = self.__dict__[term_name] = weight
