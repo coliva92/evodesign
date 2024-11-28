@@ -78,3 +78,7 @@ class AlphaFold(Predictor):
         return_code = popen.wait()
         if return_code:
             raise subprocess.CalledProcessError(return_code, cmd)
+    
+    def delete_output_dir(self) -> None:
+        if os.path.exists(self.output_dir):
+            shutil.rmtree(self.output_dir)
