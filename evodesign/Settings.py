@@ -9,7 +9,7 @@ from .Algorithms.GASimple import GASimple as Algorithms_GASimple
 from .Algorithms.RandomSearch import RandomSearch as Algorithms_RandomSearch
 from .Metrics.Rmsd import Rmsd as Metrics_Rmsd
 from .Metrics.Gdt import Gdt as Metrics_Gdt
-from .Metrics.ContactMapRms import ContactMapRms as Metrics_ContactMapRms
+from .Metrics.DistanceMap import ContactMapRms as Metrics_ContactMapRms
 from .Metrics.Cyclization import Cyclization as Metrics_Cyclization
 from .Metrics.TMScore import TMScore as Metrics_TMScore
 from .Metrics.RosettaEnergyFunction import (
