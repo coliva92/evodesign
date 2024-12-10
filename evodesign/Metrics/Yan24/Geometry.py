@@ -2,7 +2,7 @@ from ..Metric import Metric
 from ..Normalization.Reciprocal import Reciprocal
 from ..Rmsd import Rmsd
 from ..Gdt import Gdt
-from ..ContactMapRms import ContactMapRms
+from ..DistanceMap import ContactMapRms
 from ..TMScore import TMScore
 from ...Context import Context
 from typing import Optional, List, Dict
