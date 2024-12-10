@@ -1,5 +1,5 @@
 from typing import Optional
-import evodesign.Chain as Chain
+import Utils.Chain as Chain
 import numpy as np
 import math
 from typing import Any, Optional
