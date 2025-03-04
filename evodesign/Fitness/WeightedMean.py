@@ -70,3 +70,14 @@ class WeightedMean(FitnessFunction):
 
     def set_weight(self, term_name: str, weight: float) -> None:
         self._weights[self._terms[term_name]] = self.__dict__[term_name] = weight
+        self._weights = np.array(
+            [
+                self.rmsd_weight,
+                self.gdt_weight,
+                self.tm_score_weight,
+                self.distance_map_weight,
+                self.cyclization_weight,
+                self.rosetta_energy_weight,
+                self.plddt_weight,
+            ]
+        )
