@@ -46,8 +46,18 @@ class WeightedMean(FitnessFunction):
         self.cyc_calc = cyc_calc
         self.eng_calc = eng_calc
         self._weights = np.array(
-            [weight for name, weight in self.__dict__.items() if "_weight" in name]
+            [
+                weight
+                for name, weight in self.__dict__.items()
+                if "_weight" in name and weight >= 0.0
+            ]
         )
+        self._calculators = [
+            calc
+            for name, calc in self.__dict__.items()
+            if "_calc" in name
+            and self.__dict__[name.replace("_calc", "_weight")] >= 0.0
+        ]
 
     def compute_term_values(
         self,
@@ -61,13 +71,7 @@ class WeightedMean(FitnessFunction):
         ref_ca_atoms: List[Atom],
     ) -> npt.NDArray[np.float64]:
         kwargs = locals()
-        return np.array(
-            [
-                calc.do(**kwargs)
-                for name, calc in self.__dict__.items()
-                if "_calc" in name
-            ]
-        )
+        return np.array([calc.do(**kwargs) for calc in self._calculators])
 
     def compute_fitness(self, term_values: npt.NDArray[np.float64]) -> float:
         return np.average(term_values, weights=self._weights)
