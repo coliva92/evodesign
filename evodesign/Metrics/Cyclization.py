@@ -1,31 +1,15 @@
 from .Metric import Metric
-from typing import Optional, List, Dict
-from ..Context import Context
+from typing import List
 from Bio.PDB.Atom import Atom
-import pandas as pd
-
-
-
+import evodesign.Utils.Normalization as Norm
 
 
 class Cyclization(Metric):
 
-  def __init__(self, column: Optional[str] = None) -> None:
-    super().__init__(column)
+    _mean = 1.3248119
+    _deviation = 0.10498072
 
-
-
-  def _compute_values(self, 
-                      backbone: List[Atom],
-                      data: pd.Series,
-                      context: Context
-                      ) -> pd.Series:
-    # distance between the N atom of the first residue and the C 
-    # atom of the last
-    data[self.column_name()] = self._cyclization(backbone)
-    return data
-
-
-
-  def _cyclization(self, backbone: List[Atom]) -> float:
-    return backbone[0] - backbone[-2]
+    def do(self, model_backbone: List[Atom], **kwargs) -> float:
+        # assuming the backbone consists of atoms N-CA-C-O
+        bond = model_backbone[-2] - model_backbone[0]
+        return Norm.z_score(bond, self._mean, self._deviation)
