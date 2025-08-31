@@ -1,0 +1,25 @@
+{
+    "Algorithms.MonoObjective.GA.Generational": {
+        "max_generations": 5,
+        "population_size": 5,
+        "predictor": {
+            "Prediction.ESMFoldRemoteApi": {}
+        },
+        "fitness_fn": {
+            "Fitness.WeightedMean": {
+                "upper_bound": 1.0,
+                "terms": [
+                    "Metrics.RMSD.rmsd"
+                ],
+                "term_calculators": [
+                    {
+                        "Metrics.RMSD": {}
+                    }
+                ],
+                "term_weights": [
+                    1
+                ]
+            }
+        }
+    }
+}

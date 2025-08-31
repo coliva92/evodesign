@@ -34,7 +34,8 @@ class Predictor(RetrievableSettings, ABC):
 
     def predict_pdb_file(self, sequence: str, pdb_path: str) -> None:
         if not os.path.isfile(pdb_path):
-            os.makedirs(os.path.dirname(os.path.abspath(pdb_path)), exist_ok=True)
+            os.makedirs(os.path.dirname(os.path.abspath(pdb_path)), 
+                        exist_ok=True)
         prediction = self.predict_pdb_str(sequence)
         with open(pdb_path, "wt", encoding="utf-8") as pdb_file:
             pdb_file.write(prediction)

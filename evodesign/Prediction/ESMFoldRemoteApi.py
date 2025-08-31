@@ -1,6 +1,6 @@
 from .Predictor import Predictor
 from ..Utils.APIRequester import APIRequester
-from ..Exceptions import *
+from ..Utils.Exceptions import *
 
 
 class ESMFoldRemoteApi(Predictor):
@@ -9,8 +9,8 @@ class ESMFoldRemoteApi(Predictor):
         self,
         requester: APIRequester = APIRequester(
             url="https://api.esmatlas.com/foldSequence/v1/pdb/",
-            json_request_key="sequence",
-            json_response_key="pdb",
+            # json_request_key="sequence",
+            # json_response_key="pdb",
         ),
     ) -> None:
         super().__init__()

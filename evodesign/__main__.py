@@ -1,87 +1,101 @@
 from argparse import ArgumentParser
 import evodesign.Settings as Settings
-from .Exceptions import *
+from evodesign.Utils.WorkingFolder import WorkingFolder
+from evodesign.Utils.SavingManager import SavingManager
+from evodesign.Utils.Chain import ChainFactory
+from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
-import sys
+import numpy as np
 import json
-from .Context import Context
+import os
 
 
-
-
-
-parser = ArgumentParser(prog='evodesign',
-                        description='A rudimentary suite of evolutionary '
-                                    'algorithms for protein design.')
-parser.add_argument('settings_path', 
-                    help='path to the JSON file describing the configuration '
-                         'of the evolutionary algorithm to be executed')
-parser.add_argument('target_pdb_path',
-                    help='path to the PDB file that contains the target '
-                         'protein backbone')
-parser.add_argument('workspace_root',
-                    help='path to the folder where all the output files will '
-                         'be written')
-parser.add_argument('-n', '--num_generations', 
-                    type=int, 
-                    default=0,
-                    help='stops algorithm execution after a the specified '
-                         'amount of generations are produced, instead of '
-                         'the amount specified in the settings file')
-parser.add_argument('-f', '--target_fasta_path',
-                    type=str,
-                    default=None,
-                    help='path to the FASTA file containing the target '
-                         'amino acid sequence for when the goal is to find '
-                         'a different sequence with the same properties as the '
-                         'target protein')
-parser.add_argument('-r', '--sequence_restrictions',
-                    type=str,
-                    default=None,
-                    help='path to the JSON file describing the allowed amino acids '
-                         'for certain positions in the designed sequences')
-parser.add_argument('-p', '--save_prediction_pdbs',
-                    action='store_true',
-                    default=False,
-                    help='indicates if the PDB files of the protein structure '
-                         'predictions in the workspace')
-parser.add_argument('-s', '--seed_rng',
-                    type=int,
-                    default=None,
-                    help='sets a custom seed for the pseudo-random number generator')
-parser.add_argument("-g", "--save_graph_png",
-                    action="store_true",
-                    default=False,
-                    help="indicates if the graph showing how the fitness and "
-                         "diversity change over each generation should be saved in a"
-                         "PNG file or not saved at all")
+parser = ArgumentParser(
+    prog="evodesign",
+    description="A rudimentary suite of evolutionary " "algorithms for protein design.",
+)
+parser.add_argument(
+    "target_pdb_path", help="path to the PDB file of the target protein backbone"
+)
+parser.add_argument(
+    "settings_path",
+    help="path to the JSON file describing the configuration "
+    "of the evolutionary algorithm to be executed",
+)
+parser.add_argument("output_dir", help="path to the output folder")
+parser.add_argument(
+    "-s",
+    "--save_every_nth_generation",
+    type=int,
+    default=10,
+    help="save every time this number of generations have passed",
+)
+parser.add_argument(
+    "-m",
+    "--model_id",
+    type=int,
+    default=0,
+    help="the zero-based index of the model to read from the target PDB file",
+)
+parser.add_argument(
+    "-c",
+    "--chain_id",
+    type=str,
+    default=None,
+    help="the chain ID to read from the target PDB file",
+)
+parser.add_argument(
+    "-j", "--jobname", type=str, default=None, help="the name for the current job"
+)
+# parser.add_argument('-r', '--sequence_restrictions',
+#                     type=str,
+#                     default=None,
+#                     help='path to the JSON file describing the allowed amino acids '
+#                          'for certain positions in the designed sequences')
 args = parser.parse_args()
-
-context = Context.create(args.target_pdb_path, 
-                         args.target_fasta_path, 
-                         args.num_generations,
-                         args.sequence_restrictions)
-with open(args.settings_path, 'rt', encoding='utf-8') as json_file:
+with open(args.settings_path, "rt", encoding="utf-8") as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)
-algorithm.setup(context, args.workspace_root, args.seed_rng)
-
+ref_chain = ChainFactory.create(args.target_pdb_path, args.model_id, args.chain_id)
+saving = SavingManager(
+    WorkingFolder(os.path.abspath(args.output_dir), args.jobname),
+    algorithm.max_generations,
+    algorithm.population_size,
+    len(ref_chain.sequence),
+    algorithm.num_terms(),
+    args.save_every_nth_generation,
+)
+try:
+    # resuming from a previous execution
+    algorithm._algorithm = saving.load_pymoo_algorithm()
+    saving.load_results_npz()
+    algorithm._algorithm.n_gen += 1
+    if algorithm._algorithm.termination.n_max_gen < algorithm.max_generations:
+        # extending from a previously completed execution
+        saving.extend_result_arrays(algorithm.max_generations)
+        algorithm._algorithm.termination.n_max_gen = algorithm.max_generations
+        algorithm._algorithm.termination.perc = float(
+            algorithm._algorithm.n_gen / algorithm.max_generations
+        )
+    state = saving.load_rng_state(saving.working_folder.last_rng_state_path)
+    np.random.set_state(state)
+except FileNotFoundError:
+    try:
+        # starting fresh but with a previous RNG seed
+        state = saving.load_rng_state(saving.working_folder.initial_rng_state_path)
+        np.random.set_state(state)
+    except FileNotFoundError:
+        # starting with a fresh RNG seed
+        saving.save_rng_state(
+            np.random.get_state(), saving.working_folder.initial_rng_state_path
+        )
+    saving.save_git_commit_hash()
+    saving.save_settings(algorithm.settings())
+    saving.save_target_pdb(args.target_pdb_path)
 while True:
     try:
-        algorithm(args.save_prediction_pdbs, args.save_graph_png)
+        algorithm.run(ref_chain, saving)
+        saving.delete_prediction_pdb()
         break
-    except (KeyboardInterrupt, HttpBadRequest, HttpUnknownError):
-        fasta_option = f'-f {args.target_fasta_path} ' if args.target_fasta_path else ''
-        restrictions_option = f'-r {args.sequence_restrictions} ' \
-                              if args.sequence_restrictions \
-                              else ''
-        print(f'\nINTERRUPTED.\n'
-              f'Run `python -m evodesign {args.settings_path} {args.target_pdb_path} '
-              f'{args.workspace_root} '
-              f'{fasta_option}{restrictions_option}` to resume later.')
-        sys.exit(130) # SIGINT
-    except (HttpInternalServerError, 
-            HttpGatewayTimeout,
-            HttpForbidden,
-            ConnectTimeout):
+    except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         pass

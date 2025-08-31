@@ -1,30 +1,22 @@
 from .Selection import Selection
+from pymoo.operators.selection.tournament import TournamentSelection
 import numpy as np
 import numpy.typing as npt
 
 
 class Tournament(Selection):
 
-    def __init__(self, tournament_size: int) -> None:
-        super().__init__()
+    def __init__(self, tournament_size: int = 2) -> None:
+        super().__init__(TournamentSelection(self.tournament, tournament_size))
         self.tournament_size = tournament_size
 
-    def do(
-        self,
-        rng: np.random.Generator,
-        population: npt.NDArray[np.int64],
-        fitness_values: npt.NDArray[np.float64],
+    @classmethod
+    def tournament(
+        cls, pop, P: npt.NDArray[np.int64], **kwargs
     ) -> npt.NDArray[np.int64]:
-        num_permutations = self._num_parents_per_child * self.tournament_size
-        permutations = np.concatenate(
-            [rng.permutation(population.shape[0]) for _ in range(num_permutations)]
-        )
-        tournament_groups = permutations.reshape(
-            self._num_parents_per_child * population.shape[0], self.tournament_size
-        )
-        parent_indices = np.apply_along_axis(
-            lambda group_indices: group_indices[fitness_values[group_indices].argmax()],
-            1,
-            tournament_groups,
-        )
-        return parent_indices
+        selection_size, tournament_size = P.shape
+        selected_parents = np.full(selection_size, -1, dtype=np.int64)
+        for i in range(selection_size):
+            fitness = np.array([pop[j].F[0] for j in P[i]])
+            selected_parents[i] = P[i][fitness.argmin()]
+        return selected_parents

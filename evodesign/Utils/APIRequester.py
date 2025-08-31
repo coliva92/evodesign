@@ -1,6 +1,6 @@
 from ..RetrievableSettings import RetrievableSettings
 from typing import Optional, Callable
-from ..Exceptions import *
+from .Exceptions import *
 import requests
 import time
 

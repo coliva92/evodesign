@@ -1,4 +1,4 @@
-from .ESM2Descriptors import ESM2Descriptors
+from .ESM2DescriptorsRMSE import ESM2Descriptors
 from ..Utils.APIRequester import APIRequester
 import numpy as np
 import numpy.typing as npt
