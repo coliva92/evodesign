@@ -1,68 +1,45 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
-from ..SettingsRetrievable import SettingsRetrievable
-import pandas as pd
-import numpy.typing as npt
+from ..RetrievableSettings import RetrievableSettings
+from ..Metrics.Metric import Metric
+from ..Metrics.Context import Context
+from ..Utils.Chain import Chain
 import numpy as np
+import numpy.typing as npt
+from typing import List
 
 
+class FitnessFunction(RetrievableSettings, ABC):
 
+    def __init__(
+        self, upper_bound: float, terms: List[str], term_calculators: List[Metric]
+    ) -> None:
+        super().__init__()
+        self.upper_bound = upper_bound
+        self.terms = terms
+        self.term_calculators = term_calculators
+        self._term_calculators = {
+            calc._class_name(): calc for calc in self.term_calculators
+        }
 
+    def do(
+        self, model_chain: Chain, ref_chain: Chain, **kwargs
+    ) -> npt.NDArray[np.float64]:
+        context = Context(model_chain, ref_chain, self._term_calculators, **kwargs)
+        term_values = np.array(
+            [context.get_component_value(name) for name in self.terms]
+        )
+        component_values = [
+            component_value
+            for term_name in self.terms
+            for _, component_value in context.get_metric_components(
+                ".".join(term_name.split(".")[:-1])
+            ).items()
+        ]
+        return np.array([self.combine(term_values), *component_values])
 
-class FitnessFunction(SettingsRetrievable, ABC):
+    @abstractmethod
+    def combine(self, term_values: npt.NDArray[np.float64]) -> float:
+        raise NotImplementedError
 
-  def column_name(self) -> str:
-    return self._column_name
-  
-
-
-  def _params(self) -> dict:
-    return {
-      'column': self._column_name,
-      'upper_bound': self.upper_bound,
-      'metric_columns': self._metric_columns
-    }
-  
-
-
-  def __init__(self, 
-               upper_bound: float,
-               metric_columns: List[str],
-               column: Optional[str] = None
-               ) -> None:
-    super().__init__()
-    self.upper_bound = upper_bound
-    self._metric_columns = metric_columns
-    self._column_name = column
-    if column is None or len(column) == 0:
-      self._column_name = self._class_name()
-  
-
-
-  def __call__(self, data: pd.Series) -> pd.Series:
-    """
-    Computes the fitness value.
-
-    Parameters
-    ----------
-    data : pandas.Series
-        The population data corresponding to the individual which fitness 
-        value is being computed. It is assumed that this data also includes the values 
-        of the metrics required by the current fitness function.
-
-    Returns
-    -------
-    pandas.Series
-        The original data series with added columns to include the computed fitness 
-        value.
-    """
-    metric_values = data[self._metric_columns].to_numpy()
-    result = self.compute_fitness(metric_values)
-    data[self.column_name()] = result
-    return data
-  
-
-
-  @abstractmethod
-  def compute_fitness(self, metrics: npt.NDArray[np.float64]) -> float:
-    raise NotImplementedError
+    def num_terms(self) -> int:
+        return len(self.terms) + 1  # account for the inclusion of the pLDDT

@@ -1,31 +1,24 @@
 from .Metric import Metric
-from typing import Optional, List, Dict
-from ..Context import Context
+from .ContextInterface import ContextInterface
+from typing import List, Tuple, Dict
 from Bio.PDB.Atom import Atom
-import pandas as pd
-
-
-
+import evodesign.Utils.Normalization as Norm
 
 
 class Cyclization(Metric):
 
-  def __init__(self, column: Optional[str] = None) -> None:
-    super().__init__(column)
+    _mean = 1.3248119
+    _stdev = 0.10498072
+    _scaling_factor = 0.05
 
+    def do(self, model_backbone: List[Atom], **kwargs) -> Tuple[float]:
+        # assuming the backbone consists of atoms N-CA-C-O
+        distance = model_backbone[-2] - model_backbone[0]
+        z_score = Norm.z_score(distance, self._mean, self._stdev)
+        norm_z_score = Norm.reciprocal(z_score, self._scaling_factor)
+        return (distance, z_score, norm_z_score)
 
-
-  def _compute_values(self, 
-                      backbone: List[Atom],
-                      data: pd.Series,
-                      context: Context
-                      ) -> pd.Series:
-    # distance between the N atom of the first residue and the C 
-    # atom of the last
-    data[self.column_name()] = self._cyclization(backbone)
-    return data
-
-
-
-  def _cyclization(self, backbone: List[Atom]) -> float:
-    return backbone[0] - backbone[-2]
+    def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
+        model_backbone = context.get_model_chain().backbone_atoms
+        distance, z_score, norm_z_score = self.do(model_backbone)
+        return {"distance": distance, "z_score": z_score, "norm_z_score": norm_z_score}
