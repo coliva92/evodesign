@@ -43,7 +43,7 @@ class HighFold2(Predictor):
         # self.custom_dist_cst = custom_dist_cst
 
     def predict_pdb_str(self, sequence: str) -> str:
-        pdb_path = os.path.join(self.output_dir, "prediction.pdb.tmp")
+        pdb_path = "tmp_prediction.pdb"
         self.predict_pdb_file(sequence, pdb_path)
         with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
             prediction = pdb_file.read()
@@ -60,6 +60,7 @@ class HighFold2(Predictor):
         prediction_pdb = os.path.join(self.output_dir, protein_name, "ranked_0.pdb")
         shutil.copyfile(prediction_pdb, pdb_path)
         os.remove(fasta_path)
+        self.delete_output_dir()
 
     def run_highfold(self, fasta_path: str):
         cmd = [
