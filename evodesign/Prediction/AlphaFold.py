@@ -16,7 +16,7 @@ class AlphaFold(Predictor):
         max_template_date: str = "2020-05-14",
         model_preset: str = "monomer",
         db_preset: str = "reduced_dbs",
-    ) -> None:
+    ):
         super().__init__()
         self.path_to_create_fakemsa_py = os.path.abspath(path_to_create_fakemsa_py)  # https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
@@ -30,7 +30,7 @@ class AlphaFold(Predictor):
         self.output_dir = os.path.dirname(os.path.abspath(output_dir))
 
     def predict_pdb_str(self, sequence: str) -> str:
-        pdb_path = os.path.join(self.output_dir, "prediction.pdb.tmp")
+        pdb_path = "tmp_prediction.pdb"
         self.predict_pdb_file(sequence, pdb_path)
         with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
             prediction = pdb_file.read()
