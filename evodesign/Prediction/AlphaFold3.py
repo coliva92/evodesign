@@ -1,5 +1,6 @@
 from .Predictor import Predictor
 from ..Utils.Subprocess import run_subprocess
+from ..Utils.mmCIF import convert_cif_to_pdb
 from Bio.PDB import MMCIFParser, PDBIO
 import os
 import shutil
@@ -17,15 +18,19 @@ class AlphaFold3(Predictor):
         path_to_run_alphafold_py: str,
         model_dir: str,
         output_dir: str,
+        num_recycles: int = 1,
+        num_diffusion_samples: int = 1,
         # db_dir: str
         run_data_pipeline: bool = False,
         model_seeds: Optional[List[int]] = None,
-        version: int = 3,
+        version: int = 2,
     ):
         super().__init__()
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
         self.model_dir = os.path.abspath(model_dir)
         self.output_dir = os.path.abspath(output_dir)
+        self.num_recycles = num_recycles
+        self.num_diffusion_samples = num_diffusion_samples
         # self.db_dir = db_dir
         self.run_data_pipeline = run_data_pipeline
         if model_seeds is None:
@@ -44,6 +49,8 @@ class AlphaFold3(Predictor):
             f"--output_dir={self.output_dir}",
             f"--run_data_pipeline={self.run_data_pipeline}",
             "--force_output_dir=True",
+            f"--num_recycles={self.num_recycles}",
+            f"--num_diffusion_samples={self.num_diffusion_samples}",
         ]
 
     def predict_pdb_str(self, sequence: str) -> str:
@@ -81,20 +88,13 @@ class AlphaFold3(Predictor):
         prediction_cif = os.path.join(
             self.output_dir, protein_name, f"{protein_name}_model.cif"
         )
-        prediction_pdb = self.convert_cif_to_pdb(prediction_cif, "A")
+        prediction_pdb = convert_cif_to_pdb(prediction_cif, "A", self._parser, self._io)
         shutil.copyfile(prediction_pdb, pdb_path)
         os.remove(json_path)
         self.delete_output_dir()
 
     def run_alphafold(self, json_path: str):
         run_subprocess(self._get_cmd_array(json_path))
-
-    def convert_cif_to_pdb(self, cif_path: str, structure_id: str) -> str:
-        structure = self._parser.get_structure(structure_id, cif_path)
-        pdb_path = cif_path.replace(".cif", ".pdb")
-        self._io.set_structure(structure)
-        self._io.save(pdb_path)
-        return pdb_path
 
     def delete_output_dir(self) -> None:
         if os.path.exists(self.output_dir):
