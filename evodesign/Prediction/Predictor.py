@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
-from ..Utils.Chain import ChainFactory, Chain
+from typing import List
 from ..RetrievableSettings import RetrievableSettings
-import numpy as np
 import os
 import shutil
 from ..Utils.Exceptions import HttpGatewayTimeout
@@ -40,19 +38,6 @@ class Predictor(RetrievableSettings, ABC):
                     break
                 except (HttpGatewayTimeout, ConnectTimeout):
                     continue
-
-    def compute_plddt(self, chain: Chain) -> float:
-        bfactors = np.array(
-            [
-                (
-                    atom.get_bfactor()
-                    if atom.get_bfactor() <= 1.0
-                    else atom.get_bfactor() / 100.0
-                )
-                for atom in chain.structure.get_atoms()
-            ]
-        )
-        return bfactors.mean()
 
     def delete_folder(self, folder_dir: str) -> None:
         if os.path.exists(folder_dir):

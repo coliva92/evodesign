@@ -42,4 +42,4 @@ class FitnessFunction(RetrievableSettings, ABC):
         raise NotImplementedError
 
     def num_terms(self) -> int:
-        return len(self.terms) + 1  # account for the inclusion of the pLDDT
+        return len(self.terms)
