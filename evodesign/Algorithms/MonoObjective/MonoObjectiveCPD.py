@@ -42,6 +42,6 @@ class MonoObjectiveCPD(Problem):
         self.predictor.do(sequences, self.predictions_dir, "tmp_prediction")
         # Note: x.shape = num_generations x population_size
         indices = np.arange(x.shape[1])
-        self.term_values = np.apply_along_axis(self.compute_fitness, 0, indices)
+        self.term_values = np.apply_along_axis(self.compute_fitness, 1, indices)
         out["F"] = -1.0 * self.term_values[:, 0]
         self.predictor.delete_folder(self.predictions_dir)
