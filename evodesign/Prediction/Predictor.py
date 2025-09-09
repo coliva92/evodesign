@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 from Bio.PDB.Atom import Atom
-from Utils.Chain import ChainFactory
+from ..Utils.Chain import ChainFactory
 from ..RetrievableSettings import RetrievableSettings
 import numpy as np
 import os
