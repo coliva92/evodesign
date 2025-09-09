@@ -1,0 +1,10 @@
+name: evodesign
+channels:
+  - defaults
+dependencies:
+  - pip
+  - pip:
+      - biopython
+      - pymoo
+      - matplotlib
+      - pandas
