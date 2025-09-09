@@ -18,6 +18,6 @@ class WorkingFolder:
         self.pymoo_algorithm_bin_path = os.path.join(self.path, "pymoo_algorithm.bin")
         self.initial_rng_state_path = os.path.join(self.path, "initial_rng_state.txt")
         self.last_rng_state_path = os.path.join(self.path, "last_rng_state.txt")
-        self.prediction_pdb_path = os.path.join(self.path, "prediction.pdb.tmp")
+        self.prediction_pdb_path = os.path.join(self.path, "tmp_prediction.pdb")
         self.settings_json_path = os.path.join(self.path, "settings.json")
         self.git_commit_hash_path = os.path.join(self.path, "git_commit_hash.txt")
