@@ -95,7 +95,6 @@ except FileNotFoundError:
 while True:
     try:
         algorithm.run(ref_chain, saving)
-        saving.delete_prediction_pdb()
         break
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         pass

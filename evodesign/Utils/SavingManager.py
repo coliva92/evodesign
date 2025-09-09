@@ -147,6 +147,10 @@ class SavingManager(Callback):
             algorithm = dill.load(bin_file)
         return algorithm
 
-    def delete_prediction_pdb(self) -> None:
-        if os.path.isfile(self.working_folder.prediction_pdb_path):
-            os.remove(self.working_folder.prediction_pdb_path)
+    def delete_folder(self, folder_dir: str) -> None:
+        if os.path.exists(folder_dir):
+            shutil.rmtree(folder_dir)
+    
+    def delete_file(self, file_path: str) -> None:
+        if os.path.isfile(file_path):
+            os.remove(file_path)
