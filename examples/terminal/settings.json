@@ -1,6 +1,6 @@
 {
     "Algorithms.MonoObjective.GA.Generational": {
-        "max_generations": 5,
+        "max_generations": 2,
         "population_size": 5,
         "predictor": {
             "Prediction.ESMFoldRemoteApi": {}
@@ -9,16 +9,24 @@
             "Fitness.WeightedMean": {
                 "upper_bound": 1.0,
                 "terms": [
-                    "Metrics.RMSD.rmsd"
+                    "Metrics.GDT.gdt"
                 ],
                 "term_calculators": [
                     {
                         "Metrics.RMSD": {}
+                    },
+                    {
+                        "Metrics.GDT": {}
                     }
                 ],
                 "term_weights": [
                     1
                 ]
+            }
+        },
+        "mutation": {
+            "GA.Mutation.RandomResetting": {
+                "sequence_mutation_prob": 0.1
             }
         }
     }
