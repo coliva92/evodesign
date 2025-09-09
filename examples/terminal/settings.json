@@ -9,18 +9,22 @@
             "Fitness.WeightedMean": {
                 "upper_bound": 1.0,
                 "terms": [
+                    "Metrics.RMSD.rmsd",
                     "Metrics.GDT.gdt"
+                ],
+                "term_weights": [
+                    0,
+                    1
                 ],
                 "term_calculators": [
                     {
                         "Metrics.RMSD": {}
                     },
                     {
-                        "Metrics.GDT": {}
+                        "Metrics.GDT": {
+                            "cutoffs": [ 0.5, 1, 2, 4 ]
+                        }
                     }
-                ],
-                "term_weights": [
-                    1
                 ]
             }
         },
