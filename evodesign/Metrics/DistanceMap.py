@@ -7,7 +7,7 @@ from typing import List, Dict
 import itertools
 
 
-class DistanceMapRMSE(Metric):
+class DistanceMap(Metric):
 
     @classmethod
     def compute_map(cls, ca_atoms: List[Atom]) -> npt.NDArray[np.float64]:
@@ -30,4 +30,4 @@ class DistanceMapRMSE(Metric):
         model_map = self.compute_map(model_ca_atoms)
         ref_map = self.compute_map(ref_ca_atoms)
         rmse = self.do(model_map, ref_map)
-        return {"distance_map_rmse": rmse}
+        return {"rmse": rmse}

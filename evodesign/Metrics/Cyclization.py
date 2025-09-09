@@ -21,4 +21,4 @@ class Cyclization(Metric):
     def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         distance, z_score, norm_z_score = self.do(model_backbone)
-        return {"distance": distance, "z_score": z_score, "norm_z_score": norm_z_score}
+        return {"cyclization": distance, "z_score": z_score, "norm_z_score": norm_z_score}
