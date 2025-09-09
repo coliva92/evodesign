@@ -48,7 +48,6 @@ class AlphaFold3(Predictor):
             f"--model_dir={self.model_dir}",
             f"--output_dir={self.output_dir}",
             f"--run_data_pipeline={self.run_data_pipeline}",
-            "--force_output_dir=True",
             f"--num_recycles={self.num_recycles}",
             f"--num_diffusion_samples={self.num_diffusion_samples}",
         ]
