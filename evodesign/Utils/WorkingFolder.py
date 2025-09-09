@@ -5,7 +5,7 @@ import os
 
 class WorkingFolder:
 
-    GIT_COMMIT_HASH = "33b3d09fddbc6fcb63f68d220825beac7bb4a9bb"
+    GIT_COMMIT_HASH = "92a0a47de548f85ebedc9ae1bc0badaccf051a26"
 
     def __init__(self, output_dir: str, jobname: Optional[str] = None):
         self._output_dir = output_dir
