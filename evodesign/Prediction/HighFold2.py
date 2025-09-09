@@ -42,26 +42,6 @@ class HighFold2(Predictor):
         self.flag_nc = flag_nc
         # self.custom_dist_cst = custom_dist_cst
 
-    def predict_pdb_str(self, sequence: str) -> str:
-        pdb_path = "tmp_prediction.pdb"
-        self.predict_pdb_file(sequence, pdb_path)
-        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
-            prediction = pdb_file.read()
-        os.remove(pdb_path)
-        return prediction
-
-    def predict_pdb_file(self, sequence: str, pdb_path: str) -> None:
-        os.makedirs(self.output_dir, exist_ok=True)
-        protein_name = os.path.splitext(os.path.basename(pdb_path))[0]
-        fasta_path = os.path.join(self.output_dir, f"{protein_name}.fasta")
-        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
-            fasta_file.write(f">{protein_name}\n{sequence}\n")
-        self.run_highfold(fasta_path)
-        prediction_pdb = os.path.join(self.output_dir, protein_name, "ranked_0.pdb")
-        shutil.copyfile(prediction_pdb, pdb_path)
-        os.remove(fasta_path)
-        self.delete_output_dir()
-
     def run_highfold(self, fasta_path: str):
         cmd = [
             "python3",
@@ -88,6 +68,23 @@ class HighFold2(Predictor):
             cmd.append(f"--flag-nc")
         run_subprocess(cmd)
 
-    def delete_output_dir(self) -> None:
-        if os.path.exists(self.output_dir):
-            shutil.rmtree(self.output_dir)
+    def predict_single_pdb_str(self, sequence: str) -> str:
+        pdb_path = "tmp_prediction.pdb"
+        self.predict_single_pdb_file(sequence, pdb_path)
+        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
+            prediction = pdb_file.read()
+        os.remove(pdb_path)
+        return prediction
+
+    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
+        os.makedirs(self.output_dir, exist_ok=True)
+        protein_name = os.path.splitext(os.path.basename(pdb_path))[0]
+        fasta_path = os.path.join(self.output_dir, f"{protein_name}.fasta")
+        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
+            fasta_file.write(f">{protein_name}\n{sequence}\n")
+        self.run_highfold(fasta_path)
+        prediction_dir = os.path.join(self.output_dir, protein_name)
+        prediction_pdb = os.path.join(prediction_dir, "ranked_0.pdb")
+        shutil.copyfile(prediction_pdb, pdb_path)
+        os.remove(fasta_path)
+        self.delete_folder(prediction_dir)

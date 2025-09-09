@@ -9,7 +9,7 @@ class ESMFold(Predictor):
         self.gpu_device = gpu_device
         self._model = None
 
-    def predict_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_str(self, sequence: str) -> str:
         import torch
 
         if self._model is None:

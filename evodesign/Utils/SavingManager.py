@@ -2,7 +2,6 @@ from .WorkingFolder import WorkingFolder
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 import numpy as np
-import numpy.typing as npt
 import dill
 import json
 import os

@@ -16,5 +16,5 @@ class ESMFoldRemoteApi(Predictor):
         super().__init__()
         self.requester = requester
 
-    def predict_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_str(self, sequence: str) -> str:
         return self.requester.post(sequence)

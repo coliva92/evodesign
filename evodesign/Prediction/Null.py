@@ -1,12 +1,17 @@
 from .Predictor import Predictor
 from typing import List, Tuple
-from Bio.PDB.Atom import Atom
+from ..Utils.Chain import Chain
 
 
 class Null(Predictor):
 
-    def do(self, sequence: str, pdb_path: str) -> Tuple[List[Atom], float]:
-        return [], 0.0
+    def do(
+        self, sequences: List[str], pdbs_dir: str, pdb_prefix: str = "tmp_prediction"
+    ) -> None:
+        return
 
-    def predict_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_str(self, sequence: str) -> str:
+        pass
+
+    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
         pass

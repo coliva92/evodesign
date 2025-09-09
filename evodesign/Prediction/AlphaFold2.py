@@ -4,7 +4,7 @@ import os
 import shutil
 
 
-class AlphaFold(Predictor):
+class AlphaFold2(Predictor):
 
     def __init__(
         self,
@@ -18,10 +18,16 @@ class AlphaFold(Predictor):
         db_preset: str = "reduced_dbs",
     ):
         super().__init__()
-        self.path_to_create_fakemsa_py = os.path.abspath(path_to_create_fakemsa_py)  # https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py
+        self.path_to_create_fakemsa_py = os.path.abspath(
+            path_to_create_fakemsa_py
+        )  # https://github.com/Zuricho/ParaFold_dev/blob/main/parafold/create_fakemsa.py
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
-        self.mgnify_database_path = os.path.abspath(mgnify_database_path)  # /media/biocomp/My\ Passport/mgnify/mgy_clusters_2018_12.fa
-        self.data_dir = os.path.abspath(data_dir)  # /media/biocomp/My\ Passport/reduced_dbs
+        self.mgnify_database_path = os.path.abspath(
+            mgnify_database_path
+        )  # /media/biocomp/My\ Passport/mgnify/mgy_clusters_2018_12.fa
+        self.data_dir = os.path.abspath(
+            data_dir
+        )  # /media/biocomp/My\ Passport/reduced_dbs
         self.max_template_date = max_template_date
         self.model_preset = (
             model_preset  # { 'monomer', 'monomer_casp14', 'monomer_ptm', 'multimer' }
@@ -29,20 +35,7 @@ class AlphaFold(Predictor):
         self.db_preset = db_preset  # { 'reduced_dbs', 'full_dbs' }
         self.output_dir = os.path.dirname(os.path.abspath(output_dir))
 
-    def predict_pdb_str(self, sequence: str) -> str:
-        pdb_path = "tmp_prediction.pdb"
-        self.predict_pdb_file(sequence, pdb_path)
-        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
-            prediction = pdb_file.read()
-        os.remove(pdb_path)
-        return prediction
-
-    def predict_pdb_file(self, sequence: str, pdb_path: str) -> None:
-        os.makedirs(self.output_dir, exist_ok=True)
-        protein_name = os.path.splitext(os.path.basename(pdb_path))[0]
-        fasta_path = os.path.join(self.output_dir, f"{protein_name}.fasta")
-        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
-            fasta_file.write(f">{protein_name}\n{sequence}\n")
+    def create_empty_msa(self, fasta_path: str):
         # run the script for creating an empty MSA
         run_subprocess(
             [
@@ -52,13 +45,8 @@ class AlphaFold(Predictor):
                 f"--output_dir={self.output_dir}",
             ]
         )
-        self.run_alphafold_docker(fasta_path)
-        prediction_pdb = os.path.join(self.output_dir, protein_name, "ranked_0.pdb")
-        shutil.copyfile(prediction_pdb, pdb_path)
-        os.remove(fasta_path)
-        self.delete_output_dir()
 
-    def run_alphafold_docker(self, fasta_path: str):
+    def run_alphafold(self, fasta_path: str):
         run_subprocess(
             [
                 "python3",
@@ -74,6 +62,24 @@ class AlphaFold(Predictor):
             ]
         )
 
-    def delete_output_dir(self) -> None:
-        if os.path.exists(self.output_dir):
-            shutil.rmtree(self.output_dir)
+    def predict_single_pdb_str(self, sequence: str) -> str:
+        pdb_path = "tmp_prediction.pdb"
+        self.predict_single_pdb_file(sequence, pdb_path)
+        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
+            prediction = pdb_file.read()
+        os.remove(pdb_path)
+        return prediction
+
+    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
+        os.makedirs(self.output_dir, exist_ok=True)
+        prediction_name = os.path.splitext(os.path.basename(pdb_path))[0]
+        fasta_path = os.path.join(self.output_dir, f"{prediction_name}.fasta")
+        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
+            fasta_file.write(f">{prediction_name}\n{sequence}\n")
+        self.create_empty_msa(fasta_path)
+        self.run_alphafold(fasta_path)
+        prediction_dir = os.path.join(self.output_dir, prediction_name)
+        prediction_pdb = os.path.join(prediction_dir, "ranked_0.pdb")
+        shutil.copyfile(prediction_pdb, pdb_path)
+        os.remove(fasta_path)
+        self.delete_folder(prediction_dir)

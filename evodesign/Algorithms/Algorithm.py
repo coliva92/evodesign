@@ -31,10 +31,10 @@ class Algorithm(RetrievableSettings, ABC):
     def _create_problem(
         self,
         ref_chain: Chain,
-        prediction_pdb_path: str,
+        predictions_dir: str,
     ) -> PyMOOProblem:
         raise NotImplementedError
-    
+
     @abstractmethod
     def num_terms(self) -> int:
         raise NotImplementedError
@@ -42,10 +42,10 @@ class Algorithm(RetrievableSettings, ABC):
     def run(self, ref_chain: Chain, saving: Optional[SavingManager] = None, **kwargs):
         if self._algorithm is None:
             self._algorithm = self._create_algorithm()
-        prediction_pdb_path = "prediction.pdb.tmp"
+        predictions_dir = "predictions"
         if saving is not None:
-            prediction_pdb_path = saving.working_folder.prediction_pdb_path
-        self._problem = self._create_problem(ref_chain, prediction_pdb_path)
+            predictions_dir = saving.working_folder.predictions_dir
+        self._problem = self._create_problem(ref_chain, predictions_dir)
         results = minimize(
             self._problem,
             self._algorithm,
