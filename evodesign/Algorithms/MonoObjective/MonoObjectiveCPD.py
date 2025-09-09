@@ -40,9 +40,9 @@ class MonoObjectiveCPD(Problem):
         # using a list comprehension in this case is faster than vectorizing
         sequences = [numpy_sequence_to_str(seq_numpy) for seq_numpy in x]
         self.predictor.do(sequences, self.predictions_dir, "tmp_prediction")
-        # Note: x.shape = num_generations x population_size
+        # Note: x.shape = population_size x sequence_length
         self.term_values = np.array(
-            [self.compute_fitness(i) for i in range(x.shape[1])]
+            [self.compute_fitness(i) for i in range(x.shape[0])]
         )
         out["F"] = -1.0 * self.term_values[:, 0]
         self.predictor.delete_folder(self.predictions_dir)
