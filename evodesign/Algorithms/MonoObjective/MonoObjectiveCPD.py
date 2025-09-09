@@ -32,7 +32,7 @@ class MonoObjectiveCPD(Problem):
         )
 
     def compute_fitness(self, sequence_idx: int) -> npt.NDArray[np.float64]:
-        pdb_path = os.path.join(self.predictions_dir, f"tmp_prediction_{sequence_idx}")
+        pdb_path = os.path.join(self.predictions_dir, f"tmp_prediction_{sequence_idx}.pdb")
         model_chain = ChainFactory.create(pdb_path)
         return self.fitness_fn.do(model_chain, self.ref_chain)
 
