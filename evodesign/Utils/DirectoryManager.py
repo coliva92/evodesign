@@ -5,7 +5,7 @@ import os
 
 class DirectoryManager:
 
-    GIT_COMMIT_HASH = "e912406ad90b836e61473210cac6b52a0c5514d0"
+    GIT_COMMIT_HASH = "01baa2230f82b2aa2dd3cfeabf47436c034d4e85"
 
     def __init__(
         self,
