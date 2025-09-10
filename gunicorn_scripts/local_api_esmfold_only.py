@@ -7,7 +7,7 @@ from evodesign.Prediction.ESMFold import ESMFold
 
 
 esmfold_model = ESMFold(gpu_device="cuda:0")
-esmfold_model.predict_pdb_str("GREETINGS")
+esmfold_model.predict_single_pdb_str("GREETINGS")
 
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ app = Flask(__name__)
 def esmfold():
     data = request.get_json()
     sequence = data["sequence"]
-    prediction = esmfold_model.predict_pdb_str(sequence)
+    prediction = esmfold_model.predict_single_pdb_str(sequence)
     return jsonify({"pdb": prediction})
 
 

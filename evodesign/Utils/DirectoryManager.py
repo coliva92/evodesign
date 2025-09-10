@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 
 
-class WorkingFolder:
+class DirectoryManager:
 
     GIT_COMMIT_HASH = "a7ba151fe936824bd630cfb10d48f0cf8ed0a0d6"
 

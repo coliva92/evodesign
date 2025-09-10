@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 import evodesign.Settings as Settings
-from evodesign.Utils.WorkingFolder import WorkingFolder
-from evodesign.Utils.SavingManager import SavingManager
+from Utils.DirectoryManager import DirectoryManager
+from Utils.StorageManager import StorageManager
 from evodesign.Utils.Chain import ChainFactory
 from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
@@ -57,8 +57,8 @@ with open(args.settings_path, "rt", encoding="utf-8") as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)
 ref_chain = ChainFactory.create(args.target_pdb_path, args.model_id, args.chain_id)
-saving = SavingManager(
-    WorkingFolder(os.path.abspath(args.output_dir), args.jobname),
+storage = StorageManager(
+    DirectoryManager(os.path.abspath(args.output_dir), args.jobname),
     algorithm.max_generations,
     algorithm.population_size,
     len(ref_chain.sequence),
@@ -67,36 +67,36 @@ saving = SavingManager(
 )
 try:
     # resuming from a previous execution
-    algorithm._algorithm = saving.load_pymoo_algorithm()
-    saving.load_results_npz()
+    algorithm._algorithm = storage.load_pymoo_algorithm()
+    storage.load_results_npz()
     algorithm._algorithm.n_gen += 1
     if algorithm._algorithm.termination.n_max_gen < algorithm.max_generations:
         # extending from a previously completed execution
-        saving.extend_result_arrays(algorithm.max_generations)
+        storage.extend_result_arrays(algorithm.max_generations)
         algorithm._algorithm.termination.n_max_gen = algorithm.max_generations
         algorithm._algorithm.termination.perc = float(
             algorithm._algorithm.n_gen / algorithm.max_generations
         )
-    state = saving.load_rng_state(saving.working_folder.last_rng_state_path)
+    state = storage.load_rng_state(storage.working_folder.last_rng_state_path)
     np.random.set_state(state)
 except FileNotFoundError:
     try:
         # starting fresh but with a previous RNG seed
-        state = saving.load_rng_state(saving.working_folder.initial_rng_state_path)
+        state = storage.load_rng_state(storage.working_folder.initial_rng_state_path)
         np.random.set_state(state)
     except FileNotFoundError:
         # starting with a fresh RNG seed
-        saving.save_rng_state(
-            np.random.get_state(), saving.working_folder.initial_rng_state_path
+        storage.save_rng_state(
+            np.random.get_state(), storage.working_folder.initial_rng_state_path
         )
-    saving.save_git_commit_hash()
-    saving.save_settings(algorithm.settings())
-    saving.save_target_pdb(args.target_pdb_path)
+    storage.save_git_commit_hash()
+    storage.save_settings(algorithm.settings())
+    storage.save_target_pdb(args.target_pdb_path)
 while True:
     try:
-        algorithm.run(ref_chain, saving)
+        algorithm.run(ref_chain, storage)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         continue
     finally:
-        saving.delete_non_essential_files_and_folders()
+        storage.delete_non_essential_files_and_folders()
         break

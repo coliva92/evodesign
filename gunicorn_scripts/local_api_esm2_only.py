@@ -3,10 +3,10 @@ gunicorn -w 1 -b 127.0.0.1:8000 local_api_esm_only:app
 """
 
 from flask import Flask, request, jsonify
-from Metrics.ESM2DescriptorsRMSE import ESM2DescriptorsRMSE
+from Metrics.ESM2Descriptors import ESM2Descriptors
 
 
-esm_model = ESM2DescriptorsRMSE(gpu_device="cuda:0")
+esm_model = ESM2Descriptors(gpu_device="cuda:0")
 esm_model.compute_descriptors_matrix("GREETINGS")
 
 

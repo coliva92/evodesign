@@ -5,7 +5,7 @@ import numpy.typing as npt
 from typing import Optional, Dict
 
 
-class ESM2DescriptorsRMSE(Metric):
+class ESM2Descriptors(Metric):
 
     _model = None
     _batch_converter = None

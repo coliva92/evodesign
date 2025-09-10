@@ -1,7 +1,7 @@
-from .WorkingFolder import WorkingFolder
-from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from .DirectoryManager import DirectoryManager
+from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 import numpy as np
 import numpy.typing as npt
 import dill
@@ -10,11 +10,11 @@ import os
 import shutil
 
 
-class SavingManager(Callback):
+class StorageManager(Callback):
 
     def __init__(
         self,
-        working_folder: WorkingFolder,
+        directory: DirectoryManager,
         num_generations: int,
         population_size: int,
         sequence_length: int,
@@ -22,7 +22,7 @@ class SavingManager(Callback):
         save_every_nth_generation: int = 10,
     ):
         super().__init__()
-        self.working_folder = working_folder
+        self.directory = directory
         shape_3d = (num_generations, population_size, sequence_length)
         shape_2d = (num_generations, population_size)
         self.generations = np.full(shape_3d, -1, np.int64)
@@ -32,9 +32,9 @@ class SavingManager(Callback):
         )
         self.save_every_nth_generation = save_every_nth_generation
         self.predictor_directory = PredictorDirectoryManager(
-            self.working_folder.prediction_pdbs_dir,
-            self.working_folder.predictor_input_dir,
-            self.working_folder.predictor_output_dir,
+            self.directory.prediction_pdbs_dir,
+            self.directory.predictor_input_dir,
+            self.directory.predictor_output_dir,
         )
 
     def _extend_numpy_array(
@@ -84,14 +84,14 @@ class SavingManager(Callback):
     ) -> None:
         # save the results for offline analysis
         np.savez_compressed(
-            self.working_folder.results_npz_path,
+            self.directory.results_npz_path,
             generations=self.generations,
             fitness_values=self.fitness_values,
             term_values=self.term_values,
         )
         # save RNG for reproduction/resuming
         self.save_rng_state(
-            np.random.get_state(), self.working_folder.last_rng_state_path
+            np.random.get_state(), self.directory.last_rng_state_path
         )
         # save the settings for reproduction/resuming
         # save the algorithm for resuming later
@@ -102,7 +102,7 @@ class SavingManager(Callback):
         state: tuple,
         file_path: str,
     ) -> None:
-        os.makedirs(self.working_folder.path, exist_ok=True)
+        os.makedirs(self.directory.path, exist_ok=True)
         with open(file_path, "wt", encoding="utf-8") as txt_file:
             txt_file.write(f"{state[0]}\n")
             values = ",".join([str(v) for v in state[1]])
@@ -114,8 +114,8 @@ class SavingManager(Callback):
         self,
         algorithm: PyMOOAlgorithm,
     ) -> None:
-        os.makedirs(self.working_folder.path, exist_ok=True)
-        file_path = self.working_folder.pymoo_algorithm_bin_path
+        os.makedirs(self.directory.path, exist_ok=True)
+        file_path = self.directory.pymoo_algorithm_bin_path
         with open(file_path, "wb") as bin_file:
             tmp_problem = algorithm.problem
             tmp_callback = algorithm.callback
@@ -125,10 +125,10 @@ class SavingManager(Callback):
             algorithm.callback = tmp_callback
 
     def save_git_commit_hash(self) -> None:
-        os.makedirs(self.working_folder.path, exist_ok=True)
-        file_path = self.working_folder.git_commit_hash_path
+        os.makedirs(self.directory.path, exist_ok=True)
+        file_path = self.directory.git_commit_hash_path
         with open(file_path, "wt", encoding="utf-8") as txt_file:
-            commit_hash = self.working_folder.GIT_COMMIT_HASH
+            commit_hash = self.directory.GIT_COMMIT_HASH
             txt_file.write(
                 f"https://github.com/coliva92/evodesign/commit/{commit_hash}\n"
             )
@@ -137,8 +137,8 @@ class SavingManager(Callback):
         self,
         settings: dict,
     ) -> None:
-        os.makedirs(self.working_folder.path, exist_ok=True)
-        file_path = self.working_folder.settings_json_path
+        os.makedirs(self.directory.path, exist_ok=True)
+        file_path = self.directory.settings_json_path
         with open(file_path, "wt", encoding="utf-8") as json_file:
             json_file.write(json.dumps(settings, indent=4) + "\n")
 
@@ -147,11 +147,11 @@ class SavingManager(Callback):
         target_pdb_path: str,
     ) -> None:
         pdb_filename = os.path.basename(target_pdb_path)
-        destination = os.path.join(self.working_folder.path, pdb_filename)
+        destination = os.path.join(self.directory.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)
 
     def load_results_npz(self) -> None:
-        data = np.load(self.working_folder.results_npz_path)
+        data = np.load(self.directory.results_npz_path)
         self.generations = data["generations"]
         self.fitness_values = data["fitness_values"]
         self.term_values = data["term_values"]
@@ -179,7 +179,7 @@ class SavingManager(Callback):
         return tuple(result)
 
     def load_pymoo_algorithm(self) -> PyMOOAlgorithm:
-        file_path = self.working_folder.pymoo_algorithm_bin_path
+        file_path = self.directory.pymoo_algorithm_bin_path
         with open(file_path, "rb") as bin_file:
             algorithm = dill.load(bin_file)
         return algorithm
@@ -199,9 +199,9 @@ class SavingManager(Callback):
             shutil.rmtree(folder_path)
 
     def delete_non_essential_files_and_folders(self) -> None:
-        for filename in os.listdir(self.working_folder.path):
-            file_path = os.path.join(self.working_folder.path, filename)
-            if not self.working_folder.is_essential_file_or_folder(file_path):
+        for filename in os.listdir(self.directory.path):
+            file_path = os.path.join(self.directory.path, filename)
+            if not self.directory.is_essential_file_or_folder(file_path):
                 if os.path.isfile(file_path):
                     self.delete_file(file_path)
                     continue

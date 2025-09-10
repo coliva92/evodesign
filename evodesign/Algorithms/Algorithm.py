@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from ..RetrievableSettings import RetrievableSettings
 from ..Utils.Chain import Chain
-from ..Utils.SavingManager import SavingManager
+from ..Utils.StorageManager import StorageManager
 from ..Prediction.Predictor import Predictor
 from ..Prediction.DirectoryManager import DirectoryManager
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
@@ -45,16 +45,16 @@ class Algorithm(RetrievableSettings, ABC):
     def run(
         self,
         ref_chain: Chain,
-        saving: SavingManager,
+        storage: StorageManager,
         **kwargs,
     ):
         if self._algorithm is None:
             self._algorithm = self._create_algorithm()
-        self._problem = self._create_problem(ref_chain, saving.predictor_directory)
+        self._problem = self._create_problem(ref_chain, storage.predictor_directory)
         results = minimize(
             self._problem,
             self._algorithm,
-            callback=saving,
+            callback=storage,
             verbose=True,
             copy_algorithm=False,
             **kwargs,

@@ -12,7 +12,7 @@ from pymoo.termination.max_gen import MaximumGenerationTermination
 from ....GA.Replacement.PyMOO.Generational import (
     Generational as GenerationalReplacement,
 )
-from ....Utils.SavingManager import SavingManager
+from ....Utils.StorageManager import StorageManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
 from typing import Optional
 
@@ -51,11 +51,11 @@ class Generational(MonoObjectiveAlgorithm):
     def run(
         self,
         ref_chain: Chain,
-        saving: SavingManager,
+        storage: StorageManager,
         **kwargs,
     ):
         if self._algorithm is None or self._algorithm.termination is None:
             return super().run(
-                ref_chain, saving, **{**{"termination": self._termination}, **kwargs}
+                ref_chain, storage, **{**{"termination": self._termination}, **kwargs}
             )
-        return super().run(ref_chain, saving, **kwargs)
+        return super().run(ref_chain, storage, **kwargs)

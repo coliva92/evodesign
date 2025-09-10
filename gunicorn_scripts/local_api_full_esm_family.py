@@ -7,12 +7,12 @@ gunicorn -w 1 -b 127.0.0.1:8000 local_api_full_esm_family:app
 
 from flask import Flask, request, jsonify
 from evodesign.Prediction.ESMFold import ESMFold
-from Metrics.ESM2DescriptorsRMSE import ESM2DescriptorsRMSE
+from Metrics.ESM2Descriptors import ESM2Descriptors
 
 
 esmfold_model = ESMFold(gpu_device="cuda:0")
-esmfold_model.predict_pdb_str("GREETINGS")
-esm_model = ESM2DescriptorsRMSE(gpu_device="cuda:0")
+esmfold_model.predict_single_pdb_str("GREETINGS")
+esm_model = ESM2Descriptors(gpu_device="cuda:0")
 esm_model.compute_descriptors_matrix("GREETINGS")
 
 
@@ -23,7 +23,7 @@ app = Flask(__name__)
 def esmfold():
     data = request.get_json()
     sequence = data["sequence"]
-    prediction = esmfold_model.predict_pdb_str(sequence)
+    prediction = esmfold_model.predict_single_pdb_str(sequence)
     return jsonify({"pdb": prediction})
 
 
@@ -31,7 +31,7 @@ def esmfold():
 def esm():
     data = request.get_json()
     sequence = data["sequence"]
-    matrix = esm_model.compute_descriptor_vectors(sequence)
+    matrix = esm_model.compute_descriptors_matrix(sequence)
     return jsonify({"descriptors": matrix.tolist()})
 
 
