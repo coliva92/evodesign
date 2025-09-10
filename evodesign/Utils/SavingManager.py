@@ -154,3 +154,12 @@ class SavingManager(Callback):
     def delete_file(self, file_path: str) -> None:
         if os.path.isfile(file_path):
             os.remove(file_path)
+    
+    def delete_non_essential_files_and_folders(self) -> None:
+        for filename in os.listdir(self.working_folder.path):
+            file_path = os.path.join(self.working_folder.path, filename)
+            if not self.working_folder.is_essential_file_or_folder(file_path):
+                if os.path.isfile(file_path):
+                    self.delete_file(file_path)
+                    continue
+                self.delete_folder(file_path)

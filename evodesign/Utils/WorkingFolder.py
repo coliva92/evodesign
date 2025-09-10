@@ -21,3 +21,14 @@ class WorkingFolder:
         self.predictions_dir = os.path.join(self.path, "predictions")
         self.settings_json_path = os.path.join(self.path, "settings.json")
         self.git_commit_hash_path = os.path.join(self.path, "git_commit_hash.txt")
+        self._essential_files = {
+            self.results_npz_path,
+            self.pymoo_algorithm_bin_path,
+            self.initial_rng_state_path,
+            self.last_rng_state_path,
+            self.settings_json_path,
+            self.git_commit_hash_path,
+        }
+
+    def is_essential_file_or_folder(self, filepath: str) -> bool:
+        return filepath in self._essential_files

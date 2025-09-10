@@ -95,6 +95,8 @@ except FileNotFoundError:
 while True:
     try:
         algorithm.run(ref_chain, saving)
-        break
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
-        pass
+        continue
+    finally:
+        saving.delete_non_essential_files_and_folders()
+        break
