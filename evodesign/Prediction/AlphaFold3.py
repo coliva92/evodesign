@@ -194,7 +194,7 @@ class AlphaFold3(AlphaFoldInterface):
                 directory.model_input_dir,
                 directory.model_output_dir,
             )
-        self.run_inference(json_path, directory.output_dir, do_batch_inference=True)
+        self.run_inference(json_path, directory.model_output_dir, do_batch_inference=True)
         for i in range(len(sequences)):
             protein_name = f"{directory.prefix}_{i}"
             prediction_pdb = self._prediction_pdb_path()
