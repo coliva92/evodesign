@@ -188,13 +188,13 @@ class AlphaFold3(AlphaFoldInterface):
         directory.empty_folders_content()
         for i, sequence in enumerate(sequences):
             protein_name = f"{directory.prefix}_{i}"
-            json_path = self._create_model_input(
+            self._create_model_input(
                 sequence,
                 protein_name,
                 directory.model_input_dir,
                 directory.model_output_dir,
             )
-        self.run_inference(json_path, directory.model_output_dir, do_batch_inference=True)
+        self.run_inference(directory.model_input_dir, directory.model_output_dir, do_batch_inference=True)
         for i in range(len(sequences)):
             protein_name = f"{directory.prefix}_{i}"
             prediction_pdb = self._prediction_pdb_path(protein_name, directory.model_output_dir)
