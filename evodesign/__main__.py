@@ -96,7 +96,14 @@ while True:
     try:
         algorithm.run(ref_chain, storage)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
+        # Cleanup, then retry
+        storage.delete_non_essential_files_and_folders()
         continue
-    finally:
+    except Exception as e:
+        # Cleanup, then propagate
+        storage.delete_non_essential_files_and_folders()
+        raise e
+    else:
+        # Normal completion: cleanup, then exit loop
         storage.delete_non_essential_files_and_folders()
         break

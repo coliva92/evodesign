@@ -38,5 +38,3 @@ class Predictor(RetrievableSettings, ABC):
                     break
                 except (HttpGatewayTimeout, ConnectTimeout):
                     continue
-                except Exception as e:
-                    raise e
