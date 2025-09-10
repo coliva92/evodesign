@@ -6,6 +6,7 @@ from evodesign.Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi
 from evodesign.Fitness.WeightedMean import WeightedMean
 from evodesign.Metrics.RMSD import RMSD
 from evodesign.Metrics.GDT import GDT
+from evodesign.GA.Mutation.RandomResetting import RandomResetting
 from evodesign.Utils.Exceptions import *
 from requests import ConnectTimeout
 import numpy as np
@@ -26,6 +27,7 @@ if __name__ == "__main__":
             ["Metrics.RMSD.rmsd", "Metrics.GDT.gdt"],
             [0, 1],
         ),
+        mutation=RandomResetting(sequence_mutation_prob=0.16667),
         max_generations=max_generations,
         population_size=population_size,
     )
