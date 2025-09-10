@@ -47,8 +47,8 @@ class AlphaFold2(AlphaFoldInterface):
 
     def _prediction_pdb_path(
         self,
-        output_dir: str,
         protein_name: str,
+        output_dir: str,
     ) -> str:
         return os.path.join(output_dir, protein_name, "ranked_0.pdb")
 

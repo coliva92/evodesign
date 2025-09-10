@@ -88,9 +88,9 @@ class AlphaFold3(AlphaFoldInterface):
     def _prediction_pdb_path(
         self,
         protein_name: str,
-        model_output_dir: str,
+        output_dir: str,
     ) -> str:
-        prediction_dir = os.path.join(model_output_dir, protein_name)
+        prediction_dir = os.path.join(output_dir, protein_name)
         prediction_cif = os.path.join(prediction_dir, f"{protein_name}_model.cif")
         return convert_cif_to_pdb(prediction_cif, parser=self._parser, io=self._io)
 
@@ -192,7 +192,7 @@ class AlphaFold3(AlphaFoldInterface):
                 sequence, protein_name, directory.model_input_dir
             )
         self.run_inference(
-            json_path, directory.model_output_dir, do_batch_inference=True
+            json_path, directory.output_dir, do_batch_inference=True
         )
         for i in range(len(sequences)):
             protein_name = f"{directory.prefix}_{i}"

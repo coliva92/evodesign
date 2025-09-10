@@ -13,11 +13,11 @@ class Predictor(RetrievableSettings, ABC):
     def predict_single_pdb_file(
         self,
         sequence: str,
+        protein_name: str,
         directory: DirectoryManager,
     ) -> None:
         raise NotImplementedError
 
-    @abstractmethod
     def do(
         self,
         sequences: List[str],
@@ -32,13 +32,11 @@ class Predictor(RetrievableSettings, ABC):
         os.makedirs(directory.prediction_pdbs_dir, exist_ok=True)
         directory.empty_folders_content()
         for i, sequence in enumerate(sequences):
-            protein_name = f"{directory.prefix}_{i}"
-            pdb_path = os.path.join(
-                directory.prediction_pdbs_dir, f"{protein_name}.pdb"
-            )
             while True:
                 try:
-                    self.predict_single_pdb_file(sequence, pdb_path, directory)
+                    self.predict_single_pdb_file(sequence, f"{i}", directory)
                     break
                 except (HttpGatewayTimeout, ConnectTimeout):
                     continue
+                except Exception as e:
+                    raise e

@@ -8,6 +8,7 @@ class Null(Predictor):
     def predict_single_pdb_file(
         self,
         sequence: str,
+        protein_name: str,
         directory: DirectoryManager,
     ) -> None:
         pass

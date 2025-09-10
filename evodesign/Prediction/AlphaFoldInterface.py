@@ -12,13 +12,15 @@ class AlphaFoldInterface(Predictor, ABC):
     def predict_single_pdb_file(
         self,
         sequence: str,
+        protein_name: str,
         directory: DirectoryManager,
     ) -> None:
         os.makedirs(directory.model_input_dir, exist_ok=True)
         os.makedirs(directory.model_output_dir, exist_ok=True)
+        protein_name = f"{directory.prefix}_{protein_name}"
         input_path = self._create_model_input(
             sequence,
-            directory.prefix,
+            protein_name,
             directory.model_input_dir,
             directory.model_output_dir,
         )
@@ -26,7 +28,7 @@ class AlphaFoldInterface(Predictor, ABC):
             input_path, directory.model_output_dir, do_batch_inference=False
         )
         prediction_pdb = self._prediction_pdb_path(
-            directory.model_output_dir, directory.prefix
+            protein_name, directory.model_output_dir
         )
         shutil.copyfile(prediction_pdb, directory.prediction_pdbs_dir)
 
