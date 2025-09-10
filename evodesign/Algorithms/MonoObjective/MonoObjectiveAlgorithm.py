@@ -2,6 +2,7 @@ from ..Algorithm import Algorithm
 from .MonoObjectiveCPD import MonoObjectiveCPD
 from ...Utils.Chain import Chain
 from ...Prediction.Predictor import Predictor
+from ...Prediction.DirectoryManager import DirectoryManager
 from ...Fitness.FitnessFunction import FitnessFunction
 
 
@@ -20,14 +21,14 @@ class MonoObjectiveAlgorithm(Algorithm):
     def _create_problem(
         self,
         ref_chain: Chain,
-        prediction_pdb_path: str,
+        predictor_directory: DirectoryManager,
     ) -> MonoObjectiveCPD:
         return MonoObjectiveCPD(
             self.predictor,
             self.fitness_fn,
             ref_chain,
-            prediction_pdb_path,
+            predictor_directory,
         )
-    
+
     def num_terms(self) -> int:
         return self.fitness_fn.num_terms()

@@ -1,15 +1,21 @@
-from .Predictor import Predictor
+from .ESMFoldInterface import ESMFoldInterface
 from typing import Optional
 
 
-class ESMFold(Predictor):
+class ESMFold(ESMFoldInterface):
 
-    def __init__(self, gpu_device: Optional[str] = "cuda:0") -> None:
+    def __init__(
+        self,
+        gpu_device: Optional[str] = "cuda:0",
+    ) -> None:
         super().__init__()
         self.gpu_device = gpu_device
         self._model = None
 
-    def predict_single_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_str(
+        self,
+        sequence: str,
+    ) -> str:
         import torch
 
         if self._model is None:

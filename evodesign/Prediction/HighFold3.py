@@ -8,7 +8,6 @@ class HighFold3(AlphaFold3):
         self,
         path_to_run_alphafold_py: str,
         model_dir: str,
-        output_dir: str,
         head_to_tail: bool = True,
         disulfide_chain_res: Optional[List[List[int]]] = None,
         num_recycles: int = 1,
@@ -38,7 +37,6 @@ class HighFold3(AlphaFold3):
         super().__init__(
             path_to_run_alphafold_py,
             model_dir,
-            output_dir,
             num_recycles,
             num_diffusion_samples,
             model_seeds,
@@ -66,12 +64,16 @@ class HighFold3(AlphaFold3):
         self.head_to_tail = head_to_tail
         self.disulfide_chain_res = disulfide_chain_res
 
-    def _get_cmd_array(
-        self, input_path: str, use_batch_inference: bool = False
+    def _create_cmd_array(
+        self,
+        input_path: str,
+        output_dir: str,
+        do_batch_inference: bool,
     ) -> List[str]:
-        cmd = super()._get_cmd_array(input_path, use_batch_inference)
-        # the following also removes --force_output_dirs:
-        cmd[-1] = f"--head_to_tail={self.head_to_tail}"
+        cmd = super()._create_cmd_array(input_path, output_dir, do_batch_inference)
+        cmd[-1] = (
+            f"--head_to_tail={self.head_to_tail}"  # this also removes --force_output_dirs
+        )
         if self.disulfide_chain_res is not None:
             cmd.append(f"--disulfide_chain_res {self.disulfide_chain_res}")
         return cmd

@@ -1,9 +1,9 @@
-from .Predictor import Predictor
+from .ESMFoldInterface import ESMFoldInterface
 from ..Utils.APIRequester import APIRequester
 from ..Utils.Exceptions import *
 
 
-class ESMFoldRemoteApi(Predictor):
+class ESMFoldRemoteApi(ESMFoldInterface):
 
     def __init__(
         self,
@@ -16,5 +16,8 @@ class ESMFoldRemoteApi(Predictor):
         super().__init__()
         self.requester = requester
 
-    def predict_single_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_str(
+        self,
+        sequence: str,
+    ) -> str:
         return self.requester.post(sequence)

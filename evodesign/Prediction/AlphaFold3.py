@@ -1,5 +1,5 @@
-from .Predictor import Predictor
-from ..Utils.Subprocess import run_subprocess
+from .AlphaFoldInterface import AlphaFoldInterface
+from .DirectoryManager import DirectoryManager
 from ..Utils.mmCIF import convert_cif_to_pdb
 from Bio.PDB import MMCIFParser, PDBIO
 import os
@@ -8,7 +8,7 @@ import json
 from typing import List, Optional
 
 
-class AlphaFold3(Predictor):
+class AlphaFold3(AlphaFoldInterface):
 
     _parser = MMCIFParser()
     _io = PDBIO()
@@ -17,7 +17,6 @@ class AlphaFold3(Predictor):
         self,
         path_to_run_alphafold_py: str,
         model_dir: str,
-        output_dir: str,
         num_recycles: int = 1,
         num_diffusion_samples: int = 1,
         model_seeds: Optional[List[int]] = None,
@@ -45,7 +44,6 @@ class AlphaFold3(Predictor):
         super().__init__()
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
         self.model_dir = os.path.abspath(model_dir)
-        self.output_dir = os.path.abspath(output_dir)
         self.num_recycles = num_recycles
         self.num_diffusion_samples = num_diffusion_samples
         if model_seeds is None:
@@ -74,19 +72,44 @@ class AlphaFold3(Predictor):
         self.seqres_database_path = seqres_database_path
         self.jax_compilation_cache_dir = jax_compilation_cache_dir
 
-    def _get_cmd_array(
-        self, input_path: str, use_batch_inference: bool = False
+    def _create_model_input(
+        self,
+        sequence: str,
+        protein_name: str,
+        input_dir: str,
+        output_dir: str,
+    ) -> str:
+        input_json = self.create_input_json(sequence, protein_name)
+        json_path = os.path.join(input_dir, f"{protein_name}.json")
+        with open(json_path, "wt", encoding="utf-8") as json_file:
+            json.dump(input_json, json_file)
+        return json_path
+
+    def _prediction_pdb_path(
+        self,
+        protein_name: str,
+        model_output_dir: str,
+    ) -> str:
+        prediction_dir = os.path.join(model_output_dir, protein_name)
+        prediction_cif = os.path.join(prediction_dir, f"{protein_name}_model.cif")
+        return convert_cif_to_pdb(prediction_cif, parser=self._parser, io=self._io)
+
+    def _create_cmd_array(
+        self,
+        input_path: str,
+        output_dir: str,
+        do_batch_inference: bool,
     ) -> List[str]:
         cmd = [
             "python3",
             self.path_to_run_alphafold_py,
             (
                 f"--input_dir={input_path}"
-                if use_batch_inference
+                if do_batch_inference
                 else f"--json_path={input_path}"
             ),
             f"--model_dir={self.model_dir}",
-            f"--output_dir={self.output_dir}",
+            f"--output_dir={output_dir}",
             f"--run_data_pipeline={self.run_data_pipeline}",
             f"--num_recycles={self.num_recycles}",
             f"--num_diffusion_samples={self.num_diffusion_samples}",
@@ -110,7 +133,9 @@ class AlphaFold3(Predictor):
         if self.mgnify_database_path is not None:
             cmd.append(f"--mgnify_database_path={self.mgnify_database_path}")
         if self.uniprot_cluster_annot_database_path is not None:
-            cmd.append(f"--uniprot_cluster_annot_database_path={self.uniprot_cluster_annot_database_path}")
+            cmd.append(
+                f"--uniprot_cluster_annot_database_path={self.uniprot_cluster_annot_database_path}"
+            )
         if self.uniref90_database_path is not None:
             cmd.append(f"--uniref90_database_path={self.uniref90_database_path}")
         if self.ntrna_database_path is not None:
@@ -129,11 +154,14 @@ class AlphaFold3(Predictor):
         return cmd
 
     def create_input_json(
-        self, sequence: str, prediction_jobname: str, structure_id: str = "A"
+        self,
+        sequence: str,
+        protein_name: str,
+        structure_id: str = "A",
     ) -> dict:
         # Assume we're only predicting monomeric structures
         return {
-            "name": prediction_jobname,
+            "name": protein_name,
             "modelSeeds": self.model_seeds,
             "sequences": [
                 {
@@ -150,55 +178,26 @@ class AlphaFold3(Predictor):
             "version": self.version,
         }
 
-    def run_alphafold(self, input_path: str, use_batch_inference: bool = False):
-        run_subprocess(self._get_cmd_array(input_path, use_batch_inference))
-
-    def predict_single_pdb_str(self, sequence: str) -> str:
-        pdb_path = "tmp_prediction.pdb"
-        self.predict_single_pdb_file(sequence, pdb_path)
-        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
-            prediction = pdb_file.read()
-        os.remove(pdb_path)
-        return prediction
-
-    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
-        os.makedirs(self.output_dir, exist_ok=True)
-        prediction_jobname = os.path.splitext(os.path.basename(pdb_path))[0]
-        input_json = self.create_input_json(sequence, prediction_jobname)
-        json_path = os.path.join(self.output_dir, f"{prediction_jobname}.json")
-        with open(json_path, "wt", encoding="utf-8") as json_file:
-            json.dump(input_json, json_file)
-        self.run_alphafold(json_path)
-        prediction_dir = os.path.join(self.output_dir, prediction_jobname)
-        prediction_cif = os.path.join(prediction_dir, f"{prediction_jobname}_model.cif")
-        prediction_pdb_path = convert_cif_to_pdb(
-            prediction_cif, parser=self._parser, io=self._io
-        )
-        shutil.copyfile(prediction_pdb_path, pdb_path)
-        os.remove(json_path)
-        self.delete_folder(prediction_dir)
-
     def do(
-        self, sequences: List[str], pdbs_dir: str, pdb_prefix: str = "tmp_prediction"
+        self,
+        sequences: List[str],
+        directory: DirectoryManager,
     ) -> None:
-        os.makedirs(pdbs_dir, exist_ok=True)
+        os.makedirs(directory.prediction_pdbs_dir, exist_ok=True)
+        os.makedirs(directory.model_input_dir, exist_ok=True)
+        directory.empty_folders_content()
         for i, sequence in enumerate(sequences):
-            prediction_jobname = f"{pdb_prefix}_{i}"
-            input_json = self.create_input_json(sequence, prediction_jobname)
-            json_path = os.path.join(pdbs_dir, f"{prediction_jobname}.json")
-            with open(json_path, "wt", encoding="utf-8") as json_file:
-                json.dump(input_json, json_file)
-        self.run_alphafold(pdbs_dir, use_batch_inference=True)
+            protein_name = f"{directory.prefix}_{i}"
+            json_path = self._create_model_input(
+                sequence, protein_name, directory.model_input_dir
+            )
+        self.run_inference(
+            json_path, directory.model_output_dir, do_batch_inference=True
+        )
         for i in range(len(sequences)):
-            prediction_jobname = f"{pdb_prefix}_{i}"
-            prediction_dir = os.path.join(self.output_dir, prediction_jobname)
-            prediction_cif = os.path.join(
-                prediction_dir, f"{prediction_jobname}_model.cif"
+            protein_name = f"{directory.prefix}_{i}"
+            prediction_pdb = self._prediction_pdb_path()
+            pdb_path = os.path.join(
+                directory.prediction_pdbs_dir, f"{protein_name}_{i}.pdb"
             )
-            prediction_pdb = convert_cif_to_pdb(
-                prediction_cif, parser=self._parser, io=self._io
-            )
-            pdb_path = os.path.join(self.output_dir, os.path.basename(prediction_pdb))
             shutil.copyfile(prediction_pdb, pdb_path)
-            self.delete_folder(prediction_dir)
-        self.delete_folder(pdbs_dir)

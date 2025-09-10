@@ -48,7 +48,12 @@ class Generational(MonoObjectiveAlgorithm):
             eliminate_duplicates=False,
         )
 
-    def run(self, ref_chain: Chain, saving: Optional[SavingManager] = None, **kwargs):
+    def run(
+        self,
+        ref_chain: Chain,
+        saving: SavingManager,
+        **kwargs,
+    ):
         if self._algorithm is None or self._algorithm.termination is None:
             return super().run(
                 ref_chain, saving, **{**{"termination": self._termination}, **kwargs}

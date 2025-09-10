@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List
 from ..RetrievableSettings import RetrievableSettings
+from .DirectoryManager import DirectoryManager
+from typing import List
 import os
-import shutil
 from ..Utils.Exceptions import HttpGatewayTimeout
 from requests.exceptions import ConnectTimeout
 
@@ -10,18 +10,18 @@ from requests.exceptions import ConnectTimeout
 class Predictor(RetrievableSettings, ABC):
 
     @abstractmethod
-    def predict_single_pdb_str(self, sequence: str) -> str:
+    def predict_single_pdb_file(
+        self,
+        sequence: str,
+        directory: DirectoryManager,
+    ) -> None:
         raise NotImplementedError
 
-    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
-        if not os.path.isfile(pdb_path):
-            os.makedirs(os.path.dirname(os.path.abspath(pdb_path)), exist_ok=True)
-        prediction = self.predict_single_pdb_str(sequence)
-        with open(pdb_path, "wt", encoding="utf-8") as pdb_file:
-            pdb_file.write(prediction)
-
+    @abstractmethod
     def do(
-        self, sequences: List[str], pdbs_dir: str, pdb_prefix: str = "tmp_prediction"
+        self,
+        sequences: List[str],
+        directory: DirectoryManager,
     ) -> None:
         # The default behavior is to predict the PDB files of all the sequences
         # in the population.
@@ -29,16 +29,16 @@ class Predictor(RetrievableSettings, ABC):
         # a raw PDB string, it can only do it by reading from a PDB file.
         # Thus, the predicted structure must be stored first, before
         # loading the `Structure` instance.
-        os.makedirs(pdbs_dir, exist_ok=True)
+        os.makedirs(directory.prediction_pdbs_dir, exist_ok=True)
+        directory.empty_folders_content()
         for i, sequence in enumerate(sequences):
-            pdb_path = os.path.join(pdbs_dir, f"{pdb_prefix}_{i}.pdb")
+            protein_name = f"{directory.prefix}_{i}"
+            pdb_path = os.path.join(
+                directory.prediction_pdbs_dir, f"{protein_name}.pdb"
+            )
             while True:
                 try:
-                    self.predict_single_pdb_file(sequence, pdb_path)
+                    self.predict_single_pdb_file(sequence, pdb_path, directory)
                     break
                 except (HttpGatewayTimeout, ConnectTimeout):
                     continue
-
-    def delete_folder(self, folder_dir: str) -> None:
-        if os.path.exists(folder_dir):
-            shutil.rmtree(folder_dir)

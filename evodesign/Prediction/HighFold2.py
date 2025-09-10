@@ -1,16 +1,13 @@
-from .Predictor import Predictor
-from ..Utils.Subprocess import run_subprocess
-from typing import Optional
+from .AlphaFoldInterface import AlphaFoldInterface
+from typing import Optional, List
 import os
-import shutil
 
 
-class HighFold2(Predictor):
+class HighFold2(AlphaFoldInterface):
 
     def __init__(
         self,
         path_to_prediction_py: str,
-        output_dir: str,
         stop_at_score: Optional[float] = None,
         num_recycle: int = 0,
         num_models: int = 1,
@@ -27,7 +24,6 @@ class HighFold2(Predictor):
     ) -> None:
         super().__init__()
         self.path_to_prediction_py = os.path.abspath(path_to_prediction_py)
-        self.output_dir = os.path.dirname(os.path.abspath(output_dir))
         self.stop_at_score = stop_at_score
         self.num_recycle = num_recycle
         self.num_models = num_models
@@ -42,12 +38,36 @@ class HighFold2(Predictor):
         self.flag_nc = flag_nc
         # self.custom_dist_cst = custom_dist_cst
 
-    def run_highfold(self, fasta_path: str):
+    def _create_model_input(
+        self,
+        sequence: str,
+        protein_name: str,
+        input_dir: str,
+        output_dir: str,
+    ) -> str:
+        fasta_path = os.path.join(input_dir, f"{protein_name}.fasta")
+        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
+            fasta_file.write(f">{protein_name}\n{sequence}\n")
+        return fasta_path
+
+    def _prediction_pdb_path(
+        self,
+        protein_name: str,
+        output_dir: str,
+    ) -> str:
+        return os.path.join(output_dir, protein_name, "ranked_0.pdb")
+
+    def _create_cmd_array(
+        self,
+        input_path: str,
+        output_dir: str,
+        do_batch_inference: bool,
+    ) -> List[str]:
         cmd = [
             "python3",
             self.path_to_prediction_py,
-            fasta_path,
-            self.output_dir,
+            input_path,
+            output_dir,
             f"--num-recycle {self.num_recycle}",
             f"--num-models {self.num_models}",
             f"--msa-mode {self.msa_mode}",
@@ -66,25 +86,4 @@ class HighFold2(Predictor):
             cmd.append(f"--flag-cyclic-peptide")
         if self.flag_nc:
             cmd.append(f"--flag-nc")
-        run_subprocess(cmd)
-
-    def predict_single_pdb_str(self, sequence: str) -> str:
-        pdb_path = "tmp_prediction.pdb"
-        self.predict_single_pdb_file(sequence, pdb_path)
-        with open(pdb_path, "rt", encoding="utf-8") as pdb_file:
-            prediction = pdb_file.read()
-        os.remove(pdb_path)
-        return prediction
-
-    def predict_single_pdb_file(self, sequence: str, pdb_path: str) -> None:
-        os.makedirs(self.output_dir, exist_ok=True)
-        protein_name = os.path.splitext(os.path.basename(pdb_path))[0]
-        fasta_path = os.path.join(self.output_dir, f"{protein_name}.fasta")
-        with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
-            fasta_file.write(f">{protein_name}\n{sequence}\n")
-        self.run_highfold(fasta_path)
-        prediction_dir = os.path.join(self.output_dir, protein_name)
-        prediction_pdb = os.path.join(prediction_dir, "ranked_0.pdb")
-        shutil.copyfile(prediction_pdb, pdb_path)
-        os.remove(fasta_path)
-        self.delete_folder(prediction_dir)
+        return cmd

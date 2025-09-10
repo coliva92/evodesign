@@ -1,7 +1,9 @@
 from .WorkingFolder import WorkingFolder
+from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 import numpy as np
+import numpy.typing as npt
 import dill
 import json
 import os
@@ -29,8 +31,18 @@ class SavingManager(Callback):
             (num_generations, population_size, num_fitness_fn_terms), -1, np.float64
         )
         self.save_every_nth_generation = save_every_nth_generation
+        self.predictor_directory = PredictorDirectoryManager(
+            self.working_folder.prediction_pdbs_dir,
+            self.working_folder.predictor_input_dir,
+            self.working_folder.predictor_output_dir,
+        )
 
-    def _extend_numpy_array(self, arr, new_size, fill_value=0):
+    def _extend_numpy_array(
+        self,
+        arr: npt.NDArray,
+        new_size: int,
+        fill_value=0,
+    ):
         old_shape = arr.shape
         if old_shape[0] == new_size:
             return arr  # No resizing needed
@@ -40,12 +52,18 @@ class SavingManager(Callback):
         new_arr[:copy_len] = arr[:copy_len]
         return new_arr
 
-    def extend_result_arrays(self, new_size: int) -> None:
+    def extend_result_arrays(
+        self,
+        new_size: int,
+    ) -> None:
         self.generations = self._extend_numpy_array(self.generations, new_size, -1)
         self.fitness_values = self._extend_numpy_array(self.fitness_values, new_size, 0)
         self.term_values = self._extend_numpy_array(self.term_values, new_size, -1)
 
-    def notify(self, algorithm: PyMOOAlgorithm) -> None:
+    def notify(
+        self,
+        algorithm: PyMOOAlgorithm,
+    ) -> None:
         generation_idx = algorithm.n_iter - 1
         for i, solution in enumerate(algorithm.pop.get("X")):
             for j, x in enumerate(solution):
@@ -60,7 +78,10 @@ class SavingManager(Callback):
         ):
             self.save(algorithm)
 
-    def save(self, algorithm: PyMOOAlgorithm) -> None:
+    def save(
+        self,
+        algorithm: PyMOOAlgorithm,
+    ) -> None:
         # save the results for offline analysis
         np.savez_compressed(
             self.working_folder.results_npz_path,
@@ -76,7 +97,11 @@ class SavingManager(Callback):
         # save the algorithm for resuming later
         self.save_pymoo_algorithm(algorithm)
 
-    def save_rng_state(self, state: tuple, file_path: str) -> None:
+    def save_rng_state(
+        self,
+        state: tuple,
+        file_path: str,
+    ) -> None:
         os.makedirs(self.working_folder.path, exist_ok=True)
         with open(file_path, "wt", encoding="utf-8") as txt_file:
             txt_file.write(f"{state[0]}\n")
@@ -85,7 +110,10 @@ class SavingManager(Callback):
             for i in range(2, len(state)):
                 txt_file.write(f"{state[i]}\n")
 
-    def save_pymoo_algorithm(self, algorithm: PyMOOAlgorithm) -> None:
+    def save_pymoo_algorithm(
+        self,
+        algorithm: PyMOOAlgorithm,
+    ) -> None:
         os.makedirs(self.working_folder.path, exist_ok=True)
         file_path = self.working_folder.pymoo_algorithm_bin_path
         with open(file_path, "wb") as bin_file:
@@ -105,13 +133,19 @@ class SavingManager(Callback):
                 f"https://github.com/coliva92/evodesign/commit/{commit_hash}\n"
             )
 
-    def save_settings(self, settings: dict) -> None:
+    def save_settings(
+        self,
+        settings: dict,
+    ) -> None:
         os.makedirs(self.working_folder.path, exist_ok=True)
         file_path = self.working_folder.settings_json_path
         with open(file_path, "wt", encoding="utf-8") as json_file:
             json_file.write(json.dumps(settings, indent=4) + "\n")
 
-    def save_target_pdb(self, target_pdb_path: str) -> None:
+    def save_target_pdb(
+        self,
+        target_pdb_path: str,
+    ) -> None:
         pdb_filename = os.path.basename(target_pdb_path)
         destination = os.path.join(self.working_folder.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)
@@ -122,7 +156,10 @@ class SavingManager(Callback):
         self.fitness_values = data["fitness_values"]
         self.term_values = data["term_values"]
 
-    def load_rng_state(self, file_path: str) -> tuple:
+    def load_rng_state(
+        self,
+        file_path: str,
+    ) -> tuple:
         result = []
         i = 0
         for line in open(file_path, "rt", encoding="utf-8"):
@@ -147,14 +184,20 @@ class SavingManager(Callback):
             algorithm = dill.load(bin_file)
         return algorithm
 
-    def delete_folder(self, folder_dir: str) -> None:
-        if os.path.exists(folder_dir):
-            shutil.rmtree(folder_dir)
-    
-    def delete_file(self, file_path: str) -> None:
+    def delete_file(
+        self,
+        file_path: str,
+    ) -> None:
         if os.path.isfile(file_path):
             os.remove(file_path)
-    
+
+    def delete_folder(
+        self,
+        folder_path: str,
+    ) -> None:
+        if os.path.isdir(folder_path):
+            shutil.rmtree(folder_path)
+
     def delete_non_essential_files_and_folders(self) -> None:
         for filename in os.listdir(self.working_folder.path):
             file_path = os.path.join(self.working_folder.path, filename)

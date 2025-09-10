@@ -34,4 +34,3 @@ if __name__ == "__main__":
     saving.save_target_pdb(target_pdb_path)
     saving.save_rng_state(np.random.get_state(), working_folder.initial_rng_state_path)
     ga.run(ref_chain, saving)
-    saving.delete_prediction_pdb()
