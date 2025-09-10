@@ -77,17 +77,17 @@ try:
         algorithm._algorithm.termination.perc = float(
             algorithm._algorithm.n_gen / algorithm.max_generations
         )
-    state = storage.load_rng_state(storage.working_folder.last_rng_state_path)
+    state = storage.load_rng_state(storage.directory.last_rng_state_path)
     np.random.set_state(state)
 except FileNotFoundError:
     try:
         # starting fresh but with a previous RNG seed
-        state = storage.load_rng_state(storage.working_folder.initial_rng_state_path)
+        state = storage.load_rng_state(storage.directory.initial_rng_state_path)
         np.random.set_state(state)
     except FileNotFoundError:
         # starting with a fresh RNG seed
         storage.save_rng_state(
-            np.random.get_state(), storage.working_folder.initial_rng_state_path
+            np.random.get_state(), storage.directory.initial_rng_state_path
         )
     storage.save_git_commit_hash()
     storage.save_settings(algorithm.settings())
