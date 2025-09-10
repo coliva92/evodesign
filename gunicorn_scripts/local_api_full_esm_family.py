@@ -11,10 +11,8 @@ from Metrics.ESM2DescriptorsRMSE import ESM2DescriptorsRMSE
 
 
 esmfold_model = ESMFold(gpu_device="cuda:0")
-# cargamos el modelo a la GPU de una vez
 esmfold_model.predict_pdb_str("GREETINGS")
 esm_model = ESM2DescriptorsRMSE(gpu_device="cuda:0")
-# cargamos el modelo a la GPU de una vez
 esm_model.compute_descriptors_matrix("GREETINGS")
 
 

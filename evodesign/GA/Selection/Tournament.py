@@ -6,13 +6,19 @@ import numpy.typing as npt
 
 class Tournament(Selection):
 
-    def __init__(self, tournament_size: int = 2) -> None:
+    def __init__(
+        self,
+        tournament_size: int = 2,
+    ) -> None:
         super().__init__(TournamentSelection(self.tournament, tournament_size))
         self.tournament_size = tournament_size
 
     @classmethod
     def tournament(
-        cls, pop, P: npt.NDArray[np.int64], **kwargs
+        cls,
+        pop,
+        P: npt.NDArray[np.int64],
+        **kwargs,
     ) -> npt.NDArray[np.int64]:
         selection_size, tournament_size = P.shape
         selected_parents = np.full(selection_size, -1, dtype=np.int64)

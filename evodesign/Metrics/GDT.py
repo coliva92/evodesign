@@ -8,7 +8,10 @@ from .ContextInterface import ContextInterface
 
 class GDT(Metric):
 
-    def __init__(self, cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0]) -> None:
+    def __init__(
+        self,
+        cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0],
+    ) -> None:
         self.cutoffs = cutoffs
 
     def do(
@@ -16,7 +19,7 @@ class GDT(Metric):
         model_backbone: List[Atom],
         ref_backbone: List[Atom],
         superimposer: Optional[Superimposer] = None,
-        **kwargs
+        **kwargs,
     ) -> float:
         # assume the backbones are superimposed if no superimposer is provided
         if superimposer is not None:
@@ -26,7 +29,10 @@ class GDT(Metric):
         gdt = np.mean([np.mean([d <= c for d in distances]) for c in self.cutoffs])
         return gdt
 
-    def do_for_fitness_fn(self, context: ContextInterface):
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ):
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_model_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")

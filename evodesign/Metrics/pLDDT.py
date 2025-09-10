@@ -7,7 +7,11 @@ import numpy as np
 
 class pLDDT(Metric):
 
-    def do(self, model_chain: Chain, **kwargs) -> float:
+    def do(
+        self,
+        model_chain: Chain,
+        **kwargs,
+    ) -> float:
         bfactors = np.array(
             [
                 (
@@ -20,7 +24,10 @@ class pLDDT(Metric):
         )
         return bfactors.mean()
 
-    def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
         model_chain = context.get_model_chain()
         plddt = self.do(model_chain)
         return {"plddt": plddt}

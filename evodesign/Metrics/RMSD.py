@@ -15,7 +15,7 @@ class RMSD(Metric):
         model_backbone: List[Atom],
         ref_backbone: List[Atom],
         superimposer: Optional[Superimposer] = None,
-        **kwargs
+        **kwargs,
     ) -> float:
         if superimposer is None:
             if self._default_superimposer is None:
@@ -25,7 +25,10 @@ class RMSD(Metric):
         superimposer.apply(model_backbone)
         return superimposer.rms
 
-    def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_reference_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")

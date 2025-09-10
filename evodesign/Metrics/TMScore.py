@@ -1,6 +1,6 @@
 from .Metric import Metric
 import numpy as np
-from typing import Optional, List
+from typing import Optional, List, Dict
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 from .ContextInterface import ContextInterface
@@ -8,7 +8,10 @@ from .ContextInterface import ContextInterface
 
 class TMScore(Metric):
 
-    def normalizing_constant(self, n: int) -> float:
+    def normalizing_constant(
+        self,
+        n: int,
+    ) -> float:
         return 1.24 * np.cbrt(n - 15) - 1.8
 
     def do(
@@ -16,7 +19,7 @@ class TMScore(Metric):
         model_backbone: List[Atom],
         ref_backbone: List[Atom],
         superimposer: Optional[Superimposer] = None,
-        **kwargs
+        **kwargs,
     ) -> float:
         # assume the backbones are superimposed if no superimposer is provided
         if superimposer is not None:
@@ -27,7 +30,10 @@ class TMScore(Metric):
         tm_score = np.mean(1 / (1 + (distances / d0) ** 2))
         return tm_score
 
-    def do_for_fitness_fn(self, context: ContextInterface):
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_model_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")

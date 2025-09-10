@@ -10,12 +10,18 @@ class ESM2DescriptorsRMSE(Metric):
     _model = None
     _batch_converter = None
 
-    def __init__(self, gpu_device: Optional[str] = "cuda:0") -> None:
+    def __init__(
+        self,
+        gpu_device: Optional[str] = "cuda:0",
+    ) -> None:
         super().__init__()
         self.gpu_device = gpu_device
 
     def do(
-        self, model_sequence: str, ref_desc_matrix: npt.NDArray[np.float64], **kwargs
+        self,
+        model_sequence: str,
+        ref_desc_matrix: npt.NDArray[np.float64],
+        **kwargs,
     ) -> float:
         # compute the RMS of each residue
         model_desc_matrix = self.compute_descriptors_matrix(model_sequence)
@@ -30,7 +36,10 @@ class ESM2DescriptorsRMSE(Metric):
         # the weighted mean since all residues have the same number of descriptors
         return np.mean(rmse)
 
-    def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
         model_sequence = context.get_model_chain().sequence
         ref_desc_matrix = context.get_extra_param_value("reference_esm2_descriptors")
         if ref_desc_matrix is None:
@@ -41,7 +50,9 @@ class ESM2DescriptorsRMSE(Metric):
         return {"rmse": rmse}
 
     def compute_descriptors_matrix(
-        self, sequence: str, sequence_name: str = "temp_protein"
+        self,
+        sequence: str,
+        sequence_name: str = "tmp_protein",
     ) -> npt.NDArray[np.float64]:
         # initialize the model if not yet initialized
         import torch

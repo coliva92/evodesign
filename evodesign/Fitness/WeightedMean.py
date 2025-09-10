@@ -18,5 +18,8 @@ class WeightedMean(FitnessFunction):
         self.term_weights = term_weights
         assert len(self.term_weights) == len(self.terms)
 
-    def combine(self, term_values: npt.NDArray[np.float64]) -> float:
+    def combine(
+        self,
+        term_values: npt.NDArray[np.float64],
+    ) -> float:
         return np.average(term_values, weights=self.term_weights)

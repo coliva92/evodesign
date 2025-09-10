@@ -11,7 +11,10 @@ from typing import List
 class FitnessFunction(RetrievableSettings, ABC):
 
     def __init__(
-        self, upper_bound: float, terms: List[str], term_calculators: List[Metric]
+        self,
+        upper_bound: float,
+        terms: List[str],
+        term_calculators: List[Metric],
     ) -> None:
         super().__init__()
         self.upper_bound = upper_bound
@@ -22,7 +25,10 @@ class FitnessFunction(RetrievableSettings, ABC):
         }
 
     def do(
-        self, model_chain: Chain, ref_chain: Chain, **kwargs
+        self,
+        model_chain: Chain,
+        ref_chain: Chain,
+        **kwargs,
     ) -> npt.NDArray[np.float64]:
         context = Context(model_chain, ref_chain, self._term_calculators, **kwargs)
         term_values = np.array(
@@ -38,7 +44,10 @@ class FitnessFunction(RetrievableSettings, ABC):
         return np.array([self.combine(term_values), *component_values])
 
     @abstractmethod
-    def combine(self, term_values: npt.NDArray[np.float64]) -> float:
+    def combine(
+        self,
+        term_values: npt.NDArray[np.float64],
+    ) -> float:
         raise NotImplementedError
 
     def num_terms(self) -> int:

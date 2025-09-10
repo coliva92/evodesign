@@ -9,14 +9,21 @@ class RosettaEnergyFunction(Metric):
 
     _score_fn = None
 
-    def do(self, pdb_path: str, **kwargs) -> float:
+    def do(
+        self,
+        pdb_path: str,
+        **kwargs,
+    ) -> float:
         if self._score_fn is None:
             pyrosetta.init()
             self._score_fn = pyrosetta.get_score_function(True)
         pose = pyrosetta.pose_from_pdb(pdb_path)
         return self._score_fn(pose)
 
-    def do_for_fitness_fn(self, context: ContextInterface) -> Dict[str, float]:
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
         pdb_path = context.get_extra_param_value("model_pdb_path")
         if pdb_path is None:
             workspace_dir = context.get_extra_param_value("workspace_dir")

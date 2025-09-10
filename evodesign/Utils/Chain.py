@@ -18,7 +18,12 @@ class Chain:
     AMINO_ACIDS = list("ACDEFGHIKLMNPQRSTVWY")
     MAP_AMINO_ACID_TO_INT = {aa: i for i, aa in enumerate(AMINO_ACIDS)}
 
-    def __init__(self, structure: Structure, model_id: int = 0, chain_id: str = "A"):
+    def __init__(
+        self,
+        structure: Structure,
+        model_id: int = 0,
+        chain_id: str = "A",
+    ):
         self.structure = structure
         self.model_id = model_id
         self.chain_id = chain_id
@@ -56,7 +61,10 @@ class ChainFactory:
 
     @classmethod
     def create(
-        cls, pdb_path: str, model_id: int = 0, chain_id: Optional[str] = None
+        cls,
+        pdb_path: str,
+        model_id: int = 0,
+        chain_id: Optional[str] = None,
     ) -> Chain:
         if cls._parser is None:
             cls._parser = PDBParser(QUIET=True)

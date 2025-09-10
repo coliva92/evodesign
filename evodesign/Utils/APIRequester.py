@@ -23,13 +23,23 @@ class APIRequester(RetrievableSettings):
         self.connection_timeout = connection_timeout
         self.verify = verify
 
-    def post(self, payload_data):
+    def post(
+        self,
+        payload_data,
+    ):
         return self._send_request(payload_data, requests.post)
 
-    def get(self, payload_data):
+    def get(
+        self,
+        payload_data,
+    ):
         return self._send_request(payload_data, requests.get)
 
-    def _send_request(self, payload_data, method: Callable):
+    def _send_request(
+        self,
+        payload_data,
+        method: Callable,
+    ):
         if self.sleep_time > 0.0:
             time.sleep(self.sleep_time)
         if self.json_request_key is not None:

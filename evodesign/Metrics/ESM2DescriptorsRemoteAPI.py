@@ -18,6 +18,8 @@ class ESM2DescriptorsRemoteAPI(ESM2Descriptors):
         self.requester = requester
 
     def compute_descriptors_matrix(
-        self, sequence: str, sequence_name: str = "temp_protein"
+        self,
+        sequence: str,
+        sequence_name: str = "tmp_protein",
     ) -> npt.NDArray[np.float64]:
         return np.array(self.requester.post(sequence))
