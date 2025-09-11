@@ -150,3 +150,15 @@ The JSON file provided in `examples/terminal/settings.json` describe a genetic a
 - **Maximum number of generations**: 2.
 
 The omitted items in the JSON file will be filled with the default behavior as described above.
+
+## Resuming EvoDesign from a previous execution
+
+In case EvoDesign stopped running, you can resume it from the last checkpoint by running again the `python -m evodesign ...` command.
+Just make sure you provide exactly the same input values as last time (i.e., same target PDB, settings JSON, output directory and jobname).
+The program will automatically check if there is a saved checkpoint and resume from there. 
+
+## Extending a finished EvoDesign execution
+
+If EvoDesign finished running, but you wish to run it for additional generations, edit the settings JSON file and increase the `max_generations` value to the desired amount.
+Then, re-run the `python -m evodesign ...` command.
+The program will automatically detect that the algorithm ran for less generations than the value written in `max_generations` and continue the execution from the last generation.
