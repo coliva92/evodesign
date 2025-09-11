@@ -23,10 +23,12 @@ class Chain:
         structure: Structure,
         model_id: int = 0,
         chain_id: str = "A",
+        pdb_path: Optional[str] = None
     ):
         self.structure = structure
         self.model_id = model_id
         self.chain_id = chain_id
+        self.pdb_path = pdb_path
         self.sequence = self._get_sequence()
         self.sequence_numpy = np.array(
             [self.MAP_AMINO_ACID_TO_INT[aa] for aa in self.sequence], dtype=np.int64
@@ -74,4 +76,4 @@ class ChainFactory:
             for chain_id in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
                 if chain_id in structure[model_id]:
                     break
-        return Chain(structure, model_id, chain_id)
+        return Chain(structure, model_id, chain_id, pdb_path)

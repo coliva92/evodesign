@@ -24,12 +24,6 @@ class RosettaEnergyFunction(Metric):
         self,
         context: ContextInterface,
     ) -> Dict[str, float]:
-        pdb_path = context.get_extra_param_value("model_pdb_path")
-        if pdb_path is None:
-            workspace_dir = context.get_extra_param_value("workspace_dir")
-            if workspace_dir is None:
-                raise KeyError
-            pdb_path = os.path.join(workspace_dir, "tmp_model.pdb")
-            context.set_extra_param_value("model_pdb_path", pdb_path)
+        pdb_path = context.get_model_chain().pdb_path
         energy_score = self.do(pdb_path)
         return {"energy_score": energy_score}
