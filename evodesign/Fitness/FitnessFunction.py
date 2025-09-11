@@ -34,14 +34,7 @@ class FitnessFunction(RetrievableSettings, ABC):
         term_values = np.array(
             [context.get_component_value(name) for name in self.terms]
         )
-        component_values = [
-            component_value
-            for term_name in self.terms
-            for _, component_value in context.get_metric_components(
-                ".".join(term_name.split(".")[:-1])
-            ).items()
-        ]
-        return np.array([self.combine(term_values), *component_values])
+        return np.concatenate(([self.combine(term_values)], term_values))
 
     @abstractmethod
     def combine(

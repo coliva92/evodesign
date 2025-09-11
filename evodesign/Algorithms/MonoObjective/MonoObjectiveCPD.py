@@ -54,7 +54,8 @@ class MonoObjectiveCPD(Problem):
         sequences = [numpy_sequence_to_str(seq_numpy) for seq_numpy in x]
         self.predictor.do(sequences, self.predictor_directory)
         # Note: x.shape = population_size x sequence_length
-        self.term_values = np.array(
+        tmp_terms = np.array(
             [self.compute_fitness(i) for i in range(x.shape[0])]
         )
-        out["F"] = -1.0 * self.term_values[:, 0]
+        self.term_values = tmp_terms[:, 1:]
+        out["F"] = -1.0 * tmp_terms[:, 0]
