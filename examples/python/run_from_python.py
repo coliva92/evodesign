@@ -45,13 +45,16 @@ if __name__ == "__main__":
     while True:
         try:
             ga.run(ref_chain, storage)
+            storage.delete_non_essential_files_and_folders()
+            break
         except (
             HttpInternalServerError,
             HttpGatewayTimeout,
             HttpForbidden,
             ConnectTimeout,
         ):
-            continue
-        finally:
             storage.delete_non_essential_files_and_folders()
-            break
+            continue
+        except Exception as e:
+            storage.delete_non_essential_files_and_folders()
+            raise e
