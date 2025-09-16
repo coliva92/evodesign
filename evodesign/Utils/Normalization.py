@@ -19,6 +19,6 @@ def sigmoid(
 def z_score(
     x: float,
     mean_value: float,
-    deviation: float,
+    stdev: float,
 ) -> float:
-    return (x - mean_value) / deviation
+    return (x - mean_value) / stdev

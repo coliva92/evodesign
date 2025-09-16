@@ -2,7 +2,9 @@ from .Metric import Metric
 from .ContextInterface import ContextInterface
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
+from .Normalization.Normalization import Normalization
+from .Normalization.Reciprocal import Reciprocal
 
 
 class ESM2Descriptors(Metric):
@@ -13,16 +15,18 @@ class ESM2Descriptors(Metric):
     def __init__(
         self,
         gpu_device: Optional[str] = "cuda:0",
+        normalization: Optional[Normalization] = Reciprocal(),
     ) -> None:
         super().__init__()
         self.gpu_device = gpu_device
+        self.normalization = normalization
 
     def do(
         self,
         model_sequence: str,
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> float:
+    ) -> Tuple[float, Optional[float]]:
         # compute the RMS of each residue
         model_desc_matrix = self.compute_descriptors_matrix(model_sequence)
         rmse = np.array(
@@ -34,7 +38,11 @@ class ESM2Descriptors(Metric):
 
         # then compute the average of the RMS of all residues; this is the same as computing
         # the weighted mean since all residues have the same number of descriptors
-        return np.mean(rmse)
+        rmse = np.mean(rmse)
+        norm = None
+        if self.normalization is not None:
+            norm = self.normalization.do(rmse)
+        return rmse, norm
 
     def do_for_fitness_fn(
         self,
@@ -46,8 +54,11 @@ class ESM2Descriptors(Metric):
             ref_sequence = context.get_reference_chain().sequence
             ref_desc_matrix = self.compute_descriptors_matrix(ref_sequence)
             context.set_extra_param_value("reference_esm2_descriptors", ref_desc_matrix)
-        rmse = self.do(model_sequence, ref_desc_matrix)
-        return {"rmse": rmse}
+        rmse, norm = self.do(model_sequence, ref_desc_matrix)
+        return {
+            "rmse": rmse,
+            "norm_rmse": norm,
+        }
 
     def compute_descriptors_matrix(
         self,
