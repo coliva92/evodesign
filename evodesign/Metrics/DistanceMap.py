@@ -13,17 +13,19 @@ class DistanceMap(Metric):
 
     def __init__(
         self,
+        ca_atoms_only: bool = True,
         normalization: Optional[Normalization] = Reciprocal(),
     ):
         super().__init__()
+        self.ca_atoms_only = ca_atoms_only
         self.normalization = normalization
 
     @classmethod
     def compute_map(
         cls,
-        ca_atoms: List[Atom],
+        atoms: List[Atom],
     ) -> npt.NDArray[np.float64]:
-        return np.array([a - b for (a, b) in itertools.combinations(ca_atoms, 2)])
+        return np.array([a - b for (a, b) in itertools.combinations(atoms, 2)])
 
     def do(
         self,
@@ -43,10 +45,21 @@ class DistanceMap(Metric):
         self,
         context: ContextInterface,
     ) -> Dict[str, float]:
-        model_ca_atoms = context.get_model_chain().ca_atoms
-        ref_ca_atoms = context.get_reference_chain().ca_atoms
-        model_map = self.compute_map(model_ca_atoms)
-        ref_map = self.compute_map(ref_ca_atoms)
+        ref_map = context.get_extra_param_value("ref_distance_map")
+        if ref_map is None:
+            ref_atoms = (
+                context.get_reference_chain().ca_atoms
+                if self.ca_atoms_only
+                else context.get_reference_chain().backbone_atoms
+            )
+            ref_map = self.compute_map(ref_atoms)
+            context.set_extra_param_value("ref_distance_map", ref_map)
+        model_atoms = (
+            context.get_model_chain().ca_atoms
+            if self.ca_atoms_only
+            else context.get_model_chain().backbone_atoms
+        )
+        model_map = self.compute_map(model_atoms)
         rmse, norm = self.do(model_map, ref_map)
         return {
             "rmse": rmse,
