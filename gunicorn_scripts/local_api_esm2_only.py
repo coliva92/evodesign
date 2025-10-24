@@ -20,8 +20,10 @@ def esm():
     desc_matrix, predicted_contacts = esm_model.query_model(sequence)
     return jsonify(
         {
-            "desc_matrix": desc_matrix.tolist(),
-            "predicted_contacts": predicted_contacts.tolist(),
+            "results": {
+                "desc_matrix": desc_matrix.tolist(),
+                "predicted_contacts": predicted_contacts.tolist(),
+            }
         }
     )
 
