@@ -37,13 +37,11 @@ class MonoObjectiveCPD(Problem):
         self,
         sequence_idx: int,
     ) -> npt.NDArray[np.float64]:
-        model_chain = None
-        if not isinstance(self.predictor, Null):
-            pdb_path = os.path.join(
-                self.predictor_directory.prediction_pdbs_dir,
-                f"{self.predictor_directory.prefix}_{sequence_idx}.pdb",
-            )
-            model_chain = ChainFactory.create(pdb_path)
+        pdb_path = os.path.join(
+            self.predictor_directory.prediction_pdbs_dir,
+            f"{self.predictor_directory.prefix}_{sequence_idx}.pdb",
+        )
+        model_chain = ChainFactory.create(pdb_path)
         return self.fitness_fn.do(model_chain, self.ref_chain)
 
     def _evaluate(
