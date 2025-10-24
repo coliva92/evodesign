@@ -1,6 +1,7 @@
 from pymoo.core.problem import Problem
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
+from ...Prediction.Null import Null
 from ...Utils.Chain import Chain, ChainFactory, numpy_sequence_to_str
 from ...Prediction.DirectoryManager import DirectoryManager
 import numpy as np
@@ -36,11 +37,13 @@ class MonoObjectiveCPD(Problem):
         self,
         sequence_idx: int,
     ) -> npt.NDArray[np.float64]:
-        pdb_path = os.path.join(
-            self.predictor_directory.prediction_pdbs_dir,
-            f"{self.predictor_directory.prefix}_{sequence_idx}.pdb",
-        )
-        model_chain = ChainFactory.create(pdb_path)
+        model_chain = None
+        if not isinstance(self.predictor, Null):
+            pdb_path = os.path.join(
+                self.predictor_directory.prediction_pdbs_dir,
+                f"{self.predictor_directory.prefix}_{sequence_idx}.pdb",
+            )
+            model_chain = ChainFactory.create(pdb_path)
         return self.fitness_fn.do(model_chain, self.ref_chain)
 
     def _evaluate(
@@ -54,8 +57,6 @@ class MonoObjectiveCPD(Problem):
         sequences = [numpy_sequence_to_str(seq_numpy) for seq_numpy in x]
         self.predictor.do(sequences, self.predictor_directory)
         # Note: x.shape = population_size x sequence_length
-        tmp_terms = np.array(
-            [self.compute_fitness(i) for i in range(x.shape[0])]
-        )
+        tmp_terms = np.array([self.compute_fitness(i) for i in range(x.shape[0])])
         self.term_values = tmp_terms[:, 1:]
         out["F"] = -1.0 * tmp_terms[:, 0]
