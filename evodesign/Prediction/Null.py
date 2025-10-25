@@ -23,9 +23,9 @@ class Null(Predictor):
         model = Model.Model(0)
         chain = Chain.Chain("A")
         for j, aa in enumerate(sequence, start=1):
-            resname = self._amino_acids.get(aa.upper(), "UNK")
+            resname = self._amino_acids.get(aa, "UNK")
             res_id = (" ", j, " ")
-            residue = Residue.Residue(res_id, resname, "")
+            residue = Residue.Residue(res_id, resname.upper(), "")
 
             # Add atoms with arbitrary coordinates (x, y, z)
             # Minimal set: N, CA, C, O
