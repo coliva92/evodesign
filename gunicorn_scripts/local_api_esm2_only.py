@@ -3,7 +3,7 @@ gunicorn -w 1 -b 127.0.0.1:8000 local_api_esm_only:app
 """
 
 from flask import Flask, request, jsonify
-from Metrics.ESM2 import ESM2
+from evodesign.Metrics.ESM2 import ESM2
 
 
 esm_model = ESM2(gpu_device="cuda:0")
