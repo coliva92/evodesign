@@ -8,6 +8,28 @@ import os
 class Null(Predictor):
 
     _io = PDBIO()
+    _amino_acids = {
+        "A": "ALA",
+        "C": "CYS",
+        "D": "ASP",
+        "E": "GLU",
+        "F": "PHE",
+        "G": "GLY",
+        "H": "HIS",
+        "I": "ILE",
+        "K": "LYS",
+        "L": "LEU",
+        "M": "MET",
+        "N": "ASN",
+        "P": "PRO",
+        "Q": "GLN",
+        "R": "ARG",
+        "S": "SER",
+        "T": "THR",
+        "V": "VAL",
+        "W": "TRP",
+        "Y": "TYR",
+    }
 
     def predict_single_pdb_file(
         self,
@@ -20,14 +42,25 @@ class Null(Predictor):
         chain = Chain.Chain("A")
         for j, aa in enumerate(sequence, start=1):
             res_id = (" ", j, " ")
-            residue = Residue.Residue(res_id, aa, "")
+            resname = self._amino_acids[aa]
+            residue = Residue.Residue(res_id, resname, "")
 
             # Add atoms with arbitrary coordinates (x, y, z)
             # Minimal set: N, CA, C, O
-            residue.add(Atom.Atom("N", [j * 1.5, 0.0, 0.0], 1.0, 1.0, " ", "N", j))
-            residue.add(Atom.Atom("CA", [j * 1.5, 1.5, 0.0], 1.0, 1.0, " ", "CA", j))
-            residue.add(Atom.Atom("C", [j * 1.5, 3.0, 0.0], 1.0, 1.0, " ", "C", j))
-            residue.add(Atom.Atom("O", [j * 1.5, 4.0, 0.0], 1.0, 1.0, " ", "O", j))
+            residue.add(
+                Atom.Atom("N", [j * 1.5, 0.0, 0.0], 1.0, 1.0, " ", "N", j, element="N")
+            )
+            residue.add(
+                Atom.Atom(
+                    "CA", [j * 1.5, 1.5, 0.0], 1.0, 1.0, " ", "CA", j, element="C"
+                )
+            )
+            residue.add(
+                Atom.Atom("C", [j * 1.5, 3.0, 0.0], 1.0, 1.0, " ", "C", j, element="C")
+            )
+            residue.add(
+                Atom.Atom("O", [j * 1.5, 4.0, 0.0], 1.0, 1.0, " ", "O", j, element="O")
+            )
             chain.add(residue)
         model.add(chain)
         structure.add(model)
