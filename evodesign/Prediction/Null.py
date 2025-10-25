@@ -1,6 +1,7 @@
 from .Predictor import Predictor
 from .DirectoryManager import DirectoryManager
 from Bio.PDB import PDBIO, Structure, Model, Chain, Residue, Atom
+from Bio.Data import IUPACData
 from typing import List
 import os
 
@@ -9,26 +10,7 @@ class Null(Predictor):
 
     _io = PDBIO()
     _amino_acids = {
-        "A": "ALA",
-        "C": "CYS",
-        "D": "ASP",
-        "E": "GLU",
-        "F": "PHE",
-        "G": "GLY",
-        "H": "HIS",
-        "I": "ILE",
-        "K": "LYS",
-        "L": "LEU",
-        "M": "MET",
-        "N": "ASN",
-        "P": "PRO",
-        "Q": "GLN",
-        "R": "ARG",
-        "S": "SER",
-        "T": "THR",
-        "V": "VAL",
-        "W": "TRP",
-        "Y": "TYR",
+        k: v.capitalize() for k, v in IUPACData.protein_letters_1to3.items()
     }
 
     def predict_single_pdb_file(
@@ -41,8 +23,8 @@ class Null(Predictor):
         model = Model.Model(0)
         chain = Chain.Chain("A")
         for j, aa in enumerate(sequence, start=1):
+            resname = self._amino_acids.get(aa.upper(), "UNK")
             res_id = (" ", j, " ")
-            resname = self._amino_acids[aa]
             residue = Residue.Residue(res_id, resname, "")
 
             # Add atoms with arbitrary coordinates (x, y, z)
