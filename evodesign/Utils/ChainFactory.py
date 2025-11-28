@@ -47,8 +47,8 @@ class ChainFactory:
         )
 
     @classmethod
-    def create_from_sequence(cls, sequence: str) -> Chain:
-        sequence_numpy = cls.sequence_str_to_numpy(sequence)
+    def create_from_numpy(cls, sequence_numpy: npt.NDArray[np.int64]) -> Chain:
+        sequence = cls.sequence_numpy_to_str(sequence)
         return Chain(sequence=sequence, sequence_numpy=sequence_numpy)
 
     @classmethod
