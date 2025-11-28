@@ -1,13 +1,16 @@
 from argparse import ArgumentParser
+from pymoo.config import Config
 import evodesign.Settings as Settings
 from evodesign.Utils.DirectoryManager import DirectoryManager
 from evodesign.Utils.StorageManager import StorageManager
-from evodesign.Utils.Chain import ChainFactory
+from evodesign.Utils.ChainFactory import ChainFactory
 from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
 import json
 import os
+
+Config.warnings["not_compiled"] = False
 
 
 parser = ArgumentParser(
@@ -56,7 +59,7 @@ args = parser.parse_args()
 with open(args.settings_path, "rt", encoding="utf-8") as json_file:
     settings = json.load(json_file)
 algorithm = Settings.parse(settings)
-ref_chain = ChainFactory.create(args.target_pdb_path, args.model_id, args.chain_id)
+ref_chain = ChainFactory.create_from_pdb(args.target_pdb_path, args.model_id, args.chain_id)
 storage = StorageManager(
     DirectoryManager(os.path.abspath(args.output_dir), args.jobname),
     algorithm.max_generations,
