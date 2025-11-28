@@ -1,11 +1,10 @@
 from pymoo.core.problem import Problem
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
-from ...Prediction.Null import Null
-from ...Utils.Chain import Chain, ChainFactory, numpy_sequence_to_str
+from ...Utils.Chain import Chain
+from ...Utils.ChainFactory import ChainFactory
 from ...Prediction.DirectoryManager import DirectoryManager
 import numpy as np
-import numpy.typing as npt
 import os
 
 
@@ -33,17 +32,6 @@ class MonoObjectiveCPD(Problem):
             vtype=np.int64,
         )
 
-    def compute_fitness(
-        self,
-        sequence_idx: int,
-    ) -> npt.NDArray[np.float64]:
-        pdb_path = os.path.join(
-            self.predictor_directory.prediction_pdbs_dir,
-            f"{self.predictor_directory.prefix}_{sequence_idx}.pdb",
-        )
-        model_chain = ChainFactory.create(pdb_path)
-        return self.fitness_fn.do(model_chain, self.ref_chain)
-
     def _evaluate(
         self,
         x,
@@ -52,9 +40,30 @@ class MonoObjectiveCPD(Problem):
         **kwargs,
     ) -> None:
         # using a list comprehension in this case is faster than vectorizing
-        sequences = [numpy_sequence_to_str(seq_numpy) for seq_numpy in x]
-        self.predictor.do(sequences, self.predictor_directory)
+        sequences = [ChainFactory.sequence_numpy_to_str(seq_numpy) for seq_numpy in x]
         # Note: x.shape = population_size x sequence_length
-        tmp_terms = np.array([self.compute_fitness(i) for i in range(x.shape[0])])
+        if self.predictor.is_activated():
+            self.predictor.do(sequences, self.predictor_directory)
+            base_dir = self.predictor_directory.prediction_pdbs_dir
+            prefix = self.predictor_directory.prefix
+            model_chains = [
+                ChainFactory.create_from_pdb(
+                    os.path.join(base_dir, f"{prefix}_{i}.pdb")
+                )
+                for i in range(x.shape[0])
+            ]
+        else:
+            model_chains = [
+                ChainFactory.create_from_sequence(
+                    ChainFactory.sequence_numpy_to_str(sequence_numpy)
+                )
+                for sequence_numpy in x
+            ]
+        tmp_terms = np.array(
+            [
+                self.fitness_fn.do(model_chain, self.ref_chain)
+                for model_chain in model_chains
+            ]
+        )
         self.term_values = tmp_terms[:, 1:]
         out["F"] = -1.0 * tmp_terms[:, 0]
