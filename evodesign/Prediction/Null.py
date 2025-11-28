@@ -8,6 +8,10 @@ import os
 
 class Null(Predictor):
 
+    def __init__(self):
+        super().__init__()
+        self.set_activation(False)
+
     _io = PDBIO()
     _amino_acids = {
         k: v.capitalize() for k, v in IUPACData.protein_letters_1to3.items()
@@ -19,6 +23,7 @@ class Null(Predictor):
         protein_name: str,
         directory: DirectoryManager,
     ) -> None:
+        # Create a dummy PDB to pass the amino acid sequence to the next component
         structure = Structure.Structure(protein_name)
         model = Model.Model(0)
         chain = Chain.Chain("A")
@@ -26,9 +31,6 @@ class Null(Predictor):
             resname = self._amino_acids.get(aa, "UNK")
             res_id = (" ", j, " ")
             residue = Residue.Residue(res_id, resname.upper(), "")
-
-            # Add atoms with arbitrary coordinates (x, y, z)
-            # Minimal set: N, CA, C, O
             residue.add(
                 Atom.Atom("N", [j * 1.5, 0.0, 0.0], 1.0, 1.0, " ", "N", j, element="N")
             )
