@@ -1,12 +1,12 @@
 from ..Algorithm import Algorithm
-from .MonoObjectiveCPD import MonoObjectiveCPD
+from ...Problems.MonoObjective.MonoCPD import MonoCPD
 from ...Utils.Chain import Chain
 from ...Prediction.Predictor import Predictor
 from ...Prediction.DirectoryManager import DirectoryManager
 from ...Fitness.FitnessFunction import FitnessFunction
 
 
-class MonoObjectiveAlgorithm(Algorithm):
+class MonoAlgorithm(Algorithm):
 
     def __init__(
         self,
@@ -22,8 +22,8 @@ class MonoObjectiveAlgorithm(Algorithm):
         self,
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
-    ) -> MonoObjectiveCPD:
-        return MonoObjectiveCPD(
+    ) -> MonoCPD:
+        return MonoCPD(
             self.predictor,
             self.fitness_fn,
             ref_chain,

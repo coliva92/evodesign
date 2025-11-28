@@ -1,4 +1,4 @@
-from pymoo.core.problem import Problem
+from ..CPD import CPD
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
 from ...Utils.Chain import Chain
@@ -8,29 +8,17 @@ import numpy as np
 import os
 
 
-class MonoObjectiveCPD(Problem):
+class MonoCPD(CPD):
 
     def __init__(
         self,
-        predictor: Predictor,
         fitness_fn: FitnessFunction,
+        predictor: Predictor,
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
     ):
+        super().__init__(predictor, ref_chain, predictor_directory)
         self.fitness_fn = fitness_fn
-        self.predictor = predictor
-        self.ref_chain = ref_chain
-        self.term_values = None
-        self.predictor_directory = predictor_directory
-        super().__init__(
-            n_var=len(self.ref_chain.sequence),
-            n_obj=1,  # mono objective
-            n_eq_constr=0,
-            n_ieq_constr=0,
-            xl=0,  # working on a 20-letters amino acid alphabet
-            xu=19,  # represented by integers from 0 to 19
-            vtype=np.int64,
-        )
 
     def _evaluate(
         self,
@@ -54,9 +42,7 @@ class MonoObjectiveCPD(Problem):
             ]
         else:
             model_chains = [
-                ChainFactory.create_from_sequence(
-                    ChainFactory.sequence_numpy_to_str(sequence_numpy)
-                )
+                ChainFactory.create_from_numpy(sequence_numpy)
                 for sequence_numpy in x
             ]
         tmp_terms = np.array(

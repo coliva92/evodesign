@@ -1,4 +1,4 @@
-from ..MonoObjectiveAlgorithm import MonoObjectiveAlgorithm
+from ..MonoAlgorithm import MonoAlgorithm
 from ....Utils.Chain import Chain
 from ....Fitness.FitnessFunction import FitnessFunction
 from ....Prediction.Predictor import Predictor
@@ -14,10 +14,9 @@ from ....GA.Replacement.PyMOO.Generational import (
 )
 from ....Utils.StorageManager import StorageManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
-from typing import Optional
 
 
-class Generational(MonoObjectiveAlgorithm):
+class Generational(MonoAlgorithm):
 
     def __init__(
         self,
