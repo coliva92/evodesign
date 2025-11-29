@@ -189,5 +189,5 @@ def mono_statistics_from_folder(
             df = pd.concat([df, row], ignore_index=True)
         else:
             df = row
-    filename = os.path.join(output_dir, f"{root_dir.name}_solutions.csv")
+    filename = os.path.join(output_dir, f"{root_dir.name}_terms.csv")
     df.to_csv(filename, index=False)
