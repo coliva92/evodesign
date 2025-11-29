@@ -9,12 +9,14 @@ import numpy.typing as npt
 import os
 
 
+BACKBONE_ATOMS = dict.fromkeys(["N", "CA", "C", "O"])
+AMINO_ACIDS = list("ACDEFGHIKLMNPQRSTVWY")
+MAP_AMINO_ACID_TO_INT = {aa: i for i, aa in enumerate(AMINO_ACIDS)}
+
+
 class ChainFactory:
 
     _parser = None
-    BACKBONE_ATOMS = dict.fromkeys(["N", "CA", "C", "O"])
-    AMINO_ACIDS = list("ACDEFGHIKLMNPQRSTVWY")
-    MAP_AMINO_ACID_TO_INT = {aa: i for i, aa in enumerate(AMINO_ACIDS)}
 
     @classmethod
     def create_from_pdb(
