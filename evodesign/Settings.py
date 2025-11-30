@@ -4,13 +4,13 @@ import copy
 import json
 
 
-def load(settings_path: str) -> Algorithm:
+def load(settings_path: str):
     with open(settings_path, "rt", encoding="utf-8") as json_file:
         settings = json.load(json_file)
     return parse(settings)
 
 
-def parse(settings: dict) -> Algorithm:
+def parse(settings: dict):
     class_name = list(settings.keys())[0]
     imported_module = importlib.import_module(f"evodesign.{class_name}")
     actual_class = getattr(imported_module, class_name.split(".")[-1])
