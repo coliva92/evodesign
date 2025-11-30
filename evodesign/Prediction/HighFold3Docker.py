@@ -1,13 +1,11 @@
-from .HighFold3Docker import HighFold3Docker
+from .AlphaFold3Docker import AlphaFold3Docker
 from typing import List, Optional
-import os
 
 
-class HighFold3(HighFold3Docker):
+class HighFold3Docker(AlphaFold3Docker):
 
     def __init__(
         self,
-        path_to_run_alphafold_py: str,
         model_dir: str,
         head_to_tail: bool = True,
         disulfide_chain_res: Optional[List[List[int]]] = None,
@@ -37,8 +35,6 @@ class HighFold3(HighFold3Docker):
     ):
         super().__init__(
             model_dir,
-            head_to_tail,
-            disulfide_chain_res,
             num_recycles,
             num_diffusion_samples,
             model_seeds,
@@ -63,8 +59,9 @@ class HighFold3(HighFold3Docker):
             seqres_database_path,
             jax_compilation_cache_dir,
         )
-        self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
-    
+        self.head_to_tail = head_to_tail
+        self.disulfide_chain_res = disulfide_chain_res
+
     def _create_cmd_array(
         self,
         input_path: str,
@@ -72,15 +69,10 @@ class HighFold3(HighFold3Docker):
         do_batch_inference: bool,
     ) -> List[str]:
         cmd = super()._create_cmd_array(input_path, output_dir, do_batch_inference)
-        cmd = cmd[12:]  # remove the docker call
-        cmd[0] = "python3"  # change python version
-        cmd[1] = self.path_to_run_alphafold_py  # change run_alphafold.py
-        # change /root/af_input
-        cmd[2] = (
-            f"--input_dir={input_path}"
-            if do_batch_inference
-            else f"--json_path={input_path}"
+        cmd[11] = "highfold3" # change the docker image
+        cmd[-1] = (
+            f"--head_to_tail={self.head_to_tail}"  # this also removes --force_output_dir
         )
-        cmd[3] = f"--model_dir={self.model_dir}"  # change /root/af_model
-        cmd[4] = f"--output_dir={output_dir}"  # change /root/af_output
+        if self.disulfide_chain_res is not None:
+            cmd.append(f"--disulfide_chain_res {self.disulfide_chain_res}")
         return cmd
