@@ -30,7 +30,8 @@ class AlphaFoldInterface(Predictor, ABC):
         prediction_pdb = self._prediction_pdb_path(
             protein_name, directory.model_output_dir
         )
-        shutil.copyfile(prediction_pdb, directory.prediction_pdbs_dir)
+        output_pdb_path = os.path.join(directory.prediction_pdbs_dir, f"{protein_name}.pdb")
+        shutil.copyfile(prediction_pdb, output_pdb_path)
 
     @abstractmethod
     def _create_model_input(
