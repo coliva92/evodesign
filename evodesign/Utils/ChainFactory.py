@@ -65,7 +65,7 @@ class ChainFactory:
         return [
             atom
             for atom in structure[model_id][chain_id].get_atoms()
-            if atom.get_name() in cls.BACKBONE_ATOMS
+            if atom.get_name() in BACKBONE_ATOMS
         ]
 
     @classmethod
@@ -81,7 +81,7 @@ class ChainFactory:
     @classmethod
     def sequence_str_to_numpy(cls, sequence: str) -> npt.NDArray[np.int64]:
         return np.array(
-            [cls.MAP_AMINO_ACID_TO_INT[aa] for aa in sequence], dtype=np.int64
+            [MAP_AMINO_ACID_TO_INT[aa] for aa in sequence], dtype=np.int64
         )
 
     @classmethod
