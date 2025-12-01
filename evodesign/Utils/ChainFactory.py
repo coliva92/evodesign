@@ -34,7 +34,7 @@ class ChainFactory:
                 if chain_id in structure[model_id]:
                     break
         sequence = cls.get_sequence(structure, model_id, chain_id)
-        sequence_numpy = cls.sequence_numpy_to_str(sequence)
+        sequence_numpy = cls.sequence_str_to_numpy(sequence)
         backbone_atoms = cls.get_backbone_atoms(structure, model_id, chain_id)
         ca_atoms = cls.get_ca_atoms(structure, model_id, chain_id)
         return Chain(
