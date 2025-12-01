@@ -86,4 +86,4 @@ class ChainFactory:
 
     @classmethod
     def sequence_numpy_to_str(cls, sequence_numpy: npt.NDArray[np.int64]) -> str:
-        return "".join(Chain.AMINO_ACIDS[i] for i in sequence_numpy)
+        return "".join(AMINO_ACIDS[i] for i in sequence_numpy)
