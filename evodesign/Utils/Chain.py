@@ -10,7 +10,7 @@ import numpy.typing as npt
 class Chain:
 
     sequence: Optional[str] = None
-    sequence_numpy: Optional[npt.NDArray[np.float64]]
+    sequence_numpy: Optional[npt.NDArray[np.float64]] = None
     structure: Optional[Structure] = None
     model_id: Optional[int] = None
     chain_id: Optional[str] = None
