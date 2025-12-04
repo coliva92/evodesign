@@ -35,7 +35,7 @@ class TMScore(Metric):
         context: ContextInterface,
     ) -> Dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
-        ref_backbone = context.get_model_chain().backbone_atoms
+        ref_backbone = context.get_reference_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")
         if superimposer is None:
             superimposer = Superimposer()
