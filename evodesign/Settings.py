@@ -1,4 +1,3 @@
-from .Algorithms.Algorithm import Algorithm
 import importlib
 import copy
 import json
