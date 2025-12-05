@@ -23,3 +23,6 @@ class WeightedMean(FitnessFunction):
         term_values: npt.NDArray[np.float64],
     ) -> float:
         return np.average(term_values, weights=self.term_weights)
+
+    def name(self) -> str:
+        "_".join(f"{t}{int(100 * w)}" for w, t in zip(self.term_weights, self.terms))

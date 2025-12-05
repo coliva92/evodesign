@@ -43,5 +43,9 @@ class FitnessFunction(RetrievableSettings, ABC):
     ) -> float:
         raise NotImplementedError
 
+    @abstractmethod
+    def name(self) -> str:
+        raise NotImplementedError
+
     def num_terms(self) -> int:
         return len(self.terms)
