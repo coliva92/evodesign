@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from evodesign.Statistics import create_convergence_plot, get_final_solution_indices
+from evodesign.Utils.Statistics import create_convergence_plot, get_final_solution_indices
 from evodesign.Settings import parse
 from evodesign.Utils.ChainFactory import ChainFactory, AMINO_ACIDS
 import pandas as pd
