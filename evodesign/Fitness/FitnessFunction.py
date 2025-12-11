@@ -49,3 +49,9 @@ class FitnessFunction(RetrievableSettings, ABC):
 
     def num_terms(self) -> int:
         return len(self.terms)
+
+    def uses_predictor(self) -> bool:
+        for calc in self.term_calculators:
+            if calc.uses_predictor():
+                return True
+        return False

@@ -12,12 +12,12 @@ class MonoCPD(CPD):
 
     def __init__(
         self,
+        ref_chain: Chain,
         fitness_fn: FitnessFunction,
         predictor: Predictor,
-        ref_chain: Chain,
         predictor_directory: DirectoryManager,
     ):
-        super().__init__(predictor, ref_chain, predictor_directory)
+        super().__init__(ref_chain, predictor, predictor_directory)
         self.fitness_fn = fitness_fn
 
     def _evaluate(
@@ -30,7 +30,7 @@ class MonoCPD(CPD):
         # using a list comprehension in this case is faster than vectorizing
         sequences = [ChainFactory.sequence_numpy_to_str(seq_numpy) for seq_numpy in x]
         # Note: x.shape = population_size x sequence_length
-        if self.predictor.is_activated():
+        if self.fitness_fn.uses_predictor():
             self.predictor.do(sequences, self.predictor_directory)
             base_dir = self.predictor_directory.prediction_pdbs_dir
             prefix = self.predictor_directory.prefix
@@ -42,8 +42,7 @@ class MonoCPD(CPD):
             ]
         else:
             model_chains = [
-                ChainFactory.create_from_numpy(sequence_numpy)
-                for sequence_numpy in x
+                ChainFactory.create_from_numpy(sequence_numpy) for sequence_numpy in x
             ]
         tmp_terms = np.array(
             [

@@ -11,6 +11,9 @@ class Cyclization(Metric):
     _stdev = 0.10498072
     _scaling_factor = 0.05
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def do(
         self,
         model_backbone: List[Atom],

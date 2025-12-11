@@ -22,6 +22,9 @@ class ESM2ContactMap(Metric):
         self.esm_model = esm_model
         self.distance_threshold = distance_threshold
         self.normalization = normalization
+    
+    def uses_predictor(self) -> bool:
+        return False
 
     def do(
         self,

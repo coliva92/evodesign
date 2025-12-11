@@ -16,6 +16,9 @@ class iLearnDescriptorsRMSE(Metric):
         super().__init__()
         self.method = method
 
+    def uses_predictor(self) -> bool:
+        return False
+
     def do(
         self,
         model_fasta_path: str,

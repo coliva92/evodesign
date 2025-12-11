@@ -12,8 +12,8 @@ class MonoAlgorithm(Algorithm):
         self,
         max_generations: int,
         population_size: int,
-        predictor: Predictor,
         fitness_fn: FitnessFunction,
+        predictor: Predictor,
     ):
         super().__init__(max_generations, population_size, predictor)
         self.fitness_fn = fitness_fn
@@ -24,9 +24,9 @@ class MonoAlgorithm(Algorithm):
         predictor_directory: DirectoryManager,
     ) -> MonoCPD:
         return MonoCPD(
-            self.predictor,
-            self.fitness_fn,
             ref_chain,
+            self.fitness_fn,
+            self.predictor,
             predictor_directory,
         )
 

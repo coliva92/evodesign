@@ -14,6 +14,9 @@ class GDT(Metric):
     ) -> None:
         self.cutoffs = cutoffs
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def do(
         self,
         model_backbone: List[Atom],

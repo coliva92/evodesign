@@ -20,6 +20,9 @@ class DistanceMap(Metric):
         self.ca_atoms_only = ca_atoms_only
         self.normalization = normalization
 
+    def uses_predictor(self) -> bool:
+        return True
+
     @classmethod
     def compute_map(
         cls,

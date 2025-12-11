@@ -10,8 +10,8 @@ class CPD(Problem, ABC):
 
     def __init__(
         self,
-        predictor: Predictor,
         ref_chain: Chain,
+        predictor: Predictor,
         predictor_directory: DirectoryManager,
     ):
         super().__init__(
@@ -23,7 +23,7 @@ class CPD(Problem, ABC):
             xu=19,  # represented by integers from 0 to 19
             vtype=np.int64,
         )
-        self.predictor = predictor
         self.ref_chain = ref_chain
-        self.term_values = None
+        self.predictor = predictor
         self.predictor_directory = predictor_directory
+        self.term_values = None

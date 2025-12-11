@@ -19,6 +19,9 @@ class ESM2Descriptors(Metric):
         self.esm_model = esm_model
         self.normalization = normalization
 
+    def uses_predictor(self) -> bool:
+        return False
+
     def do(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
@@ -40,7 +43,7 @@ class ESM2Descriptors(Metric):
         norm = None
         if self.normalization is not None:
             norm = self.normalization.do(rmse)
-        
+
         return rmse, norm
 
     def do_for_fitness_fn(

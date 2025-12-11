@@ -19,6 +19,9 @@ class RMSD(Metric):
         super().__init__()
         self.normalization = normalization
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def do(
         self,
         model_backbone: List[Atom],

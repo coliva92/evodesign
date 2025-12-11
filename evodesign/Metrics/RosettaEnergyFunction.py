@@ -9,6 +9,9 @@ class RosettaEnergyFunction(Metric):
 
     _score_fn = None
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def do(
         self,
         pdb_path: str,

@@ -8,6 +8,9 @@ from .ContextInterface import ContextInterface
 
 class TMScore(Metric):
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def normalizing_constant(
         self,
         n: int,

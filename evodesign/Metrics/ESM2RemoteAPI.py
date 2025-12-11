@@ -20,6 +20,9 @@ class ESM2RemoteAPI(ESM2):
         )
         self.requester = requester
 
+    def uses_predictor(self) -> bool:
+        return False
+
     def query_model(
         self,
         sequence: str,

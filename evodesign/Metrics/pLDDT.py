@@ -7,6 +7,9 @@ import numpy as np
 
 class pLDDT(Metric):
 
+    def uses_predictor(self) -> bool:
+        return True
+
     def do(
         self,
         model_chain: Chain,
