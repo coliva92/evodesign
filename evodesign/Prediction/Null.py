@@ -8,10 +8,6 @@ import os
 
 class Null(Predictor):
 
-    def __init__(self):
-        super().__init__()
-        self.set_activation(False)
-
     _io = PDBIO()
     _amino_acids = {
         k: v.capitalize() for k, v in IUPACData.protein_letters_1to3.items()

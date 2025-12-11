@@ -9,16 +9,6 @@ from requests.exceptions import ConnectTimeout
 
 class Predictor(RetrievableSettings, ABC):
 
-    def __init__(self):
-        super().__init__()
-        self._is_activated = True
-
-    def is_activated(self) -> bool:
-        return self._is_activated
-
-    def set_activation(self, is_activated: bool) -> None:
-        self._is_activated = is_activated
-
     @abstractmethod
     def predict_single_pdb_file(
         self,
