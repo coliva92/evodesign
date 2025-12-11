@@ -1,6 +1,6 @@
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from .DirectoryManager import DirectoryManager
+from ..Utils.DirectoryManager import DirectoryManager
 from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 import numpy as np
 import numpy.typing as npt

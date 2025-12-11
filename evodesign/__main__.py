@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from pymoo.config import Config
 import evodesign.Settings as Settings
 from evodesign.Utils.DirectoryManager import DirectoryManager
-from evodesign.Utils.StorageManager import StorageManager
+from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Utils.ChainFactory import ChainFactory
 from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
