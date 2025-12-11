@@ -12,7 +12,7 @@ from pymoo.termination.max_gen import MaximumGenerationTermination
 from ....GA.Replacement.PyMOO.Generational import (
     Generational as GenerationalReplacement,
 )
-from ....Utils.StorageManager import StorageManager
+from ....Callbacks.StorageManager import StorageManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
 
 
