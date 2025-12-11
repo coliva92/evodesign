@@ -1,5 +1,8 @@
 from .Generational import Generational
 from pymoo.core.callback import Callback
+from ....Utils.Chain import Chain
+from ....Prediction.DirectoryManager import DirectoryManager
+from ....Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
 from ....Callbacks.StorageManager import StorageManager
 from ....Callbacks.MonoFitnessFnAlternator import MonoFitnessFnAlternator
 from ....Fitness.FitnessFunction import FitnessFunction
@@ -10,6 +13,7 @@ from ....GA.Crossover.Crossover import Crossover
 from ....GA.Crossover.UniformCrossover import UniformCrossover
 from ....GA.Mutation.Mutation import Mutation
 from ....GA.Mutation.RandomResetting import RandomResetting
+from pymoo.algorithms.soo.nonconvex.ga import GA
 
 
 class GenerationalAlternatingFitness(Generational):
@@ -37,6 +41,18 @@ class GenerationalAlternatingFitness(Generational):
         )
         self.alt_fitness_fn = alt_fitness_fn
         self.alt_fitness_fn_every_nth_generation = alt_fitness_fn_every_nth_generation
+
+    def _create_problem(
+        self,
+        ref_chain: Chain,
+        predictor_directory: DirectoryManager,
+    ) -> AlternatingMonoCPD:
+        return AlternatingMonoCPD(
+            ref_chain,
+            self.fitness_fn,
+            self.predictor,
+            predictor_directory,
+        )
 
     def _callbacks_chain(
         self,
