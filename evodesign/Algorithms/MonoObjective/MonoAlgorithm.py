@@ -12,8 +12,8 @@ class MonoAlgorithm(Algorithm):
         self,
         max_generations: int,
         population_size: int,
-        fitness_fn: FitnessFunction,
         predictor: Predictor,
+        fitness_fn: FitnessFunction,
     ):
         super().__init__(max_generations, population_size, predictor)
         self.fitness_fn = fitness_fn
