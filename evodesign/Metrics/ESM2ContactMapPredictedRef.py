@@ -28,13 +28,7 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float, Optional[float]]:
-        error = np.array(
-            [
-                np.sqrt(np.mean((ref_contact_map[i] - predicted_contacts[i]) ** 2))
-                for i in range(ref_contact_map.shape[0])
-            ]
-        )
-        rmse = np.mean(error)
+        rmse = np.sqrt(np.mean((ref_contact_map - predicted_contacts) ** 2))
         norm = None
         if self.normalization is not None:
             norm = self.normalization.do(rmse)

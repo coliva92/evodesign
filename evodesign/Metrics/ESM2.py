@@ -55,7 +55,7 @@ class ESM2(RetrievableSettings):
 
         predicted_contacts_matrix = result["contacts"][0].cpu().numpy()
         np.fill_diagonal(predicted_contacts_matrix, 1.0)
-        row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=0)
+        row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=1)
         predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
         # free GPU memory
