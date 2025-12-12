@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from Bio.PDB import Superimposer
 from typing import List, Dict, Optional, Tuple
 from Bio.PDB.Atom import Atom
@@ -7,7 +7,7 @@ from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
 
 
-class RMSD(Metric):
+class RMSD(StructuralMetric):
 
     # singleton superimposer
     _default_superimposer = None
@@ -18,9 +18,7 @@ class RMSD(Metric):
     ):
         super().__init__()
         self.normalization = normalization
-
-    def uses_predictor(self) -> bool:
-        return True
+        return
 
     def do(
         self,

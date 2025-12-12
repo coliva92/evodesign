@@ -7,7 +7,7 @@ from typing import Union, Tuple, Dict
 class Metric(RetrievableSettings, ABC):
 
     @abstractmethod
-    def uses_predictor(self) -> bool:
+    def requires_structure_predictor(self) -> bool:
         raise RuntimeError
 
     @abstractmethod

@@ -1,18 +1,15 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from .ContextInterface import ContextInterface
 from typing import List, Tuple, Dict
 from Bio.PDB.Atom import Atom
 import evodesign.Utils.Normalization as Norm
 
 
-class Cyclization(Metric):
+class Cyclization(StructuralMetric):
 
     _mean = 1.3248119
     _stdev = 0.10498072
     _scaling_factor = 0.05
-
-    def uses_predictor(self) -> bool:
-        return True
 
     def do(
         self,

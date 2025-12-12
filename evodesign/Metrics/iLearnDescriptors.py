@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .NonStructuralMetric import NonStructuralMetric
 from .ContextInterface import ContextInterface
 from typing import Dict
 import numpy.typing as npt
@@ -10,14 +10,11 @@ import numpy.typing as npt
 import os
 
 
-class iLearnDescriptorsRMSE(Metric):
+class iLearnDescriptorsRMSE(NonStructuralMetric):
 
     def __init__(self, method: str) -> None:
         super().__init__()
         self.method = method
-
-    def uses_predictor(self) -> bool:
-        return False
 
     def do(
         self,

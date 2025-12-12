@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from .ContextInterface import ContextInterface
 from Bio.PDB.Atom import Atom
 import numpy as np
@@ -9,7 +9,7 @@ from .Normalization.Reciprocal import Reciprocal
 import itertools
 
 
-class DistanceMap(Metric):
+class DistanceMap(StructuralMetric):
 
     def __init__(
         self,
@@ -19,9 +19,7 @@ class DistanceMap(Metric):
         super().__init__()
         self.ca_atoms_only = ca_atoms_only
         self.normalization = normalization
-
-    def uses_predictor(self) -> bool:
-        return True
+        return
 
     @classmethod
     def compute_map(

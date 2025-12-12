@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 import numpy as np
 from typing import Optional, List, Dict
 from Bio.PDB.Atom import Atom
@@ -6,10 +6,7 @@ from Bio.PDB.Superimposer import Superimposer
 from .ContextInterface import ContextInterface
 
 
-class TMScore(Metric):
-
-    def uses_predictor(self) -> bool:
-        return True
+class TMScore(StructuralMetric):
 
     def normalizing_constant(
         self,

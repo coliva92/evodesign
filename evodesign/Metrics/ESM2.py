@@ -14,9 +14,7 @@ class ESM2(RetrievableSettings):
         gpu_device: Optional[str] = "cuda:0",
     ) -> None:
         self.gpu_device = gpu_device
-
-    def uses_predictor(self) -> bool:
-        return False
+        return
 
     def query_model(
         self,

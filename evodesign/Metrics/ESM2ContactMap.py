@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .NonStructuralMetric import NonStructuralMetric
 from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 from .Normalization.Normalization import Normalization
@@ -6,11 +6,10 @@ from .Normalization.Reciprocal import Reciprocal
 from .DistanceMap import DistanceMap
 import numpy as np
 import numpy.typing as npt
-from Bio.PDB.Atom import Atom
-from typing import Optional, Dict, Tuple, List
+from typing import Optional, Dict, Tuple
 
 
-class ESM2ContactMap(Metric):
+class ESM2ContactMap(NonStructuralMetric):
 
     def __init__(
         self,
@@ -22,9 +21,7 @@ class ESM2ContactMap(Metric):
         self.esm_model = esm_model
         self.distance_threshold = distance_threshold
         self.normalization = normalization
-    
-    def uses_predictor(self) -> bool:
-        return False
+        return
 
     def do(
         self,

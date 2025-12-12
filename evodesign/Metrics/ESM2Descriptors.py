@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .NonStructuralMetric import NonStructuralMetric
 from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 import numpy as np
@@ -8,7 +8,7 @@ from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
 
 
-class ESM2Descriptors(Metric):
+class ESM2Descriptors(NonStructuralMetric):
 
     def __init__(
         self,
@@ -18,10 +18,8 @@ class ESM2Descriptors(Metric):
         super().__init__()
         self.esm_model = esm_model
         self.normalization = normalization
-
-    def uses_predictor(self) -> bool:
-        return False
-
+        return
+    
     def do(
         self,
         model_desc_matrix: npt.NDArray[np.float64],

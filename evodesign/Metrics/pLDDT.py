@@ -1,14 +1,11 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from ..Utils.Chain import Chain
 from .ContextInterface import ContextInterface
 from typing import Dict
 import numpy as np
 
 
-class pLDDT(Metric):
-
-    def uses_predictor(self) -> bool:
-        return True
+class pLDDT(StructuralMetric):
 
     def do(
         self,

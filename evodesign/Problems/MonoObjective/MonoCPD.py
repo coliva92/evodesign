@@ -30,7 +30,7 @@ class MonoCPD(CPD):
         # using a list comprehension in this case is faster than vectorizing
         sequences = [ChainFactory.sequence_numpy_to_str(seq_numpy) for seq_numpy in x]
         # Note: x.shape = population_size x sequence_length
-        if self.fitness_fn.uses_predictor():
+        if self.fitness_fn.requires_structure_predictor():
             self.predictor.do(sequences, self.predictor_directory)
             base_dir = self.predictor_directory.prediction_pdbs_dir
             prefix = self.predictor_directory.prefix

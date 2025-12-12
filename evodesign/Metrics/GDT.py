@@ -1,4 +1,4 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from typing import List, Optional
 import numpy as np
 from Bio.PDB.Atom import Atom
@@ -6,16 +6,13 @@ from Bio.PDB.Superimposer import Superimposer
 from .ContextInterface import ContextInterface
 
 
-class GDT(Metric):
+class GDT(StructuralMetric):
 
     def __init__(
         self,
         cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0],
     ) -> None:
         self.cutoffs = cutoffs
-
-    def uses_predictor(self) -> bool:
-        return True
 
     def do(
         self,

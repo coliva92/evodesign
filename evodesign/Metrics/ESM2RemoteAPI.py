@@ -19,9 +19,7 @@ class ESM2RemoteAPI(ESM2):
             gpu_device=None,
         )
         self.requester = requester
-
-    def uses_predictor(self) -> bool:
-        return False
+        return
 
     def query_model(
         self,

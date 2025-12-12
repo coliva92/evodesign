@@ -1,16 +1,13 @@
-from .Metric import Metric
+from .StructuralMetric import StructuralMetric
 from .ContextInterface import ContextInterface
 from typing import Dict
 import pyrosetta
 import os
 
 
-class RosettaEnergyFunction(Metric):
+class RosettaEnergyFunction(StructuralMetric):
 
     _score_fn = None
-
-    def uses_predictor(self) -> bool:
-        return True
 
     def do(
         self,
