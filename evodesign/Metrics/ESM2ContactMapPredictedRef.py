@@ -47,8 +47,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         ref_contact_map = context.get_extra_param_value("esm2_ref_contact_map")
         if ref_contact_map is None:
             ref_sequence = context.get_reference_chain().sequence
-            _, predicted_contacts = self.esm_model.query_model(ref_sequence)
-            context.set_extra_param_value("esm2_ref_contact_map", predicted_contacts)
+            _, ref_contact_map = self.esm_model.query_model(ref_sequence)
+            context.set_extra_param_value("esm2_ref_contact_map", ref_contact_map)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
             model_sequence = context.get_model_chain().sequence
