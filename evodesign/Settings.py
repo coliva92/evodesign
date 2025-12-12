@@ -3,10 +3,10 @@ import copy
 import json
 
 
-def load(settings_path: str):
+def read_json(settings_path: str) -> dict:
     with open(settings_path, "rt", encoding="utf-8") as json_file:
         settings = json.load(json_file)
-    return parse(settings)
+    return settings
 
 
 def parse(settings: dict):
@@ -20,3 +20,8 @@ def parse(settings: dict):
         if type(item) == list and type(item[0]) == dict:
             params[key] = [parse(s) for s in item] if type(item[0]) == dict else item
     return actual_class(**params)
+
+
+def load(settings_path: str):
+    settings = read_json(settings_path)
+    return parse(settings)

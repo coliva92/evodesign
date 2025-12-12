@@ -2,10 +2,10 @@ from argparse import ArgumentParser
 from evodesign.Utils.Statistics import create_convergence_plot, get_final_solution_indices
 from evodesign.Settings import parse
 from evodesign.Utils.ChainFactory import ChainFactory, AMINO_ACIDS
+from evodesign.Settings import read_json
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
-import json
 from typing import List
 
 
@@ -53,8 +53,7 @@ def compute_statistics_from_folder(
         fig.savefig(f"{filename_prefix}.svg", format="svg")
         fig.clf()
         plt.clf()
-        with open(json_path, "rt", encoding="utf-8") as f:
-            settings = json.load(f)
+        settings = read_json(json_path)
         term_names = get_term_names(settings)
         term_values = data["term_values"]
         i, j = get_final_solution_indices(generations, fitness_values)
