@@ -15,7 +15,7 @@ class AlternatingMonoCPD(MonoCPD):
         predictor: Predictor,
         predictor_directory: DirectoryManager,
     ):
-        self.__init__(ref_chain, fitness_fn, predictor, predictor_directory)
+        super().__init__(ref_chain, fitness_fn, predictor, predictor_directory)
         self.alt_fitness_fn = alt_fitness_fn
 
     def alternate_fitness_fn(self, fitness_fn: FitnessFunction) -> None:
