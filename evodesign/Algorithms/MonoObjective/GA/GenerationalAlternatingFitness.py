@@ -13,7 +13,6 @@ from ....GA.Crossover.Crossover import Crossover
 from ....GA.Crossover.UniformCrossover import UniformCrossover
 from ....GA.Mutation.Mutation import Mutation
 from ....GA.Mutation.RandomResetting import RandomResetting
-from pymoo.algorithms.soo.nonconvex.ga import GA
 
 
 class GenerationalAlternatingFitness(Generational):
@@ -41,6 +40,10 @@ class GenerationalAlternatingFitness(Generational):
         )
         self.alt_fitness_fn = alt_fitness_fn
         self.alt_fitness_fn_every_nth_generation = alt_fitness_fn_every_nth_generation
+        return
+
+    def num_terms(self):
+        return max(self.fitness_fn.num_terms(), self.alt_fitness_fn.num_terms())
 
     def _create_problem(
         self,
@@ -50,6 +53,7 @@ class GenerationalAlternatingFitness(Generational):
         return AlternatingMonoCPD(
             ref_chain,
             self.fitness_fn,
+            self.alt_fitness_fn,
             self.predictor,
             predictor_directory,
         )
