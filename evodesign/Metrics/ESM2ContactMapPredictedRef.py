@@ -3,7 +3,6 @@ from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
-from .DistanceMap import DistanceMap
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, Dict, Tuple
