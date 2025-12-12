@@ -3,7 +3,7 @@ from ..Utils.APIRequester import APIRequester
 from ..Utils.Exceptions import *
 
 
-class ESMFoldRemoteApi(ESMFoldInterface):
+class ESMFoldRemoteAPI(ESMFoldInterface):
 
     def __init__(
         self,
