@@ -28,5 +28,5 @@ class MonoFitnessFnAlternator(Callback):
         ):
             problem.alternate_fitness_fn(problem.alt_fitness_fn)
         if self.next_callback is not None:
-            self.next_callback.notify()
+            self.next_callback.notify(algorithm)
         return
