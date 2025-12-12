@@ -1,8 +1,8 @@
 from evodesign.Algorithms.MonoObjective.GA.Generational import Generational
-from evodesign.Utils.StorageManager import StorageManager
+from Callbacks.StorageManager import StorageManager
 from evodesign.Utils.DirectoryManager import DirectoryManager
-from evodesign.Utils.Chain import ChainFactory
-from evodesign.Prediction.ESMFoldRemoteApi import ESMFoldRemoteApi
+from evodesign.Utils.ChainFactory import ChainFactory
+from Prediction.ESMFoldRemoteAPI import ESMFoldRemoteAPI
 from evodesign.Fitness.WeightedMean import WeightedMean
 from evodesign.Metrics.RMSD import RMSD
 from evodesign.Metrics.GDT import GDT
@@ -18,10 +18,10 @@ if __name__ == "__main__":
     target_pdb_path = os.path.join(example_folder, "1y32.pdb")
     max_generations = 2
     population_size = 5
-    ref_chain = ChainFactory.create(target_pdb_path)
+    ref_chain = ChainFactory.create_from_pdb(target_pdb_path)
     directory = DirectoryManager(example_folder)
     ga = Generational(
-        predictor=ESMFoldRemoteApi(),
+        predictor=ESMFoldRemoteAPI(),
         fitness_fn=WeightedMean(
             [RMSD(), GDT(cutoffs=[0.5, 1, 2, 4])],
             ["Metrics.RMSD.rmsd", "Metrics.GDT.gdt"],
