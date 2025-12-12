@@ -11,8 +11,7 @@ from typing import List
 
 def get_fitness_fn_name(settings: dict) -> str:
     algorithm = list(settings.keys())[0]
-    fitness_fn = list(settings[algorithm]["fitness_fn"].keys())[0]
-    f = parse(fitness_fn)
+    f = parse(settings[algorithm]["fitness_fn"])
     return f.name()
 
 
@@ -23,7 +22,9 @@ def get_term_names(settings: dict) -> List[str]:
 
 
 def get_predictor_name(settings: dict) -> str:
-    return list(settings.keys())[0].split(".")[-1]
+    algorithm = list(settings.keys())[0]
+    predictor_name = settings[algorithm]["predictor"]
+    return predictor_name.split(".")[-1]
 
 
 def compute_statistics_from_folder(
@@ -33,6 +34,7 @@ def compute_statistics_from_folder(
     from pathlib import Path
     import os
 
+    df = None
     root_dir = Path(folder_dir)
     for i, run_dir in enumerate(root_dir.iterdir()):
         if not run_dir.is_dir():
