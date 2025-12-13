@@ -23,7 +23,7 @@ def get_term_names(settings: dict) -> List[str]:
 
 def get_predictor_name(settings: dict) -> str:
     algorithm = list(settings.keys())[0]
-    predictor_name = settings[algorithm]["predictor"]
+    predictor_name = settings[algorithm]["predictor"].keys()[0]
     return predictor_name.split(".")[-1]
 
 
