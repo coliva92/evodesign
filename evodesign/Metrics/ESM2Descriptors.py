@@ -26,22 +26,10 @@ class ESM2Descriptors(NonStructuralMetric):
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float, Optional[float]]:
-        # compute the squared error of each residue
-        error = np.array(
-            [
-                np.sqrt(np.mean((ref_desc_matrix[i] - model_desc_matrix[i]) ** 2))
-                for i in range(ref_desc_matrix.shape[0])
-            ]
-        )
-
-        # then compute average over all residues; this is the same as computing
-        # the weighted mean since all residues have the same number of descriptors
-        rmse = np.mean(error)
-
+        rmse = np.sqrt(np.mean((ref_desc_matrix.flatten() - model_desc_matrix.flatten()) ** 2))
         norm = None
         if self.normalization is not None:
             norm = self.normalization.do(rmse)
-
         return rmse, norm
 
     def do_for_fitness_fn(
