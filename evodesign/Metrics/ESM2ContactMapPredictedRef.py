@@ -13,12 +13,10 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
     def __init__(
         self,
         esm_model: ESM2 = ESM2(),
-        distance_threshold: float = 8.0,
         normalization: Optional[Normalization] = Reciprocal(),
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
-        self.distance_threshold = distance_threshold
         self.normalization = normalization
         return
 
