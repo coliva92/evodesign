@@ -12,32 +12,34 @@ class AlphaFoldInterface(Predictor, ABC):
     def predict_single_pdb_file(
         self,
         sequence: str,
-        protein_name: str,
+        protein_name_suffix: str,
         directory: DirectoryManager,
     ) -> None:
-        os.makedirs(directory.model_input_dir, exist_ok=True)
-        os.makedirs(directory.model_output_dir, exist_ok=True)
-        protein_name = f"{directory.prefix}_{protein_name}"
+        directory.create_folders()
+        protein_full_name = directory.protein_full_name(protein_name_suffix)
         input_path = self._create_model_input(
             sequence,
-            protein_name,
+            protein_full_name,
             directory.model_input_dir,
             directory.model_output_dir,
         )
         self.run_inference(
             input_path, directory.model_output_dir, do_batch_inference=False
         )
-        prediction_pdb = self._prediction_pdb_path(
-            protein_name, directory.model_output_dir
+        prediction_pdb_path = self._prediction_pdb_path(
+            protein_full_name, directory.model_output_dir
         )
-        output_pdb_path = os.path.join(directory.prediction_pdbs_dir, f"{protein_name}.pdb")
-        shutil.copyfile(prediction_pdb, output_pdb_path)
+        output_pdb_path = os.path.join(
+            directory.prediction_pdbs_dir, f"{protein_full_name}.pdb"
+        )
+        shutil.copyfile(prediction_pdb_path, output_pdb_path)
+        return
 
     @abstractmethod
     def _create_model_input(
         self,
         sequence: str,
-        protein_name: str,
+        protein_full_name: str,
         input_dir: str,
         output_dir: str,
     ) -> str:
@@ -46,7 +48,7 @@ class AlphaFoldInterface(Predictor, ABC):
     @abstractmethod
     def _prediction_pdb_path(
         self,
-        protein_name: str,
+        protein_full_name: str,
         output_dir: str,
     ) -> str:
         raise NotImplementedError

@@ -11,6 +11,9 @@ class AlphaFold2(AlphaFoldInterface):
         path_to_run_alphafold_py: str,
         mgnify_database_path: str,
         data_dir: str,
+        use_gpu: bool = True,
+        gpu_devices: str = "all",
+        enable_gpu_relax=False,
         max_template_date: str = "2020-05-14",
         model_preset: str = "monomer",
         db_preset: str = "reduced_dbs",
@@ -26,6 +29,9 @@ class AlphaFold2(AlphaFoldInterface):
         self.data_dir = os.path.abspath(
             data_dir
         )  # /media/biocomp/My\ Passport/reduced_dbs
+        self.use_gpu = use_gpu
+        self.gpu_devices = gpu_devices
+        self.enable_gpu_relax = enable_gpu_relax
         self.max_template_date = max_template_date
         self.model_preset = (
             model_preset  # { 'monomer', 'monomer_casp14', 'monomer_ptm', 'multimer' }
@@ -35,22 +41,22 @@ class AlphaFold2(AlphaFoldInterface):
     def _create_model_input(
         self,
         sequence: str,
-        protein_name: str,
+        protein_full_name: str,
         input_dir: str,
         output_dir: str,
     ) -> str:
-        fasta_path = os.path.join(input_dir, f"{protein_name}.fasta")
+        fasta_path = os.path.join(input_dir, f"{protein_full_name}.fasta")
         with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
-            fasta_file.write(f">{protein_name}\n{sequence}\n")
+            fasta_file.write(f">{protein_full_name}\n{sequence}\n")
         self.create_empty_msa(fasta_path, output_dir)
         return fasta_path
 
     def _prediction_pdb_path(
         self,
-        protein_name: str,
+        protein_full_name: str,
         output_dir: str,
     ) -> str:
-        return os.path.join(output_dir, protein_name, "ranked_0.pdb")
+        return os.path.join(output_dir, protein_full_name, "ranked_0.pdb")
 
     def _create_cmd_array(
         self,
@@ -63,6 +69,9 @@ class AlphaFold2(AlphaFoldInterface):
             self.path_to_run_alphafold_py,
             "--use_precomputed_msas=True",
             f"--fasta_paths={input_path}",
+            f"--use_gpu={self.use_gpu}",
+            f"--gpu_devices={self.gpu_devices}",
+            f"--enable_gpu_relax={self.enable_gpu_relax}",
             f"--max_template_date={self.max_template_date}",
             f"--model_preset={self.model_preset}",
             f"--db_preset={self.db_preset}",

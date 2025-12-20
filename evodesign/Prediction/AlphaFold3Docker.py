@@ -54,43 +54,43 @@ class AlphaFold3Docker(AlphaFoldInterface):
         self.run_data_pipeline = run_data_pipeline
         self.max_template_date = max_template_date
         self.gpu_device = gpu_device
-        self.jackhmmer_binary_path = jackhmmer_binary_path
-        self.nhmmer_binary_path = nhmmer_binary_path
-        self.hmmalign_binary_path = hmmalign_binary_path
-        self.hmmsearch_binary_path = hmmsearch_binary_path
-        self.hmmbuild_binary_path = hmmbuild_binary_path
-        self.db_dir = db_dir
-        self.small_bfd_database_path = small_bfd_database_path
-        self.mgnify_database_path = mgnify_database_path
-        self.uniprot_cluster_annot_database_path = uniprot_cluster_annot_database_path
-        self.uniref90_database_path = uniref90_database_path
-        self.ntrna_database_path = ntrna_database_path
-        self.rfam_database_path = rfam_database_path
-        self.rna_central_database_path = rna_central_database_path
-        self.pdb_database_path = pdb_database_path
-        self.seqres_database_path = seqres_database_path
-        self.jax_compilation_cache_dir = jax_compilation_cache_dir
+        self.jackhmmer_binary_path = os.path.abspath(jackhmmer_binary_path)
+        self.nhmmer_binary_path = os.path.abspath(nhmmer_binary_path)
+        self.hmmalign_binary_path = os.path.abspath(hmmalign_binary_path)
+        self.hmmsearch_binary_path = os.path.abspath(hmmsearch_binary_path)
+        self.hmmbuild_binary_path = os.path.abspath(hmmbuild_binary_path)
+        self.db_dir = os.path.abspath(db_dir)
+        self.small_bfd_database_path = os.path.abspath(small_bfd_database_path)
+        self.mgnify_database_path = os.path.abspath(mgnify_database_path)
+        self.uniprot_cluster_annot_database_path = os.path.abspath(uniprot_cluster_annot_database_path)
+        self.uniref90_database_path = os.path.abspath(uniref90_database_path)
+        self.ntrna_database_path = os.path.abspath(ntrna_database_path)
+        self.rfam_database_path = os.path.abspath(rfam_database_path)
+        self.rna_central_database_path = os.path.abspath(rna_central_database_path)
+        self.pdb_database_path = os.path.abspath(pdb_database_path)
+        self.seqres_database_path = os.path.abspath(seqres_database_path)
+        self.jax_compilation_cache_dir = os.path.abspath(jax_compilation_cache_dir)
 
     def _create_model_input(
         self,
         sequence: str,
-        protein_name: str,
+        protein_full_name: str,
         input_dir: str,
         output_dir: str,
     ) -> str:
-        input_json = self.create_input_json(sequence, protein_name)
-        json_path = os.path.join(input_dir, f"{protein_name}.json")
+        input_json = self.create_input_json(sequence, protein_full_name)
+        json_path = os.path.join(input_dir, f"{protein_full_name}.json")
         with open(json_path, "wt", encoding="utf-8") as json_file:
             json.dump(input_json, json_file)
         return json_path
 
     def _prediction_pdb_path(
         self,
-        protein_name: str,
+        protein_full_name: str,
         output_dir: str,
     ) -> str:
-        prediction_dir = os.path.join(output_dir, protein_name)
-        prediction_cif = os.path.join(prediction_dir, f"{protein_name}_model.cif")
+        prediction_dir = os.path.join(output_dir, protein_full_name)
+        prediction_cif = os.path.join(prediction_dir, f"{protein_full_name}_model.cif")
         return convert_cif_to_pdb(prediction_cif, parser=self._parser, io=self._io)
 
     def _create_cmd_array(
@@ -171,12 +171,12 @@ class AlphaFold3Docker(AlphaFoldInterface):
     def create_input_json(
         self,
         sequence: str,
-        protein_name: str,
+        protein_full_name: str,
         structure_id: str = "A",
     ) -> dict:
         # Assume we're only predicting monomeric structures
         return {
-            "name": protein_name,
+            "name": protein_full_name,
             "modelSeeds": self.model_seeds,
             "sequences": [
                 {

@@ -28,7 +28,7 @@ class HighFold2(AlphaFoldInterface):
         self.num_recycle = num_recycle
         self.num_models = num_models
         self.host_url = host_url
-        self.data_dir = data_dir
+        self.data_dir = os.path.abspath(data_dir)
         self.msa_mode = msa_mode
         self.use_dropout = use_dropout
         self.use_gpu_relax = use_gpu_relax
@@ -41,21 +41,21 @@ class HighFold2(AlphaFoldInterface):
     def _create_model_input(
         self,
         sequence: str,
-        protein_name: str,
+        protein_full_name: str,
         input_dir: str,
         output_dir: str,
     ) -> str:
-        fasta_path = os.path.join(input_dir, f"{protein_name}.fasta")
+        fasta_path = os.path.join(input_dir, f"{protein_full_name}.fasta")
         with open(fasta_path, "wt", encoding="utf-8") as fasta_file:
-            fasta_file.write(f">{protein_name}\n{sequence}\n")
+            fasta_file.write(f">{protein_full_name}\n{sequence}\n")
         return fasta_path
 
     def _prediction_pdb_path(
         self,
-        protein_name: str,
+        protein_full_name: str,
         output_dir: str,
     ) -> str:
-        return os.path.join(output_dir, protein_name, "ranked_0.pdb")
+        return os.path.join(output_dir, protein_full_name, "ranked_0.pdb")
 
     def _create_cmd_array(
         self,
