@@ -28,7 +28,7 @@ class HighFold2(AlphaFoldInterface):
         self.num_recycle = num_recycle
         self.num_models = num_models
         self.host_url = host_url
-        self.data_dir = os.path.abspath(data_dir)
+        self.data_dir = os.path.abspath(data_dir) if data_dir is not None else data_dir
         self.msa_mode = msa_mode
         self.use_dropout = use_dropout
         self.use_gpu_relax = use_gpu_relax

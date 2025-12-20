@@ -54,22 +54,83 @@ class AlphaFold3Docker(AlphaFoldInterface):
         self.run_data_pipeline = run_data_pipeline
         self.max_template_date = max_template_date
         self.gpu_device = gpu_device
-        self.jackhmmer_binary_path = os.path.abspath(jackhmmer_binary_path)
-        self.nhmmer_binary_path = os.path.abspath(nhmmer_binary_path)
-        self.hmmalign_binary_path = os.path.abspath(hmmalign_binary_path)
-        self.hmmsearch_binary_path = os.path.abspath(hmmsearch_binary_path)
-        self.hmmbuild_binary_path = os.path.abspath(hmmbuild_binary_path)
-        self.db_dir = os.path.abspath(db_dir)
-        self.small_bfd_database_path = os.path.abspath(small_bfd_database_path)
-        self.mgnify_database_path = os.path.abspath(mgnify_database_path)
-        self.uniprot_cluster_annot_database_path = os.path.abspath(uniprot_cluster_annot_database_path)
-        self.uniref90_database_path = os.path.abspath(uniref90_database_path)
-        self.ntrna_database_path = os.path.abspath(ntrna_database_path)
-        self.rfam_database_path = os.path.abspath(rfam_database_path)
-        self.rna_central_database_path = os.path.abspath(rna_central_database_path)
-        self.pdb_database_path = os.path.abspath(pdb_database_path)
-        self.seqres_database_path = os.path.abspath(seqres_database_path)
-        self.jax_compilation_cache_dir = os.path.abspath(jax_compilation_cache_dir)
+        self.jackhmmer_binary_path = (
+            os.path.abspath(jackhmmer_binary_path)
+            if jackhmmer_binary_path is not None
+            else jackhmmer_binary_path
+        )
+        self.nhmmer_binary_path = (
+            os.path.abspath(nhmmer_binary_path)
+            if nhmmer_binary_path is not None
+            else nhmmer_binary_path
+        )
+        self.hmmalign_binary_path = (
+            os.path.abspath(hmmalign_binary_path)
+            if hmmalign_binary_path is not None
+            else hmmalign_binary_path
+        )
+        self.hmmsearch_binary_path = (
+            os.path.abspath(hmmsearch_binary_path)
+            if hmmsearch_binary_path is not None
+            else hmmsearch_binary_path
+        )
+        self.hmmbuild_binary_path = (
+            os.path.abspath(hmmbuild_binary_path)
+            if hmmbuild_binary_path is not None
+            else hmmbuild_binary_path
+        )
+        self.db_dir = os.path.abspath(db_dir) if db_dir is not None else db_dir
+        self.small_bfd_database_path = (
+            os.path.abspath(small_bfd_database_path)
+            if small_bfd_database_path is not None
+            else small_bfd_database_path
+        )
+        self.mgnify_database_path = (
+            os.path.abspath(mgnify_database_path)
+            if mgnify_database_path is not None
+            else mgnify_database_path
+        )
+        self.uniprot_cluster_annot_database_path = (
+            os.path.abspath(uniprot_cluster_annot_database_path)
+            if uniprot_cluster_annot_database_path is not None
+            else uniprot_cluster_annot_database_path
+        )
+        self.uniref90_database_path = (
+            os.path.abspath(uniref90_database_path)
+            if uniref90_database_path is not None
+            else uniref90_database_path
+        )
+        self.ntrna_database_path = (
+            os.path.abspath(ntrna_database_path)
+            if ntrna_database_path is not None
+            else ntrna_database_path
+        )
+        self.rfam_database_path = (
+            os.path.abspath(rfam_database_path)
+            if rfam_database_path is not None
+            else rfam_database_path
+        )
+        self.rna_central_database_path = (
+            os.path.abspath(rna_central_database_path)
+            if rna_central_database_path is not None
+            else rna_central_database_path
+        )
+        self.pdb_database_path = (
+            os.path.abspath(pdb_database_path)
+            if pdb_database_path is not None
+            else pdb_database_path
+        )
+        self.seqres_database_path = (
+            os.path.abspath(seqres_database_path)
+            if seqres_database_path is not None
+            else seqres_database_path
+        )
+        self.jax_compilation_cache_dir = (
+            os.path.abspath(jax_compilation_cache_dir)
+            if jax_compilation_cache_dir is not None
+            else jax_compilation_cache_dir
+        )
+        return
 
     def _create_model_input(
         self,
