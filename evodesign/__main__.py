@@ -7,12 +7,9 @@ from evodesign.Utils.ChainFactory import ChainFactory
 from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
-import json
-import os
+
 
 Config.warnings["not_compiled"] = False
-
-
 parser = ArgumentParser(
     prog="evodesign",
     description="A rudimentary suite of evolutionary " "algorithms for protein design.",
@@ -56,12 +53,12 @@ parser.add_argument(
 #                     help='path to the JSON file describing the allowed amino acids '
 #                          'for certain positions in the designed sequences')
 args = parser.parse_args()
-with open(args.settings_path, "rt", encoding="utf-8") as json_file:
-    settings = json.load(json_file)
-algorithm = Settings.parse(settings)
-ref_chain = ChainFactory.create_from_pdb(args.target_pdb_path, args.model_id, args.chain_id)
+algorithm = Settings.load(args.settings_path)
+ref_chain = ChainFactory.create_from_pdb(args.target_pdb_path, 
+                                         args.model_id, 
+                                         args.chain_id)
 storage = StorageManager(
-    DirectoryManager(os.path.abspath(args.output_dir), args.jobname),
+    DirectoryManager(args.output_dir, args.jobname),
     algorithm.max_generations,
     algorithm.population_size,
     len(ref_chain.sequence),
