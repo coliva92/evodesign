@@ -13,7 +13,7 @@ class AlphaFold2(AlphaFoldInterface):
         data_dir: str,
         use_gpu: bool = True,
         gpu_devices: str = "all",
-        enable_gpu_relax=False,
+        enable_gpu_relax = False,
         max_template_date: str = "2020-05-14",
         model_preset: str = "monomer",
         db_preset: str = "reduced_dbs",
@@ -67,7 +67,7 @@ class AlphaFold2(AlphaFoldInterface):
         return [
             "python3",
             self.path_to_run_alphafold_py,
-            "--use_precomputed_msas=True",
+            "--use_precomputed_msas=true",
             f"--fasta_paths={input_path}",
             f"--use_gpu={self.use_gpu}",
             f"--gpu_devices={self.gpu_devices}",
