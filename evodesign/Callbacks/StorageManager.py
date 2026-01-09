@@ -146,6 +146,7 @@ class StorageManager(Callback):
         self,
         target_pdb_path: str,
     ) -> None:
+        target_pdb_path = os.path.abspath(target_pdb_path)
         pdb_filename = os.path.basename(target_pdb_path)
         destination = os.path.join(self.directory.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)

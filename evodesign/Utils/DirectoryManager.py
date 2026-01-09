@@ -12,9 +12,9 @@ class DirectoryManager:
         output_dir: str,
         jobname: Optional[str] = None,
     ):
-        self._output_dir = output_dir
+        self._output_dir = os.path.abspath(output_dir)
         if jobname is None:
-            today = datetime.today().strftime("%Y%m%d")
+            today = datetime.today().strftime("%Y%m%d_%H%M%S")
             jobname = f"evodesign_{today}"
         self.jobname = jobname
         self.path = os.path.join(self._output_dir, self.jobname)

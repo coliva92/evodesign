@@ -27,6 +27,7 @@ class ChainFactory:
     ) -> Chain:
         if cls._parser is None:
             cls._parser = PDBParser(QUIET=True)
+        pdb_path = os.path.abspath(pdb_path)
         structure_id = os.path.splitext(os.path.basename(pdb_path))[0]
         structure = cls._parser.get_structure(structure_id, pdb_path)
         if chain_id is None:

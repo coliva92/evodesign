@@ -1,10 +1,11 @@
 import importlib
 import copy
 import json
+import os
 
 
 def read_json(settings_path: str) -> dict:
-    with open(settings_path, "rt", encoding="utf-8") as json_file:
+    with open(os.path.abspath(settings_path), "rt", encoding="utf-8") as json_file:
         settings = json.load(json_file)
     return settings
 
