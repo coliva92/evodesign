@@ -1,11 +1,11 @@
-from .ESM2 import ESM2
+from .ESM2Interface import ESM2Interface
 from ..Utils.APIRequester import APIRequester
 import numpy as np
 import numpy.typing as npt
 from typing import Tuple
 
 
-class ESM2RemoteAPI(ESM2):
+class ESM2RemoteAPI(ESM2Interface):
 
     def __init__(
         self,
@@ -15,9 +15,7 @@ class ESM2RemoteAPI(ESM2):
             json_response_key="results",
         ),
     ) -> None:
-        super().__init__(
-            gpu_device=None,
-        )
+        super().__init__()
         self.requester = requester
         return
 

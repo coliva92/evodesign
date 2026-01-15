@@ -1,8 +1,11 @@
 from .ESMFoldInterface import ESMFoldInterface
+from ..Metrics.ESM2ModelContainer import ESM2ModelContainer
 from typing import Optional
 
 
 class ESMFold(ESMFoldInterface):
+
+    _model = None
 
     def __init__(
         self,
@@ -10,7 +13,9 @@ class ESMFold(ESMFoldInterface):
     ) -> None:
         super().__init__()
         self.gpu_device = gpu_device
-        self._model = None
+        if self._model is None:
+            self._model = ESM2ModelContainer(self.gpu_device)
+        return
 
     def predict_single_pdb_str(
         self,
@@ -18,15 +23,6 @@ class ESMFold(ESMFoldInterface):
     ) -> str:
         import torch
 
-        if self._model is None:
-            import esm
-
-            self._model = esm.pretrained.esmfold_v1()
-            self._model.eval()
-            if torch.cuda.is_available() and self.gpu_device is not None:
-                device = torch.device(self.gpu_device)
-                self._model = self._model.to(device)
-                self._model.set_chunk_size(128)
         with torch.no_grad():
-            prediction = self._model.infer_pdb(sequence)
+            prediction = self._model.esmfold_model.infer_pdb(sequence)
         return prediction
