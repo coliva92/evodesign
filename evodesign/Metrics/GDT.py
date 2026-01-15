@@ -1,5 +1,5 @@
 from .StructuralMetric import StructuralMetric
-from typing import List, Optional
+from typing import List, Optional, Dict
 import numpy as np
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
@@ -12,6 +12,7 @@ class GDT(StructuralMetric):
         self,
         cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0],
     ) -> None:
+        super().__init__()
         self.cutoffs = cutoffs
 
     def do(
@@ -32,7 +33,7 @@ class GDT(StructuralMetric):
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ):
+    ) -> Dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_reference_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")
