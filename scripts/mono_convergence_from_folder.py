@@ -41,7 +41,7 @@ def compute_statistics_from_folder(
             continue
         npz_path = run_dir / "results.npz"
         json_path = run_dir / "settings.json"
-        pdb_path = list(root_dir.glob("*.pdb"))[0]
+        pdb_path = list(run_dir.glob("*.pdb"))[0]
         if not npz_path.exists() or not json_path.exists() or not pdb_path.exists():
             continue
         data = np.load(npz_path)
