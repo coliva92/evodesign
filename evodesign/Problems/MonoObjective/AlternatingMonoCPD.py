@@ -30,22 +30,17 @@ class AlternatingMonoCPD(MonoCPD):
     ) -> npt.NDArray[np.float64]:
         f = self._functions_list[self._curr_fn_idx]
         g = self._functions_list[int(not self._curr_fn_idx)]
-        term_values = []
-        for i in range(len(self._functions_list)):
-            if i == self._curr_fn_idx:
-                term_values.append(
-                    [f.do(model_chain, self.ref_chain) for model_chain in model_chains]
-                    + [None for _ in range(g.num_terms())]
-                )
-            else:
-                term_values.append(
-                    [None for _ in range(g.num_terms())]
-                    + [
-                        f.do(model_chain, self.ref_chain)
-                        for model_chain in model_chains
-                    ]
-                )
-        return np.array(term_values)
+        terms_matrix = []
+        for model_chain in model_chains:
+            term_values = f.do(model_chain, self.ref_chain)
+            row = [ term_values[0] ]
+            for i in range(len(self._functions_list)):
+                if i == self._curr_fn_idx:
+                    row.extend(term_values[1:].tolist())
+                else:
+                    row.extend([ 0 for _ in range(g.num_terms()) ])
+            terms_matrix.append(row)            
+        return np.array(terms_matrix)
 
     def alternate_fitness_fn(self) -> None:
         self._curr_fn_idx = int(not self._curr_fn_idx)
