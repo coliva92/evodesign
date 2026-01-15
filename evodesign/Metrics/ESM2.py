@@ -15,8 +15,8 @@ class ESM2(ESM2Interface):
         gpu_device: Optional[str] = "cuda:0",
     ) -> None:
         self.gpu_device = gpu_device
-        if self._model is None:
-            self._model = ESM2ModelContainer(self.gpu_device)
+        if ESM2._model is None:
+            ESM2._model = ESM2ModelContainer(self.gpu_device)
         return
 
     def query_model(

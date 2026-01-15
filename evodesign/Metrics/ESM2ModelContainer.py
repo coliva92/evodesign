@@ -12,18 +12,25 @@ class ESM2ModelContainer:
         gpu_device: Optional[str] = "cuda:0",
     ) -> None:
         self.gpu_device = gpu_device
-        if self.esmfold_model is not None and self.esm_model is not None:
+        if (
+            ESM2ModelContainer.esmfold_model is not None
+            and ESM2ModelContainer.esm_model is not None
+        ):
             return
 
         import torch
         import esm
 
-        self.esmfold_model = esm.pretrained.esmfold_v1()
-        self.esmfold_model.eval()
+        ESM2ModelContainer.esmfold_model = esm.pretrained.esmfold_v1()
+        ESM2ModelContainer.esmfold_model.eval()
         if torch.cuda.is_available() and self.gpu_device is not None:
             device = torch.device(self.gpu_device)
-            self.esmfold_model = self.esmfold_model.to(device)
-            self.esmfold_model.set_chunk_size(128)
-        self.esm_model = self.esmfold_model.esm
-        self.batch_converter = self.esmfold_model.esm_dict.get_batch_converter()
+            ESM2ModelContainer.esmfold_model = ESM2ModelContainer.esmfold_model.to(
+                device
+            )
+            ESM2ModelContainer.esmfold_model.set_chunk_size(128)
+        ESM2ModelContainer.esm_model = ESM2ModelContainer.esmfold_model.esm
+        ESM2ModelContainer.batch_converter = (
+            ESM2ModelContainer.esmfold_model.esm_dict.get_batch_converter()
+        )
         return

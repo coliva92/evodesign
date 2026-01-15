@@ -13,8 +13,8 @@ class ESMFold(ESMFoldInterface):
     ) -> None:
         super().__init__()
         self.gpu_device = gpu_device
-        if self._model is None:
-            self._model = ESM2ModelContainer(self.gpu_device)
+        if ESMFold._model is None:
+            ESMFold._model = ESM2ModelContainer(self.gpu_device)
         return
 
     def predict_single_pdb_str(
