@@ -10,6 +10,8 @@ import numpy.typing as npt
 
 class AlternatingMonoCPD(MonoCPD):
 
+    _NUM_FITNESS_FUNCS = 2
+
     def __init__(
         self,
         ref_chain: Chain,
@@ -21,20 +23,19 @@ class AlternatingMonoCPD(MonoCPD):
         super().__init__(ref_chain, fitness_fn, predictor, predictor_directory)
         self.alt_fitness_fn = alt_fitness_fn
         self._curr_fn_idx = 0
-        self._functions_list = [self.fitness_fn, self.alt_fitness_fn]
         return
 
     def _compute_term_values(
         self,
         model_chains: List[Chain],
     ) -> npt.NDArray[np.float64]:
-        f = self._functions_list[self._curr_fn_idx]
-        g = self._functions_list[int(not self._curr_fn_idx)]
+        f = self.fitness_fn
+        g = self.alt_fitness_fn
         terms_matrix = []
         for model_chain in model_chains:
             term_values = f.do(model_chain, self.ref_chain)
             row = [ term_values[0] ]
-            for i in range(len(self._functions_list)):
+            for i in range(self._NUM_FITNESS_FUNCS):
                 if i == self._curr_fn_idx:
                     row.extend(term_values[1:].tolist())
                 else:
@@ -44,4 +45,7 @@ class AlternatingMonoCPD(MonoCPD):
 
     def alternate_fitness_fn(self) -> None:
         self._curr_fn_idx = int(not self._curr_fn_idx)
+        tmp = self.fitness_fn
+        self.fitness_fn = self.alt_fitness_fn
+        self.alt_fitness_fn = tmp
         return
