@@ -4,7 +4,9 @@ from ...Prediction.Predictor import Predictor
 from ...Utils.Chain import Chain
 from ...Utils.ChainFactory import ChainFactory
 from ...Prediction.DirectoryManager import DirectoryManager
+from typing import List
 import numpy as np
+import numpy.typing as npt
 import os
 
 
@@ -19,6 +21,18 @@ class MonoCPD(CPD):
     ):
         super().__init__(ref_chain, predictor, predictor_directory)
         self.fitness_fn = fitness_fn
+        return
+
+    def _compute_term_values(
+        self,
+        model_chains: List[Chain],
+    ) -> npt.NDArray[np.float64]:
+        return np.array(
+            [
+                self.fitness_fn.do(model_chain, self.ref_chain)
+                for model_chain in model_chains
+            ]
+        )
 
     def _evaluate(
         self,
@@ -44,11 +58,7 @@ class MonoCPD(CPD):
             model_chains = [
                 ChainFactory.create_from_numpy(sequence_numpy) for sequence_numpy in x
             ]
-        tmp_terms = np.array(
-            [
-                self.fitness_fn.do(model_chain, self.ref_chain)
-                for model_chain in model_chains
-            ]
-        )
+        tmp_terms = self._compute_term_values(model_chains)
         self.term_values = tmp_terms[:, 1:]
         out["F"] = -1.0 * tmp_terms[:, 0]
+        return

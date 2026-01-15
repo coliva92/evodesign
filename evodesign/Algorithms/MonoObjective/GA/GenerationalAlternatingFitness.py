@@ -43,7 +43,7 @@ class GenerationalAlternatingFitness(Generational):
         return
 
     def num_terms(self):
-        return max(self.fitness_fn.num_terms(), self.alt_fitness_fn.num_terms())
+        return self.fitness_fn.num_terms() + self.alt_fitness_fn.num_terms()
 
     def _create_problem(
         self,
@@ -63,5 +63,6 @@ class GenerationalAlternatingFitness(Generational):
         storage: StorageManager,
     ) -> Callback:
         return MonoFitnessFnAlternator(
-            self.alt_fitness_fn, self.alt_fitness_fn_every_nth_generation, storage
+            self.alt_fitness_fn_every_nth_generation,
+            storage,
         )

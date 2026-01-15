@@ -9,12 +9,10 @@ class MonoFitnessFnAlternator(Callback):
 
     def __init__(
         self,
-        alt_fitness_fn: FitnessFunction,
         alt_every_nth_generation: int = 10,
         next_callback: Optional[Callback] = None,
     ):
         super().__init__()
-        self.alt_fitness_fn = alt_fitness_fn
         self.next_callback = next_callback
         self.alt_every_nth_generation = alt_every_nth_generation
         return
@@ -26,7 +24,7 @@ class MonoFitnessFnAlternator(Callback):
             algorithm.n_gen % self.alt_every_nth_generation == 0
             or algorithm.n_gen % self.alt_every_nth_generation == 1
         ):
-            problem.alternate_fitness_fn(problem.alt_fitness_fn)
+            problem.alternate_fitness_fn()
         if self.next_callback is not None:
             self.next_callback.notify(algorithm)
         return
