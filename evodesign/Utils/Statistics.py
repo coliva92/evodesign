@@ -114,17 +114,21 @@ def create_convergence_plot(
     norm_data = {
         "Generation": data["Generation"],
         "Best fitness": data["Best fitness"],
+        "Diversity loss": None,
+        "New sequences": data["New sequences"] / population_size,
         "Amino acid loss": data["Amino acid loss"] / ALPHABET_SIZE,
         "Population identity": data["Population identity"] / sequence_length,
-        "New sequences": data["New sequences"] / population_size,
     }
+    norm_data["Diversity loss"] = (
+        norm_data["Amino acid loss"] + norm_data["Population identity"]
+    ) / 2
     columns = list(data.keys())
     sns_data = {
         "Generation": NUM_SERIES * norm_data["Generation"].tolist(),
         "Series values": np.concatenate(
-            [norm_data[col] for col in columns[1:]]
+            [norm_data[col] for col in columns[1:3]]
         ).tolist(),
-        "Series": sum(([col] * num_generations for col in columns[1:]), []),
+        "Series": sum(([col] * num_generations for col in columns[1:3]), []),
     }
     df = pd.DataFrame.from_dict(sns_data)
     ax = sns.lineplot(
