@@ -1,4 +1,3 @@
-
 import pandas as pd
 import seaborn as sns
 from matplotlib.axes import Axes
@@ -34,41 +33,47 @@ def get_best_fitness_evolution(
     return np.maximum.accumulate(highest_per_generation)
 
 
+def get_population_amino_acid_loss(
+    population: npt.NDArray[np.int64],
+) -> float:
+    sequence_length = population.shape[1]
+    return np.mean(
+        [
+            ALPHABET_SIZE - len(np.unique(population[:, col]))
+            for col in range(sequence_length)
+        ]
+    )
+
+
 def get_amino_acid_loss_evolution(
     generations: npt.NDArray[np.int64],
 ) -> npt.NDArray[np.float64]:
-    sequence_length = generations.shape[2]
-    unique_counts = np.array(
-        [
-            np.array(
-                [
-                    ALPHABET_SIZE - len(np.unique(pop[:, col]))
-                    for col in range(sequence_length)
-                ]
-            )
-            for pop in generations
-        ]
-    )
-    avg_losses = np.mean(unique_counts, axis=1)
-    return avg_losses
+    return np.array([get_population_amino_acid_loss(pop) for pop in generations])
+
+
+def get_population_identity(
+    population: npt.NDArray[np.int64],
+    sample_size: Optional[int] = None,
+) -> float:
+    population_size = population.shape[0]
+    sample = lambda: np.arange(population_size)
+    if sample_size is not None and sample_size > 0:
+        sample = lambda: np.random.choice(
+            population_size, size=sample_size, replace=False
+        )
+    indices = sample()
+    pop_sample = population[indices, :]
+    identities = np.sum(pop_sample[:, None, :] == pop_sample[None, :, :], axis=2)
+    sum_identity = np.triu(identities, 1).sum()
+    num_pairs = (sample_size * (sample_size - 1)) // 2
+    return sum_identity / num_pairs
 
 
 def get_population_identity_evolution(
     generations: npt.NDArray[np.int64],
     sample_size: Optional[int] = None,
 ) -> npt.NDArray[np.float64]:
-    num_generations, population_size = generations.shape[0], generations.shape[1]
-    avg_identity = np.zeros(num_generations, dtype=np.float64)
-    if sample_size is None:
-        sample = lambda pop: pop
-        sample_size = population_size
-    for i in range(num_generations):
-        pop = sample(generations[i])
-        identities = np.sum(pop[:, None, :] == pop[None, :, :], axis=2)
-        sum_identity = np.triu(identities, 1).sum()
-        num_pairs = (sample_size * (sample_size - 1)) // 2
-        avg_identity[i] = sum_identity / num_pairs
-    return avg_identity
+    return np.array([get_population_identity(pop, sample_size) for pop in generations])
 
 
 def get_new_sequences_evolution(
