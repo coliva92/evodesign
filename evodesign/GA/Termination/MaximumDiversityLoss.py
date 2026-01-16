@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 
 
-class MaximumIdentity(MaximumGenerationTermination):
+class MaximumDiversityLoss(MaximumGenerationTermination):
 
     def __init__(
         self,
