@@ -8,7 +8,7 @@ from ....GA.Crossover.Crossover import Crossover
 from ....GA.Crossover.UniformCrossover import UniformCrossover
 from ....GA.Mutation.Mutation import Mutation
 from ....GA.Mutation.RandomResetting import RandomResetting
-from pymoo.termination.max_gen import MaximumGenerationTermination
+from ....GA.Termination.MaximumDiversityLoss import MaximumDiversityLoss
 from ....GA.Replacement.PyMOO.Generational import (
     Generational as GenerationalReplacement,
 )
@@ -32,7 +32,9 @@ class Generational(MonoAlgorithm):
         self.selection = selection
         self.crossover = crossover
         self.mutation = mutation
-        self._termination = MaximumGenerationTermination(self.max_generations)
+        self._termination = MaximumDiversityLoss(
+            self.max_generations, max_similarity=0.9, sample_size=30
+        )
         self._replacement = GenerationalReplacement()
 
     def _create_algorithm(self) -> GA:
