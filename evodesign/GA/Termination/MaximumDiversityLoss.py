@@ -24,7 +24,7 @@ class MaximumDiversityLoss(MaximumGenerationTermination):
 
     def _update(self, algorithm):
         progress = super()._update(algorithm)
-        if progress >= 1.0:
+        if progress >= 1.0 or algorithm.n_iter % 10 != 0:
             return progress
         population = np.array([solution for solution in algorithm.pop.get("X")])
         d1 = get_population_amino_acid_loss(population) / ALPHABET_SIZE
