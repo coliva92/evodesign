@@ -7,7 +7,7 @@ from typing import Optional, Tuple
 
 
 ALPHABET_SIZE = 20
-NUM_SERIES = 4
+NUM_SERIES = 3
 
 
 def get_final_solution_indices(
@@ -122,13 +122,13 @@ def create_convergence_plot(
     norm_data["Diversity loss"] = (
         norm_data["Amino acid loss"] + norm_data["Population identity"]
     ) / 2
-    columns = list(data.keys())
+    columns = list(norm_data.keys())
     sns_data = {
         "Generation": NUM_SERIES * norm_data["Generation"].tolist(),
         "Series values": np.concatenate(
-            [norm_data[col] for col in columns[1:3]]
+            [norm_data[col] for col in columns[1:4]]
         ).tolist(),
-        "Series": sum(([col] * num_generations for col in columns[1:3]), []),
+        "Series": sum(([col] * num_generations for col in columns[1:4]), []),
     }
     df = pd.DataFrame.from_dict(sns_data)
     ax = sns.lineplot(
