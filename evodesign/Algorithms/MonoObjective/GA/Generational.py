@@ -33,7 +33,7 @@ class Generational(MonoAlgorithm):
         self.crossover = crossover
         self.mutation = mutation
         self._termination = MaximumDiversityLoss(
-            self.max_generations, max_similarity=0.99, sample_size=30
+            self.max_generations, max_similarity=0.95, sample_size=30
         )
         self._replacement = GenerationalReplacement()
 
