@@ -154,9 +154,9 @@ class StorageManager(Callback):
         generations = data["generations"]
         fitness_values = data["fitness_values"]
         term_values = data["term_values"]
-        assert generations.shape == self.generations.shape
-        assert fitness_values.shape == self.fitness_values.shape
-        assert term_values.shape[:2] == self.term_values[:2]
+        assert(generations.shape == self.generations.shape)
+        assert(fitness_values.shape == self.fitness_values.shape)
+        assert(term_values.shape[:2] == self.term_values.shape[:2])
         if term_values.shape[2] != self.term_values.shape[2]:
             # hay que cambiar el tamaño de term_values
             term_values = self.resize_array_z_axis(self.term_values, term_values)
