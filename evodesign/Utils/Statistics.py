@@ -61,6 +61,8 @@ def get_population_identity(
         sample = lambda: np.random.choice(
             population_size, size=sample_size, replace=False
         )
+    else:
+        sample_size = population_size
     indices = sample()
     pop_sample = population[indices, :]
     identities = np.sum(pop_sample[:, None, :] == pop_sample[None, :, :], axis=2)
