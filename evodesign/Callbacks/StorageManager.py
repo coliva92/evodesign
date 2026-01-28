@@ -90,9 +90,7 @@ class StorageManager(Callback):
             term_values=self.term_values,
         )
         # save RNG for reproduction/resuming
-        self.save_rng_state(
-            np.random.get_state(), self.directory.last_rng_state_path
-        )
+        self.save_rng_state(np.random.get_state(), self.directory.last_rng_state_path)
         # save the settings for reproduction/resuming
         # save the algorithm for resuming later
         self.save_pymoo_algorithm(algorithm)
@@ -153,9 +151,19 @@ class StorageManager(Callback):
 
     def load_results_npz(self) -> None:
         data = np.load(self.directory.results_npz_path)
-        self.generations = data["generations"]
-        self.fitness_values = data["fitness_values"]
-        self.term_values = data["term_values"]
+        generations = data["generations"]
+        fitness_values = data["fitness_values"]
+        term_values = data["term_values"]
+        assert generations.shape == self.generations.shape
+        assert fitness_values.shape == self.fitness_values.shape
+        assert term_values.shape[:2] == self.term_values[:2]
+        if term_values.shape[2] != self.term_values.shape[2]:
+            # hay que cambiar el tamaño de term_values
+            term_values = self.resize_array_z_axis(self.term_values, term_values)
+        self.generations = generations
+        self.fitness_values = fitness_values
+        self.term_values = term_values
+        return
 
     def load_rng_state(
         self,
@@ -207,3 +215,31 @@ class StorageManager(Callback):
                     self.delete_file(file_path)
                     continue
                 self.delete_folder(file_path)
+
+    def resize_array_z_axis(
+        self,
+        target_array: npt.NDArray[np.float64],
+        source_array: npt.NDArray[np.float64],
+    ) -> npt.NDArray[np.float64]:
+        """
+        Resizes source_array (B) to match the shape of target_array (A)
+        along the 3rd dimension.
+        """
+        M, N, L = target_array.shape
+        _, _, Z = source_array.shape
+        if L == Z:
+            return source_array
+
+        # Case 1: Target is smaller (Shrink/Truncate)
+        # We simply slice the array to keep the first L entries.
+        if L < Z:
+            return source_array[:, :, :L]
+        # Case 2: Target is larger (Expand/Pad)
+        # We create a new array filled with -1.0 and copy the original data into it.
+        elif L > Z:
+            # Initialize new B with -1s
+            new_B = np.full((M, N, L), -1.0)
+            # Copy the old data into the beginning of the new array
+            new_B[:, :, :Z] = source_array
+            return new_B
+        return
