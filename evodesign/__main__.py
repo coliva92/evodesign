@@ -67,8 +67,8 @@ storage = StorageManager(
 )
 try:
     # resuming from a previous execution
-    algorithm._algorithm = storage.load_pymoo_algorithm()
     storage.load_results_npz()
+    algorithm._algorithm = storage.load_pymoo_algorithm()
     algorithm._algorithm.n_gen += 1
     if algorithm._algorithm.termination.n_max_gen < algorithm.max_generations:
         # extending from a previously completed execution
