@@ -4,7 +4,7 @@ from ...Prediction.Predictor import Predictor
 from ...Utils.Chain import Chain
 from ...Utils.ChainFactory import ChainFactory
 from ...Prediction.DirectoryManager import DirectoryManager
-from typing import List
+from typing import List, Optional
 import numpy as np
 import numpy.typing as npt
 import os
@@ -18,8 +18,9 @@ class MonoCPD(CPD):
         fitness_fn: FitnessFunction,
         predictor: Predictor,
         predictor_directory: DirectoryManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ):
-        super().__init__(ref_chain, predictor, predictor_directory)
+        super().__init__(ref_chain, predictor, predictor_directory, aa_profile)
         self.fitness_fn = fitness_fn
         return
 

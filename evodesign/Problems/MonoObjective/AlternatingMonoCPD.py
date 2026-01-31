@@ -3,7 +3,7 @@ from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
 from ...Utils.Chain import Chain
 from ...Prediction.DirectoryManager import DirectoryManager
-from typing import List
+from typing import List, Optional
 import numpy as np
 import numpy.typing as npt
 
@@ -19,8 +19,9 @@ class AlternatingMonoCPD(MonoCPD):
         alt_fitness_fn: FitnessFunction,
         predictor: Predictor,
         predictor_directory: DirectoryManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ):
-        super().__init__(ref_chain, fitness_fn, predictor, predictor_directory)
+        super().__init__(ref_chain, fitness_fn, predictor, predictor_directory, aa_profile)
         self.alt_fitness_fn = alt_fitness_fn
         self._curr_fn_idx = 0
         return

@@ -14,6 +14,9 @@ from ....GA.Replacement.PyMOO.Generational import (
 )
 from ....Callbacks.StorageManager import StorageManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
+import numpy as np
+import numpy.typing as npt
+from typing import Optional
 
 
 class Generational(MonoAlgorithm):
@@ -53,10 +56,14 @@ class Generational(MonoAlgorithm):
         self,
         ref_chain: Chain,
         storage: StorageManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
         **kwargs,
     ):
         if self._algorithm is None or self._algorithm.termination is None:
             return super().run(
-                ref_chain, storage, **{**{"termination": self._termination}, **kwargs}
+                ref_chain,
+                storage,
+                aa_profile,
+                **{**{"termination": self._termination}, **kwargs},
             )
         return super().run(ref_chain, storage, **kwargs)

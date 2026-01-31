@@ -13,6 +13,9 @@ from ....GA.Crossover.Crossover import Crossover
 from ....GA.Crossover.UniformCrossover import UniformCrossover
 from ....GA.Mutation.Mutation import Mutation
 from ....GA.Mutation.RandomResetting import RandomResetting
+from typing import Optional
+import numpy as np
+import numpy.typing as npt
 
 
 class GenerationalAlternatingFitness(Generational):
@@ -49,6 +52,7 @@ class GenerationalAlternatingFitness(Generational):
         self,
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ) -> AlternatingMonoCPD:
         return AlternatingMonoCPD(
             ref_chain,
@@ -56,6 +60,7 @@ class GenerationalAlternatingFitness(Generational):
             self.alt_fitness_fn,
             self.predictor,
             predictor_directory,
+            aa_profile,
         )
 
     def _callbacks_chain(

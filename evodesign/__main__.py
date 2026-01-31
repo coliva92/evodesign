@@ -4,8 +4,8 @@ import evodesign.Settings as Settings
 from evodesign.Utils.DirectoryManager import DirectoryManager
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Utils.ChainFactory import ChainFactory
-from Utils.Profile import load_profile
-from .Utils.Exceptions import *
+from evodesign.Utils.Profile import load_profile
+from evodesign.Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
 
@@ -59,9 +59,6 @@ parser.add_argument(
 )
 args = parser.parse_args()
 algorithm = Settings.load(args.settings_path)
-if args.profile_path is not None:
-    aa_profile = load_profile(args.profile_path)
-    algorithm._problem.aa_profile = aa_profile
 ref_chain = ChainFactory.create_from_pdb(
     args.target_pdb_path, args.model_id, args.chain_id
 )
@@ -102,7 +99,9 @@ except FileNotFoundError:
     storage.save_target_pdb(args.target_pdb_path)
 while True:
     try:
-        algorithm.run(ref_chain, storage)
+        if args.profile_path is not None:
+            aa_profile = load_profile(args.profile_path)
+        algorithm.run(ref_chain, storage, aa_profile)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         # Cleanup, then retry
         storage.delete_non_essential_files_and_folders()

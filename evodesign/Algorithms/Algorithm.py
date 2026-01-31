@@ -9,6 +9,9 @@ from pymoo.core.problem import Problem as PyMOOProblem
 from pymoo.core.callback import Callback
 from pymoo.optimize import minimize
 from pymoo.operators.sampling.rnd import IntegerRandomSampling
+import numpy as np
+import numpy.typing as npt
+from typing import Optional
 
 
 class Algorithm(RetrievableSettings, ABC):
@@ -36,6 +39,7 @@ class Algorithm(RetrievableSettings, ABC):
         self,
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ) -> PyMOOProblem:
         raise NotImplementedError
 
@@ -53,11 +57,12 @@ class Algorithm(RetrievableSettings, ABC):
         self,
         ref_chain: Chain,
         storage: StorageManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
         **kwargs,
     ):
         if self._algorithm is None:
             self._algorithm = self._create_algorithm()
-        self._problem = self._create_problem(ref_chain, storage.predictor_directory)
+        self._problem = self._create_problem(ref_chain, storage.predictor_directory, aa_profile)
         results = minimize(
             self._problem,
             self._algorithm,
