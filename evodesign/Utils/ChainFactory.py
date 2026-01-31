@@ -38,6 +38,7 @@ class ChainFactory:
         sequence_numpy = cls.sequence_str_to_numpy(sequence)
         backbone_atoms = cls.get_backbone_atoms(structure, model_id, chain_id)
         ca_atoms = cls.get_ca_atoms(structure, model_id, chain_id)
+        residues = cls.get_residues(structure, model_id, chain_id)
         return Chain(
             sequence,
             sequence_numpy,
@@ -45,6 +46,7 @@ class ChainFactory:
             model_id,
             chain_id,
             pdb_path,
+            residues,
             backbone_atoms,
             ca_atoms,
         )
