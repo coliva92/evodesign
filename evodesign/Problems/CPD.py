@@ -4,6 +4,8 @@ from ..Prediction.Predictor import Predictor
 from ..Utils.Chain import Chain
 from ..Prediction.DirectoryManager import DirectoryManager
 import numpy as np
+import numpy.typing as npt
+from typing import Optional
 
 
 class CPD(Problem, ABC):
@@ -13,6 +15,7 @@ class CPD(Problem, ABC):
         ref_chain: Chain,
         predictor: Predictor,
         predictor_directory: DirectoryManager,
+        aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ):
         super().__init__(
             n_var=len(ref_chain.sequence),
@@ -27,3 +30,5 @@ class CPD(Problem, ABC):
         self.predictor = predictor
         self.predictor_directory = predictor_directory
         self.term_values = None
+        self.aa_profile = aa_profile
+        return

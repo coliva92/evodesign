@@ -4,6 +4,7 @@ import evodesign.Settings as Settings
 from evodesign.Utils.DirectoryManager import DirectoryManager
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Utils.ChainFactory import ChainFactory
+from Utils.Profile import load_profile
 from .Utils.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
@@ -47,16 +48,23 @@ parser.add_argument(
 parser.add_argument(
     "-j", "--jobname", type=str, default=None, help="the name for the current job"
 )
-# parser.add_argument('-r', '--sequence_restrictions',
-#                     type=str,
-#                     default=None,
-#                     help='path to the JSON file describing the allowed amino acids '
-#                          'for certain positions in the designed sequences')
+parser.add_argument(
+    "-p",
+    "--profile_path",
+    type=str,
+    default=None,
+    help="path to the text file describing the probability of "
+    "allowed each amino acids on each positions in the "
+    "designed sequences",
+)
 args = parser.parse_args()
 algorithm = Settings.load(args.settings_path)
-ref_chain = ChainFactory.create_from_pdb(args.target_pdb_path, 
-                                         args.model_id, 
-                                         args.chain_id)
+if args.profile_path is not None:
+    aa_profile = load_profile(args.profile_path)
+    algorithm._problem.aa_profile = aa_profile
+ref_chain = ChainFactory.create_from_pdb(
+    args.target_pdb_path, args.model_id, args.chain_id
+)
 storage = StorageManager(
     DirectoryManager(args.output_dir, args.jobname),
     algorithm.max_generations,

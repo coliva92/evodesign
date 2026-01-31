@@ -27,6 +27,7 @@ class DirectoryManager:
         self.git_commit_hash_path = os.path.join(self.path, "git_commit_hash.txt")
         self.predictor_input_dir = os.path.join(self.path, "predictor_input")
         self.predictor_output_dir = os.path.join(self.path, "predictor_output")
+        self.profile_path = os.path.join(self.path, "aa_profile.txt")
         self._essential_files = {
             self.results_npz_path,
             self.pymoo_algorithm_bin_path,
@@ -34,7 +35,9 @@ class DirectoryManager:
             self.last_rng_state_path,
             self.settings_json_path,
             self.git_commit_hash_path,
+            self.profile_path
         }
+        return
 
     def is_essential_file_or_folder(
         self,

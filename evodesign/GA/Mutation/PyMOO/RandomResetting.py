@@ -1,3 +1,5 @@
+from ....Algorithms.ProfileIntegerSampling import ProfileIntegerSampling
+from ....Utils.AminoAcids import AMINO_ACIDS_INT_ALPHABET
 from pymoo.core.mutation import Mutation
 from pymoo.core.variable import Real
 from pymoo.core.problem import Problem
@@ -8,8 +10,6 @@ import numpy.typing as npt
 
 class RandomResetting(Mutation):
 
-    AMINO_ACIDS_ALPHABET = np.array(range(20), dtype=np.int64)
-
     def __init__(
         self,
         prob: float,
@@ -18,6 +18,7 @@ class RandomResetting(Mutation):
         super().__init__()
         self.prob = Real(prob, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.prob_var = Real(prob_var, bounds=(0.0, 1.0), strict=(0.0, 1.0))
+        self.sampler = ProfileIntegerSampling()
 
     def _do(
         self,
@@ -25,8 +26,13 @@ class RandomResetting(Mutation):
         X: npt.NDArray[np.int64],
         **kwargs,
     ):
-        mask = np.random.random(X.shape) < self.prob_var.value
-        mutations = np.random.choice(self.AMINO_ACIDS_ALPHABET[1:], size=X.shape)
+        if problem.aa_profile is None:
+            mask = np.random.random(X.shape) < self.prob_var.value
+            mutations = np.random.choice(AMINO_ACIDS_INT_ALPHABET[1:], size=X.shape)
+        else:
+            mutations = self.sampler.generate_mutant_sequences(
+                X.shape[0], problem.aa_profile
+            )
         Xp = deepcopy(X)
-        Xp[mask] = (X[mask] + mutations[mask]) % len(self.AMINO_ACIDS_ALPHABET)
+        Xp[mask] = (X[mask] + mutations[mask]) % len(AMINO_ACIDS_INT_ALPHABET)
         return Xp

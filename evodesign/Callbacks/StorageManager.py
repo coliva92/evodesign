@@ -1,6 +1,7 @@
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from ..Utils.DirectoryManager import DirectoryManager
+from ..Utils.Profile import save_profile
 from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 import numpy as np
 import numpy.typing as npt
@@ -94,6 +95,9 @@ class StorageManager(Callback):
         # save the settings for reproduction/resuming
         # save the algorithm for resuming later
         self.save_pymoo_algorithm(algorithm)
+        # save the profile
+        save_profile(algorithm.problem.aa_profile, self.directory.profile_path)
+        return
 
     def save_rng_state(
         self,
