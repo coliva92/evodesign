@@ -8,9 +8,10 @@ from .ContextInterface import ContextInterface
 
 class TMScore(StructuralMetric):
 
-    def __init__(self, weights: Optional[List[float]] = None):
+    def __init__(self, residue_weights: Optional[List[float]] = None):
         super().__init__()
-        self.weights = weights
+        self.residue_weights = residue_weights
+        self._backbone_weights = None
         return
 
     def normalizing_constant(
@@ -26,15 +27,19 @@ class TMScore(StructuralMetric):
         superimposer: Optional[Superimposer] = None,
         **kwargs,
     ) -> float:
-        if self.weights is None:
-            self.weights = len(model_backbone) * [1.0]
+        if self.residue_weights is not None and self._backbone_weights is None:
+            self._backbone_weights = []
+            for i in range(len(self.residue_weights)):
+                w = self.residue_weights[i] / 4.0
+                self._backbone_weights.extend(4 * [w])
         # assume the backbones are superimposed if no superimposer is provided
         if superimposer is not None:
             superimposer.set_atoms(ref_backbone, model_backbone)
             superimposer.apply(model_backbone)
         d0 = self.normalizing_constant(len(ref_backbone))
         distances = np.array([a - b for a, b in zip(model_backbone, ref_backbone)])
-        tm_score = np.mean(np.array(self.weights) / (1 + (distances / d0) ** 2))
+        tmp = 1 / (1 + (distances / d0) ** 2)
+        tm_score = np.average(tmp, weights=self._backbone_weights)
         return tm_score
 
     def do_for_fitness_fn(
