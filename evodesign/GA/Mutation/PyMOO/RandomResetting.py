@@ -26,8 +26,8 @@ class RandomResetting(Mutation):
         X: npt.NDArray[np.int64],
         **kwargs,
     ):
+        mask = np.random.random(X.shape) < self.prob_var.value
         if problem.aa_profile is None:
-            mask = np.random.random(X.shape) < self.prob_var.value
             mutations = np.random.choice(AMINO_ACIDS_INT_ALPHABET[1:], size=X.shape)
         else:
             mutations = self.sampler.generate_mutant_sequences(
