@@ -27,12 +27,13 @@ class RandomResetting(Mutation):
         **kwargs,
     ):
         mask = np.random.random(X.shape) < self.prob_var.value
+        Xp = deepcopy(X)
         if problem.aa_profile is None:
             mutations = np.random.choice(AMINO_ACIDS_INT_ALPHABET[1:], size=X.shape)
+            Xp[mask] = (X[mask] + mutations[mask]) % len(AMINO_ACIDS_INT_ALPHABET)
         else:
             mutations = self.sampler.generate_mutant_sequences(
                 X.shape[0], problem.aa_profile
             )
-        Xp = deepcopy(X)
-        Xp[mask] = (X[mask] + mutations[mask]) % len(AMINO_ACIDS_INT_ALPHABET)
+            Xp[mask] = mutations[mask]
         return Xp

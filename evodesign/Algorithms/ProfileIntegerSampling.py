@@ -18,5 +18,5 @@ class ProfileIntegerSampling(IntegerRandomSampling):
         cumsum = aa_profile.cumsum(axis=1)
         # We reshape to (L, 1) to enable broadcasting against the (L, 20) cumsum
         rand_vals = np.random.rand(num_mutants, aa_profile.shape[0], 1)
-        mutant_sequences = (cumsum < rand_vals).sum(axis=-1)
+        mutant_sequences = (cumsum <= rand_vals).sum(axis=-1)
         return mutant_sequences
