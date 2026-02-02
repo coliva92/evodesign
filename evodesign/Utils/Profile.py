@@ -39,5 +39,5 @@ def save_profile(profile: npt.NDArray[np.float64], filename: str):
         for i in range(profile.shape[0]):
             txt.write(f"{i}")
             for j in range(profile.shape[1]):
-                txt.write(f" {j}:{profile[i][j]}")
+                txt.write(f" {AMINO_ACIDS[j]}:{profile[i][j]}")
             txt.write("\n")
