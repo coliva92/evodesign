@@ -49,6 +49,11 @@ class ESM2(ESM2Interface):
 
         predicted_contacts_matrix = result["contacts"][0].cpu().numpy()
         np.fill_diagonal(predicted_contacts_matrix, 1.0)
+
+        if submap_indices is not None:
+            desc_matrix = desc_matrix[submap_indices]
+            predicted_contacts_matrix = predicted_contacts_matrix[np.ix_(submap_indices, submap_indices)]
+        
         row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=1)
         predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
@@ -56,9 +61,4 @@ class ESM2(ESM2Interface):
         del tokens
         del result
 
-        if submap_indices is not None:
-            desc_matrix = desc_matrix[np.ix_(submap_indices, submap_indices)]
-            predicted_contacts = predicted_contacts[
-                np.ix_(submap_indices, submap_indices)
-            ]
         return desc_matrix, predicted_contacts
