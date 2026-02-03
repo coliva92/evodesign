@@ -19,7 +19,7 @@ class Cyclization(StructuralMetric):
         # assuming the backbone consists of atoms N-CA-C-O
         distance = model_backbone[-2] - model_backbone[0]
         z_score = Norm.z_score(distance, self._mean, self._stdev)
-        norm_z_score = Norm.reciprocal(z_score, self._scaling_factor)
+        norm_z_score = Norm.reciprocal(abs(z_score), self._scaling_factor)
         return (distance, z_score, norm_z_score)
 
     def do_for_fitness_fn(
