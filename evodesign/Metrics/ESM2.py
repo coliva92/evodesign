@@ -1,6 +1,6 @@
 from .ESM2Interface import ESM2Interface
 from .ESM2ModelContainer import ESM2ModelContainer
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 import torch
 import numpy as np
 import numpy.typing as npt
@@ -23,6 +23,7 @@ class ESM2(ESM2Interface):
         self,
         sequence: str,
         sequence_name: str = "tmp_protein",
+        submap_indices: Optional[List[int]] = None,
     ) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         data = [(sequence_name, sequence)]
         seq_ids, seqs, tokens = self._model.batch_converter(data)
@@ -55,4 +56,9 @@ class ESM2(ESM2Interface):
         del tokens
         del result
 
+        if submap_indices is not None:
+            desc_matrix = desc_matrix[np.ix_(submap_indices, submap_indices)]
+            predicted_contacts = predicted_contacts[
+                np.ix_(submap_indices, submap_indices)
+            ]
         return desc_matrix, predicted_contacts

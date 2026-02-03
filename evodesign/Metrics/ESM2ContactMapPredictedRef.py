@@ -5,7 +5,7 @@ from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict, Tuple, List
 
 
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
@@ -14,10 +14,12 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         self,
         esm_model: ESM2 = ESM2(),
         normalization: Optional[Normalization] = Reciprocal(),
+        submap_indices: Optional[List[int]] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.normalization = normalization
+        self.submap_indices = submap_indices
         return
 
     def do(
@@ -42,7 +44,9 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         )
         if ref_contact_map is None or scaling_factor is None:
             ref_sequence = context.get_reference_chain().sequence
-            _, ref_contact_map = self.esm_model.query_model(ref_sequence)
+            _, ref_contact_map = self.esm_model.query_model(
+                ref_sequence, submap_indices=self.submap_indices
+            )
             a, b = np.min(ref_contact_map), np.max(ref_contact_map)
             scaling_factor = 1 / (b - a)
             context.set_extra_param_value(
@@ -55,7 +59,7 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         if predicted_contacts is None:
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, predicted_contacts = self.esm_model.query_model(
-                model_sequence
+                model_sequence, self.submap_indices
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value(
