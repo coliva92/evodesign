@@ -44,14 +44,14 @@ class ESM2Descriptors(NonStructuralMetric):
         if ref_desc_matrix is None:
             ref_sequence = context.get_reference_chain().sequence
             ref_desc_matrix, _ = self.esm_model.query_model(
-                ref_sequence, self.submap_indices
+                ref_sequence, submap_indices=self.submap_indices
             )
             context.set_extra_param_value("esm2_ref_desc_matrix", ref_desc_matrix)
         model_desc_matrix = context.get_extra_param_value("esm2_model_desc_matrix")
         if model_desc_matrix is None:
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, model_contact_map = self.esm_model.query_model(
-                model_sequence, self.submap_indices
+                model_sequence, submap_indices=self.submap_indices
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
