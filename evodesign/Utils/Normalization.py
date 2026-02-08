@@ -22,3 +22,7 @@ def z_score(
     stdev: float,
 ) -> float:
     return (x - mean_value) / stdev
+
+
+def cos_norm(x: float, offset: float, power: float) -> float:
+    return ((np.cos(x-offset)+1)/2)**power

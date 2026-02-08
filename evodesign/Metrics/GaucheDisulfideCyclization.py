@@ -1,0 +1,128 @@
+from .StructuralMetric import StructuralMetric
+from .ContextInterface import ContextInterface
+from Bio.PDB.Residue import Residue
+from Bio.PDB.Atom import Atom
+from typing import List, Tuple, Dict
+import evodesign.Utils.Normalization as Norm
+from ..Utils.Geometry import find_atoms_in_residue, compute_dihedral_angle
+import numpy as np
+
+
+class GaucheDisulfideCyclization(StructuralMetric):
+
+    _bond_lengths = {
+        "SG-SG": 2.00,
+        "CB-CB": 3.8,
+    }
+    _bond_stdevs = {
+        "SG-SG": 0.1,
+        "CB-CB": 0.2,
+    }
+    _bond_scaling_factors = {"SG-SG": 1.0, "CB-CB": 1.0}
+    _torsion_angles = {
+        "SG-SG": [
+            np.deg2rad(60),
+            np.deg2rad(300),
+            np.deg2rad(120),
+            np.deg2rad(240),
+        ],
+        "CA-CB": [
+            np.deg2rad(90),
+            np.deg2rad(270),
+            np.deg2rad(30),
+            np.deg2rad(330),
+        ]
+    }
+
+    def evaluate_bond_length(
+        self, a: Atom, b: Atom, bond_name: str
+    ) -> Tuple[float, float, float]:
+        distance = a - b
+        avg = self._bond_lengths[bond_name]
+        stdev = self._bond_stdevs[bond_name]
+        z_score = Norm.z_score(distance, avg, stdev)
+        norm_z_score = Norm.reciprocal(abs(z_score), self._bond_scaling_factors[bond_name])
+        return (distance, z_score, norm_z_score)
+
+    def evaluate_ss_dihedral(
+        self, cb1: Atom, s1: Atom, s2: Atom, cb2: Atom
+    ) -> Tuple[float, float]:
+        x = compute_dihedral_angle(cb1, s1, s2, cb2)
+        values = np.transpose([4*[x], self._torsion_angles["SG-SG"], 4*[360]])
+        norm_values = np.apply_along_axis(lambda v: Norm.cos_norm(v[0], v[1], v[2]), 1, values)
+        return (np.rad2deg(x), np.sum(norm_values))
+
+    def evaluate_ca_cb_dihedral(
+        self, c: Atom, ca: Atom, cb: Atom, s: Atom
+    ) -> Tuple[float, float]:
+        x = compute_dihedral_angle(c, ca, cb, s)
+        values = np.transpose([4*[x], self._torsion_angles["CA-CB"], 4*[360]])
+        norm_values = np.apply_along_axis(lambda v: Norm.cos_norm(v[0], v[1], v[2]), 1, values)
+        return (np.rad2deg(x), np.sum(norm_values))
+
+    def do(
+        self,
+        model_residues: List[Residue],
+        **kwargs,
+    ) -> Tuple[float]:
+        amino_terminal = model_residues[0]
+        tmp = find_atoms_in_residue(amino_terminal, ["C", "CA", "CB", "SG"])
+        c1, ca1, cb1, s1 = tmp[0], tmp[1], tmp[2], tmp[3]
+        carboxyl_terminal = model_residues[-1]
+        tmp = find_atoms_in_residue(carboxyl_terminal, ["C", "CA", "CB", "SG"])
+        c2, ca2, cb2, s2 = tmp[0], tmp[1], tmp[2], tmp[3]
+        ss_distance, ss_z_score, ss_norm_z_score = self.evaluate_bond_length(
+            s1, s2, "SG-SG"
+        )
+        cb_distance, cb_z_score, cb_norm_z_score = self.evaluate_bond_length(
+            cb1, cb2, "CB-CB"
+        )
+        x1_a, norm_x1_a = self.evaluate_ca_cb_dihedral(c1, ca1, cb1, s1)
+        x1_b, norm_x1_b = self.evaluate_ca_cb_dihedral(c2, ca2, cb2, s2)
+        x3, norm_x3 = self.evaluate_ss_dihedral(cb1, s1, s2, cb2)
+        ss_total_score = np.mean(
+            [
+                ss_norm_z_score,
+                cb_norm_z_score,
+                norm_x1_a,
+                norm_x1_b,
+                norm_x3,
+            ]
+        )
+        return (
+            ss_distance,
+            ss_z_score,
+            ss_norm_z_score,
+            cb_distance,
+            cb_z_score,
+            cb_norm_z_score,
+            x1_a,
+            norm_x1_a,
+            x1_b,
+            norm_x1_b,
+            x3,
+            norm_x3,
+            ss_total_score,
+        )
+
+    def do_for_fitness_fn(
+        self,
+        context: ContextInterface,
+    ) -> Dict[str, float]:
+        model_residues = context.get_model_chain().residues
+        results = self.do(model_residues)
+        return {
+            "ss_cyclization": results[0],
+            "ss_z_score": results[1],
+            "ss_norm_z_score": results[2],
+            "cb_bond": results[3],
+            "cb_z_score": results[4],
+            "cb_norm_z_score": results[5],
+            "torsion_ca_cb_1": results[6],
+            "norm_torsion_ca_cb_1": results[7],
+            "torsion_ca_cb_2": results[8],
+            "norm_torsion_ca_cb_2": results[9],
+            "torsion_ss": results[10],
+            "norm_torsion_ss": results[11],
+            "ss_cyclization_total_score": results[12],
+        }
