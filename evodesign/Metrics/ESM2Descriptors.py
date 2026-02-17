@@ -30,7 +30,7 @@ class ESM2Descriptors(NonStructuralMetric):
         **kwargs,
     ) -> float:
         v = np.array([ 
-            Norm.cos_distance(model_desc_matrix[i], ref_desc_matrix[i]) 
+            Norm.cos_similarity(model_desc_matrix[i], ref_desc_matrix[i]) 
             for i in range(ref_desc_matrix.shape[0]) 
         ])
         # rmse = np.sqrt(
