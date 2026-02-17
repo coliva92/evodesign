@@ -44,6 +44,9 @@ class LengthDisulfideCyclization(StructuralMetric):
         carboxyl_terminal = model_residues[-1]
         tmp = find_atoms_in_residue(carboxyl_terminal, ["CB", "SG"])
         cb2, s2 = tmp[0], tmp[1]
+        ss_distance, ss_z_score, ss_norm_z_score = self.evaluate_bond_length(
+            s1, s2, "SG-SG"
+        )
         h1_distance, h1_z_score, h1_norm_z_score = self.evaluate_bond_length(
             s1, cb2, "SG-CB"
         )
@@ -52,12 +55,15 @@ class LengthDisulfideCyclization(StructuralMetric):
         )
         ss_total_score = np.mean(
             [
+                ss_norm_z_score,
                 h1_norm_z_score,
                 h2_norm_z_score,
             ]
         )
         return (
-            s1 - s2,
+            ss_distance,
+            ss_z_score,
+            ss_norm_z_score,
             h1_distance,
             h1_z_score,
             h1_norm_z_score,
@@ -75,11 +81,13 @@ class LengthDisulfideCyclization(StructuralMetric):
         results = self.do(model_residues)
         return {
             "ss_cyclization": results[0],
-            "h1_distance": results[1],
-            "h1_z_score": results[2],
-            "h1_norm_z_score": results[3],
-            "h2_distance": results[4],
-            "h2_z_score": results[5],
-            "h2_norm_z_score": results[6],
-            "ss_cyclization_total_score": results[7],
+            "ss_z_score": results[1],
+            "ss_norm_z_score": results[2],
+            "h1_distance": results[3],
+            "h1_z_score": results[4],
+            "h1_norm_z_score": results[5],
+            "h2_distance": results[6],
+            "h2_z_score": results[7],
+            "h2_norm_z_score": results[8],
+            "ss_cyclization_total_score": results[9],
         }
