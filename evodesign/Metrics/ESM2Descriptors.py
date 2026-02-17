@@ -6,6 +6,7 @@ import numpy.typing as npt
 from typing import Optional, Dict, Tuple, List
 from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
+import evodesign.Utils.Normalization as Norm
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -28,13 +29,18 @@ class ESM2Descriptors(NonStructuralMetric):
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float, Optional[float]]:
-        rmse = np.sqrt(
-            np.mean((ref_desc_matrix.flatten() - model_desc_matrix.flatten()) ** 2)
-        )
-        norm = None
-        if self.normalization is not None:
-            norm = self.normalization.do(rmse)
-        return rmse, norm
+        v = np.array([ 
+            Norm.cos_distance(model_desc_matrix[i], ref_desc_matrix[i]) 
+            for i in range(ref_desc_matrix.shape[0]) 
+        ])
+        # rmse = np.sqrt(
+        #     np.mean((ref_desc_matrix.flatten() - model_desc_matrix.flatten()) ** 2)
+        # )
+        # norm = None
+        # if self.normalization is not None:
+        #     norm = self.normalization.do(rmse)
+        # return rmse, norm
+        return v.mean()
 
     def do_for_fitness_fn(
         self,
@@ -55,8 +61,10 @@ class ESM2Descriptors(NonStructuralMetric):
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
-        rmse, norm = self.do(model_desc_matrix, ref_desc_matrix)
-        return {
-            "rmse": rmse,
-            "norm_rmse": norm,
-        }
+        sim = self.do(model_desc_matrix, ref_desc_matrix)
+        return { "cos_similarity": sim }
+        # rmse, norm = self.do(model_desc_matrix, ref_desc_matrix)
+        # return {
+        #     "rmse": rmse,
+        #     "norm_rmse": norm,
+        # }
