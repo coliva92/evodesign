@@ -32,5 +32,5 @@ def cos_norm(x: float, offset: float, power: float) -> float:
 def cos_similarity(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:
     n1 = np.linalg.norm(u)
     n2 = np.linalg.norm(v)
-    w = np.dot(u, v) / n1*n2
+    w = np.dot(u, v) / (n1*n2)
     return (1 + w) / 2
