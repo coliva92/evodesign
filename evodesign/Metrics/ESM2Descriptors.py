@@ -28,7 +28,7 @@ class ESM2Descriptors(NonStructuralMetric):
         model_desc_matrix: npt.NDArray[np.float64],
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float, Optional[float]]:
+    ) -> float:
         v = np.array([ 
             Norm.cos_distance(model_desc_matrix[i], ref_desc_matrix[i]) 
             for i in range(ref_desc_matrix.shape[0]) 

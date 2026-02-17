@@ -29,8 +29,8 @@ def cos_norm(x: float, offset: float, power: float) -> float:
     return ((np.cos(x-offset)+1)/2)**power
 
 
-def cos_distance(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:
+def cos_similarity(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:
     n1 = np.linalg.norm(u)
     n2 = np.linalg.norm(v)
     w = np.dot(u, v) / n1*n2
-    return (1 - w) / 2
+    return (1 + w) / 2
