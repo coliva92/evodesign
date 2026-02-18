@@ -1,13 +1,12 @@
 from evodesign.Algorithms.MonoObjective.GA.Generational import Generational
-from Callbacks.StorageManager import StorageManager
-from evodesign.Utils.DirectoryManager import DirectoryManager
-from evodesign.Utils.ChainFactory import ChainFactory
-from Prediction.ESMFoldRemoteAPI import ESMFoldRemoteAPI
+from evodesign.Callbacks.StorageManager import StorageManager
+from evodesign.DirectoryManager import DirectoryManager
+from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Prediction.ESMFoldRemoteAPI import ESMFoldRemoteAPI
 from evodesign.Fitness.WeightedMean import WeightedMean
 from evodesign.Metrics.RMSD import RMSD
-from evodesign.Metrics.GDT import GDT
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
-from evodesign.Utils.Exceptions import *
+from evodesign.System.Exceptions import *
 from requests import ConnectTimeout
 import numpy as np
 import os
@@ -23,11 +22,11 @@ if __name__ == "__main__":
     ga = Generational(
         predictor=ESMFoldRemoteAPI(),
         fitness_fn=WeightedMean(
-            [RMSD(), GDT(cutoffs=[0.5, 1, 2, 4])],
-            ["Metrics.RMSD.rmsd", "Metrics.GDT.gdt"],
+            [RMSD()],
+            ["Metrics.RMSD.rmsd", "Metrics.RMSD.norm_rmsd"],
             [0, 1],
         ),
-        mutation=RandomResetting(sequence_mutation_prob=0.16667),
+        mutation=RandomResetting(sequence_mutation_prob=0.1),
         max_generations=max_generations,
         population_size=population_size,
     )

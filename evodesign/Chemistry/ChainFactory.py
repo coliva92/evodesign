@@ -1,4 +1,4 @@
-from .AminoAcids import to_numpy, to_str
+from .Sequences import to_numpy, to_str
 from typing import List, Optional
 from .Chain import Chain
 from Bio.PDB.Structure import Structure

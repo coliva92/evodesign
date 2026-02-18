@@ -1,5 +1,5 @@
 from .ESM2Interface import ESM2Interface
-from ..Utils.APIRequester import APIRequester
+from ..System.APIRequester import APIRequester
 import numpy as np
 import numpy.typing as npt
 from typing import Tuple, Optional, List

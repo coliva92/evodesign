@@ -3,7 +3,7 @@ from ..RetrievableSettings import RetrievableSettings
 from .DirectoryManager import DirectoryManager
 from typing import List
 import os
-from ..Utils.Exceptions import HttpGatewayTimeout
+from ..System.Exceptions import HttpGatewayTimeout
 from requests.exceptions import ConnectTimeout
 
 

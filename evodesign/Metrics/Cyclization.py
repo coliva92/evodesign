@@ -2,7 +2,7 @@ from .StructuralMetric import StructuralMetric
 from .ContextInterface import ContextInterface
 from typing import List, Tuple, Dict
 from Bio.PDB.Atom import Atom
-import evodesign.Utils.Normalization as Norm
+from Metrics.Normalization.Formulas import z_score as compute_z, reciprocal
 
 
 class Cyclization(StructuralMetric):
@@ -18,8 +18,8 @@ class Cyclization(StructuralMetric):
     ) -> Tuple[float]:
         # assuming the backbone consists of atoms N-CA-C-O
         distance = model_backbone[-2] - model_backbone[0]
-        z_score = Norm.z_score(distance, self._mean, self._stdev)
-        norm_z_score = Norm.reciprocal(abs(z_score), self._scaling_factor)
+        z_score = compute_z(distance, self._mean, self._stdev)
+        norm_z_score = reciprocal(abs(z_score), self._scaling_factor)
         return (distance, z_score, norm_z_score)
 
     def do_for_fitness_fn(

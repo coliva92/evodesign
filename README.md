@@ -1,8 +1,8 @@
 # EvoDesign
 
-This is a rudimentary Python framework for implementing and testing different evolutionary algorithms for protein design.
-In the context of this framework, the goal of protein design is to find the amino acid sequence that folds into a given target structure. 
-To determine if a given sequence would indeed fold into the desired structure, the evolutionary algorithms implemented in EvoDesign use a structure prediction model (e.g. AlphaFold, ESMFold, etc.).
+This is a Python framework for implementing and testing different evolutionary algorithms for protein design.
+In the context of this framework, the goal of protein design is to find the amino acid sequence that folds into a given target structure and satisfies other design requirements. 
+To determine if a given sequence would indeed fold into the desired structure, the evolutionary algorithms implemented in EvoDesign use a deep learning structure prediction model (e.g. AlphaFold, ESMFold, etc.).
 EvoDesign is built on top of the [PyMOO library](https://pymoo.org/).
 
 ## Installation
@@ -122,7 +122,7 @@ These files are stored mainly for reproduction purposes.
 - The `pymoo_algorithm.bin` file stores the state of the PyMOO evolutionary algorithm in the last iteration.
 - The `results.npz` file stores the sequences and fitness values produced by the evolutionary algorithm in each iteration. See below for more details.
 - The `settings.json` file is a copy of the settings file that was provided as input to the `python -m evodesign` command.
-- The `.pdb` file is a copy of the target protein PDB file that was provided as input to the `python -m evodesign` command. In this example, this file is named `target_protein.pdb`.
+- The `*.pdb` file is a copy of the target protein PDB file that was provided as input to the `python -m evodesign` command. In this example, this file is named `target_protein.pdb`.
 
 By default, these files are updated every 10 iterations.
 
@@ -139,14 +139,14 @@ For classic genetic algorithms, the `results.npz` file stores three NumPy arrays
 The JSON file provided in `examples/terminal/settings.json` describe a genetic algorithm with the following characteristics:
 
 - **Individual representation**: a string where each character represents a distinct amino acid type. 
-- **Fitness function**: maximize the GDT value after superimposing the modeled structure with the target structure.
+- **Fitness function**: minimize the RMSD value after superimposing the modeled structure with the target structure.
 - **Population size**: 5 individuals.
-- **Selection**: by binary tournament (omitted on the `settings.json`).
+- **Selection**: by binary tournament (omitted in the `settings.json`).
 - **Number of parents and children**: 2.
-- **Recombination**: Uniform Crossover (omitted on the `settings.json`).
+- **Recombination**: Uniform Crossover (omitted in the `settings.json`).
 - **Mutation**: Random Resetting.
-- **Mutation probability**: 10%.
-- **Replacement**: generational (omitted on the `settings.json`).
+- **Mutation probability**: 0.1.
+- **Replacement**: generational (omitted in the `settings.json`).
 - **Maximum number of generations**: 2.
 
 The omitted items in the JSON file will be filled with the default behavior as described above.

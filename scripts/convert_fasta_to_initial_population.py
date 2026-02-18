@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from evodesign.Settings import read_json, parse
-from evodesign.Utils.ChainFactory import ChainFactory
+from evodesign.Chemistry.ChainFactory import ChainFactory
 import numpy as np
 import os
 from typing import Tuple

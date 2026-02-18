@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
-from evodesign.Utils.Statistics import create_convergence_plot, get_final_solution_indices
+from evodesign.Statistics import create_convergence_plot, get_final_solution_indices
 from evodesign.Settings import parse
-from evodesign.Utils.ChainFactory import ChainFactory, AMINO_ACIDS
+from evodesign.Chemistry.ChainFactory import ChainFactory, AMINO_ACIDS
 from evodesign.Settings import read_json
 import pandas as pd
 import numpy as np
@@ -18,7 +18,7 @@ def get_fitness_fn_name(settings: dict) -> str:
 def get_term_names(settings: dict) -> List[str]:
     algorithm = list(settings.keys())[0]
     fitness_fn = list(settings[algorithm]["fitness_fn"].keys())[0]
-    return ["Fitness"] + settings[algorithm]["fitness_fn"][fitness_fn]["terms"]
+    return settings[algorithm]["fitness_fn"][fitness_fn]["terms"]
 
 
 def get_predictor_name(settings: dict) -> str:

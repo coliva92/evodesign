@@ -1,5 +1,5 @@
 from ..MonoAlgorithm import MonoAlgorithm
-from ....Utils.Chain import Chain
+from ....Chemistry.Chain import Chain
 from ....Fitness.FitnessFunction import FitnessFunction
 from ....Prediction.Predictor import Predictor
 from ....GA.Selection.Selection import Selection

@@ -1,5 +1,5 @@
 from pymoo.termination.max_gen import MaximumGenerationTermination
-from ...Utils.Statistics import (
+from ...Statistics import (
     get_population_amino_acid_loss,
     get_population_identity,
     ALPHABET_SIZE,

@@ -1,5 +1,5 @@
-from ....Algorithms.ProfileIntegerSampling import ProfileIntegerSampling
-from ....Utils.AminoAcids import AMINO_ACIDS_INT_ALPHABET
+from ....Problems.ProfileIntegerSampling import ProfileIntegerSampling
+from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
 from pymoo.core.mutation import Mutation
 from pymoo.core.variable import Real
 from pymoo.core.problem import Problem

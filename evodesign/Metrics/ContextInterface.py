@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..Utils.Chain import Chain
+from ..Chemistry.Chain import Chain
 from typing import Dict
 
 

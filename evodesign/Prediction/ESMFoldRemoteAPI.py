@@ -1,6 +1,6 @@
 from .ESMFoldInterface import ESMFoldInterface
-from ..Utils.APIRequester import APIRequester
-from ..Utils.Exceptions import *
+from ..System.APIRequester import APIRequester
+from ..System.Exceptions import *
 
 
 class ESMFoldRemoteAPI(ESMFoldInterface):

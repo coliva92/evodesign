@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from .Predictor import Predictor
 from .DirectoryManager import DirectoryManager
 from typing import List
-from ..Utils.Subprocess import run_subprocess
+from ..System.Subprocess import run_subprocess
 import os
 import shutil
 

@@ -1,11 +1,11 @@
 from argparse import ArgumentParser
 from pymoo.config import Config
 import evodesign.Settings as Settings
-from evodesign.Utils.DirectoryManager import DirectoryManager
+from DirectoryManager import DirectoryManager
 from evodesign.Callbacks.StorageManager import StorageManager
-from evodesign.Utils.ChainFactory import ChainFactory
-from evodesign.Utils.Profile import load_profile
-from evodesign.Utils.Exceptions import *
+from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Chemistry.Sequences import load_profile
+from evodesign.System.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
 
@@ -99,6 +99,7 @@ except FileNotFoundError:
     storage.save_target_pdb(args.target_pdb_path)
 while True:
     try:
+        aa_profile = None
         if args.profile_path is not None:
             aa_profile = load_profile(args.profile_path)
         algorithm.run(ref_chain, storage, aa_profile)

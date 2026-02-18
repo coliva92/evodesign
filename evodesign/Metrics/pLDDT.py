@@ -1,5 +1,5 @@
 from .StructuralMetric import StructuralMetric
-from ..Utils.Chain import Chain
+from ..Chemistry.Chain import Chain
 from .ContextInterface import ContextInterface
 from typing import Dict
 import numpy as np

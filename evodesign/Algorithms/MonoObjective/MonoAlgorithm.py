@@ -1,6 +1,6 @@
 from ..Algorithm import Algorithm
 from ...Problems.MonoObjective.MonoCPD import MonoCPD
-from ...Utils.Chain import Chain
+from ...Chemistry.Chain import Chain
 from ...Prediction.Predictor import Predictor
 from ...Prediction.DirectoryManager import DirectoryManager
 from ...Fitness.FitnessFunction import FitnessFunction

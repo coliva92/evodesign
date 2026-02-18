@@ -1,7 +1,7 @@
 from .AlphaFoldInterface import AlphaFoldInterface
 from .DirectoryManager import DirectoryManager
-from ..Utils.mmCIF import convert_cif_to_pdb
-from ..Utils.Subprocess import run_subprocess
+from ..Files.mmCIF import convert_cif_to_pdb
+from ..System.Subprocess import run_subprocess
 from Bio.PDB import MMCIFParser, PDBIO
 import os
 import shutil

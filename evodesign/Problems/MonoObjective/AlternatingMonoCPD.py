@@ -1,7 +1,7 @@
 from .MonoCPD import MonoCPD
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
-from ...Utils.Chain import Chain
+from ...Chemistry.Chain import Chain
 from ...Prediction.DirectoryManager import DirectoryManager
 from typing import List, Optional
 import numpy as np

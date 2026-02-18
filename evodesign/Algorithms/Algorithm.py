@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from ..RetrievableSettings import RetrievableSettings
-from ..Utils.Chain import Chain
+from ..Chemistry.Chain import Chain
 from ..Callbacks.StorageManager import StorageManager
 from ..Prediction.Predictor import Predictor
 from ..Prediction.DirectoryManager import DirectoryManager
@@ -8,7 +8,7 @@ from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.problem import Problem as PyMOOProblem
 from pymoo.core.callback import Callback
 from pymoo.optimize import minimize
-from .ProfileIntegerSampling import ProfileIntegerSampling
+from ..Problems.ProfileIntegerSampling import ProfileIntegerSampling
 import numpy as np
 import numpy.typing as npt
 from typing import Optional
@@ -41,10 +41,6 @@ class Algorithm(RetrievableSettings, ABC):
         predictor_directory: DirectoryManager,
         aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ) -> PyMOOProblem:
-        raise NotImplementedError
-
-    @abstractmethod
-    def num_terms(self) -> int:
         raise NotImplementedError
 
     def _callbacks_chain(

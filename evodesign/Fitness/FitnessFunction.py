@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from ..RetrievableSettings import RetrievableSettings
 from ..Metrics.Metric import Metric
 from ..Metrics.Context import Context
-from ..Utils.Chain import Chain
+from ..Chemistry.Chain import Chain
 import numpy as np
 import numpy.typing as npt
 from typing import List

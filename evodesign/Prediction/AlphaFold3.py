@@ -1,5 +1,5 @@
 from .AlphaFold3Docker import AlphaFold3Docker
-from ..Utils.Subprocess import run_subprocess
+from ..System.Subprocess import run_subprocess
 import os
 from typing import List, Optional
 

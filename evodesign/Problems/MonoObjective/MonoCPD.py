@@ -1,8 +1,8 @@
 from ..CPD import CPD
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.Predictor import Predictor
-from ...Utils.Chain import Chain
-from ...Utils.ChainFactory import ChainFactory
+from ...Chemistry.Chain import Chain
+from ...Chemistry.ChainFactory import ChainFactory
 from ...Prediction.DirectoryManager import DirectoryManager
 from typing import List, Optional
 import numpy as np

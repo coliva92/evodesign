@@ -1,5 +1,5 @@
 from .Normalization import Normalization
-from ...Utils.Normalization import sigmoid
+from .Formulas import sigmoid
 
 
 class Sigmoid(Normalization):

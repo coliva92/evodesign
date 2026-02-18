@@ -1,6 +1,6 @@
 from .ContextInterface import ContextInterface
 from .Metric import Metric
-from ..Utils.Chain import Chain
+from ..Chemistry.Chain import Chain
 from typing import Dict
 
 

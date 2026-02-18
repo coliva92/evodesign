@@ -3,10 +3,8 @@ from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict, Tuple, List
-from .Normalization.Normalization import Normalization
-from .Normalization.Reciprocal import Reciprocal
-import evodesign.Utils.Normalization as Norm
+from typing import Optional, Dict, List
+from Metrics.Normalization.Formulas import cos_similarity
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -14,12 +12,10 @@ class ESM2Descriptors(NonStructuralMetric):
     def __init__(
         self,
         esm_model: ESM2 = ESM2(),
-        normalization: Optional[Normalization] = Reciprocal(),
         submap_indices: Optional[List[int]] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
-        self.normalization = normalization
         self.submap_indices = submap_indices
         return
 
@@ -30,16 +26,9 @@ class ESM2Descriptors(NonStructuralMetric):
         **kwargs,
     ) -> float:
         v = np.array([ 
-            Norm.cos_similarity(model_desc_matrix[i], ref_desc_matrix[i]) 
+            cos_similarity(model_desc_matrix[i], ref_desc_matrix[i]) 
             for i in range(ref_desc_matrix.shape[0]) 
         ])
-        # rmse = np.sqrt(
-        #     np.mean((ref_desc_matrix.flatten() - model_desc_matrix.flatten()) ** 2)
-        # )
-        # norm = None
-        # if self.normalization is not None:
-        #     norm = self.normalization.do(rmse)
-        # return rmse, norm
         return v.mean()
 
     def do_for_fitness_fn(
@@ -63,8 +52,3 @@ class ESM2Descriptors(NonStructuralMetric):
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
         sim = self.do(model_desc_matrix, ref_desc_matrix)
         return { "cos_similarity": sim }
-        # rmse, norm = self.do(model_desc_matrix, ref_desc_matrix)
-        # return {
-        #     "rmse": rmse,
-        #     "norm_rmse": norm,
-        # }

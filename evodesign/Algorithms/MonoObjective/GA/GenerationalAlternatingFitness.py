@@ -1,6 +1,6 @@
 from .Generational import Generational
 from pymoo.core.callback import Callback
-from ....Utils.Chain import Chain
+from ....Chemistry.Chain import Chain
 from ....Prediction.DirectoryManager import DirectoryManager
 from ....Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
 from ....Callbacks.StorageManager import StorageManager

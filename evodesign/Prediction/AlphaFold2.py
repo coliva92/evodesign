@@ -1,5 +1,5 @@
 from .AlphaFoldInterface import AlphaFoldInterface
-from ..Utils.Subprocess import run_subprocess
+from ..System.Subprocess import run_subprocess
 import os
 
 
