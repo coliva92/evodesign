@@ -1,7 +1,8 @@
 from argparse import ArgumentParser
 from evodesign.Statistics import create_convergence_plot, get_final_solution_indices
 from evodesign.Settings import parse
-from evodesign.Chemistry.ChainFactory import ChainFactory, AMINO_ACIDS
+from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Chemistry.Sequences import AMINO_ACIDS
 from evodesign.Settings import read_json
 import pandas as pd
 import numpy as np
