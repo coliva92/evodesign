@@ -1,7 +1,6 @@
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from ..Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
-from ..Fitness.FitnessFunction import FitnessFunction
 from typing import Optional
 
 
