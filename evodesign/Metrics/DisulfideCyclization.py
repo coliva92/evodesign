@@ -8,7 +8,7 @@ from ..Chemistry.Geometry import find_atoms_in_residue
 import numpy as np
 
 
-class LengthDisulfideCyclization(StructuralMetric):
+class DisulfideCyclization(StructuralMetric):
 
     _bond_lengths = {
         "SG-SG": 2.03,
