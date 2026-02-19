@@ -4,7 +4,7 @@ from .ESM2 import ESM2
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, Dict, List
-from Metrics.Normalization.Formulas import cos_similarity
+from .Normalization.Formulas import cos_similarity
 
 
 class ESM2Descriptors(NonStructuralMetric):
