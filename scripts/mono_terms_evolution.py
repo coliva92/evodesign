@@ -30,16 +30,17 @@ def terms_evolution_from_folder(
         tmp_names = get_term_names(settings)
         term_names = [tmp_names[j] for j in indices]
         prefix = os.path.join(output_folder_path, run_dir.name)
-        plot_terms_evolution(indices, term_names, f"{prefix}_terms_evolution.png")
+        plot_terms_evolution(npz_path, indices, term_names, f"{prefix}_terms_evolution.png")
 
 
 def plot_terms_evolution(
+    npz_path: Path,
     indices: List[int],
     labels: List[str],
     output_png_path: str,
 ):
     assert len(indices) == len(labels)
-    with np.load("results.npz") as data:
+    with np.load(npz_path) as data:
         term_values = data["term_values"]
         generations = data["generations"]
         fitness_values = data["fitness_values"]
