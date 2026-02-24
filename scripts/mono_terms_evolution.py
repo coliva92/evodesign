@@ -44,7 +44,7 @@ def plot_terms_evolution(
         term_values = data["term_values"]
         generations = data["generations"]
         fitness_values = data["fitness_values"]
-        best = np.zeros((generations.shape[0], len(indices)))
+        best = np.zeros((generations.shape[0], len(indices) + 1))
         last_fitness = 0
         for i in range(generations.shape[0]):
             j = np.argmax(fitness_values[i, :])
