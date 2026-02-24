@@ -53,8 +53,9 @@ def plot_terms_evolution(
                 last_fitness = fitness_values[i, j]
             else:
                 best[i, :] = best[i - 1, :]
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(8, 6))
     plt.plot(best, label=labels)
+    plt.legend()
     plt.savefig(output_png_path)
     plt.clf()
 
