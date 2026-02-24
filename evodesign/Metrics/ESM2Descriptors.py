@@ -25,11 +25,7 @@ class ESM2Descriptors(NonStructuralMetric):
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
     ) -> float:
-        v = np.array([ 
-            cos_similarity(model_desc_matrix[i], ref_desc_matrix[i]) 
-            for i in range(ref_desc_matrix.shape[0]) 
-        ])
-        return v.mean()
+        return cos_similarity(model_desc_matrix.flatten(), ref_desc_matrix.flatten())
 
     def do_for_fitness_fn(
         self,

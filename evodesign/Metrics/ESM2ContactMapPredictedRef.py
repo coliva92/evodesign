@@ -25,7 +25,7 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float, Optional[float]]:
-        return cos_similarity(ref_contact_map.flatten(), predicted_contacts.flatten())
+        return cos_similarity(ref_contact_map, predicted_contacts)
 
     def do_for_fitness_fn(
         self,
