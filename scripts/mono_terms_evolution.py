@@ -54,7 +54,7 @@ def plot_terms_evolution(
             else:
                 best[i, :] = best[i - 1, :]
     plt.figure(figsize=(10, 6))
-    plt.plot(best, labels=labels)
+    plt.plot(best, label=labels)
     plt.savefig(output_png_path)
     plt.clf()
 
