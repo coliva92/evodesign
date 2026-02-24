@@ -48,14 +48,18 @@ def plot_terms_evolution(
         last_fitness = 0
         for i in range(generations.shape[0]):
             j = np.argmax(fitness_values[i, :])
-            if fitness_values[i, j] > last_fitness:
-                best[i, :] = term_values[i, j, indices]
-                last_fitness = fitness_values[i, j]
+            f = fitness_values[i, j]
+            if f > last_fitness:
+                best[i, :] = np.array([f] + term_values[i, j, indices].tolist())
+                last_fitness = f
             else:
                 best[i, :] = best[i - 1, :]
     plt.figure(figsize=(8, 6))
-    plt.plot(best, label=labels)
+    plt.plot(best, label=["Fitness"] + labels)
     plt.legend()
+    plt.xlabel("Generations")
+    plt.ylabel("Series values")
+    plt.tight_layout()
     plt.savefig(output_png_path)
     plt.clf()
 
