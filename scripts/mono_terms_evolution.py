@@ -30,7 +30,7 @@ def terms_evolution_from_folder(
         tmp_names = get_term_names(settings)
         term_names = [tmp_names[j] for j in indices]
         prefix = os.path.join(output_folder_path, run_dir.name)
-        plot_terms_evolution(npz_path, indices, term_names, f"{prefix}_terms_evolution.png")
+        plot_terms_evolution(npz_path, indices, term_names, f"{prefix}_terms_evolution.svg")
 
 
 def plot_terms_evolution(
@@ -54,7 +54,7 @@ def plot_terms_evolution(
             else:
                 best[i, :] = best[i - 1, :]
     plt.figure(figsize=(10, 6))
-    plt.plot(best)
+    plt.plot(best, labels=labels)
     plt.savefig(output_png_path)
     plt.clf()
 
