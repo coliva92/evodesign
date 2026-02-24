@@ -60,8 +60,8 @@ def plot_terms_evolution(
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("input_folder_path", type=str)
-    parser.add_argument("output_folder_path", type=str)
+    parser.add_argument("input_folder", type=str)
+    parser.add_argument("output_folder", type=str)
     parser.add_argument("term_indices", nargs="+", type=int)
     args = parser.parse_args()
     terms_evolution_from_folder(
