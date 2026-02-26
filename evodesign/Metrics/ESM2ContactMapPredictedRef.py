@@ -5,6 +5,7 @@ from .Normalization.Formulas import cos_similarity
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, Dict, Tuple, List
+from .Normalization.Normalization import Normalization
 
 
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
@@ -13,10 +14,12 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         self,
         esm_model: ESM2 = ESM2(),
         submap_indices: Optional[List[int]] = None,
+        regulariaztion: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
+        self.regularization = regulariaztion
         return
 
     def do(
@@ -24,8 +27,12 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         predicted_contacts: npt.NDArray[np.float64],
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float, Optional[float]]:
-        return cos_similarity(ref_contact_map, predicted_contacts)
+    ) -> Tuple[float, float]:
+        cos_sim = cos_similarity(ref_contact_map, predicted_contacts)
+        reg_cos_sim = cos_sim
+        if self.regularization is not None:
+            reg_cos_sim = self.regularization.do(cos_sim)
+        return cos_sim, reg_cos_sim
 
     def do_for_fitness_fn(
         self,
@@ -58,5 +65,5 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
             context.set_extra_param_value(
                 "esm2_predicted_contacts", predicted_contacts / scaling_factor
             )
-        sim = self.do(predicted_contacts, ref_contact_map)
-        return {"cos_similarity": sim}
+        sim, reg_sim = self.do(predicted_contacts, ref_contact_map)
+        return {"cos_similarity": sim, "reg_cos_similarity": reg_sim}

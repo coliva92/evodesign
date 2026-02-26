@@ -3,8 +3,9 @@ from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Tuple
 from .Normalization.Formulas import cos_similarity
+from .Normalization.Normalization import Normalization
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -13,10 +14,12 @@ class ESM2Descriptors(NonStructuralMetric):
         self,
         esm_model: ESM2 = ESM2(),
         submap_indices: Optional[List[int]] = None,
+        regulariaztion: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
+        self.regularization = regulariaztion
         return
 
     def do(
@@ -24,8 +27,12 @@ class ESM2Descriptors(NonStructuralMetric):
         model_desc_matrix: npt.NDArray[np.float64],
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> float:
-        return cos_similarity(model_desc_matrix.flatten(), ref_desc_matrix.flatten())
+    ) -> Tuple[float, float]:
+        cos_sim = cos_similarity(model_desc_matrix.flatten(), ref_desc_matrix.flatten())
+        reg_cos_sim = cos_sim
+        if self.regularization is not None:
+            reg_cos_sim = self.regularization.do(cos_sim)
+        return cos_sim, reg_cos_sim
 
     def do_for_fitness_fn(
         self,
@@ -46,5 +53,5 @@ class ESM2Descriptors(NonStructuralMetric):
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
-        sim = self.do(model_desc_matrix, ref_desc_matrix)
-        return { "cos_similarity": sim }
+        sim, reg_sim = self.do(model_desc_matrix, ref_desc_matrix)
+        return {"cos_similarity": sim, "reg_cos_similarity": reg_sim}

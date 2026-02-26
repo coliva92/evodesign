@@ -12,11 +12,11 @@ class TMScore(StructuralMetric):
     def __init__(
         self,
         residue_weights: Optional[List[float]] = None,
-        normalization: Optional[Normalization] = None,
+        regularization: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.residue_weights = residue_weights
-        self.normalization = normalization
+        self.regularization = regularization
         self._backbone_weights = None
         return
 
@@ -46,10 +46,10 @@ class TMScore(StructuralMetric):
         distances = np.array([a - b for a, b in zip(model_backbone, ref_backbone)])
         tmp = 1 / (1 + (distances / d0) ** 2)
         tm_score = np.average(tmp, weights=self._backbone_weights)
-        norm_tm_score = tm_score
-        if self.normalization is not None:
-            norm_tm_score = self.normalization.do(tm_score)
-        return tm_score, norm_tm_score
+        reg_tm_score = tm_score
+        if self.regularization is not None:
+            reg_tm_score = self.regularization.do(tm_score)
+        return tm_score, reg_tm_score
 
     def do_for_fitness_fn(
         self,
@@ -61,5 +61,5 @@ class TMScore(StructuralMetric):
         if superimposer is None:
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
-        tm_score, norm_tm_score = self.do(model_backbone, ref_backbone, superimposer)
-        return {"tm_score": tm_score, "norm_tm_score": norm_tm_score}
+        tm_score, reg_tm_score = self.do(model_backbone, ref_backbone, superimposer)
+        return {"tm_score": tm_score, "reg_tm_score": reg_tm_score}
