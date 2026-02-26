@@ -13,13 +13,15 @@ class ESM2Descriptors(NonStructuralMetric):
     def __init__(
         self,
         esm_model: ESM2 = ESM2(),
+        regularization_factor: float = 1,
         submap_indices: Optional[List[int]] = None,
-        regulariaztion: Optional[Normalization] = None,
+        normalization: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
+        self.regularization_factor = regularization_factor
         self.submap_indices = submap_indices
-        self.regularization = regulariaztion
+        self.normalization = normalization
         return
 
     def do(
@@ -27,12 +29,13 @@ class ESM2Descriptors(NonStructuralMetric):
         model_desc_matrix: npt.NDArray[np.float64],
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float, float]:
+    ) -> Tuple[float, float, float]:
         cos_sim = cos_similarity(model_desc_matrix.flatten(), ref_desc_matrix.flatten())
-        reg_cos_sim = cos_sim
-        if self.regularization is not None:
-            reg_cos_sim = self.regularization.do(cos_sim)
-        return cos_sim, reg_cos_sim
+        norm_cos_sim = cos_sim
+        if self.normalization is not None:
+            norm_cos_sim = self.normalization.do(cos_sim)
+        reg_cos_sim = norm_cos_sim**self.regularization_factor
+        return cos_sim, norm_cos_sim, reg_cos_sim
 
     def do_for_fitness_fn(
         self,
@@ -53,5 +56,9 @@ class ESM2Descriptors(NonStructuralMetric):
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
-        sim, reg_sim = self.do(model_desc_matrix, ref_desc_matrix)
-        return {"cos_similarity": sim, "reg_cos_similarity": reg_sim}
+        sim, norm_sim, reg_sim = self.do(model_desc_matrix, ref_desc_matrix)
+        return {
+            "cos_similarity": sim,
+            "norm_cos_similarity": norm_sim,
+            "reg_cos_similarity": reg_sim,
+        }
