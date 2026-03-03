@@ -13,15 +13,15 @@ class ESM2Descriptors(NonStructuralMetric):
     def __init__(
         self,
         esm_model: ESM2 = ESM2(),
-        regularization_factor: float = 1,
         submap_indices: Optional[List[int]] = None,
         normalization: Optional[Normalization] = None,
+        regularization: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
-        self.regularization_factor = regularization_factor
         self.submap_indices = submap_indices
         self.normalization = normalization
+        self.regularization = regularization
         return
 
     def do(
@@ -34,7 +34,7 @@ class ESM2Descriptors(NonStructuralMetric):
         norm_cos_sim = cos_sim
         if self.normalization is not None:
             norm_cos_sim = self.normalization.do(cos_sim)
-        reg_cos_sim = norm_cos_sim**self.regularization_factor
+        reg_cos_sim = self.regularization.do(norm_cos_sim)
         return cos_sim, norm_cos_sim, reg_cos_sim
 
     def do_for_fitness_fn(
