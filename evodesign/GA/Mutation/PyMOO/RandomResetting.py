@@ -1,4 +1,4 @@
-from ....Problems.IntegerProfileSampling import ProfileIntegerSampling
+from ....Problems.IntegerProfileSampling import IntegerProfileSampling
 from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
 from pymoo.core.mutation import Mutation
 from pymoo.core.variable import Real
@@ -18,7 +18,7 @@ class RandomResetting(Mutation):
         super().__init__()
         self.prob = Real(prob, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.prob_var = Real(prob_var, bounds=(0.0, 1.0), strict=(0.0, 1.0))
-        self.sampler = ProfileIntegerSampling()
+        self.sampler = IntegerProfileSampling()
 
     def _do(
         self,
