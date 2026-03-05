@@ -12,6 +12,7 @@ from ....Callbacks.StorageManager import StorageManager
 from ....Callbacks.PopulationRestarter import PopulationRestarter
 from pymoo.algorithms.soo.nonconvex.ga import GA
 from pymoo.core.callback import Callback
+from pymoo.termination.max_eval import MaximumFunctionCallTermination
 import numpy as np
 import numpy.typing as npt
 from typing import Optional
@@ -49,7 +50,7 @@ class Micro(MonoAlgorithm):
             )._pymoo_mutation,
             survival=self._replacement,
             eliminate_duplicates=False,
-            termination=("n_eval", self.max_fitness_fn_evals),
+            termination=MaximumFunctionCallTermination(self.max_fitness_fn_evals)
         )
 
     def _callbacks_chain(
