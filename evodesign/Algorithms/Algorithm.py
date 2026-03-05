@@ -8,7 +8,7 @@ from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.problem import Problem as PyMOOProblem
 from pymoo.core.callback import Callback
 from pymoo.optimize import minimize
-from ..Problems.ProfileIntegerSampling import ProfileIntegerSampling
+from ..Problems.IntegerProfileSampling import ProfileIntegerSampling
 import numpy as np
 import numpy.typing as npt
 from typing import Optional
