@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from pymoo.config import Config
 import evodesign.Settings as Settings
-from evodesign.DirectoryManager import DirectoryManager
+from evodesign.System.PathsContainer import PathsContainer
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Sequences import load_profile
@@ -63,7 +63,7 @@ ref_chain = ChainFactory.create_from_pdb(
     args.target_pdb_path, args.model_id, args.chain_id
 )
 storage = StorageManager(
-    DirectoryManager(args.output_dir, args.jobname),
+    PathsContainer.create(args.output_dir, args.jobname),
     algorithm.max_generations,
     algorithm.population_size,
     len(ref_chain.sequence),

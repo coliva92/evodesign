@@ -1,6 +1,6 @@
 from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from ..DirectoryManager import DirectoryManager
+from ..System.PathsContainer import PathsContainer
 from ..Chemistry.Sequences import save_profile
 from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 import numpy as np
@@ -15,7 +15,7 @@ class StorageManager(Callback):
 
     def __init__(
         self,
-        directory: DirectoryManager,
+        directory: PathsContainer,
         num_generations: int,
         population_size: int,
         sequence_length: int,
@@ -215,7 +215,7 @@ class StorageManager(Callback):
     def delete_non_essential_files_and_folders(self) -> None:
         for filename in os.listdir(self.directory.path):
             file_path = os.path.join(self.directory.path, filename)
-            if not self.directory.is_essential_file_or_folder(file_path):
+            if file_path not in self.directory.essential_files:
                 if os.path.isfile(file_path):
                     self.delete_file(file_path)
                     continue
