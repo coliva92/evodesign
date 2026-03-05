@@ -40,7 +40,7 @@ class Micro(MonoAlgorithm):
     def _create_algorithm(self) -> GA:
         return GA(
             pop_size=self.population_size,
-            n_offsprings=self.population_size - 1,
+            n_offsprings=self.population_size,
             sampling=self._sampling,
             selection=self.selection._pymoo_selection,
             crossover=self.crossover._pymoo_crossover,
