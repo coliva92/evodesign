@@ -29,7 +29,7 @@ class Micro(MonoAlgorithm):
         selection: Selection = Tournament(),
         crossover: Crossover = UniformCrossover(),
     ):
-        max_generations = np.ceil(max_fitness_fn_evals / population_size, dtype=np.int64)
+        max_generations = (max_fitness_fn_evals // population_size) + 1
         super().__init__(max_generations, population_size, predictor, fitness_fn)
         self.max_fitness_fn_evals = max_fitness_fn_evals
         self.diversity_loss_tol = diversity_loss_tol
