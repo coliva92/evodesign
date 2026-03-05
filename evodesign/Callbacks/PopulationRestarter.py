@@ -19,7 +19,7 @@ class PopulationRestarter(Callback):
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         population = np.array([solution for solution in algorithm.pop.get("X")])
         d1 = get_population_amino_acid_loss(population) / ALPHABET_SIZE
-        d2 = get_population_identity(population, self.sample_size) / population.shape[1]
+        d2 = get_population_identity(population) / population.shape[1]
         similarity = (d1 + d2) / 2
         if similarity >= self.diversity_loss_tol:
             # get the elite individual
