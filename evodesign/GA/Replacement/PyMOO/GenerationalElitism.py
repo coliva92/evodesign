@@ -19,12 +19,12 @@ class GenerationalElitism(Survival):
     ):
         parents = pop[:n_survive]
         offspring = pop[n_survive:]
-        parent_fitness = parents.get("F")
-        best_idx = np.argmin(parent_fitness[:, 0])
+        parent_fitness = parents.get("F").flatten()
+        best_idx = np.argmin(parent_fitness)
         # we pass [best_idx] so 'elite' remains a PyMOO Population instance
         elite = parents[[best_idx]] 
-        offspring_fitness = offspring.get("F")
-        worst_idx = np.argmax(offspring_fitness[:, 0])
+        offspring_fitness = offspring.get("F").flatten()
+        worst_idx = np.argmax(offspring_fitness)
         # create a boolean mask to remove the worst individual
         keep_mask = np.ones(len(offspring), dtype=bool)
         keep_mask[worst_idx] = False
