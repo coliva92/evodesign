@@ -34,7 +34,8 @@ class ESM2Descriptors(NonStructuralMetric):
         norm_cos_sim = cos_sim
         if self.normalization is not None:
             norm_cos_sim = self.normalization.do(cos_sim)
-        reg_cos_sim = self.regularization.do(norm_cos_sim)
+        if self.regularization is not None:
+            reg_cos_sim = self.regularization.do(norm_cos_sim)
         return cos_sim, norm_cos_sim, reg_cos_sim
 
     def do_for_fitness_fn(
