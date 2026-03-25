@@ -4,8 +4,8 @@ from .ESM2 import ESM2
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, Dict, List, Tuple
-from .Normalization.Formulas import cos_similarity
 from .Normalization.Normalization import Normalization
+from .Normalization.Reciprocal import Reciprocal
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -14,14 +14,12 @@ class ESM2Descriptors(NonStructuralMetric):
         self,
         esm_model: ESM2 = ESM2(),
         submap_indices: Optional[List[int]] = None,
-        normalization: Optional[Normalization] = None,
-        regularization: Optional[Normalization] = None,
+        normalization: Optional[Normalization] = Reciprocal(),
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
         self.normalization = normalization
-        self.regularization = regularization
         return
 
     def do(
@@ -30,13 +28,13 @@ class ESM2Descriptors(NonStructuralMetric):
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float, float, float]:
-        cos_sim = cos_similarity(model_desc_matrix.flatten(), ref_desc_matrix.flatten())
-        norm_cos_sim = cos_sim
+        distance = np.mean([
+            np.linalg.norm(model_desc_matrix[i, :] - ref_desc_matrix[i, :])
+            for i in range(model_desc_matrix.shape[0])    
+        ])
         if self.normalization is not None:
-            norm_cos_sim = self.normalization.do(cos_sim)
-        if self.regularization is not None:
-            reg_cos_sim = self.regularization.do(norm_cos_sim)
-        return cos_sim, norm_cos_sim, reg_cos_sim
+            norm_distance = self.normalization.do(distance)
+        return distance, norm_distance
 
     def do_for_fitness_fn(
         self,
@@ -57,9 +55,8 @@ class ESM2Descriptors(NonStructuralMetric):
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
-        sim, norm_sim, reg_sim = self.do(model_desc_matrix, ref_desc_matrix)
+        distance, norm_distance = self.do(model_desc_matrix, ref_desc_matrix)
         return {
-            "cos_similarity": sim,
-            "norm_cos_similarity": norm_sim,
-            "reg_cos_similarity": reg_sim,
+            "distance": distance,
+            "norm_distance": norm_distance,
         }
