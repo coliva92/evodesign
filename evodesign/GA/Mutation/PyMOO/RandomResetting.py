@@ -32,7 +32,7 @@ class RandomResetting(Mutation):
             mutations = np.random.choice(AMINO_ACIDS_INT_ALPHABET[1:], size=X.shape)
             Xp[mask] = (X[mask] + mutations[mask]) % len(AMINO_ACIDS_INT_ALPHABET)
         else:
-            mutations = self.sampler.generate_mutant_sequences(
+            mutations = self.sampler.generate_sequences(
                 X.shape[0], problem.aa_profile
             )
             Xp[mask] = mutations[mask]
