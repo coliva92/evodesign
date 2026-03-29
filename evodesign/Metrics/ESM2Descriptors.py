@@ -86,7 +86,9 @@ class ESM2Descriptors(NonStructuralMetric):
                             bins=20, 
                             range=dist_range,
                             density=False)
-        divergence = entropy(a + pseudo_count, b + pseudo_count)
+        a += pseudo_count
+        b += pseudo_count
+        divergence = entropy(a / a.sum(), b / b.sum())
         return divergence
 
     def _symmetric_kullback_leibler(
