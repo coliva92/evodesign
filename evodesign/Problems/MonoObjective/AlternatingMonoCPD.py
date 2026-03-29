@@ -23,6 +23,7 @@ class AlternatingMonoCPD(MonoCPD):
     ):
         super().__init__(ref_chain, fitness_fn, predictor, predictor_directory, aa_profile)
         self.alt_fitness_fn = alt_fitness_fn
+        self.alt_archive = {}
         self._curr_fn_idx = 0
         return
 
@@ -46,7 +47,10 @@ class AlternatingMonoCPD(MonoCPD):
 
     def alternate_fitness_fn(self) -> None:
         self._curr_fn_idx = int(not self._curr_fn_idx)
-        tmp = self.fitness_fn
+        tmp_f = self.fitness_fn
+        tmp_arch = self.archive
         self.fitness_fn = self.alt_fitness_fn
-        self.alt_fitness_fn = tmp
+        self.archive = self.alt_archive
+        self.alt_fitness_fn = tmp_f
+        self.alt_archive = tmp_arch
         return
