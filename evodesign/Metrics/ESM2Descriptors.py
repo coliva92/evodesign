@@ -6,6 +6,7 @@ import numpy.typing as npt
 from typing import Optional, Dict, List, Tuple
 from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
+from scipy.stats import entropy
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -14,27 +15,103 @@ class ESM2Descriptors(NonStructuralMetric):
         self,
         esm_model: ESM2 = ESM2(),
         submap_indices: Optional[List[int]] = None,
-        normalization: Optional[Normalization] = Reciprocal(),
+        normalization: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
         self.normalization = normalization
         return
+    
+    def _rmse(
+        self,
+        model_desc_matrix: npt.NDArray[np.float64],
+        ref_desc_matrix: npt.NDArray[np.float64],
+        **kwargs,
+    ) -> float:
+        u = model_desc_matrix.flatten()
+        v = ref_desc_matrix.flatten()
+        return np.sqrt(np.mean((u - v)**2))
+
+    def _cos_similarity(
+        self,
+        u: npt.NDArray[np.float64],
+        v: npt.NDArray[np.float64],
+        **kwargs,
+    ) -> float:
+        n1 = np.linalg.norm(u)
+        n2 = np.linalg.norm(v)
+        return np.dot(u, v) / (n1*n2)
+
+    def _mean_cos_similarity(
+        self,
+        model_desc_matrix: npt.NDArray[np.float64],
+        ref_desc_matrix: npt.NDArray[np.float64],
+        **kwargs,
+    ) -> float:
+        values = []
+        for i in range(model_desc_matrix.shape[0]):
+            u = model_desc_matrix[i, :]
+            v = ref_desc_matrix[i, :]
+            values.append(self._cos_similarity(u, v))
+        return np.mean(values)
+    
+    def _mean_distance(
+        self,
+        model_desc_matrix: npt.NDArray[np.float64],
+        ref_desc_matrix: npt.NDArray[np.float64],
+        **kwargs,
+    ) -> float:
+        values = []
+        for i in range(model_desc_matrix.shape[0]):
+            u = model_desc_matrix[i, :]
+            v = ref_desc_matrix[i, :]
+            values.append(np.linalg.norm(u - v))
+        return np.mean(values)
+
+    def _kullback_leibler(
+        self,
+        u: npt.NDArray[np.float64],
+        v: npt.NDArray[np.float64],
+        pseudo_count: float = 0.5
+    ) -> float:
+        min_value = min([ u.min(), v.min() ])
+        max_value = max([ u.max(), v.max() ])
+        dist_range = (min_value, max_value)
+        a, _ = np.histogram(u, 
+                            bins=20, 
+                            range=dist_range, 
+                            density=False)
+        b, _ = np.histogram(v, 
+                            bins=20, 
+                            range=dist_range,
+                            density=False)
+        divergence = entropy(a + pseudo_count, b + pseudo_count)
+        return divergence
+
+    def _symmetric_kullback_leibler(
+        self,
+        model_desc_matrix: npt.NDArray[np.float64],
+        ref_desc_matrix: npt.NDArray[np.float64],
+        **kwargs,
+    ) -> float:
+        u = model_desc_matrix.flatten()
+        v = ref_desc_matrix.flatten()
+        a = self._kullback_leibler(u, v)
+        b = self._kullback_leibler(v, u)
+        return a + b
 
     def do(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float, float, float]:
-        distance = np.mean([
-            np.linalg.norm(model_desc_matrix[i, :] - ref_desc_matrix[i, :])
-            for i in range(model_desc_matrix.shape[0])    
-        ])
-        if self.normalization is not None:
-            norm_distance = self.normalization.do(distance)
-        return distance, norm_distance
+    ) -> Tuple[float]:
+        rms = self._rmse(model_desc_matrix, ref_desc_matrix)
+        distance = self._mean_distance(model_desc_matrix, ref_desc_matrix)
+        mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
+        divergence = self._symmetric_kullback_leibler(model_desc_matrix, ref_desc_matrix)
+        return rms, mean_cos, divergence, distance
 
     def do_for_fitness_fn(
         self,
