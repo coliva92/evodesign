@@ -16,11 +16,13 @@ class ESM2Descriptors(NonStructuralMetric):
         esm_model: ESM2 = ESM2(),
         submap_indices: Optional[List[int]] = None,
         normalization: Optional[Normalization] = None,
+        upper_bound: float = 5488.444555777253
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
         self.normalization = normalization
+        self.upper_bound = upper_bound
         return
     
     def _rmse(
@@ -109,11 +111,13 @@ class ESM2Descriptors(NonStructuralMetric):
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float]:
-        rms = self._rmse(model_desc_matrix, ref_desc_matrix)
+        # rms = self._rmse(model_desc_matrix, ref_desc_matrix)
         distance = self._mean_distance(model_desc_matrix, ref_desc_matrix)
-        mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
-        divergence = self._symmetric_kullback_leibler(model_desc_matrix, ref_desc_matrix)
-        return rms, mean_cos, divergence, distance
+        # mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
+        # divergence = self._symmetric_kullback_leibler(model_desc_matrix, ref_desc_matrix)
+        # return rms, mean_cos, divergence, distance
+        norm_distance = 1 - (np.exp(distance) / self.upper_bound)
+        return distance, norm_distance
 
     def do_for_fitness_fn(
         self,
