@@ -116,7 +116,8 @@ class ESM2Descriptors(NonStructuralMetric):
         # mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
         # divergence = self._symmetric_kullback_leibler(model_desc_matrix, ref_desc_matrix)
         # return rms, mean_cos, divergence, distance
-        norm_distance = 1 - (np.exp(distance) / self.upper_bound)
+        # norm_distance = 1 - (np.exp(distance) / self.upper_bound)
+        norm_distance = 1 - (distance / self.upper_bound)**2
         return distance, norm_distance
 
     def do_for_fitness_fn(
