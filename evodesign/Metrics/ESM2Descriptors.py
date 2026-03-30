@@ -88,8 +88,8 @@ class ESM2Descriptors(NonStructuralMetric):
                             bins=20, 
                             range=dist_range,
                             density=False)
-        a += pseudo_count
-        b += pseudo_count
+        a = a.astype(np.float64) + pseudo_count
+        b = b.astype(np.float64) + pseudo_count
         divergence = entropy(a / a.sum(), b / b.sum())
         return divergence
 
