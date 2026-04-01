@@ -7,6 +7,7 @@ import numpy.typing as npt
 from typing import Optional, Dict, Tuple, List
 from .Normalization.Normalization import Normalization
 from scipy.stats import entropy
+from scipy.spatial.distance import jensenshannon
 
 
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
@@ -30,12 +31,11 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         **kwargs,
     ) -> Tuple[float, float]:
         assert(predicted_contacts.shape[0] == ref_contact_map.shape[0])
-        mean_divergence = np.mean([
-            entropy(predicted_contacts[i, :], ref_contact_map[i, :]) + \
-            entropy(ref_contact_map[i, :], predicted_contacts[i, :])
+        mean_distance = np.mean([
+            jensenshannon(predicted_contacts[i, :], ref_contact_map[i, :])
             for i in range(predicted_contacts.shape[0])
         ])
-        return mean_divergence
+        return mean_distance
 
     def do_for_fitness_fn(
         self,
@@ -61,5 +61,5 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
             context.set_extra_param_value(
                 "esm2_predicted_contacts", predicted_contacts
             )
-        divergence = self.do(predicted_contacts, ref_contact_map)
-        return {"symmetric_divergence": divergence}
+        distance = self.do(predicted_contacts, ref_contact_map)
+        return {"distance": distance}
