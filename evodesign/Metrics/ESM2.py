@@ -48,17 +48,20 @@ class ESM2(ESM2Interface):
         desc_matrix = last_layer[0][1 : len(seqs[0]) + 1].cpu().numpy()
 
         predicted_contacts_matrix = result["contacts"][0].cpu().numpy()
-        np.fill_diagonal(predicted_contacts_matrix, 1.0)
 
         if submap_indices is not None:
             desc_matrix = desc_matrix[submap_indices]
             predicted_contacts_matrix = predicted_contacts_matrix[np.ix_(submap_indices, submap_indices)]
         
-        row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=1)
-        predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
+        predicted_contacts_matrix += 0.0001
+        np.fill_diagonal(predicted_contacts_matrix, 0)
+        predicted_contacts_matrix /= np.sum(predicted_contacts_matrix, axis=1)[:, np.newaxis]
+        
+        # row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=1)
+        # predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
         # free GPU memory
         del tokens
         del result
 
-        return desc_matrix, predicted_contacts
+        return desc_matrix, predicted_contacts_matrix
