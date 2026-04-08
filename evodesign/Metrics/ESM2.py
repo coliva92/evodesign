@@ -57,7 +57,7 @@ class ESM2(ESM2Interface):
         # np.fill_diagonal(predicted_contacts_matrix, 0)
         # predicted_contacts_matrix /= np.sum(predicted_contacts_matrix, axis=1)[:, np.newaxis]
         
-        # row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix, k=1)
+        # row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix)
         # predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
         # free GPU memory
