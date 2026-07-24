@@ -1,7 +1,4 @@
 from ..MonoAlgorithm import MonoAlgorithm
-from ....Chemistry.Chain import Chain
-from ....Fitness.FitnessFunction import FitnessFunction
-from ....Prediction.Predictor import Predictor
 from ....GA.Selection.Selection import Selection
 from ....GA.Selection.Tournament import Tournament
 from ....GA.Crossover.Crossover import Crossover
@@ -12,10 +9,7 @@ from ....GA.Termination.MaximumDiversityLoss import MaximumDiversityLoss
 from ....GA.Replacement.PyMOO.Generational import (
     Generational as GenerationalReplacement,
 )
-from ....Callbacks.StorageManager import StorageManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
-import numpy as np
-import numpy.typing as npt
 from typing import Optional
 
 
@@ -23,47 +17,36 @@ class Generational(MonoAlgorithm):
 
     def __init__(
         self,
-        max_generations: int,
-        population_size: int,
-        predictor: Predictor,
-        fitness_fn: FitnessFunction,
+        diversity_loss_tol: float = 0.95,
+        sample_size: Optional[int] = 30,
         selection: Selection = Tournament(),
         crossover: Crossover = UniformCrossover(),
         mutation: Mutation = RandomResetting(),
+        **kwargs
     ):
-        super().__init__(max_generations, population_size, predictor, fitness_fn)
+        super().__init__(**kwargs)
         self.selection = selection
         self.crossover = crossover
         self.mutation = mutation
-        self._termination = MaximumDiversityLoss(
-            self.max_generations, max_similarity=0.95, sample_size=30
-        )
-        self._replacement = GenerationalReplacement()
+        self.diversity_loss_tol = diversity_loss_tol
+        self.sample_size=sample_size
 
-    def _create_algorithm(self) -> GA:
-        return GA(
+    def create_algorithm(self) -> GA:
+        replacement = GenerationalReplacement()
+        termination = MaximumDiversityLoss(
+            self.max_generations, 
+            self.diversity_loss_tol, 
+            self.sample_size
+        )
+        algorithm = GA(
             pop_size=self.population_size,
             n_offsprings=self.population_size,
             sampling=self._sampling,
             selection=self.selection._pymoo_selection,
             crossover=self.crossover._pymoo_crossover,
             mutation=self.mutation._pymoo_mutation,
-            survival=self._replacement,
-            eliminate_duplicates=False,
+            survival=replacement,
+            eliminate_duplicates=False
         )
-
-    def run(
-        self,
-        ref_chain: Chain,
-        storage: StorageManager,
-        aa_profile: Optional[npt.NDArray[np.float64]] = None,
-        **kwargs,
-    ):
-        if self._algorithm is None or self._algorithm.termination is None:
-            return super().run(
-                ref_chain,
-                storage,
-                aa_profile,
-                **{**{"termination": self._termination}, **kwargs},
-            )
-        return super().run(ref_chain, storage, **kwargs)
+        algorithm.termination = termination
+        return algorithm

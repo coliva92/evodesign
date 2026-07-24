@@ -1,9 +1,7 @@
 from .MonoCPD import MonoCPD
 from ...Fitness.FitnessFunction import FitnessFunction
-from ...Prediction.Predictor import Predictor
 from ...Chemistry.Chain import Chain
-from ...Prediction.DirectoryManager import DirectoryManager
-from typing import List, Optional
+from typing import List
 import numpy as np
 import numpy.typing as npt
 
@@ -14,14 +12,10 @@ class AlternatingMonoCPD(MonoCPD):
 
     def __init__(
         self,
-        ref_chain: Chain,
-        fitness_fn: FitnessFunction,
         alt_fitness_fn: FitnessFunction,
-        predictor: Predictor,
-        predictor_directory: DirectoryManager,
-        aa_profile: Optional[npt.NDArray[np.float64]] = None,
+        **kwargs
     ):
-        super().__init__(ref_chain, fitness_fn, predictor, predictor_directory, aa_profile)
+        super().__init__(**kwargs)
         self.alt_fitness_fn = alt_fitness_fn
         self.alt_archive = {}
         self._curr_fn_idx = 0

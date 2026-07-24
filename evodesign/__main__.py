@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pymoo.config import Config
+from pymoo.optimize import minimize
 import evodesign.Settings as Settings
 from evodesign.System.PathsContainer import PathsContainer
 from evodesign.Callbacks.StorageManager import StorageManager
@@ -58,29 +59,30 @@ parser.add_argument(
     "designed sequences",
 )
 args = parser.parse_args()
-algorithm = Settings.load(args.settings_path)
+algorithm_factory = Settings.load(args.settings_path)
 ref_chain = ChainFactory.create_from_pdb(
     args.target_pdb_path, args.model_id, args.chain_id
 )
 storage = StorageManager(
     PathsContainer.create(args.output_dir, args.jobname),
-    algorithm.max_generations,
-    algorithm.population_size,
+    algorithm_factory.max_generations,
+    algorithm_factory.population_size,
     len(ref_chain.sequence),
-    algorithm.num_terms(),
+    algorithm_factory.num_terms(), # TODO: we're assuming mono-objective only
     args.save_every_nth_generation,
 )
+algorithm = algorithm_factory.create_algorithm()
 try:
     # resuming from a previous execution
     storage.load_results_npz()
-    algorithm._algorithm = storage.load_pymoo_algorithm()
-    algorithm._algorithm.n_gen += 1
-    if algorithm._algorithm.termination.n_max_gen < algorithm.max_generations:
+    algorithm = storage.load_pymoo_algorithm()
+    algorithm.n_gen += 1 # TODO: check if this is correct
+    if algorithm.termination.n_max_gen < algorithm_factory.max_generations:
         # extending from a previously completed execution
-        storage.extend_result_arrays(algorithm.max_generations)
-        algorithm._algorithm.termination.n_max_gen = algorithm.max_generations
-        algorithm._algorithm.termination.perc = float(
-            algorithm._algorithm.n_gen / algorithm.max_generations
+        storage.extend_result_arrays(algorithm_factory.max_generations)
+        algorithm.termination.n_max_gen = algorithm.max_generations
+        algorithm.termination.perc = float(
+            algorithm.n_gen / algorithm_factory.max_generations
         )
     state = storage.load_rng_state(storage.directory.last_rng_state_path)
     np.random.set_state(state)
@@ -95,14 +97,21 @@ except FileNotFoundError:
             np.random.get_state(), storage.directory.initial_rng_state_path
         )
     storage.save_git_commit_hash()
-    storage.save_settings(algorithm.settings())
+    storage.save_settings(algorithm_factory.settings())
     storage.save_target_pdb(args.target_pdb_path)
 while True:
     try:
         aa_profile = None
         if args.profile_path is not None:
             aa_profile = load_profile(args.profile_path)
-        algorithm.run(ref_chain, storage, aa_profile)
+        problem = algorithm_factory.create_problem(
+            ref_chain, storage.predictor_directory, aa_profile)
+        callbacks = algorithm_factory.create_callbacks(storage)
+        minimize(problem=problem, 
+                 algorithm=algorithm,
+                 callback=callbacks,
+                 verbose=True,
+                 copy_algorithm=False)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         # Cleanup, then retry
         storage.delete_non_essential_files_and_folders()

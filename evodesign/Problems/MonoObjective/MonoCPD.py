@@ -1,10 +1,8 @@
 from ..CPD import CPD
 from ...Fitness.FitnessFunction import FitnessFunction
-from ...Prediction.Predictor import Predictor
 from ...Chemistry.Chain import Chain
 from ...Chemistry.ChainFactory import ChainFactory
-from ...Prediction.DirectoryManager import DirectoryManager
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 import numpy as np
 import numpy.typing as npt
 import os
@@ -14,13 +12,10 @@ class MonoCPD(CPD):
 
     def __init__(
         self,
-        ref_chain: Chain,
         fitness_fn: FitnessFunction,
-        predictor: Predictor,
-        predictor_directory: DirectoryManager,
-        aa_profile: Optional[npt.NDArray[np.float64]] = None,
+        **kwargs
     ):
-        super().__init__(ref_chain, predictor, predictor_directory, aa_profile)
+        super().__init__(n_obj=1, **kwargs)
         self.fitness_fn = fitness_fn
         self.archive = {}
         return
@@ -94,6 +89,6 @@ class MonoCPD(CPD):
         tmp_terms[idx_not_archived, :] = new_terms
         if len(idx_archived) > 0:
             tmp_terms[idx_archived, :] = np.array([ self.archive[sequences[k]] for k in idx_archived ])
-        self.term_values = tmp_terms[:, 1:]
-        out["F"] = -1.0 * tmp_terms[:, 0]
+        self.term_values = tmp_terms[:, 1:] # from 1 to N - 1 are the term values
+        out["F"] = -1.0 * tmp_terms[:, 0] # element 0 is the fitness value
         return

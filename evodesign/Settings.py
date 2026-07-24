@@ -1,3 +1,4 @@
+from .Algorithms.AlgorithmFactory import AlgorithmFactory
 import importlib
 import copy
 import json
@@ -10,7 +11,7 @@ def read_json(settings_path: str) -> dict:
     return settings
 
 
-def parse(settings: dict):
+def parse(settings: dict) -> AlgorithmFactory:
     class_name = list(settings.keys())[0]
     imported_module = importlib.import_module(f"evodesign.{class_name}")
     actual_class = getattr(imported_module, class_name.split(".")[-1])
@@ -23,6 +24,6 @@ def parse(settings: dict):
     return actual_class(**params)
 
 
-def load(settings_path: str):
+def load(settings_path: str) -> AlgorithmFactory:
     settings = read_json(settings_path)
     return parse(settings)
