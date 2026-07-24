@@ -1,7 +1,4 @@
 from ..MonoAlgorithm import MonoAlgorithm
-from ....Chemistry.Chain import Chain
-from ....Fitness.FitnessFunction import FitnessFunction
-from ....Prediction.Predictor import Predictor
 from ....GA.Selection.Selection import Selection
 from ....GA.Selection.Tournament import Tournament
 from ....GA.Crossover.Crossover import Crossover
@@ -10,12 +7,10 @@ from ....GA.Mutation.RandomResetting import RandomResetting
 from ....GA.Replacement.PyMOO.GenerationalElitism import GenerationalElitism
 from ....Callbacks.StorageManager import StorageManager
 from ....Callbacks.PopulationRestarter import PopulationRestarter
+from ....Callbacks.CallbackCollection import CallbackCollection
 from pymoo.algorithms.soo.nonconvex.ga import GA
 from pymoo.core.callback import Callback
 from pymoo.termination.max_eval import MaximumFunctionCallTermination
-import numpy as np
-import numpy.typing as npt
-from typing import Optional
 
 
 class Micro(MonoAlgorithm):
@@ -23,53 +18,40 @@ class Micro(MonoAlgorithm):
     def __init__(
         self,
         max_fitness_fn_evals: int,
-        population_size: int,
-        predictor: Predictor,
-        fitness_fn: FitnessFunction,
         diversity_loss_tol: float = 0.95,
         selection: Selection = Tournament(),
         crossover: Crossover = UniformCrossover(),
+        **kwargs
     ):
-        max_generations = (max_fitness_fn_evals // population_size) + 1
-        super().__init__(max_generations, population_size, predictor, fitness_fn)
+        max_generations = (max_fitness_fn_evals // kwargs["popultion_size"]) + 1
+        super().__init__(max_generations=max_generations, **kwargs)
         self.max_fitness_fn_evals = max_fitness_fn_evals
         self.diversity_loss_tol = diversity_loss_tol
         self.selection = selection
         self.crossover = crossover
-        self._replacement = GenerationalElitism()
 
-    def _create_algorithm(self) -> GA:
-        return GA(
+    def create_algorithm(self) -> GA:
+        mutation = RandomResetting(
+            sequence_mutation_prob=0, residue_mutation_prob=0)
+        replacement = GenerationalElitism()
+        termination = MaximumFunctionCallTermination(self.max_fitness_fn_evals)
+        algorithm = GA(
             pop_size=self.population_size,
             n_offsprings=self.population_size,
             sampling=self._sampling,
             selection=self.selection._pymoo_selection,
             crossover=self.crossover._pymoo_crossover,
-            mutation=RandomResetting(
-                sequence_mutation_prob=0, residue_mutation_prob=0
-            )._pymoo_mutation,
-            survival=self._replacement,
+            mutation=mutation._pymoo_mutation,
+            survival=replacement,
             eliminate_duplicates=False,
-            termination=MaximumFunctionCallTermination(self.max_fitness_fn_evals)
         )
+        algorithm.termination = termination
+        return algorithm
 
-    def _callbacks_chain(
+    def create_callbacks(
         self,
         storage: StorageManager,
-    ) -> Callback:
-        return PopulationRestarter(self.diversity_loss_tol, storage)
-
-    def run(
-        self,
-        ref_chain: Chain,
-        storage: StorageManager,
-        aa_profile: Optional[npt.NDArray[np.float64]] = None,
-        **kwargs,
-    ):
-        if self._algorithm is None or self._algorithm.termination is None:
-            return super().run(
-                ref_chain,
-                storage,
-                aa_profile,
-            )
-        return super().run(ref_chain, storage, **kwargs)
+    ) -> CallbackCollection:
+        callbacks = super().create_callbacks(storage)
+        callbacks.append(PopulationRestarter(self.diversity_loss_tol))
+        return callbacks
