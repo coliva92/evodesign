@@ -11,12 +11,12 @@ class Tournament(Selection):
         tournament_size: int = 2,
         win_probability: float = 1.0,
     ) -> None:
-        super().__init__(TournamentSelection(self.tournament, tournament_size))
+        super().__init__(TournamentSelection(self.compare_by_fitness, pressure=tournament_size))
         self.tournament_size = tournament_size
         self.win_probability = win_probability
         return
 
-    def tournament(
+    def compare_by_fitness(
         self,
         pop,
         P: npt.NDArray[np.int64],
@@ -29,7 +29,7 @@ class Tournament(Selection):
                 fitness = np.array([pop[j].F[0] for j in P[i]])
                 selected_parents[i] = P[i][fitness.argmin()]
             return selected_parents
-        assert(tournament_size == 2)
+        assert(tournament_size == 2) # TODO: adaptar para permitir otros tamaños
         for i in range(selection_size):
             idx_a, idx_b = P[i]
             fit_a = pop[idx_a].F[0]
