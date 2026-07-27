@@ -1,13 +1,9 @@
 from .NonStructuralMetric import NonStructuralMetric
 from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
-from .Normalization.Formulas import cos_similarity
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, Dict, Tuple, List
-from .Normalization.Normalization import Normalization
-from scipy.stats import entropy
-from scipy.spatial.distance import jensenshannon
 
 
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
@@ -43,13 +39,27 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         return np.linalg.norm(predicted_contacts - ref_contact_map)
     
     def _jensen_shannon(
+        self, 
+        p: npt.NDArray[np.float64],
+        q: npt.NDArray[np.float64]
+    ):
+        from scipy.special import rel_entr
+        m = (p + q) / 2.0
+        left = rel_entr(p, m)
+        right = rel_entr(q, m)
+        left_sum = np.max([ 0, np.sum(left) ])
+        right_sum = np.max([ 0, np.sum(right) ])
+        js = left_sum + right_sum
+        return np.sqrt(js / 2.0)
+
+    def _mean_jensen_shannon(
         self,
         predicted_contacts: npt.NDArray[np.float64],
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> float:
         return np.mean([
-            jensenshannon(predicted_contacts[i, :], ref_contact_map[i, :])
+            self._jensen_shannon(predicted_contacts[i, :], ref_contact_map[i, :])
             for i in range(predicted_contacts.shape[0])
         ])
 
@@ -72,8 +82,9 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         predicted_contacts /= np.sum(predicted_contacts, axis=1)[:, np.newaxis]
         ref_contact_map += 0.0001
         ref_contact_map /= np.sum(ref_contact_map, axis=1)[:, np.newaxis]
-        js_dist = self._jensen_shannon(predicted_contacts, ref_contact_map)
-        return rmse, norm_rmse, dist, norm_dist, js_dist
+        js_dist = self._mean_jensen_shannon(predicted_contacts, ref_contact_map)
+        neg_js_dist = 1 - js_dist
+        return rmse, norm_rmse, dist, norm_dist, neg_js_dist
 
     def do_for_fitness_fn(
         self,
