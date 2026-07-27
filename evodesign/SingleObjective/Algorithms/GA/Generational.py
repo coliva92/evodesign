@@ -1,4 +1,4 @@
-from ..MonoAlgorithm import MonoAlgorithm
+from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
 from ....GA.Selection.Selection import Selection
 from ....GA.Selection.Tournament import Tournament
 from ....GA.Crossover.Crossover import Crossover
@@ -13,7 +13,7 @@ from pymoo.algorithms.soo.nonconvex.ga import GA
 from typing import Optional
 
 
-class Generational(MonoAlgorithm):
+class Generational(SingleObjectiveAlgorithm):
 
     def __init__(
         self,

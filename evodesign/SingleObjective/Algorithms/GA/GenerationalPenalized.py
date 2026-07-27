@@ -1,5 +1,5 @@
 from .Generational import Generational
-from ....Problems.MonoObjective.PenalizedMonoCPD import PenalizedMonoCPD
+from ...Problems.PenalizedCPD import PenalizedCPD
 from ....Chemistry.Chain import Chain
 from ....Prediction.DirectoryManager import DirectoryManager
 from pymoo.algorithms.soo.nonconvex.ga import GA
@@ -30,8 +30,8 @@ class GenerationalPenalized(Generational):
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
         aa_profile: Optional[npt.NDArray[np.float64]] = None,
-    ) -> PenalizedMonoCPD:
-        return PenalizedMonoCPD(
+    ) -> PenalizedCPD:
+        return PenalizedCPD(
             identity_tol=self.identity_tol,
             ref_chain=ref_chain,
             fitness_fn=self.fitness_fn,

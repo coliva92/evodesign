@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
-from ..RetrievableSettings import RetrievableSettings
-from ..Chemistry.Chain import Chain
-from ..Callbacks.StorageManager import StorageManager
-from ..Prediction.Predictor import Predictor
-from ..Prediction.DirectoryManager import DirectoryManager
+from .RetrievableSettings import RetrievableSettings
+from .Chemistry.Chain import Chain
+from .Callbacks.StorageManager import StorageManager
+from .Prediction.Predictor import Predictor
+from .Prediction.DirectoryManager import DirectoryManager
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.problem import Problem as PyMOOProblem
-from ..Callbacks.CallbackCollection import CallbackCollection
-from pymoo.optimize import minimize
-from pymoo.core.result import Result
-from ..Problems.IntegerProfileSampling import IntegerProfileSampling
+from .Callbacks.CallbackCollection import CallbackCollection
+from .IntegerProfileSampling import IntegerProfileSampling
 import numpy as np
 import numpy.typing as npt
 from typing import Optional

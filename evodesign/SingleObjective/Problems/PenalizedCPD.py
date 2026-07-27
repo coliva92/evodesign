@@ -1,9 +1,9 @@
-from .MonoCPD import MonoCPD
+from .SingleObjectiveCPD import SingleObjectiveCPD
 from ...Chemistry.Sequences import compute_identity
 import numpy as np
 
 
-class PenalizedMonoCPD(MonoCPD):
+class PenalizedCPD(SingleObjectiveCPD):
 
     def __init__(
         self,

@@ -1,7 +1,7 @@
 from .Generational import Generational
 from ....Chemistry.Chain import Chain
 from ....Prediction.DirectoryManager import DirectoryManager
-from ....Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
+from ...Problems.AlternatingCPD import AlternatingCPD
 from ....Callbacks.StorageManager import StorageManager
 from ....Callbacks.MonoFitnessFnAlternator import MonoFitnessFnAlternator
 from ....Fitness.FitnessFunction import FitnessFunction
@@ -32,8 +32,8 @@ class GenerationalAlternatingFitness(Generational):
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
         aa_profile: Optional[npt.NDArray[np.float64]] = None,
-    ) -> AlternatingMonoCPD:
-        return AlternatingMonoCPD(
+    ) -> AlternatingCPD:
+        return AlternatingCPD(
             ref_chain=ref_chain,
             fitness_fn=self.fitness_fn,
             alt_fitness_fn=self.alt_fitness_fn,

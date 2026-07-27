@@ -1,4 +1,4 @@
-from ..CPD import CPD
+from ...CPD import CPD
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Chemistry.Chain import Chain
 from ...Chemistry.ChainFactory import ChainFactory
@@ -8,7 +8,7 @@ import numpy.typing as npt
 import os
 
 
-class MonoCPD(CPD):
+class SingleObjectiveCPD(CPD):
 
     def __init__(
         self,

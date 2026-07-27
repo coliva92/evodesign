@@ -1,4 +1,4 @@
-from .MonoCPD import MonoCPD
+from .SingleObjectiveCPD import SingleObjectiveCPD
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Chemistry.Chain import Chain
 from typing import List
@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt
 
 
-class AlternatingMonoCPD(MonoCPD):
+class AlternatingCPD(SingleObjectiveCPD):
 
     _NUM_FITNESS_FUNCS = 2
 

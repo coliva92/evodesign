@@ -1,5 +1,5 @@
-from ..AlgorithmFactory import AlgorithmFactory
-from ...Problems.MonoObjective.MonoCPD import MonoCPD
+from ...AlgorithmFactory import AlgorithmFactory
+from ...SingleObjective.Problems.SingleObjectiveCPD import SingleObjectiveCPD
 from ...Chemistry.Chain import Chain
 from ...Prediction.DirectoryManager import DirectoryManager
 from ...Fitness.FitnessFunction import FitnessFunction
@@ -8,7 +8,7 @@ import numpy as np
 import numpy.typing as npt
 
 
-class MonoAlgorithm(AlgorithmFactory):
+class SingleObjectiveAlgorithm(AlgorithmFactory):
 
     def __init__(
         self,
@@ -24,8 +24,8 @@ class MonoAlgorithm(AlgorithmFactory):
         ref_chain: Chain,
         predictor_directory: DirectoryManager,
         aa_profile: Optional[npt.NDArray[np.float64]] = None,
-    ) -> MonoCPD:
-        return MonoCPD(
+    ) -> SingleObjectiveCPD:
+        return SingleObjectiveCPD(
             ref_chain=ref_chain,
             fitness_fn=self.fitness_fn,
             predictor=self.predictor,

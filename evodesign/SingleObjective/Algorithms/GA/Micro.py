@@ -1,4 +1,4 @@
-from ..MonoAlgorithm import MonoAlgorithm
+from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
 from ....GA.Selection.Selection import Selection
 from ....GA.Selection.Tournament import Tournament
 from ....GA.Crossover.Crossover import Crossover
@@ -9,11 +9,10 @@ from ....Callbacks.StorageManager import StorageManager
 from ....Callbacks.PopulationRestarter import PopulationRestarter
 from ....Callbacks.CallbackCollection import CallbackCollection
 from pymoo.algorithms.soo.nonconvex.ga import GA
-from pymoo.core.callback import Callback
 from pymoo.termination.max_eval import MaximumFunctionCallTermination
 
 
-class Micro(MonoAlgorithm):
+class Micro(SingleObjectiveAlgorithm):
 
     def __init__(
         self,
