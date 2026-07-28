@@ -1,0 +1,12 @@
+{
+    "black-formatter.cwd": "${workspaceFolder}/evodesign",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "isort.args":["--profile", "black"],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.rulers": [ 88 ]
+}
