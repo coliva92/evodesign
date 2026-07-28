@@ -43,7 +43,7 @@ class SingleObjectiveCPD(CPD):
             ]
         )
     
-    def _find_index_in_archive(self, sequences: List[str]) -> Tuple[List[int], List[int]]:
+    def _find_sequences_in_archive(self, sequences: List[str]) -> Tuple[List[int], List[int]]:
         idx_archived, idx_not_archived = [], []
         for k, seq in enumerate(sequences):
             if seq in self.archive:
@@ -70,7 +70,7 @@ class SingleObjectiveCPD(CPD):
     ) -> None:
         # Note: x.shape = population_size x sequence_length
         sequences = [ChainFactory.sequence_numpy_to_str(seq_numpy) for seq_numpy in x]
-        idx_archived, idx_not_archived = self._find_index_in_archive(sequences)
+        idx_archived, idx_not_archived = self._find_sequences_in_archive(sequences)
         if len(idx_not_archived) == 0:
             tmp_terms = np.array([ self.archive[seq] for seq in sequences ])
             self.term_values = tmp_terms[:, 1:]
