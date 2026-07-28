@@ -273,7 +273,7 @@ class StorageManager(Callback):
         source_array: npt.NDArray[np.float64],
     ) -> npt.NDArray[np.float64]:
         """
-        Resizes source_array (B) to match the shape of target_array (A)
+        Resizes source_array to match the shape of target_array
         along the 3rd dimension.
         """
         M, N, L = target_array.shape

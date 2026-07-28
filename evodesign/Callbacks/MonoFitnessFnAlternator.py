@@ -1,7 +1,7 @@
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.callback import Callback
 
-from ..Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
+from ..SingleObjective.Problems.AlternatingCPD import AlternatingCPD
 
 
 
@@ -20,7 +20,7 @@ class MonoFitnessFnAlternator(Callback):
 
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         problem = algorithm.problem
-        assert isinstance(problem, AlternatingMonoCPD)
+        assert isinstance(problem, AlternatingCPD)
         if (
             algorithm.n_gen % self.alt_every_nth_gen == 0
             or algorithm.n_gen % self.alt_every_nth_gen == 1
