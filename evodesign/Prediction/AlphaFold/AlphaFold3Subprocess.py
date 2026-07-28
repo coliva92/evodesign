@@ -2,12 +2,12 @@ import os
 from typing import List, Optional
 
 from ...System.Subprocess import run_subprocess
-from .AlphaFold3Base import AlphaFold3Base
+from .AF3Interface import AF3Interface
 
 
 
 
-class AlphaFold3(AlphaFold3Base):
+class AlphaFold3Subprocess(AF3Interface):
 
     def __init__(
         self,

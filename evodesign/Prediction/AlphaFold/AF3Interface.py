@@ -12,7 +12,7 @@ from ..DirectoryManager import DirectoryManager
 
 
 
-class AlphaFold3Base(AlphaFoldInterface):
+class AF3Interface(AlphaFoldInterface):
 
     _parser = MMCIFParser()
     _io = PDBIO()

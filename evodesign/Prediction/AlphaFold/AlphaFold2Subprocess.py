@@ -6,7 +6,7 @@ from .AlphaFoldInterface import AlphaFoldInterface
 
 
 
-class AlphaFold2(AlphaFoldInterface):
+class AlphaFold2Subprocess(AlphaFoldInterface):
 
     def __init__(
         self,
