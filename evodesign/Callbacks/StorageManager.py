@@ -107,7 +107,7 @@ class StorageManager(Callback):
             term_values=self.term_values,
         )
         # save RNG for reproduction/resuming
-        self.save_rng_state(np.random.get_state(), self.directory.last_rng_state_path)
+        self.save_rng_state(np.random.get_state(), self.directory.latest_rng_state)
         # save the settings for reproduction/resuming
         # save the algorithm for resuming later
         self.save_pymoo_algorithm(algorithm)

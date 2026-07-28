@@ -85,7 +85,7 @@ try:
         algorithm.termination.perc = float(
             algorithm.n_gen / algorithm_factory.max_generations
         )
-    state = storage.load_rng_state(storage.directory.last_rng_state_path)
+    state = storage.load_rng_state(storage.directory.latest_rng_state)
     np.random.set_state(state)
 except FileNotFoundError:
     try:

@@ -10,6 +10,9 @@ from .Exceptions import *
 
 
 class APIRequester(RetrievableSettings):
+    """
+    Internal utility for sending HTTP requests to remote APIs.
+    """
 
     def __init__(
         self,
@@ -20,6 +23,15 @@ class APIRequester(RetrievableSettings):
         connection_timeout: int = 30,
         verify: bool = False,
     ) -> None:
+        """
+        Args:
+            url: The remote API endpoint.
+            json_request_key: Optional key to wrap outgoing payloads (required by some backend schemas).
+            json_response_key: Optional key to unwrap incoming JSON responses.
+            sleep_time: Delay in-between requests to prevent rate-limiting (in seconds).
+            connection_timeout: Max time to wait for a connection (in seconds).
+            verify: Whether to verify SSL certificates.
+        """
         self.url = url
         self.json_request_key = json_request_key
         self.json_response_key = json_response_key
@@ -30,18 +42,12 @@ class APIRequester(RetrievableSettings):
 
 
 
-    def post(
-        self,
-        payload_data,
-    ):
+    def post(self, payload_data):
         return self._send_request(payload_data, requests.post)
 
 
 
-    def get(
-        self,
-        payload_data,
-    ):
+    def get(self, payload_data):
         return self._send_request(payload_data, requests.get)
 
 

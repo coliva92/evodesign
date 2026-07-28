@@ -16,6 +16,15 @@ def _open_command_line(command: List[str]):
 
 
 def run_subprocess(command: List[str]) -> None:
+    """
+    Executes a command and streams its standard output to the console in real-time.
+    
+    Args:
+        command: The command to execute as a list of strings.
+    
+    Raises:
+        subprocess.CalledProcessError: If the command returns a non-zero exit code.
+    """
     for line in _open_command_line(command):
         print(line, end="")
     return
