@@ -1,9 +1,7 @@
-import pytest
-
-from evodesign.Prediction.AlphaFold3 import AlphaFold3
-from evodesign.Prediction.AlphaFold3Docker import AlphaFold3Docker
-from evodesign.Prediction.HighFold3 import HighFold3
-from evodesign.Prediction.HighFold3Docker import HighFold3Docker
+from evodesign.Prediction.AlphaFold.AlphaFold3Subprocess import AlphaFold3Subprocess
+from evodesign.Prediction.AlphaFold.AlphaFold3Docker import AlphaFold3Docker
+from evodesign.Prediction.HighFold.HighFold3Subprocess import HighFold3Subprocess
+from evodesign.Prediction.HighFold.HighFold3Docker import HighFold3Docker
 
 
 def test_alphafold3_docker_cmd_array():
@@ -29,7 +27,7 @@ def test_alphafold3_docker_cmd_array():
 
 
 def test_alphafold3_local_cmd_array():
-    predictor = AlphaFold3(
+    predictor = AlphaFold3Subprocess(
         path_to_run_alphafold_py="/path/to/run_alphafold.py",
         model_dir="/path/to/models",
         num_recycles=3,
@@ -68,12 +66,12 @@ def test_highfold3_docker_cmd_array():
     assert "--run_data_pipeline=False" in cmd
     assert "--num_recycles=2" in cmd
     assert "--head_to_tail=False" in cmd
-    # HighFold3 should remove --force_output_dir
+    # HighFold3Subprocess should remove --force_output_dir
     assert "--force_output_dir=True" not in cmd
 
 
 def test_highfold3_local_cmd_array():
-    predictor = HighFold3(
+    predictor = HighFold3Subprocess(
         path_to_run_alphafold_py="/path/to/run_alphafold.py",
         model_dir="/path/to/models",
         head_to_tail=True,
