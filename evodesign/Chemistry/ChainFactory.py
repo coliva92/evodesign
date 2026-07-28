@@ -5,12 +5,24 @@ import numpy as np
 import numpy.typing as npt
 from Bio.PDB import PDBParser
 from Bio.PDB.Atom import Atom
-from Bio.PDB.Polypeptide import is_aa, three_to_one
+from Bio.PDB.Polypeptide import is_aa
 from Bio.PDB.Residue import Residue
 from Bio.PDB.Structure import Structure
 
 from .Chain import Chain
 from .Sequences import to_numpy, to_str
+
+try:
+    # BioPython v1.82+
+    from Bio.Data.PDBData import protein_letters_3to1
+    
+    # wrapper function
+    def three_to_one(res):
+        return protein_letters_3to1[res]
+        
+except ImportError:
+    # Fall back to the legacy function (v1.79 and older)
+    from Bio.PDB.Polypeptide import three_to_one
 
 
 BACKBONE_ATOMS = dict.fromkeys(["N", "CA", "C", "O"])
