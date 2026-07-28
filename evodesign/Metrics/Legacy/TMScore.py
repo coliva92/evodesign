@@ -11,7 +11,7 @@ from ..StructuralMetric import StructuralMetric
 
 
 
-class v1(StructuralMetric):
+class TMScore_v1(StructuralMetric):
 
     def __init__(
         self,

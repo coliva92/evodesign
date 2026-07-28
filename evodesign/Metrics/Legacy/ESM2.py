@@ -10,7 +10,7 @@ from ..ESM2ModelContainer import ESM2ModelContainer
 
 
 
-class v1(ESM2Interface):
+class ESM2_v1(ESM2Interface):
 
     _model = None
 
@@ -100,7 +100,7 @@ class v1(ESM2Interface):
 
 
 
-class v2(ESM2Interface):
+class ESM2_v2(ESM2Interface):
 
     _model = None
 

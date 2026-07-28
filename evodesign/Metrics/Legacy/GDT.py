@@ -10,7 +10,7 @@ from ..StructuralMetric import StructuralMetric
 
 
 
-class v1(StructuralMetric):
+class GDT_v1(StructuralMetric):
 
     def __init__(
         self,
