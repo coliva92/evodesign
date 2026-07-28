@@ -2,12 +2,12 @@ import os
 from typing import List, Optional
 
 from ..System.Subprocess import run_subprocess
-from .AlphaFold3Docker import AlphaFold3Docker
+from .AlphaFold3Base import AlphaFold3Base
 
 
 
 
-class AlphaFold3(AlphaFold3Docker):
+class AlphaFold3(AlphaFold3Base):
 
     def __init__(
         self,
@@ -74,18 +74,18 @@ class AlphaFold3(AlphaFold3Docker):
         output_dir: str,
         do_batch_inference: bool,
     ) -> List[str]:
-        cmd = super()._create_cmd_array(input_path, output_dir, do_batch_inference)
-        cmd = cmd[12:]  # remove the docker call
-        cmd[0] = "python3"  # change python version
-        cmd[1] = self.path_to_run_alphafold_py  # change run_alphafold.py
-        # change /root/af_input
-        cmd[2] = (
-            f"--input_dir={input_path}"
-            if do_batch_inference
-            else f"--json_path={input_path}"
-        )
-        cmd[3] = f"--model_dir={self.model_dir}"  # change /root/af_model
-        cmd[4] = f"--output_dir={output_dir}"  # change /root/af_output
+        cmd = [
+            "python3",
+            self.path_to_run_alphafold_py,
+            (
+                f"--input_dir={input_path}"
+                if do_batch_inference
+                else f"--json_path={input_path}"
+            ),
+            f"--model_dir={self.model_dir}",
+            f"--output_dir={output_dir}",
+        ]
+        cmd.extend(self._get_af3_flags())
         return cmd
 
 

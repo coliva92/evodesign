@@ -1,72 +1,12 @@
-from typing import List, Optional
+from typing import List
 
-from .AlphaFold3Docker import AlphaFold3Docker
-
-
-
-
-class HighFold3Docker(AlphaFold3Docker):
-
-    def __init__(
-        self,
-        model_dir: str,
-        head_to_tail: bool = True,
-        disulfide_chain_res: Optional[List[List[int]]] = None,
-        num_recycles: int = 1,
-        num_diffusion_samples: int = 1,
-        model_seeds: Optional[List[int]] = None,
-        version: int = 2,
-        run_data_pipeline: bool = False,
-        max_template_date: str = "2021-09-30",
-        gpu_device: int = 0,
-        jackhmmer_binary_path: Optional[str] = None,
-        nhmmer_binary_path: Optional[str] = None,
-        hmmalign_binary_path: Optional[str] = None,
-        hmmsearch_binary_path: Optional[str] = None,
-        hmmbuild_binary_path: Optional[str] = None,
-        db_dir: Optional[str] = None,
-        small_bfd_database_path: Optional[str] = None,
-        mgnify_database_path: Optional[str] = None,
-        uniprot_cluster_annot_database_path: Optional[str] = None,
-        uniref90_database_path: Optional[str] = None,
-        ntrna_database_path: Optional[str] = None,
-        rfam_database_path: Optional[str] = None,
-        rna_central_database_path: Optional[str] = None,
-        pdb_database_path: Optional[str] = None,
-        seqres_database_path: Optional[str] = None,
-        jax_compilation_cache_dir: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            model_dir,
-            num_recycles,
-            num_diffusion_samples,
-            model_seeds,
-            version,
-            run_data_pipeline,
-            max_template_date,
-            gpu_device,
-            jackhmmer_binary_path,
-            nhmmer_binary_path,
-            hmmalign_binary_path,
-            hmmsearch_binary_path,
-            hmmbuild_binary_path,
-            db_dir,
-            small_bfd_database_path,
-            mgnify_database_path,
-            uniprot_cluster_annot_database_path,
-            uniref90_database_path,
-            ntrna_database_path,
-            rfam_database_path,
-            rna_central_database_path,
-            pdb_database_path,
-            seqres_database_path,
-            jax_compilation_cache_dir,
-        )
-        self.head_to_tail = head_to_tail
-        self.disulfide_chain_res = disulfide_chain_res
-        return
+from ..System.Subprocess import run_subprocess
+from .HighFold3Base import HighFold3Base
 
 
+
+
+class HighFold3Docker(HighFold3Base):
 
     def _create_cmd_array(
         self,
@@ -74,11 +14,60 @@ class HighFold3Docker(AlphaFold3Docker):
         output_dir: str,
         do_batch_inference: bool,
     ) -> List[str]:
-        cmd = super()._create_cmd_array(input_path, output_dir, do_batch_inference)
-        cmd[11] = "highfold3"  # change the docker image
-        cmd[-1] = (
-            f"--head_to_tail={self.head_to_tail}"  # this also removes --force_output_dir
-        )
-        if self.disulfide_chain_res is not None:
-            cmd.append(f"--disulfide_chain_res {self.disulfide_chain_res}")
+        cmd = [
+            "docker",
+            "run",
+            "-it",
+            "--volume",
+            (
+                f"{input_path}:/root/af_input"
+                if do_batch_inference
+                else f"{input_path}:/root/af_input/input.json"
+            ),
+            "--volume",
+            f"{output_dir}:/root/af_output",
+            "--volume",
+            f"{self.model_dir}:/root/models",
+            "--gpus",
+            "all",
+            "highfold3",
+            "python",
+            "run_alphafold.py",
+            (
+                f"--input_dir=/root/af_input"
+                if do_batch_inference
+                else f"--json_path=/root/af_input/input.json"
+            ),
+            "--model_dir=/root/models",
+            "--output_dir=/root/af_output",
+        ]
+        cmd.extend(self._get_af3_flags())
         return cmd
+
+
+
+    def run_inference(
+        self,
+        input_path: str,
+        output_dir: str,
+        do_batch_inference: bool,
+    ) -> None:
+        run_subprocess(
+            self._create_cmd_array(input_path, output_dir, do_batch_inference)
+        )
+        # AF3's docker image creates the output files as root;
+        # we must change the owner
+        cmd = [
+            "docker",
+            "run",
+            "-it",
+            "--volume",
+            f"{output_dir}:/root/af_output",
+            "highfold3",
+            "chown",
+            "-R",
+            "1000:1000",
+            "/root/af_output",
+        ]
+        run_subprocess(cmd)
+        return
