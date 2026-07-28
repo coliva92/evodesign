@@ -9,6 +9,8 @@ class ESM2ModelContainer:
     esm_model = None
     batch_converter = None
 
+
+
     def __init__(
         self,
         gpu_device: Optional[str] = "cuda:0",
