@@ -1,15 +1,14 @@
 import time
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 import requests
 
-from ..RetrievableSettings import RetrievableSettings
 from .Exceptions import *
 
 
 
 
-class APIRequester(RetrievableSettings):
+class APIRequester:
     """
     Internal utility for sending HTTP requests to remote APIs.
     """
@@ -54,12 +53,15 @@ class APIRequester(RetrievableSettings):
 
     def _send_request(
         self,
-        payload_data,
+        payload_data: Any,
         method: Callable,
     ):
+        # wait for the specified time
         if self.sleep_time > 0.0:
             time.sleep(self.sleep_time)
+        
         if self.json_request_key is not None:
+            # send request with a json payload
             response = method(
                 self.url,
                 json={self.json_request_key: payload_data},
@@ -67,12 +69,15 @@ class APIRequester(RetrievableSettings):
                 verify=self.verify,
             )
         else:
+            # send request with a raw payload
             response = method(
                 self.url,
                 data=payload_data,
                 timeout=self.connection_timeout,
                 verify=self.verify,
             )
+        
+        # handle the response according to the status code
         if response.status_code == 400:
             raise HttpBadRequest
         elif response.status_code == 403:
@@ -85,6 +90,9 @@ class APIRequester(RetrievableSettings):
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
+        
+        # read the json response payload if provided
         if self.json_response_key is not None:
             return response.json()[self.json_response_key]
+        
         return response.content.decode()

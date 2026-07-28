@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
 
-from ...RetrievableSettings import RetrievableSettings
 
 
 
-
-class Normalization(RetrievableSettings, ABC):
+class Normalization(ABC):
 
     @abstractmethod
     def do(self, x: float) -> float:

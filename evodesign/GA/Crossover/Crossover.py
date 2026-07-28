@@ -2,12 +2,10 @@ from abc import ABC
 
 from pymoo.core.crossover import Crossover as PyMOOCrossover
 
-from ...RetrievableSettings import RetrievableSettings
 
 
 
-
-class Crossover(RetrievableSettings, ABC):
+class Crossover(ABC):
 
     def __init__(
         self,

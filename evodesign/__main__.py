@@ -98,7 +98,7 @@ except FileNotFoundError:
             np.random.get_state(), storage.directory.initial_rng_state_path
         )
     storage.save_version()
-    storage.save_settings(algorithm_factory.settings())
+    storage.save_settings(Settings.dump(algorithm_factory))
     storage.save_target_pdb(args.target_pdb_path)
 while True:
     try:

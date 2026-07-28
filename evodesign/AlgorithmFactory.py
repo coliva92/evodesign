@@ -12,12 +12,11 @@ from .Chemistry.Chain import Chain
 from .IntegerProfileSampling import IntegerProfileSampling
 from .Prediction.DirectoryManager import DirectoryManager
 from .Prediction.Predictor import Predictor
-from .RetrievableSettings import RetrievableSettings
 
 
 
 
-class AlgorithmFactory(RetrievableSettings, ABC):
+class AlgorithmFactory(ABC):
 
     def __init__(
         self,

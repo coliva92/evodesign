@@ -2,12 +2,10 @@ from abc import ABC
 
 from pymoo.core.mutation import Mutation as PyMOOMutation
 
-from ...RetrievableSettings import RetrievableSettings
 
 
 
-
-class Mutation(RetrievableSettings, ABC):
+class Mutation(ABC):
 
     def __init__(
         self,

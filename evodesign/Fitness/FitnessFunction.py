@@ -7,12 +7,11 @@ import numpy.typing as npt
 from ..Chemistry.Chain import Chain
 from ..Metrics.Context import Context
 from ..Metrics.Metric import Metric
-from ..RetrievableSettings import RetrievableSettings
 
 
 
 
-class FitnessFunction(RetrievableSettings, ABC):
+class FitnessFunction(ABC):
 
     def __init__(
         self,

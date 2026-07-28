@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple, Union
 
-from ..RetrievableSettings import RetrievableSettings
 from .ContextInterface import ContextInterface
 
 
 
 
-class Metric(RetrievableSettings, ABC):
+class Metric(ABC):
 
     @abstractmethod
     def requires_structure_predictor(self) -> bool:

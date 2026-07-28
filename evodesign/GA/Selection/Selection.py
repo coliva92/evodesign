@@ -2,12 +2,10 @@ from abc import ABC
 
 from pymoo.core.selection import Selection
 
-from ...RetrievableSettings import RetrievableSettings
 
 
 
-
-class Selection(RetrievableSettings, ABC):
+class Selection(ABC):
 
     def __init__(self, pymoo_selection: Selection) -> None:
         super().__init__()

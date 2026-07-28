@@ -3,12 +3,10 @@ from typing import List, Optional, Tuple
 import numpy as np
 import numpy.typing as npt
 
-from ..RetrievableSettings import RetrievableSettings
 
 
 
-
-class ESM2Interface(RetrievableSettings):
+class ESM2Interface:
 
     def query_model(
         self,

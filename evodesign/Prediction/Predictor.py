@@ -4,14 +4,13 @@ from typing import List
 
 from requests.exceptions import ConnectTimeout
 
-from ..RetrievableSettings import RetrievableSettings
 from ..System.Exceptions import HttpGatewayTimeout
 from .DirectoryManager import DirectoryManager
 
 
 
 
-class Predictor(RetrievableSettings, ABC):
+class Predictor(ABC):
 
     @abstractmethod
     def predict_single_pdb_file(
