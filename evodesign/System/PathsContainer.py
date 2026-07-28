@@ -9,7 +9,7 @@ from typing import ClassVar, FrozenSet, Optional
 @dataclass
 class PathsContainer:
 
-    PROJECT_VERSION: ClassVar[str] = "20260727184718"
+    PROJECT_VERSION: ClassVar[str] = "20260727192834"
     jobname: str
     path: str
     results_npz_path: str
