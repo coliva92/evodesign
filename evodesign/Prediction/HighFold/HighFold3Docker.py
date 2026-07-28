@@ -1,12 +1,12 @@
 from typing import List
 
 from ...System.Subprocess import run_subprocess
-from .HighFold3Base import HighFold3Base
+from .HF3Interface import HF3Interface
 
 
 
 
-class HighFold3Docker(HighFold3Base):
+class HighFold3Docker(HF3Interface):
 
     def _create_cmd_array(
         self,
