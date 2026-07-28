@@ -1,9 +1,11 @@
-from .NonStructuralMetric import NonStructuralMetric
-from .ContextInterface import ContextInterface
-from .ESM2 import ESM2
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict, Tuple, List
+
+from .ContextInterface import ContextInterface
+from .ESM2 import ESM2
+from .NonStructuralMetric import NonStructuralMetric
 
 
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
@@ -21,15 +23,15 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         self.rmse_norm_const = rmse_norm_const
         self.dist_norm_const = dist_norm_const
         return
-    
+
     def _rmse(
         self,
         predicted_contacts: npt.NDArray[np.float64],
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> float:
-        return np.sqrt(np.mean((predicted_contacts - ref_contact_map)**2))
-    
+        return np.sqrt(np.mean((predicted_contacts - ref_contact_map) ** 2))
+
     def _euclidean_distance(
         self,
         predicted_contacts: npt.NDArray[np.float64],
@@ -37,18 +39,15 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         **kwargs,
     ) -> float:
         return np.linalg.norm(predicted_contacts - ref_contact_map)
-    
-    def _jensen_shannon(
-        self, 
-        p: npt.NDArray[np.float64],
-        q: npt.NDArray[np.float64]
-    ):
+
+    def _jensen_shannon(self, p: npt.NDArray[np.float64], q: npt.NDArray[np.float64]):
         from scipy.special import rel_entr
+
         m = (p + q) / 2.0
         left = rel_entr(p, m)
         right = rel_entr(q, m)
-        left_sum = np.max([ 0, np.sum(left) ])
-        right_sum = np.max([ 0, np.sum(right) ])
+        left_sum = np.max([0, np.sum(left)])
+        right_sum = np.max([0, np.sum(right)])
         js = left_sum + right_sum
         return np.sqrt(js / 2.0)
 
@@ -58,10 +57,12 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> float:
-        return np.mean([
-            self._jensen_shannon(predicted_contacts[i, :], ref_contact_map[i, :])
-            for i in range(predicted_contacts.shape[0])
-        ])
+        return np.mean(
+            [
+                self._jensen_shannon(predicted_contacts[i, :], ref_contact_map[i, :])
+                for i in range(predicted_contacts.shape[0])
+            ]
+        )
 
     def do(
         self,
@@ -69,7 +70,7 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
     ) -> Tuple[float]:
-        assert(predicted_contacts.shape[0] == ref_contact_map.shape[0])
+        assert predicted_contacts.shape[0] == ref_contact_map.shape[0]
         row_idx, col_idx = np.triu_indices_from(predicted_contacts)
         u = predicted_contacts[row_idx, col_idx]
         row_idx, col_idx = np.triu_indices_from(ref_contact_map)
@@ -96,9 +97,7 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
             _, ref_contact_map = self.esm_model.query_model(
                 ref_sequence, submap_indices=self.submap_indices
             )
-            context.set_extra_param_value(
-                "esm2_ref_contact_map", ref_contact_map
-            )
+            context.set_extra_param_value("esm2_ref_contact_map", ref_contact_map)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
             model_sequence = context.get_model_chain().sequence
@@ -106,14 +105,14 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
                 model_sequence, submap_indices=self.submap_indices
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
-            context.set_extra_param_value(
-                "esm2_predicted_contacts", predicted_contacts
-            )
-        rmse, norm_rmse, dist, norm_dist, js_dist = self.do(predicted_contacts, ref_contact_map)
+            context.set_extra_param_value("esm2_predicted_contacts", predicted_contacts)
+        rmse, norm_rmse, dist, norm_dist, js_dist = self.do(
+            predicted_contacts, ref_contact_map
+        )
         return {
             "rmse": rmse,
             "norm_rmse": norm_rmse,
             "distance": dist,
             "norm_distance": norm_dist,
-            "js_distance": js_dist
+            "js_distance": js_dist,
         }

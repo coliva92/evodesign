@@ -1,11 +1,14 @@
-from .StructuralMetric import StructuralMetric
-from .ContextInterface import ContextInterface
-from Bio.PDB.Residue import Residue
-from Bio.PDB.Atom import Atom
-from typing import List, Tuple, Dict
-from .Normalization.Formulas import z_score as compute_z, reciprocal
-from ..Chemistry.Geometry import find_atoms_in_residue
+from typing import Dict, List, Tuple
+
 import numpy as np
+from Bio.PDB.Atom import Atom
+from Bio.PDB.Residue import Residue
+
+from ..Chemistry.Geometry import find_atoms_in_residue
+from .ContextInterface import ContextInterface
+from .Normalization.Formulas import reciprocal
+from .Normalization.Formulas import z_score as compute_z
+from .StructuralMetric import StructuralMetric
 
 
 class DisulfideCyclization(StructuralMetric):

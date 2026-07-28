@@ -1,8 +1,10 @@
-from pymoo.termination.max_gen import MaximumGenerationTermination
-from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from ...Statistics import get_population_diversity_loss
 from typing import Optional
+
 import numpy as np
+from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from pymoo.termination.max_gen import MaximumGenerationTermination
+
+from ...Statistics import get_population_diversity_loss
 
 
 class MaximumDiversityLoss(MaximumGenerationTermination):

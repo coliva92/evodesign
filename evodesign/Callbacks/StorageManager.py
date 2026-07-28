@@ -1,14 +1,17 @@
-from pymoo.core.callback import Callback
-from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from ..System.PathsContainer import PathsContainer
-from ..Chemistry.Sequences import save_profile
-from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
-import numpy as np
-import numpy.typing as npt
-import dill
 import json
 import os
 import shutil
+
+import dill
+import numpy as np
+import numpy.typing as npt
+from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from pymoo.core.callback import Callback
+
+from ..Chemistry.Sequences import save_profile
+from ..Prediction.DirectoryManager import \
+    DirectoryManager as PredictorDirectoryManager
+from ..System.PathsContainer import PathsContainer
 
 
 class StorageManager(Callback):
@@ -159,9 +162,9 @@ class StorageManager(Callback):
         generations = data["generations"]
         fitness_values = data["fitness_values"]
         term_values = data["term_values"]
-        assert(generations.shape == self.generations.shape)
-        assert(fitness_values.shape == self.fitness_values.shape)
-        assert(term_values.shape[:2] == self.term_values.shape[:2])
+        assert generations.shape == self.generations.shape
+        assert fitness_values.shape == self.fitness_values.shape
+        assert term_values.shape[:2] == self.term_values.shape[:2]
         if term_values.shape[2] != self.term_values.shape[2]:
             # hay que cambiar el tamaño de term_values
             term_values = self.resize_array_z_axis(self.term_values, term_values)

@@ -1,6 +1,7 @@
-from .AlphaFoldInterface import AlphaFoldInterface
-from ..System.Subprocess import run_subprocess
 import os
+
+from ..System.Subprocess import run_subprocess
+from .AlphaFoldInterface import AlphaFoldInterface
 
 
 class AlphaFold2(AlphaFoldInterface):
@@ -13,7 +14,7 @@ class AlphaFold2(AlphaFoldInterface):
         data_dir: str,
         use_gpu: bool = True,
         gpu_devices: str = "all",
-        enable_gpu_relax = False,
+        enable_gpu_relax=False,
         max_template_date: str = "2020-05-14",
         model_preset: str = "monomer",
         db_preset: str = "reduced_dbs",

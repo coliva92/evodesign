@@ -1,12 +1,14 @@
-from .StructuralMetric import StructuralMetric
-from .ContextInterface import ContextInterface
-from Bio.PDB.Atom import Atom
+import itertools
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import List, Dict, Optional, Tuple
+from Bio.PDB.Atom import Atom
+
+from .ContextInterface import ContextInterface
 from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
-import itertools
+from .StructuralMetric import StructuralMetric
 
 
 class DistanceMap(StructuralMetric):

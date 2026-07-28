@@ -1,10 +1,11 @@
-from abc import ABC, abstractmethod
-from .Predictor import Predictor
-from .DirectoryManager import DirectoryManager
-from typing import List
-from ..System.Subprocess import run_subprocess
 import os
 import shutil
+from abc import ABC, abstractmethod
+from typing import List
+
+from ..System.Subprocess import run_subprocess
+from .DirectoryManager import DirectoryManager
+from .Predictor import Predictor
 
 
 class AlphaFoldInterface(Predictor, ABC):

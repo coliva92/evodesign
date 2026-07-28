@@ -1,5 +1,6 @@
-from .Crossover import Crossover
 from pymoo.operators.crossover.ux import UX
+
+from .Crossover import Crossover
 
 
 class UniformCrossover(Crossover):

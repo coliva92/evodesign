@@ -1,5 +1,5 @@
-from typing import List
 import subprocess
+from typing import List
 
 
 def _open_command_line(command: List[str]):

@@ -1,16 +1,18 @@
 from abc import ABC, abstractmethod
-from .RetrievableSettings import RetrievableSettings
-from .Chemistry.Chain import Chain
-from .Callbacks.StorageManager import StorageManager
-from .Prediction.Predictor import Predictor
-from .Prediction.DirectoryManager import DirectoryManager
-from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from pymoo.core.problem import Problem as PyMOOProblem
-from .Callbacks.CallbackCollection import CallbackCollection
-from .IntegerProfileSampling import IntegerProfileSampling
+from typing import Optional
+
 import numpy as np
 import numpy.typing as npt
-from typing import Optional
+from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from pymoo.core.problem import Problem as PyMOOProblem
+
+from .Callbacks.CallbackCollection import CallbackCollection
+from .Callbacks.StorageManager import StorageManager
+from .Chemistry.Chain import Chain
+from .IntegerProfileSampling import IntegerProfileSampling
+from .Prediction.DirectoryManager import DirectoryManager
+from .Prediction.Predictor import Predictor
+from .RetrievableSettings import RetrievableSettings
 
 
 class AlgorithmFactory(RetrievableSettings, ABC):
@@ -45,4 +47,4 @@ class AlgorithmFactory(RetrievableSettings, ABC):
         self,
         storage: StorageManager,
     ) -> CallbackCollection:
-        return CallbackCollection([ storage ])
+        return CallbackCollection([storage])

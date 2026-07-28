@@ -1,12 +1,14 @@
 from abc import ABC
+from typing import Optional
+
+import numpy as np
+import numpy.typing as npt
 from pymoo.core.problem import Problem
-from .Prediction.Predictor import Predictor
+
 from .Chemistry.Chain import Chain
 from .Chemistry.Sequences import AMINO_ACIDS
 from .Prediction.DirectoryManager import DirectoryManager
-import numpy as np
-import numpy.typing as npt
-from typing import Optional
+from .Prediction.Predictor import Predictor
 
 
 class CPD(Problem, ABC):
@@ -27,7 +29,7 @@ class CPD(Problem, ABC):
             xl=0,
             xu=len(AMINO_ACIDS) - 1,
             vtype=np.int64,
-            **kwargs
+            **kwargs,
         )
         self.ref_chain = ref_chain
         self.predictor = predictor

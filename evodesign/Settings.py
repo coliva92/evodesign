@@ -1,8 +1,9 @@
-from .AlgorithmFactory import AlgorithmFactory
-import importlib
 import copy
+import importlib
 import json
 import os
+
+from .AlgorithmFactory import AlgorithmFactory
 
 
 def read_json(settings_path: str) -> dict:

@@ -1,12 +1,14 @@
-from .AlphaFoldInterface import AlphaFoldInterface
-from .DirectoryManager import DirectoryManager
-from ..Files.mmCIF import convert_cif_to_pdb
-from ..System.Subprocess import run_subprocess
-from Bio.PDB import MMCIFParser, PDBIO
+import json
 import os
 import shutil
-import json
 from typing import List, Optional
+
+from Bio.PDB import PDBIO, MMCIFParser
+
+from ..Files.mmCIF import convert_cif_to_pdb
+from ..System.Subprocess import run_subprocess
+from .AlphaFoldInterface import AlphaFoldInterface
+from .DirectoryManager import DirectoryManager
 
 
 class AlphaFold3Docker(AlphaFoldInterface):

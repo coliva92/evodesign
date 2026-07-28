@@ -1,9 +1,11 @@
-from ..ESM2Interface import ESM2Interface
-from ..ESM2ModelContainer import ESM2ModelContainer
-import torch
+from typing import List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Tuple, List
+import torch
+
+from ..ESM2Interface import ESM2Interface
+from ..ESM2ModelContainer import ESM2ModelContainer
 
 
 class v1(ESM2Interface):
@@ -18,16 +20,16 @@ class v1(ESM2Interface):
         if v1._model is None:
             v1._model = ESM2ModelContainer(self.gpu_device)
         return
-    
 
-    def contacts_map_from_prediction(self, 
-                                     predicted_contacts_matrix: npt.NDArray[np.float64],
-                                     min_separation: int = 6,
-                                     ) -> npt.NDArray[np.int64]:        
+    def contacts_map_from_prediction(
+        self,
+        predicted_contacts_matrix: npt.NDArray[np.float64],
+        min_separation: int = 6,
+    ) -> npt.NDArray[np.int64]:
         L = predicted_contacts_matrix.shape[0]
         row_indices, column_indices = np.triu_indices(L, k=min_separation)
         pred_upper = predicted_contacts_matrix[row_indices, column_indices]
-        top_L = min(L, pred_upper.size) 
+        top_L = min(L, pred_upper.size)
         # argsort can't sort in descending order;
         # highest probabilities must come first
         top_indices = np.argsort(-pred_upper)[:top_L]
@@ -35,9 +37,8 @@ class v1(ESM2Interface):
         top_x = row_indices[top_indices]
         top_y = column_indices[top_indices]
         binary_map[top_x, top_y] = 1
-        binary_map[top_y, top_x] = 1 
+        binary_map[top_y, top_x] = 1
         return binary_map
-
 
     def query_model(
         self,
@@ -71,12 +72,14 @@ class v1(ESM2Interface):
 
         if submap_indices is not None:
             desc_matrix = desc_matrix[submap_indices]
-            predicted_contacts_matrix = predicted_contacts_matrix[np.ix_(submap_indices, submap_indices)]
-        
+            predicted_contacts_matrix = predicted_contacts_matrix[
+                np.ix_(submap_indices, submap_indices)
+            ]
+
         # predicted_contacts_matrix += 0.0001
         # np.fill_diagonal(predicted_contacts_matrix, 0)
         # predicted_contacts_matrix /= np.sum(predicted_contacts_matrix, axis=1)[:, np.newaxis]
-        
+
         # row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix)
         # predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
@@ -84,8 +87,9 @@ class v1(ESM2Interface):
         del tokens
         del result
 
-        return desc_matrix.astype(np.float64), predicted_contacts_matrix.astype(np.float64)
-
+        return desc_matrix.astype(np.float64), predicted_contacts_matrix.astype(
+            np.float64
+        )
 
 
 class v2(ESM2Interface):
@@ -100,16 +104,16 @@ class v2(ESM2Interface):
         if v2._model is None:
             v2._model = ESM2ModelContainer(self.gpu_device)
         return
-    
 
-    def contacts_map_from_prediction(self, 
-                                     predicted_contacts_matrix: npt.NDArray[np.float64],
-                                     min_separation: int = 6,
-                                     ) -> npt.NDArray[np.int64]:        
+    def contacts_map_from_prediction(
+        self,
+        predicted_contacts_matrix: npt.NDArray[np.float64],
+        min_separation: int = 6,
+    ) -> npt.NDArray[np.int64]:
         L = predicted_contacts_matrix.shape[0]
         row_indices, column_indices = np.triu_indices(L, k=min_separation)
         pred_upper = predicted_contacts_matrix[row_indices, column_indices]
-        top_L = min(L, pred_upper.size) 
+        top_L = min(L, pred_upper.size)
         # argsort can't sort in descending order;
         # highest probabilities must come first
         top_indices = np.argsort(-pred_upper)[:top_L]
@@ -117,9 +121,8 @@ class v2(ESM2Interface):
         top_x = row_indices[top_indices]
         top_y = column_indices[top_indices]
         binary_map[top_x, top_y] = 1
-        binary_map[top_y, top_x] = 1 
+        binary_map[top_y, top_x] = 1
         return binary_map
-
 
     def query_model(
         self,
@@ -143,7 +146,9 @@ class v2(ESM2Interface):
             esm_s = esm_s[:, 1:-1]
             esm_s = esm_s.to(self._model.esmfold_model.esm_s_combine.dtype)
             esm_s = esm_s.detach()
-            esm_s = (self._model.esmfold_model.esm_s_combine.softmax(0).unsqueeze(0) @ esm_s).squeeze(2)
+            esm_s = (
+                self._model.esmfold_model.esm_s_combine.softmax(0).unsqueeze(0) @ esm_s
+            ).squeeze(2)
 
         # `result['representations']` contains the weights of each layer in the
         # neural net; we only want the weights of the last layer
@@ -162,12 +167,14 @@ class v2(ESM2Interface):
 
         if submap_indices is not None:
             desc_matrix = desc_matrix[submap_indices]
-            predicted_contacts_matrix = predicted_contacts_matrix[np.ix_(submap_indices, submap_indices)]
-        
+            predicted_contacts_matrix = predicted_contacts_matrix[
+                np.ix_(submap_indices, submap_indices)
+            ]
+
         # predicted_contacts_matrix += 0.0001
         # np.fill_diagonal(predicted_contacts_matrix, 0)
         # predicted_contacts_matrix /= np.sum(predicted_contacts_matrix, axis=1)[:, np.newaxis]
-        
+
         # row_idx, col_idx = np.triu_indices_from(predicted_contacts_matrix)
         # predicted_contacts = predicted_contacts_matrix[row_idx, col_idx]
 
@@ -175,4 +182,6 @@ class v2(ESM2Interface):
         del tokens
         del result
 
-        return desc_matrix.astype(np.float64), predicted_contacts_matrix.astype(np.float64)
+        return desc_matrix.astype(np.float64), predicted_contacts_matrix.astype(
+            np.float64
+        )

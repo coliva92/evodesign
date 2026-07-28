@@ -1,9 +1,11 @@
-from .NonStructuralMetric import NonStructuralMetric
-from .ContextInterface import ContextInterface
-from .ESM2 import ESM2_3
+from typing import Dict, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Dict, Tuple
+
+from .ContextInterface import ContextInterface
+from .ESM2 import ESM2_3
+from .NonStructuralMetric import NonStructuralMetric
 
 
 class ESMSinglePairRepresentation(NonStructuralMetric):
@@ -11,13 +13,13 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
     def __init__(
         self,
         rmse_norm_const: float = 1.0,
-        esm_model = None,
+        esm_model=None,
     ) -> None:
         super().__init__()
-        self.esm_model = ESM2_3() # hardcoded for now
+        self.esm_model = ESM2_3()  # hardcoded for now
         self.rmse_norm_const = rmse_norm_const
         return
-    
+
     def _rmse(
         self,
         a: npt.NDArray[np.float64],
@@ -26,7 +28,7 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
     ) -> float:
         u = a.flatten()
         v = b.flatten()
-        return np.sqrt(np.mean((u - v)**2))
+        return np.sqrt(np.mean((u - v) ** 2))
 
     def do(
         self,
@@ -57,10 +59,14 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
         model_pair_rep = context.get_extra_param_value("esmfold_model_pair_rep")
         if model_single_rep is None or model_pair_rep is None:
             model_sequence = context.get_model_chain().sequence
-            model_single_rep, model_pair_rep = self.esm_model.query_model(model_sequence)
+            model_single_rep, model_pair_rep = self.esm_model.query_model(
+                model_sequence
+            )
             context.set_extra_param_value("esmfold_model_single_rep", model_single_rep)
             context.set_extra_param_value("esmfold_model_pair_rep", model_pair_rep)
-        rmse, norm_rmse = self.do(model_single_rep, model_pair_rep, ref_single_rep, ref_pair_rep)
+        rmse, norm_rmse = self.do(
+            model_single_rep, model_pair_rep, ref_single_rep, ref_pair_rep
+        )
         return {
             "rmse": rmse,
             "norm_rmse": norm_rmse,

@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Optional
-from Bio.PDB.Structure import Structure
-from Bio.PDB.Atom import Atom
-from Bio.PDB.Residue import Residue
+
 import numpy as np
 import numpy.typing as npt
+from Bio.PDB.Atom import Atom
+from Bio.PDB.Residue import Residue
+from Bio.PDB.Structure import Structure
 
 
 @dataclass

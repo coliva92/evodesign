@@ -1,8 +1,10 @@
-from .StructuralMetric import StructuralMetric
-from .ContextInterface import ContextInterface
-from typing import Dict
-import pyrosetta
 import os
+from typing import Dict
+
+import pyrosetta
+
+from .ContextInterface import ContextInterface
+from .StructuralMetric import StructuralMetric
 
 
 class RosettaEnergyFunction(StructuralMetric):

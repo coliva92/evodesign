@@ -16,7 +16,7 @@ class DirectoryManager:
         self.model_output_dir = os.path.abspath(model_output_dir)
         self.prefix = prefix
         return
-    
+
     def protein_full_name(self, suffix: str) -> str:
         return f"{self.prefix}_{suffix}"
 

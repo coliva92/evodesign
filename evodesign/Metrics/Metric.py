@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+from typing import Dict, Tuple, Union
+
 from ..RetrievableSettings import RetrievableSettings
 from .ContextInterface import ContextInterface
-from typing import Union, Tuple, Dict
 
 
 class Metric(RetrievableSettings, ABC):

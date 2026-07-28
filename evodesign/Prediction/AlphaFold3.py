@@ -1,7 +1,8 @@
-from .AlphaFold3Docker import AlphaFold3Docker
-from ..System.Subprocess import run_subprocess
 import os
 from typing import List, Optional
+
+from ..System.Subprocess import run_subprocess
+from .AlphaFold3Docker import AlphaFold3Docker
 
 
 class AlphaFold3(AlphaFold3Docker):

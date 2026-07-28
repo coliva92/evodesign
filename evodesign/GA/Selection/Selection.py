@@ -1,6 +1,8 @@
 from abc import ABC
-from ...RetrievableSettings import RetrievableSettings
+
 from pymoo.core.selection import Selection
+
+from ...RetrievableSettings import RetrievableSettings
 
 
 class Selection(RetrievableSettings, ABC):

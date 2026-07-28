@@ -1,4 +1,4 @@
-from Bio.PDB import MMCIFParser, PDBIO
+from Bio.PDB import PDBIO, MMCIFParser
 
 
 def convert_cif_to_pdb(

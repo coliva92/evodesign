@@ -1,5 +1,6 @@
-from .Normalization import Normalization
 import numpy as np
+
+from .Normalization import Normalization
 
 
 class Exponential(Normalization):

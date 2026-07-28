@@ -1,11 +1,13 @@
-from ....IntegerProfileSampling import IntegerProfileSampling
-from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
-from pymoo.core.mutation import Mutation
-from pymoo.core.variable import Real
-from pymoo.core.problem import Problem
 from copy import deepcopy
+
 import numpy as np
 import numpy.typing as npt
+from pymoo.core.mutation import Mutation
+from pymoo.core.problem import Problem
+from pymoo.core.variable import Real
+
+from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
+from ....IntegerProfileSampling import IntegerProfileSampling
 
 
 class RandomResetting(Mutation):
@@ -32,8 +34,6 @@ class RandomResetting(Mutation):
             mutations = np.random.choice(AMINO_ACIDS_INT_ALPHABET[1:], size=X.shape)
             Xp[mask] = (X[mask] + mutations[mask]) % len(AMINO_ACIDS_INT_ALPHABET)
         else:
-            mutations = self.sampler.generate_sequences(
-                X.shape[0], problem.aa_profile
-            )
+            mutations = self.sampler.generate_sequences(X.shape[0], problem.aa_profile)
             Xp[mask] = mutations[mask]
         return Xp

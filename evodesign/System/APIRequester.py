@@ -1,8 +1,10 @@
-from ..RetrievableSettings import RetrievableSettings
-from typing import Optional, Callable
-from .Exceptions import *
-import requests
 import time
+from typing import Callable, Optional
+
+import requests
+
+from ..RetrievableSettings import RetrievableSettings
+from .Exceptions import *
 
 
 class APIRequester(RetrievableSettings):

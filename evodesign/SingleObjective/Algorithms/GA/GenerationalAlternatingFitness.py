@@ -1,14 +1,16 @@
-from .Generational import Generational
-from ....Chemistry.Chain import Chain
-from ....Prediction.DirectoryManager import DirectoryManager
-from ...Problems.AlternatingCPD import AlternatingCPD
-from ....Callbacks.StorageManager import StorageManager
-from ....Callbacks.MonoFitnessFnAlternator import MonoFitnessFnAlternator
-from ....Fitness.FitnessFunction import FitnessFunction
-from ....Callbacks.CallbackCollection import CallbackCollection
 from typing import Optional
+
 import numpy as np
 import numpy.typing as npt
+
+from ....Callbacks.CallbackCollection import CallbackCollection
+from ....Callbacks.MonoFitnessFnAlternator import MonoFitnessFnAlternator
+from ....Callbacks.StorageManager import StorageManager
+from ....Chemistry.Chain import Chain
+from ....Fitness.FitnessFunction import FitnessFunction
+from ....Prediction.DirectoryManager import DirectoryManager
+from ...Problems.AlternatingCPD import AlternatingCPD
+from .Generational import Generational
 
 
 class GenerationalAlternatingFitness(Generational):

@@ -1,8 +1,10 @@
-from .FitnessFunction import FitnessFunction
-from ..Metrics.Metric import Metric
-import numpy as np
 from typing import List
+
+import numpy as np
 import numpy.typing as npt
+
+from ..Metrics.Metric import Metric
+from .FitnessFunction import FitnessFunction
 
 
 class WeightedMean(FitnessFunction):
@@ -25,4 +27,7 @@ class WeightedMean(FitnessFunction):
         return np.average(term_values, weights=self.term_weights)
 
     def name(self) -> str:
-        return "_".join(f"{t.split('.')[-1]}{int(100 * w)}" for w, t in zip(self.term_weights, self.terms))
+        return "_".join(
+            f"{t.split('.')[-1]}{int(100 * w)}"
+            for w, t in zip(self.term_weights, self.terms)
+        )

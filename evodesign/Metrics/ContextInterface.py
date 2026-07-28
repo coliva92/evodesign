@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from ..Chemistry.Chain import Chain
 from typing import Dict
+
+from ..Chemistry.Chain import Chain
 
 
 class ContextInterface(ABC):

@@ -1,7 +1,7 @@
-from pymoo.core.survival import Survival
-from pymoo.core.problem import Problem
-from pymoo.core.population import Population
 import numpy as np
+from pymoo.core.population import Population
+from pymoo.core.problem import Problem
+from pymoo.core.survival import Survival
 
 
 class GenerationalElitism(Survival):
@@ -22,7 +22,7 @@ class GenerationalElitism(Survival):
         parent_fitness = parents.get("F").flatten()
         best_idx = np.argmin(parent_fitness)
         # we pass [best_idx] so 'elite' remains a PyMOO Population instance
-        elite = parents[[best_idx]] 
+        elite = parents[[best_idx]]
         offspring_fitness = offspring.get("F").flatten()
         worst_idx = np.argmax(offspring_fitness)
         # create a boolean mask to remove the worst individual

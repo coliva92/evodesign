@@ -1,5 +1,5 @@
-from .Normalization import Normalization
 from .Formulas import reciprocal
+from .Normalization import Normalization
 
 
 class Reciprocal(Normalization):

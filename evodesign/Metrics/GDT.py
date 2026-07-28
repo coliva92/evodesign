@@ -1,9 +1,11 @@
-from .StructuralMetric import StructuralMetric
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
+
 import numpy as np
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
+
 from .ContextInterface import ContextInterface
+from .StructuralMetric import StructuralMetric
 
 
 class GDT(StructuralMetric):
@@ -29,17 +31,17 @@ class GDT(StructuralMetric):
 
         total_atoms = len(ref_backbone)
         if total_atoms < 3:
-            return 0.0 # SVD requires at least 3 points
-            
+            return 0.0  # SVD requires at least 3 points
+
         # Save original coordinates to reset between iterations
         original_coords = [atom.coord.copy() for atom in model_backbone]
-        
+
         # Pre-calculate all initial seed indices (sliding windows)
         all_seeds = []
         for size in self.seed_sizes:
             for i in range(total_atoms - size + 1):
                 all_seeds.append(list(range(i, i + size)))
-                
+
         # Fallback if sequence is too short for the seeds
         if not all_seeds:
             all_seeds = [list(range(total_atoms))]
@@ -50,47 +52,51 @@ class GDT(StructuralMetric):
 
         for cutoff in self.cutoffs:
             max_active_for_cutoff = 0
-            
+
             # Test every seed to find the maximum possible set for this cutoff
             for initial_seed in all_seeds:
-                
+
                 # 1. Reset model coordinates for this specific seed trial
                 for atom, coord in zip(model_backbone, original_coords):
                     atom.coord = coord.copy()
-                    
+
                 active_indices = initial_seed
-                
+
                 while True:
                     if len(active_indices) < 3:
                         break
-                        
+
                     ref_subset = [ref_backbone[i] for i in active_indices]
                     model_subset = [model_backbone[i] for i in active_indices]
-                    
+
                     # 2. Obtain transform based on the current subset
                     superimposer.set_atoms(ref_subset, model_subset)
-                    
+
                     # 3. Apply to the entire model
                     superimposer.apply(model_backbone)
-                    
+
                     # Calculate distances
-                    distances = np.array([a - b for a, b in zip(model_backbone, ref_backbone)])
-                    
+                    distances = np.array(
+                        [a - b for a, b in zip(model_backbone, ref_backbone)]
+                    )
+
                     # 4. Identify atom pairs under threshold
-                    new_active_indices = [i for i, d in enumerate(distances) if d <= cutoff]
-                    
+                    new_active_indices = [
+                        i for i, d in enumerate(distances) if d <= cutoff
+                    ]
+
                     # 5. Check for stabilization
                     if new_active_indices == active_indices:
                         break
-                        
+
                     active_indices = new_active_indices
-                
+
                 # Update the maximum found so far
                 if len(active_indices) > max_active_for_cutoff:
                     max_active_for_cutoff = len(active_indices)
                     rotation = superimposer.rotran[0].copy()
                     translation = superimposer.rotran[1].copy()
-                    
+
             # Store the highest percentage achieved for this cutoff
             scores.append(max_active_for_cutoff / total_atoms)
 
@@ -100,7 +106,11 @@ class GDT(StructuralMetric):
             atom.coord = coord.copy()
         superimposer.rotran = (rotation, translation)
         superimposer.apply(model_backbone)
-        rmsd = np.sqrt(np.mean(np.array([ (a - b)**2 for a, b in zip(model_backbone, ref_backbone) ])))
+        rmsd = np.sqrt(
+            np.mean(
+                np.array([(a - b) ** 2 for a, b in zip(model_backbone, ref_backbone)])
+            )
+        )
         return gdt, rmsd, rotation, translation
 
     def do_for_fitness_fn(

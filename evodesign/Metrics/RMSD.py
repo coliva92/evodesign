@@ -1,10 +1,12 @@
-from .StructuralMetric import StructuralMetric
+from typing import Dict, List, Optional, Tuple
+
 from Bio.PDB import Superimposer
-from typing import List, Dict, Optional, Tuple
 from Bio.PDB.Atom import Atom
+
 from .ContextInterface import ContextInterface
 from .Normalization.Normalization import Normalization
 from .Normalization.Reciprocal import Reciprocal
+from .StructuralMetric import StructuralMetric
 
 
 class RMSD(StructuralMetric):

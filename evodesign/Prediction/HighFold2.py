@@ -1,6 +1,7 @@
-from .AlphaFoldInterface import AlphaFoldInterface
-from typing import Optional, List
 import os
+from typing import List, Optional
+
+from .AlphaFoldInterface import AlphaFoldInterface
 
 
 class HighFold2(AlphaFoldInterface):

@@ -1,13 +1,11 @@
-from pymoo.core.callback import Callback
-from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
-from pymoo.algorithms.base.genetic import GeneticAlgorithm
-from pymoo.core.population import Population
-from ..Statistics import (
-    get_population_amino_acid_loss,
-    get_population_identity,
-    ALPHABET_SIZE,
-)
 import numpy as np
+from pymoo.algorithms.base.genetic import GeneticAlgorithm
+from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from pymoo.core.callback import Callback
+from pymoo.core.population import Population
+
+from ..Statistics import (ALPHABET_SIZE, get_population_amino_acid_loss,
+                          get_population_identity)
 
 
 class PopulationRestarter(Callback):

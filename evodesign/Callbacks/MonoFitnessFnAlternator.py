@@ -1,5 +1,6 @@
-from pymoo.core.callback import Callback
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
+from pymoo.core.callback import Callback
+
 from ..Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
 
 

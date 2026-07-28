@@ -1,9 +1,11 @@
-from .Predictor import Predictor
-from .DirectoryManager import DirectoryManager
-from Bio.PDB import PDBIO, Structure, Model, Chain, Residue, Atom
-from Bio.Data import IUPACData
-from typing import List
 import os
+from typing import List
+
+from Bio.Data import IUPACData
+from Bio.PDB import PDBIO, Atom, Chain, Model, Residue, Structure
+
+from .DirectoryManager import DirectoryManager
+from .Predictor import Predictor
 
 
 class Null(Predictor):

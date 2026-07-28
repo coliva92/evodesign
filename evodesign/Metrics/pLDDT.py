@@ -1,8 +1,10 @@
-from .StructuralMetric import StructuralMetric
+from typing import Dict
+
+import numpy as np
+
 from ..Chemistry.Chain import Chain
 from .ContextInterface import ContextInterface
-from typing import Dict
-import numpy as np
+from .StructuralMetric import StructuralMetric
 
 
 class pLDDT(StructuralMetric):

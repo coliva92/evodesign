@@ -1,10 +1,12 @@
-from .StructuralMetric import StructuralMetric
-from .ContextInterface import ContextInterface
-from Bio.PDB.Atom import Atom
-from typing import List, Dict, Tuple
-from scipy.spatial import cKDTree
+from typing import Dict, List, Tuple
+
 import numpy as np
 import numpy.typing as npt
+from Bio.PDB.Atom import Atom
+from scipy.spatial import cKDTree
+
+from .ContextInterface import ContextInterface
+from .StructuralMetric import StructuralMetric
 
 
 class lDDT(StructuralMetric):

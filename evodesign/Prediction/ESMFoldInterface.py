@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
-from .Predictor import Predictor
-from .DirectoryManager import DirectoryManager
 import os
+from abc import ABC, abstractmethod
+
+from .DirectoryManager import DirectoryManager
+from .Predictor import Predictor
 
 
 class ESMFoldInterface(Predictor, ABC):

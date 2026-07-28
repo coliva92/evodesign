@@ -1,7 +1,9 @@
-from ..RetrievableSettings import RetrievableSettings
-from typing import Tuple, List, Optional
+from typing import List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
+
+from ..RetrievableSettings import RetrievableSettings
 
 
 class ESM2Interface(RetrievableSettings):

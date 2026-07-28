@@ -1,5 +1,6 @@
-from .AlphaFold3Docker import AlphaFold3Docker
 from typing import List, Optional
+
+from .AlphaFold3Docker import AlphaFold3Docker
 
 
 class HighFold3Docker(AlphaFold3Docker):
@@ -69,7 +70,7 @@ class HighFold3Docker(AlphaFold3Docker):
         do_batch_inference: bool,
     ) -> List[str]:
         cmd = super()._create_cmd_array(input_path, output_dir, do_batch_inference)
-        cmd[11] = "highfold3" # change the docker image
+        cmd[11] = "highfold3"  # change the docker image
         cmd[-1] = (
             f"--head_to_tail={self.head_to_tail}"  # this also removes --force_output_dir
         )

@@ -1,15 +1,16 @@
 from argparse import ArgumentParser
+
+import numpy as np
 from pymoo.config import Config
 from pymoo.optimize import minimize
+from requests.exceptions import ConnectTimeout
+
 import evodesign.Settings as Settings
-from evodesign.System.PathsContainer import PathsContainer
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Sequences import load_profile, to_str
 from evodesign.System.Exceptions import *
-from requests.exceptions import ConnectTimeout
-import numpy as np
-
+from evodesign.System.PathsContainer import PathsContainer
 
 Config.warnings["not_compiled"] = False
 parser = ArgumentParser(
@@ -68,7 +69,7 @@ storage = StorageManager(
     algorithm_factory.max_generations,
     algorithm_factory.population_size,
     len(ref_chain.sequence),
-    algorithm_factory.num_terms(), # TODO: we're assuming mono-objective only
+    algorithm_factory.num_terms(),  # TODO: we're assuming mono-objective only
     args.save_every_nth_generation,
 )
 algorithm = algorithm_factory.create_algorithm()
@@ -76,7 +77,7 @@ try:
     # resuming from a previous execution
     storage.load_results_npz()
     algorithm = storage.load_pymoo_algorithm()
-    algorithm.n_gen += 1 # TODO: check if this is correct
+    algorithm.n_gen += 1  # TODO: check if this is correct
     if algorithm.termination.n_max_gen < algorithm_factory.max_generations:
         # extending from a previously completed execution
         storage.extend_result_arrays(algorithm_factory.max_generations)
@@ -105,13 +106,16 @@ while True:
         if args.profile_path is not None:
             aa_profile = load_profile(args.profile_path)
         problem = algorithm_factory.create_problem(
-            ref_chain, storage.predictor_directory, aa_profile)
+            ref_chain, storage.predictor_directory, aa_profile
+        )
         callbacks = algorithm_factory.create_callbacks(storage)
-        result = minimize(problem=problem, 
-                          algorithm=algorithm,
-                          callback=callbacks,
-                          verbose=True,
-                          copy_algorithm=False)
+        result = minimize(
+            problem=problem,
+            algorithm=algorithm,
+            callback=callbacks,
+            verbose=True,
+            copy_algorithm=False,
+        )
         solution = to_str(result.X)
         fitness_value = result.F[0]
         print("Sequence:", solution)

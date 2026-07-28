@@ -1,5 +1,5 @@
-from pymoo.core.survival import Survival
 from pymoo.core.problem import Problem
+from pymoo.core.survival import Survival
 
 
 class Generational(Survival):

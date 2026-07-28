@@ -1,6 +1,6 @@
-from pymoo.operators.sampling.rnd import IntegerRandomSampling
 import numpy as np
 import numpy.typing as npt
+from pymoo.operators.sampling.rnd import IntegerRandomSampling
 
 
 class IntegerProfileSampling(IntegerRandomSampling):

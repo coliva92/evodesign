@@ -1,6 +1,8 @@
 from abc import ABC
-from ...RetrievableSettings import RetrievableSettings
+
 from pymoo.core.crossover import Crossover as PyMOOCrossover
+
+from ...RetrievableSettings import RetrievableSettings
 
 
 class Crossover(RetrievableSettings, ABC):

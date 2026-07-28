@@ -1,8 +1,10 @@
-from .ESM2Interface import ESM2Interface
-from ..System.APIRequester import APIRequester
+from typing import List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Tuple, Optional, List
+
+from ..System.APIRequester import APIRequester
+from .ESM2Interface import ESM2Interface
 
 
 class ESM2RemoteAPI(ESM2Interface):

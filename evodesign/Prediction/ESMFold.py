@@ -1,6 +1,7 @@
-from .ESMFoldInterface import ESMFoldInterface
-from ..Metrics.ESM2ModelContainer import ESM2ModelContainer
 from typing import Optional
+
+from ..Metrics.ESM2ModelContainer import ESM2ModelContainer
+from .ESMFoldInterface import ESMFoldInterface
 
 
 class ESMFold(ESMFoldInterface):

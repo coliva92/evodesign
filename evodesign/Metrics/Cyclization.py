@@ -1,8 +1,12 @@
-from .StructuralMetric import StructuralMetric
-from .ContextInterface import ContextInterface
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
+
 from Bio.PDB.Atom import Atom
-from Metrics.Normalization.Formulas import z_score as compute_z, reciprocal
+
+from Metrics.Normalization.Formulas import reciprocal
+from Metrics.Normalization.Formulas import z_score as compute_z
+
+from .ContextInterface import ContextInterface
+from .StructuralMetric import StructuralMetric
 
 
 class Cyclization(StructuralMetric):

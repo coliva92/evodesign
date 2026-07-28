@@ -1,9 +1,11 @@
-from .NonStructuralMetric import NonStructuralMetric
-from .ContextInterface import ContextInterface
-from .ESM2 import ESM2
+from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Dict, List, Tuple
+
+from .ContextInterface import ContextInterface
+from .ESM2 import ESM2
+from .NonStructuralMetric import NonStructuralMetric
 
 
 class ESM2Descriptors(NonStructuralMetric):
@@ -21,7 +23,7 @@ class ESM2Descriptors(NonStructuralMetric):
         self.rmse_norm_const = rmse_norm_const
         self.dist_norm_const = dist_norm_const
         return
-    
+
     def _rmse(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
@@ -30,7 +32,7 @@ class ESM2Descriptors(NonStructuralMetric):
     ) -> float:
         u = model_desc_matrix.flatten()
         v = ref_desc_matrix.flatten()
-        return np.sqrt(np.mean((u - v)**2))
+        return np.sqrt(np.mean((u - v) ** 2))
 
     def _cos_similarity(
         self,
@@ -40,7 +42,7 @@ class ESM2Descriptors(NonStructuralMetric):
     ) -> float:
         n1 = np.linalg.norm(u)
         n2 = np.linalg.norm(v)
-        return np.dot(u, v) / (n1*n2)
+        return np.dot(u, v) / (n1 * n2)
 
     def _mean_cos_similarity(
         self,
@@ -54,7 +56,7 @@ class ESM2Descriptors(NonStructuralMetric):
             v = ref_desc_matrix[i, :]
             values.append((self._cos_similarity(u, v) + 1) / 2)
         return np.mean(values)
-    
+
     def _mean_euclidean_distance(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
@@ -100,10 +102,12 @@ class ESM2Descriptors(NonStructuralMetric):
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
-        rmse, norm_rmse, mean_norm_cos, distance, norm_distance = self.do(model_desc_matrix, ref_desc_matrix)
+        rmse, norm_rmse, mean_norm_cos, distance, norm_distance = self.do(
+            model_desc_matrix, ref_desc_matrix
+        )
         return {
             "rmse": rmse,
-            "norm_rmse": norm_rmse, 
+            "norm_rmse": norm_rmse,
             "mean_norm_cos": mean_norm_cos,
             "distance": distance,
             "norm_distance": norm_distance,

@@ -1,7 +1,8 @@
+from typing import Dict
+
+from ..Chemistry.Chain import Chain
 from .ContextInterface import ContextInterface
 from .Metric import Metric
-from ..Chemistry.Chain import Chain
-from typing import Dict
 
 
 class Context(ContextInterface):

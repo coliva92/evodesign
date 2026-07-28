@@ -1,5 +1,5 @@
-from .Normalization import Normalization
 from .Formulas import z_score
+from .Normalization import Normalization
 
 
 class ZScore(Normalization):

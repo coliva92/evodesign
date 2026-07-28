@@ -23,7 +23,7 @@ class RetrievableSettings(ABC):
                 # apply the function recursively
                 settings_dict[key] = value.settings()
             elif type(value) is list and not isinstance(value[0], self._basic_types):
-                settings_dict[key] = [ x.settings() for x in value ]
+                settings_dict[key] = [x.settings() for x in value]
             elif not key.startswith("_"):
                 settings_dict[key] = value
         return {self._class_name(): settings_dict}

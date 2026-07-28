@@ -1,9 +1,11 @@
-from ..StructuralMetric import StructuralMetric
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
+
 import numpy as np
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
+
 from ..ContextInterface import ContextInterface
+from ..StructuralMetric import StructuralMetric
 
 
 class v1(StructuralMetric):

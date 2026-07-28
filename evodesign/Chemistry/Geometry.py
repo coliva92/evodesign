@@ -1,9 +1,10 @@
-from Bio.PDB.Residue import Residue
-from Bio.PDB.Atom import Atom
+import itertools
+from typing import List, Optional
+
 import numpy as np
 import numpy.typing as npt
-import itertools
-from typing import Optional, List
+from Bio.PDB.Atom import Atom
+from Bio.PDB.Residue import Residue
 
 
 def find_atoms_in_residue(
@@ -37,10 +38,11 @@ def compute_distance_map(atoms: List[Atom]) -> npt.NDArray[np.float64]:
     return np.array([a - b for (a, b) in itertools.combinations(atoms, 2)])
 
 
-def compute_contacts_map(atoms: List[Atom], 
-                         distance_threshold: float = 8.0,
-                         min_separation: int = 6,
-                         ) -> npt.NDArray[np.int64]:
+def compute_contacts_map(
+    atoms: List[Atom],
+    distance_threshold: float = 8.0,
+    min_separation: int = 6,
+) -> npt.NDArray[np.int64]:
     L = len(atoms)
     if L == 0:
         raise ValueError
@@ -53,5 +55,5 @@ def compute_contacts_map(atoms: List[Atom],
     rows = row_indices[contacts]
     columns = column_indices[contacts]
     contacts_map[rows, columns] = 1
-    contacts_map[columns, rows] = 1 
+    contacts_map[columns, rows] = 1
     return contacts_map

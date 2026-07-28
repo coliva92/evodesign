@@ -1,6 +1,8 @@
 from abc import ABC
-from ...RetrievableSettings import RetrievableSettings
+
 from pymoo.core.mutation import Mutation as PyMOOMutation
+
+from ...RetrievableSettings import RetrievableSettings
 
 
 class Mutation(RetrievableSettings, ABC):

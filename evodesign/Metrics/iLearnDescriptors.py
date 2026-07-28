@@ -1,13 +1,13 @@
-from .NonStructuralMetric import NonStructuralMetric
-from .ContextInterface import ContextInterface
+import os
 from typing import Dict
-import numpy.typing as npt
+
 import numpy as np
+import numpy.typing as npt
 from descproteins import *  # assuming iLearn source code is globally accessible
 from pubscripts import *
-import numpy as np
-import numpy.typing as npt
-import os
+
+from .ContextInterface import ContextInterface
+from .NonStructuralMetric import NonStructuralMetric
 
 
 class iLearnDescriptorsRMSE(NonStructuralMetric):

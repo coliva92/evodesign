@@ -1,35 +1,33 @@
-from .Selection import Selection
-from pymoo.operators.selection.tournament import TournamentSelection
-from pymoo.core.population import Population
 import numpy as np
 import numpy.typing as npt
+from pymoo.core.population import Population
+from pymoo.operators.selection.tournament import TournamentSelection
+
+from .Selection import Selection
 
 
 class StochasticRankingBinaryTournament(Selection):
 
     def __init__(
         self,
-        rank_by_fitness_prob: float = 0.45, 
+        rank_by_fitness_prob: float = 0.45,
     ) -> None:
         super().__init__(TournamentSelection(self.compare_by_rank, pressure=2))
         self.rank_by_fitness_prob = rank_by_fitness_prob
         return
 
     def _stochastic_ranking(
-        self, 
-        pop: Population, 
-        *args, 
-        **kwargs
+        self, pop: Population, *args, **kwargs
     ) -> npt.NDArray[np.int64]:
         population_size = pop.shape[0]
-        N_sweeps = population_size 
+        N_sweeps = population_size
         sorted_indices = np.arange(population_size, dtype=np.int64)
 
         for _ in range(N_sweeps):
             swap_done = False
             for j in range(population_size - 1):
                 idx1 = sorted_indices[j]
-                idx2 = sorted_indices[j+1]
+                idx2 = sorted_indices[j + 1]
                 coin_toss = np.random.uniform(0, 1)
 
                 cv1 = pop[idx1].CV[0] if pop[idx1].CV is not None else 0.0
@@ -39,20 +37,27 @@ class StochasticRankingBinaryTournament(Selection):
 
                 # If both solutions are feasible (G <= 0) OR the coin toss is heads,
                 # compare based on objective function (minimization)
-                comp_by_fitness = (cv1 <= 0 and cv2 <= 0) or \
-                    (coin_toss < self.rank_by_fitness_prob)
-                
+                comp_by_fitness = (cv1 <= 0 and cv2 <= 0) or (
+                    coin_toss < self.rank_by_fitness_prob
+                )
+
                 if comp_by_fitness:
                     if f1 > f2:
-                        sorted_indices[j], sorted_indices[j+1] = sorted_indices[j+1], sorted_indices[j]
+                        sorted_indices[j], sorted_indices[j + 1] = (
+                            sorted_indices[j + 1],
+                            sorted_indices[j],
+                        )
                         swap_done = True
                 else:
                     # Otherwise compare based on constraint violation (lesser violation wins)
                     if cv1 > cv2:
-                        sorted_indices[j], sorted_indices[j+1] = sorted_indices[j+1], sorted_indices[j]
+                        sorted_indices[j], sorted_indices[j + 1] = (
+                            sorted_indices[j + 1],
+                            sorted_indices[j],
+                        )
                         swap_done = True
             if not swap_done:
-                break  
+                break
         return sorted_indices
 
     def compare_by_rank(

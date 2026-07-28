@@ -1,10 +1,11 @@
-import pandas as pd
-from matplotlib.axes import Axes
+from typing import Optional, Tuple
+
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, Tuple
-from .Chemistry.Sequences import NUM_AMINO_ACIDS
+import pandas as pd
+from matplotlib.axes import Axes
 
+from .Chemistry.Sequences import NUM_AMINO_ACIDS
 
 NUM_SERIES = 3
 
@@ -13,7 +14,7 @@ def get_final_solution_indices(
     generations: npt.NDArray[np.int64],
     fitness_values: npt.NDArray[np.float64],
 ) -> Tuple[int, int]:
-    (num_generations, population_size, sequence_length) = generations.shape
+    num_generations, population_size, sequence_length = generations.shape
     assert (
         num_generations == fitness_values.shape[0]
         and population_size == fitness_values.shape[1]
@@ -99,7 +100,7 @@ def create_convergence_plot(
 ) -> Tuple[Axes, pd.DataFrame]:
     import seaborn as sns
 
-    (num_generations, population_size, sequence_length) = generations.shape
+    num_generations, population_size, sequence_length = generations.shape
     assert (
         num_generations == fitness_values.shape[0]
         and population_size == fitness_values.shape[1]
@@ -152,9 +153,9 @@ def get_population_diversity_loss(
     return diversity_loss
 
 
-def get_reason_for_termination(generations: npt.NDArray[np.int64], 
-                               diversity_loss_tol: float = 1.0
-                               ) -> dict:
+def get_reason_for_termination(
+    generations: npt.NDArray[np.int64], diversity_loss_tol: float = 1.0
+) -> dict:
     num_generations, population_size, sequence_length = generations.shape
     unrun_mask = generations[:, 0, 0] == -1
     valid_indices = np.where(~unrun_mask)[0]
@@ -163,7 +164,7 @@ def get_reason_for_termination(generations: npt.NDArray[np.int64],
             "status_code": -1,
             "status_message": "Error: No execution (Array entirely -1)",
             "last_generation": None,
-            "final_diversity_loss": None
+            "final_diversity_loss": None,
         }
     last_gen_idx = valid_indices[-1]
     last_population = generations[last_gen_idx]
@@ -181,5 +182,5 @@ def get_reason_for_termination(generations: npt.NDArray[np.int64],
         "status_code": status,
         "status_message": message,
         "last_generation": last_gen_idx,
-        "final_diversity_loss": final_diversity_loss
+        "final_diversity_loss": final_diversity_loss,
     }

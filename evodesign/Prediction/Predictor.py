@@ -1,10 +1,12 @@
-from abc import ABC, abstractmethod
-from ..RetrievableSettings import RetrievableSettings
-from .DirectoryManager import DirectoryManager
-from typing import List
 import os
-from ..System.Exceptions import HttpGatewayTimeout
+from abc import ABC, abstractmethod
+from typing import List
+
 from requests.exceptions import ConnectTimeout
+
+from ..RetrievableSettings import RetrievableSettings
+from ..System.Exceptions import HttpGatewayTimeout
+from .DirectoryManager import DirectoryManager
 
 
 class Predictor(RetrievableSettings, ABC):

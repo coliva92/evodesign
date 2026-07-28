@@ -18,8 +18,8 @@ class ESM2ModelContainer:
         ):
             return
 
-        import torch
         import esm
+        import torch
 
         ESM2ModelContainer.esmfold_model = esm.pretrained.esmfold_v1()
         ESM2ModelContainer.esmfold_model.eval()

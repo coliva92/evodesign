@@ -1,16 +1,17 @@
-from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
-from ....GA.Selection.Selection import Selection
-from ....GA.Selection.Tournament import Tournament
+from typing import Optional
+
+from pymoo.algorithms.soo.nonconvex.ga import GA
+
 from ....GA.Crossover.Crossover import Crossover
 from ....GA.Crossover.UniformCrossover import UniformCrossover
 from ....GA.Mutation.Mutation import Mutation
 from ....GA.Mutation.RandomResetting import RandomResetting
+from ....GA.Replacement.PyMOO.Generational import \
+    Generational as GenerationalReplacement
+from ....GA.Selection.Selection import Selection
+from ....GA.Selection.Tournament import Tournament
 from ....GA.Termination.MaximumDiversityLoss import MaximumDiversityLoss
-from ....GA.Replacement.PyMOO.Generational import (
-    Generational as GenerationalReplacement,
-)
-from pymoo.algorithms.soo.nonconvex.ga import GA
-from typing import Optional
+from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
 
 
 class Generational(SingleObjectiveAlgorithm):
@@ -29,14 +30,12 @@ class Generational(SingleObjectiveAlgorithm):
         self.crossover = crossover
         self.mutation = mutation
         self.diversity_loss_tol = diversity_loss_tol
-        self.sample_size=sample_size
+        self.sample_size = sample_size
 
     def create_algorithm(self) -> GA:
         replacement = GenerationalReplacement()
         termination = MaximumDiversityLoss(
-            self.max_generations, 
-            self.diversity_loss_tol, 
-            self.sample_size
+            self.max_generations, self.diversity_loss_tol, self.sample_size
         )
         algorithm = GA(
             pop_size=self.population_size,
@@ -46,7 +45,7 @@ class Generational(SingleObjectiveAlgorithm):
             crossover=self.crossover._pymoo_crossover,
             mutation=self.mutation._pymoo_mutation,
             survival=replacement,
-            eliminate_duplicates=False
+            eliminate_duplicates=False,
         )
         algorithm.termination = termination
         return algorithm

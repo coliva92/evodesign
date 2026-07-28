@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
-from ..RetrievableSettings import RetrievableSettings
-from ..Metrics.Metric import Metric
-from ..Metrics.Context import Context
-from ..Chemistry.Chain import Chain
+from typing import List
+
 import numpy as np
 import numpy.typing as npt
-from typing import List
+
+from ..Chemistry.Chain import Chain
+from ..Metrics.Context import Context
+from ..Metrics.Metric import Metric
+from ..RetrievableSettings import RetrievableSettings
 
 
 class FitnessFunction(RetrievableSettings, ABC):
