@@ -13,7 +13,8 @@ class Crossover(RetrievableSettings, ABC):
         self,
         prob: float,
         pymoo_crossover: PyMOOCrossover,
-    ):
+    ) -> None:
         super().__init__()
         self.prob = prob
         self._pymoo_crossover = pymoo_crossover
+        return

@@ -10,10 +10,11 @@ class ZScore(Normalization):
         self,
         mean_value: float,
         stdev: float,
-    ):
+    ) -> None:
         super().__init__()
         self.mean_value = mean_value
         self.stdev = stdev
+        return
 
 
 

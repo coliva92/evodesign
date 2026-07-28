@@ -20,7 +20,7 @@ class AlphaFold2(AlphaFoldInterface):
         max_template_date: str = "2020-05-14",
         model_preset: str = "monomer",
         db_preset: str = "reduced_dbs",
-    ):
+    ) -> None:
         super().__init__()
         self.path_to_create_fakemsa_py = os.path.abspath(
             path_to_create_fakemsa_py
@@ -40,6 +40,7 @@ class AlphaFold2(AlphaFoldInterface):
             model_preset  # { 'monomer', 'monomer_casp14', 'monomer_ptm', 'multimer' }
         )
         self.db_preset = db_preset  # { 'reduced_dbs', 'full_dbs' }
+        return
 
 
 
@@ -105,3 +106,4 @@ class AlphaFold2(AlphaFoldInterface):
                 f"--output_dir={output_dir}",
             ]
         )
+        return

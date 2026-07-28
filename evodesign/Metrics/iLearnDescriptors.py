@@ -17,6 +17,7 @@ class iLearnDescriptors(NonStructuralMetric):
     def __init__(self, method: str) -> None:
         super().__init__()
         self.method = method
+        return
 
 
 

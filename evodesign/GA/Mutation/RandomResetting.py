@@ -16,6 +16,7 @@ class RandomResetting(Mutation):
             residue_mutation_prob,
             PyMOORandomResetting(sequence_mutation_prob, residue_mutation_prob),
         )
+        return
 
     # def do(
     #     self,

@@ -23,6 +23,7 @@ class RandomResetting(Mutation):
         self.prob = Real(prob, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.prob_var = Real(prob_var, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.sampler = IntegerProfileSampling()
+        return
 
 
 

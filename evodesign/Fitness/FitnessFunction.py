@@ -27,6 +27,7 @@ class FitnessFunction(RetrievableSettings, ABC):
         self._term_calculators = {
             calc._class_name(): calc for calc in self.term_calculators
         }
+        return
 
 
 

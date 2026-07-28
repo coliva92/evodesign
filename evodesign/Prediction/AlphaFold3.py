@@ -36,7 +36,7 @@ class AlphaFold3(AlphaFold3Docker):
         pdb_database_path: Optional[str] = None,
         seqres_database_path: Optional[str] = None,
         jax_compilation_cache_dir: Optional[str] = None,
-    ):
+    ) -> None:
         super().__init__(
             model_dir,
             num_recycles,
@@ -64,6 +64,7 @@ class AlphaFold3(AlphaFold3Docker):
             jax_compilation_cache_dir,
         )
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
+        return
 
 
 
@@ -98,3 +99,4 @@ class AlphaFold3(AlphaFold3Docker):
         run_subprocess(
             self._create_cmd_array(input_path, output_dir, do_batch_inference)
         )
+        return

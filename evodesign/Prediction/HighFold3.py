@@ -37,7 +37,7 @@ class HighFold3(HighFold3Docker):
         pdb_database_path: Optional[str] = None,
         seqres_database_path: Optional[str] = None,
         jax_compilation_cache_dir: Optional[str] = None,
-    ):
+    ) -> None:
         super().__init__(
             model_dir,
             head_to_tail,
@@ -67,6 +67,7 @@ class HighFold3(HighFold3Docker):
             jax_compilation_cache_dir,
         )
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
+        return
 
 
 

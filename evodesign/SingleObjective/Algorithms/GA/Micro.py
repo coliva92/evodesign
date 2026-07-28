@@ -24,13 +24,14 @@ class Micro(SingleObjectiveAlgorithm):
         selection: Selection = Tournament(),
         crossover: Crossover = UniformCrossover(),
         **kwargs
-    ):
+    ) -> None:
         max_generations = (max_fitness_fn_evals // kwargs["popultion_size"]) + 1
         super().__init__(max_generations=max_generations, **kwargs)
         self.max_fitness_fn_evals = max_fitness_fn_evals
         self.diversity_loss_tol = diversity_loss_tol
         self.selection = selection
         self.crossover = crossover
+        return
 
 
 

@@ -82,3 +82,4 @@ class AlphaFoldInterface(Predictor, ABC):
         run_subprocess(
             self._create_cmd_array(input_path, output_dir, do_batch_inference)
         )
+        return

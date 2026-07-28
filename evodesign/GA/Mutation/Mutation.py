@@ -19,6 +19,7 @@ class Mutation(RetrievableSettings, ABC):
         self.sequence_mutation_prob = sequence_mutation_prob
         self.residue_mutation_prob = residue_mutation_prob
         self._pymoo_mutation = pymoo_mutation
+        return
 
     # def do(
     #     self,

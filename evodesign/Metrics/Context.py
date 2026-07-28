@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 from ..Chemistry.Chain import Chain
 from .ContextInterface import ContextInterface
@@ -15,12 +15,13 @@ class Context(ContextInterface):
         ref_chain: Chain,
         metric_calculators: Dict[str, Metric],
         **kwargs
-    ):
+    ) -> None:
         self._model_chain = model_chain
         self._ref_chain = ref_chain
         self._metric_calculators = metric_calculators
         self._cached_results = {}
         self._extra_params = {**kwargs}
+        return
 
 
 
@@ -61,7 +62,7 @@ class Context(ContextInterface):
     def get_extra_param_value(
         self,
         param_name: str,
-    ):
+    ) -> Any:
         if param_name not in self._extra_params:
             return None
         return self._extra_params[param_name]
@@ -74,3 +75,4 @@ class Context(ContextInterface):
         param_value,
     ) -> None:
         self._extra_params[param_name] = param_value
+        return

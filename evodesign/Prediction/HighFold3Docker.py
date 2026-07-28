@@ -35,7 +35,7 @@ class HighFold3Docker(AlphaFold3Docker):
         pdb_database_path: Optional[str] = None,
         seqres_database_path: Optional[str] = None,
         jax_compilation_cache_dir: Optional[str] = None,
-    ):
+    ) -> None:
         super().__init__(
             model_dir,
             num_recycles,
@@ -64,6 +64,7 @@ class HighFold3Docker(AlphaFold3Docker):
         )
         self.head_to_tail = head_to_tail
         self.disulfide_chain_res = disulfide_chain_res
+        return
 
 
 

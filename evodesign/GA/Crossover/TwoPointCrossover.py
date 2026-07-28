@@ -7,6 +7,6 @@ from .Crossover import Crossover
 
 class TwoPointCrossover(Crossover):
 
-    def __init__(self, prob: float = 1.0):
+    def __init__(self, prob: float = 1.0) -> None:
         super().__init__(prob, TPX(prob=prob))
         return

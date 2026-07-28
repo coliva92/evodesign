@@ -24,7 +24,7 @@ class AlgorithmFactory(RetrievableSettings, ABC):
         max_generations: int,
         population_size: int,
         predictor: Predictor,
-    ):
+    ) -> None:
         super().__init__()
         self.max_generations = max_generations
         self.population_size = population_size

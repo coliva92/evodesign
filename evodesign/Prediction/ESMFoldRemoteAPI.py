@@ -17,6 +17,7 @@ class ESMFoldRemoteAPI(ESMFoldInterface):
     ) -> None:
         super().__init__()
         self.requester = requester
+        return
 
 
 

@@ -26,6 +26,7 @@ class APIRequester(RetrievableSettings):
         self.sleep_time = sleep_time
         self.connection_timeout = connection_timeout
         self.verify = verify
+        return
 
 
 

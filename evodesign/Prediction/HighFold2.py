@@ -39,6 +39,7 @@ class HighFold2(AlphaFoldInterface):
         # self.index_ss = index_ss
         self.flag_cyclic_peptide = flag_cyclic_peptide
         self.flag_nc = flag_nc
+        return
 
 
 

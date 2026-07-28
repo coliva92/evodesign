@@ -7,8 +7,6 @@ from .Crossover import Crossover
 
 class UniformCrossover(Crossover):
 
-    def __init__(
-        self,
-        prob: float = 1.0,
-    ):
+    def __init__(self, prob: float = 1.0) -> None:
         super().__init__(prob, UX(prob=prob))
+        return

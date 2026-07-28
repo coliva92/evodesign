@@ -21,6 +21,7 @@ class ESMFoldInterface(Predictor, ABC):
         )
         with open(pdb_path, "wt", encoding="utf-8") as pdb_file:
             pdb_file.write(prediction)
+        return
 
 
 

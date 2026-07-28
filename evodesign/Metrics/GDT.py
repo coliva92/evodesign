@@ -20,6 +20,7 @@ class GDT(StructuralMetric):
     ) -> None:
         super().__init__()
         self.cutoffs = cutoffs
+        return
 
 
 

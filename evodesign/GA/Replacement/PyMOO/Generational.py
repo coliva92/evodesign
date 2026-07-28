@@ -6,8 +6,9 @@ from pymoo.core.survival import Survival
 
 class Generational(Survival):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(filter_infeasible=False)
+        return
 
 
 

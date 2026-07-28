@@ -18,6 +18,7 @@ class v1(StructuralMetric):
     ) -> None:
         super().__init__()
         self.cutoffs = cutoffs
+        return
 
 
 

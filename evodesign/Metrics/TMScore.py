@@ -12,11 +12,6 @@ from .StructuralMetric import StructuralMetric
 
 class TMScore(StructuralMetric):
 
-    def __init__(self) -> None:
-        pass
-
-
-
     def normalizing_constant(
         self,
         num_residues: int,

@@ -15,6 +15,7 @@ def _open_command_line(command: List[str]):
 
 
 
-def run_subprocess(command: List[str]):
+def run_subprocess(command: List[str]) -> None:
     for line in _open_command_line(command):
         print(line, end="")
+    return

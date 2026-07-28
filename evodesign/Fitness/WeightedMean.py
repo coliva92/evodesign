@@ -17,10 +17,11 @@ class WeightedMean(FitnessFunction):
         terms: List[str],
         term_weights: List[float],
         upper_bound: float = 1.0,
-    ):
+    ) -> None:
         super().__init__(upper_bound, terms, term_calculators)
         self.term_weights = term_weights
         assert len(self.term_weights) == len(self.terms)
+        return
 
 
 

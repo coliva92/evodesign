@@ -44,7 +44,7 @@ class AlphaFold3Docker(AlphaFoldInterface):
         pdb_database_path: Optional[str] = None,
         seqres_database_path: Optional[str] = None,
         jax_compilation_cache_dir: Optional[str] = None,
-    ):
+    ) -> None:
         super().__init__()
         self.model_dir = os.path.abspath(model_dir)
         self.num_recycles = num_recycles
@@ -298,6 +298,7 @@ class AlphaFold3Docker(AlphaFoldInterface):
                 directory.prediction_pdbs_dir, f"{protein_name}.pdb"
             )
             shutil.copyfile(prediction_pdb, pdb_path)
+        return
 
 
 
@@ -325,3 +326,4 @@ class AlphaFold3Docker(AlphaFoldInterface):
             "/root/af_output",
         ]
         run_subprocess(cmd)
+        return

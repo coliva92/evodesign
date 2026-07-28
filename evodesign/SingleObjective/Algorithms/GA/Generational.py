@@ -26,13 +26,14 @@ class Generational(SingleObjectiveAlgorithm):
         crossover: Crossover = UniformCrossover(),
         mutation: Mutation = RandomResetting(),
         **kwargs
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         self.selection = selection
         self.crossover = crossover
         self.mutation = mutation
         self.diversity_loss_tol = diversity_loss_tol
         self.sample_size = sample_size
+        return
 
 
 

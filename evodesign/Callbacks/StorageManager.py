@@ -26,7 +26,7 @@ class StorageManager(Callback):
         sequence_length: int,
         num_fitness_fn_terms: int,
         save_every_nth_generation: int = 10,
-    ):
+    ) -> None:
         super().__init__()
         self.directory = directory
         shape_3d = (num_generations, population_size, sequence_length)
@@ -42,6 +42,7 @@ class StorageManager(Callback):
             self.directory.predictor_input_dir,
             self.directory.predictor_output_dir,
         )
+        return
 
 
 
@@ -69,6 +70,7 @@ class StorageManager(Callback):
         self.generations = self._extend_numpy_array(self.generations, new_size, -1)
         self.fitness_values = self._extend_numpy_array(self.fitness_values, new_size, 0)
         self.term_values = self._extend_numpy_array(self.term_values, new_size, -1)
+        return
 
 
 
@@ -89,6 +91,7 @@ class StorageManager(Callback):
             or algorithm.termination.perc == 1.0
         ):
             self.save(algorithm)
+        return
 
 
 
@@ -127,6 +130,7 @@ class StorageManager(Callback):
             txt_file.write(f"{values}\n")
             for i in range(2, len(state)):
                 txt_file.write(f"{state[i]}\n")
+        return
 
 
 
@@ -143,6 +147,7 @@ class StorageManager(Callback):
             dill.dump(algorithm, bin_file)
             algorithm.problem = tmp_problem
             algorithm.callback = tmp_callback
+        return
 
 
 
@@ -154,6 +159,7 @@ class StorageManager(Callback):
             txt_file.write(
                 f"https://github.com/coliva92/evodesign/commit/{commit_hash}\n"
             )
+        return
 
 
 
@@ -165,6 +171,7 @@ class StorageManager(Callback):
         file_path = self.directory.settings_json_path
         with open(file_path, "wt", encoding="utf-8") as json_file:
             json_file.write(json.dumps(settings, indent=4) + "\n")
+        return
 
 
 
@@ -176,6 +183,7 @@ class StorageManager(Callback):
         pdb_filename = os.path.basename(target_pdb_path)
         destination = os.path.join(self.directory.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)
+        return
 
 
 
@@ -235,6 +243,7 @@ class StorageManager(Callback):
     ) -> None:
         if os.path.isfile(file_path):
             os.remove(file_path)
+        return
 
 
 
@@ -244,6 +253,7 @@ class StorageManager(Callback):
     ) -> None:
         if os.path.isdir(folder_path):
             shutil.rmtree(folder_path)
+        return
 
 
 
@@ -255,6 +265,7 @@ class StorageManager(Callback):
                     self.delete_file(file_path)
                     continue
                 self.delete_folder(file_path)
+        return
 
 
 

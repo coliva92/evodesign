@@ -53,7 +53,10 @@ def load_profile(filename: str) -> npt.NDArray[np.float64]:
 
 
 
-def save_profile(profile: npt.NDArray[np.float64], filename: str):
+def save_profile(
+    profile: npt.NDArray[np.float64], 
+    filename: str,
+) -> None:
     with open(filename, "wt", encoding="utf-8") as txt:
         txt.write(f"{profile.shape[0]}\n")
         for i in range(profile.shape[0]):
@@ -61,6 +64,7 @@ def save_profile(profile: npt.NDArray[np.float64], filename: str):
             for j in range(profile.shape[1]):
                 txt.write(f" {AMINO_ACIDS[j]}:{profile[i][j]}")
             txt.write("\n")
+    return
 
 
 

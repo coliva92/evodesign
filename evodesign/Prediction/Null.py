@@ -51,6 +51,7 @@ class Null(Predictor):
         self._io.set_structure(structure)
         output_path = os.path.join(directory.prediction_pdbs_dir, f"{protein_name}.pdb")
         self._io.save(output_path)
+        return
 
 
 
@@ -64,3 +65,4 @@ class Null(Predictor):
         for i, sequence in enumerate(sequences):
             protein_name = f"{directory.prefix}_{i}"
             self.predict_single_pdb_file(sequence, protein_name, directory)
+        return
