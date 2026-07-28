@@ -5,7 +5,7 @@ import evodesign.Settings as Settings
 from evodesign.System.PathsContainer import PathsContainer
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Chemistry.Sequences import load_profile
+from evodesign.Chemistry.Sequences import load_profile, to_str
 from evodesign.System.Exceptions import *
 from requests.exceptions import ConnectTimeout
 import numpy as np
@@ -107,11 +107,15 @@ while True:
         problem = algorithm_factory.create_problem(
             ref_chain, storage.predictor_directory, aa_profile)
         callbacks = algorithm_factory.create_callbacks(storage)
-        minimize(problem=problem, 
-                 algorithm=algorithm,
-                 callback=callbacks,
-                 verbose=True,
-                 copy_algorithm=False)
+        result = minimize(problem=problem, 
+                          algorithm=algorithm,
+                          callback=callbacks,
+                          verbose=True,
+                          copy_algorithm=False)
+        solution = to_str(result.X)
+        fitness_value = result.F[0]
+        print("Sequence:", solution)
+        print("Fitness:", fitness_value)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         # Cleanup, then retry
         storage.delete_non_essential_files_and_folders()

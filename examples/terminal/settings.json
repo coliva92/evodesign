@@ -1,24 +1,23 @@
 {
-    "Algorithms.MonoObjective.GA.Generational": {
-        "max_generations": 2,
-        "population_size": 5,
+    "SingleObjective.Algorithms.GA.Generational": {
+        "max_generations": 50,
+        "population_size": 100,
         "predictor": {
-            "Prediction.ESMFoldRemoteAPI": {}
+            "Prediction.Null": {}
         },
         "fitness_fn": {
             "Fitness.WeightedMean": {
                 "upper_bound": 1.0,
                 "terms": [
-                    "Metrics.RMSD.rmsd",
-                    "Metrics.RMSD.norm_rmsd"
+                    "Metrics.Test.Sum.sum",
+                    "Metrics.Test.Sum.average"
                 ],
                 "term_weights": [
-                    0,
-                    1
+                    0, 1
                 ],
                 "term_calculators": [
                     {
-                        "Metrics.RMSD": {}
+                        "Metrics.Test.Sum": {}
                     }
                 ]
             }

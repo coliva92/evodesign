@@ -1,11 +1,12 @@
-from evodesign.Algorithms.MonoObjective.GA.Generational import Generational
+from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.System.PathsContainer import PathsContainer
 from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Prediction.ESMFoldRemoteAPI import ESMFoldRemoteAPI
+from evodesign.Prediction.Null import Null
 from evodesign.Fitness.WeightedMean import WeightedMean
-from evodesign.Metrics.RMSD import RMSD
+from evodesign.Metrics.Test.Sum import Sum
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
+from evodesign.Chemistry.Sequences import to_str
 from pymoo.optimize import minimize
 from evodesign.System.Exceptions import *
 from requests import ConnectTimeout
@@ -16,16 +17,16 @@ import os
 if __name__ == "__main__":
     example_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     target_pdb_path = os.path.join(example_folder, "1y32.pdb")
-    max_generations = 2
-    population_size = 5
+    max_generations = 50
+    population_size = 100
     ref_chain = ChainFactory.create_from_pdb(target_pdb_path)
     directory = PathsContainer.create(example_folder)
     ga = Generational(
-        predictor=ESMFoldRemoteAPI(),
+        predictor=Null(),
         fitness_fn=WeightedMean(
-            [RMSD()],
-            ["Metrics.RMSD.rmsd"],
-            [1],
+            [Sum()],
+            ["Metrics.Test.Sum.sum", "Metrics.Test.Sum.average"],
+            [0, 1],
         ),
         mutation=RandomResetting(sequence_mutation_prob=0.1),
         max_generations=max_generations,
@@ -49,10 +50,14 @@ if __name__ == "__main__":
                 ref_chain, 
                 storage.predictor_directory)
             callbacks = ga.create_callbacks(storage)
-            minimize(problem=problem, 
-                     algorithm=algorithm, 
-                     callback=callbacks,
-                     verbose=True,)
+            result = minimize(problem=problem, 
+                              algorithm=algorithm, 
+                              callback=callbacks,
+                              verbose=True,)
+            solution = to_str(result.X)
+            fitness_value = result.F[0]
+            print("Sequence:", solution)
+            print("Fitness:", fitness_value)
             storage.delete_non_essential_files_and_folders()
             break
         except (
