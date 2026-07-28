@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 
-from ..System.Subprocess import run_subprocess
+from ...System.Subprocess import run_subprocess
 from .AlphaFold3Base import AlphaFold3Base
 
 

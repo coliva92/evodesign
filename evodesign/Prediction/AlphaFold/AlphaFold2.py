@@ -1,6 +1,6 @@
 import os
 
-from ..System.Subprocess import run_subprocess
+from ...System.Subprocess import run_subprocess
 from .AlphaFoldInterface import AlphaFoldInterface
 
 

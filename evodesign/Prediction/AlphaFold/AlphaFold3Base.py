@@ -5,9 +5,9 @@ from typing import List, Optional
 
 from Bio.PDB import PDBIO, MMCIFParser
 
-from ..Files.mmCIF import convert_cif_to_pdb
+from ...Files.mmCIF import convert_cif_to_pdb
 from .AlphaFoldInterface import AlphaFoldInterface
-from .DirectoryManager import DirectoryManager
+from ..DirectoryManager import DirectoryManager
 
 
 
