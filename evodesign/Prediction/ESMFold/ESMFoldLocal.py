@@ -6,7 +6,7 @@ from .ESMFoldInterface import ESMFoldInterface
 
 
 
-class ESMFold(ESMFoldInterface):
+class ESMFoldLocal(ESMFoldInterface):
 
     _model = None
 
