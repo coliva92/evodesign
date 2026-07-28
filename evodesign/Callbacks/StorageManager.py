@@ -151,14 +151,12 @@ class StorageManager(Callback):
 
 
 
-    def save_git_commit_hash(self) -> None:
+    def save_version(self) -> None:
         os.makedirs(self.directory.path, exist_ok=True)
         file_path = self.directory.git_commit_hash_path
         with open(file_path, "wt", encoding="utf-8") as txt_file:
-            commit_hash = self.directory.GIT_COMMIT_HASH
-            txt_file.write(
-                f"https://github.com/coliva92/evodesign/commit/{commit_hash}\n"
-            )
+            version = self.directory.PROJECT_VERSION
+            txt_file.write(f"{version}\n")
         return
 
 

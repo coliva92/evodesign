@@ -39,7 +39,7 @@ if __name__ == "__main__":
         len(ref_chain.sequence),
         ga.fitness_fn.num_terms(),
     )
-    storage.save_git_commit_hash()
+    storage.save_version()
     storage.save_settings(ga.settings())
     storage.save_target_pdb(target_pdb_path)
     storage.save_rng_state(np.random.get_state(), directory.initial_rng_state_path)
