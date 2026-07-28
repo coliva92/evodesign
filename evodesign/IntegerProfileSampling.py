@@ -9,7 +9,7 @@ class IntegerProfileSampling(IntegerRandomSampling):
 
     def _do(self, problem, n_samples, **kwargs):
         if problem.aa_profile is None:
-            return super()._do(problem, n_samples)
+            return super()._do(problem, n_samples, **kwargs)
         return self.generate_sequences(n_samples, problem.aa_profile)
 
 
