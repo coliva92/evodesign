@@ -17,6 +17,8 @@ class Null(Predictor):
         k: v.capitalize() for k, v in IUPACData.protein_letters_1to3.items()
     }
 
+
+
     def predict_single_pdb_file(
         self,
         sequence: str,
