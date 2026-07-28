@@ -1,4 +1,4 @@
-from .Algorithms.AlgorithmFactory import AlgorithmFactory
+from .AlgorithmFactory import AlgorithmFactory
 import importlib
 import copy
 import json
