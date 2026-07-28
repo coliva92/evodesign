@@ -2,11 +2,14 @@ import numpy as np
 import numpy.typing as npt
 
 
+
+
 def reciprocal(
     x: float,
     scaling_factor: float = 1.0,
 ) -> float:
     return 1.0 / (1.0 + scaling_factor * x)
+
 
 
 def sigmoid(
@@ -17,6 +20,7 @@ def sigmoid(
     return 1.0 / (1.0 + np.exp(scaling_factor * x + offset))
 
 
+
 def z_score(
     x: float,
     mean_value: float,
@@ -25,8 +29,10 @@ def z_score(
     return (x - mean_value) / stdev
 
 
+
 def cos_normalization(x: float, offset: float, power: float) -> float:
     return ((np.cos(x - offset) + 1) / 2) ** power
+
 
 
 def cos_similarity(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:

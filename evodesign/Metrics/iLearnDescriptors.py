@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -10,11 +10,15 @@ from .ContextInterface import ContextInterface
 from .NonStructuralMetric import NonStructuralMetric
 
 
-class iLearnDescriptorsRMSE(NonStructuralMetric):
+
+
+class iLearnDescriptors(NonStructuralMetric):
 
     def __init__(self, method: str) -> None:
         super().__init__()
         self.method = method
+
+
 
     def do(
         self,
@@ -25,6 +29,8 @@ class iLearnDescriptorsRMSE(NonStructuralMetric):
     ) -> float:
         descriptors = self.compute_descriptors_vector(model_fasta_path, model_sequence)
         return np.sqrt(np.mean(descriptors - ref_descriptors) ** 2)
+
+
 
     def do_for_fitness_fn(
         self,
@@ -49,6 +55,8 @@ class iLearnDescriptorsRMSE(NonStructuralMetric):
         model_sequence = context.get_model_chain().sequence
         rmse = self.do(fasta_path, model_sequence, ref_descriptors)
         return {"rmse": rmse}
+
+
 
     def compute_descriptors_vector(
         self,

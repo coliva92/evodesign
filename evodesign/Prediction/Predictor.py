@@ -9,6 +9,8 @@ from ..System.Exceptions import HttpGatewayTimeout
 from .DirectoryManager import DirectoryManager
 
 
+
+
 class Predictor(RetrievableSettings, ABC):
 
     @abstractmethod
@@ -19,6 +21,8 @@ class Predictor(RetrievableSettings, ABC):
         directory: DirectoryManager,
     ) -> None:
         raise NotImplementedError
+
+
 
     def do(
         self,

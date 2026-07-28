@@ -8,6 +8,8 @@ from .DirectoryManager import DirectoryManager
 from .Predictor import Predictor
 
 
+
+
 class Null(Predictor):
 
     _io = PDBIO()
@@ -49,6 +51,8 @@ class Null(Predictor):
         self._io.set_structure(structure)
         output_path = os.path.join(directory.prediction_pdbs_dir, f"{protein_name}.pdb")
         self._io.save(output_path)
+
+
 
     def do(
         self,

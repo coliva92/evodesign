@@ -3,6 +3,8 @@ from ..System.Exceptions import *
 from .ESMFoldInterface import ESMFoldInterface
 
 
+
+
 class ESMFoldRemoteAPI(ESMFoldInterface):
 
     def __init__(
@@ -15,6 +17,8 @@ class ESMFoldRemoteAPI(ESMFoldInterface):
     ) -> None:
         super().__init__()
         self.requester = requester
+
+
 
     def predict_single_pdb_str(
         self,

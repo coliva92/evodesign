@@ -10,6 +10,8 @@ from ...Prediction.DirectoryManager import DirectoryManager
 from ...SingleObjective.Problems.SingleObjectiveCPD import SingleObjectiveCPD
 
 
+
+
 class SingleObjectiveAlgorithm(AlgorithmFactory):
 
     def __init__(
@@ -20,6 +22,8 @@ class SingleObjectiveAlgorithm(AlgorithmFactory):
         super().__init__(**kwargs)
         self.fitness_fn = fitness_fn
         return
+
+
 
     def create_problem(
         self,
@@ -34,6 +38,8 @@ class SingleObjectiveAlgorithm(AlgorithmFactory):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
+
+
 
     def num_terms(self) -> int:
         return self.fitness_fn.num_terms()

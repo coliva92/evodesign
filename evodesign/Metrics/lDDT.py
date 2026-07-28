@@ -9,6 +9,8 @@ from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class lDDT(StructuralMetric):
 
     def __init__(
@@ -24,6 +26,8 @@ class lDDT(StructuralMetric):
         self._num_atoms_per_residue = 4 if not self.ca_atoms_only else 1
         return
 
+
+
     def do(
         self,
         model_distances: Dict[Tuple[int, int], float],
@@ -35,6 +39,8 @@ class lDDT(StructuralMetric):
             lddt = self.compute_lddt(model_distances[i], ref_distances[i])
             per_residue_lddt.append(lddt)
         return np.array(per_residue_lddt)
+
+
 
     def do_for_fitness_fn(
         self,
@@ -58,6 +64,8 @@ class lDDT(StructuralMetric):
         per_residue_lddt = self.do(model_distances_dict, ref_distances_dict)
         return {"lddt": per_residue_lddt.mean()}
 
+
+
     def get_distances_dict(
         self,
         atoms: List[Atom],
@@ -77,6 +85,8 @@ class lDDT(StructuralMetric):
                     continue
                 distances[residue_idx][(center_idx, i)] = center_atom - neighbor_atom
         return distances
+
+
 
     def compute_lddt(
         self,
@@ -99,11 +109,15 @@ class lDDT(StructuralMetric):
             ratios_sum += M / L
         return ratios_sum / len(self.cutoffs)
 
+
+
     def _get_coordinates_list(
         self,
         atoms: List[Atom],
     ) -> npt.NDArray[np.float32]:
         return np.array([atom.get_coord() for atom in atoms])
+
+
 
     def _belong_to_same_residue(
         self,

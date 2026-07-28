@@ -3,6 +3,8 @@ import numpy as np
 from .Normalization import Normalization
 
 
+
+
 class Gaussian(Normalization):
 
     def __init__(
@@ -13,6 +15,8 @@ class Gaussian(Normalization):
         self.stdev = stdev
         self.scaling_factor = scaling_factor
         return
+
+
 
     def do(self, x: float) -> float:
         return np.exp(

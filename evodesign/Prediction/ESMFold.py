@@ -4,6 +4,8 @@ from ..Metrics.ESM2ModelContainer import ESM2ModelContainer
 from .ESMFoldInterface import ESMFoldInterface
 
 
+
+
 class ESMFold(ESMFoldInterface):
 
     _model = None
@@ -17,6 +19,8 @@ class ESMFold(ESMFoldInterface):
         if ESMFold._model is None:
             ESMFold._model = ESM2ModelContainer(self.gpu_device)
         return
+
+
 
     def predict_single_pdb_str(
         self,

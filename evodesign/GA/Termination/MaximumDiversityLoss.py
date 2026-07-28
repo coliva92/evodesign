@@ -7,6 +7,8 @@ from pymoo.termination.max_gen import MaximumGenerationTermination
 from ...Statistics import get_population_diversity_loss
 
 
+
+
 class MaximumDiversityLoss(MaximumGenerationTermination):
 
     def __init__(
@@ -20,6 +22,8 @@ class MaximumDiversityLoss(MaximumGenerationTermination):
         self.diversity_loss_tol = diversity_loss_tol
         self.sample_size = sample_size
         return
+
+
 
     def _update(self, algorithm: PyMOOAlgorithm):
         progress = super()._update(algorithm)

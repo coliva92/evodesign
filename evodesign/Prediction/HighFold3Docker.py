@@ -3,6 +3,8 @@ from typing import List, Optional
 from .AlphaFold3Docker import AlphaFold3Docker
 
 
+
+
 class HighFold3Docker(AlphaFold3Docker):
 
     def __init__(
@@ -62,6 +64,8 @@ class HighFold3Docker(AlphaFold3Docker):
         )
         self.head_to_tail = head_to_tail
         self.disulfide_chain_res = disulfide_chain_res
+
+
 
     def _create_cmd_array(
         self,

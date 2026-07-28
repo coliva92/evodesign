@@ -15,6 +15,8 @@ from .Prediction.Predictor import Predictor
 from .RetrievableSettings import RetrievableSettings
 
 
+
+
 class AlgorithmFactory(RetrievableSettings, ABC):
 
     def __init__(
@@ -30,9 +32,13 @@ class AlgorithmFactory(RetrievableSettings, ABC):
         self._sampling = IntegerProfileSampling()
         return
 
+
+
     @abstractmethod
     def create_algorithm(self) -> PyMOOAlgorithm:
         raise NotImplementedError
+
+
 
     @abstractmethod
     def create_problem(
@@ -42,6 +48,8 @@ class AlgorithmFactory(RetrievableSettings, ABC):
         aa_profile: Optional[npt.NDArray[np.float64]] = None,
     ) -> PyMOOProblem:
         raise NotImplementedError
+
+
 
     def create_callbacks(
         self,

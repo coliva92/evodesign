@@ -4,6 +4,8 @@ from typing import List, Optional
 from .AlphaFoldInterface import AlphaFoldInterface
 
 
+
+
 class HighFold2(AlphaFoldInterface):
 
     def __init__(
@@ -37,7 +39,8 @@ class HighFold2(AlphaFoldInterface):
         # self.index_ss = index_ss
         self.flag_cyclic_peptide = flag_cyclic_peptide
         self.flag_nc = flag_nc
-        # self.custom_dist_cst = custom_dist_cst
+
+
 
     def _create_model_input(
         self,
@@ -51,12 +54,16 @@ class HighFold2(AlphaFoldInterface):
             fasta_file.write(f">{protein_full_name}\n{sequence}\n")
         return fasta_path
 
+
+
     def _prediction_pdb_path(
         self,
         protein_full_name: str,
         output_dir: str,
     ) -> str:
         return os.path.join(output_dir, protein_full_name, "ranked_0.pdb")
+
+
 
     def _create_cmd_array(
         self,

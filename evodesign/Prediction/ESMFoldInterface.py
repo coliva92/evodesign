@@ -5,6 +5,8 @@ from .DirectoryManager import DirectoryManager
 from .Predictor import Predictor
 
 
+
+
 class ESMFoldInterface(Predictor, ABC):
 
     def predict_single_pdb_file(
@@ -19,6 +21,8 @@ class ESMFoldInterface(Predictor, ABC):
         )
         with open(pdb_path, "wt", encoding="utf-8") as pdb_file:
             pdb_file.write(prediction)
+
+
 
     @abstractmethod
     def predict_single_pdb_str(

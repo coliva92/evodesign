@@ -5,11 +5,15 @@ from ..RetrievableSettings import RetrievableSettings
 from .ContextInterface import ContextInterface
 
 
+
+
 class Metric(RetrievableSettings, ABC):
 
     @abstractmethod
     def requires_structure_predictor(self) -> bool:
         raise RuntimeError
+
+
 
     @abstractmethod
     def do(
@@ -17,6 +21,8 @@ class Metric(RetrievableSettings, ABC):
         **kwargs,
     ) -> Union[float, Tuple[float]]:
         raise NotImplementedError
+
+
 
     @abstractmethod
     def do_for_fitness_fn(

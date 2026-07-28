@@ -9,6 +9,8 @@ from .Normalization.Reciprocal import Reciprocal
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class RMSD(StructuralMetric):
 
     # singleton superimposer
@@ -21,6 +23,8 @@ class RMSD(StructuralMetric):
         super().__init__()
         self.normalization = normalization
         return
+
+
 
     def do(
         self,
@@ -40,6 +44,8 @@ class RMSD(StructuralMetric):
         if self.normalization is not None:
             norm = self.normalization.do(rmsd)
         return rmsd, norm
+
+
 
     def do_for_fitness_fn(
         self,

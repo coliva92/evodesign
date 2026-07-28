@@ -13,6 +13,8 @@ from ....GA.Selection.Tournament import Tournament
 from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
 
 
+
+
 class Micro(SingleObjectiveAlgorithm):
 
     def __init__(
@@ -30,6 +32,8 @@ class Micro(SingleObjectiveAlgorithm):
         self.selection = selection
         self.crossover = crossover
 
+
+
     def create_algorithm(self) -> GA:
         mutation = RandomResetting(sequence_mutation_prob=0, residue_mutation_prob=0)
         replacement = GenerationalElitism()
@@ -46,6 +50,8 @@ class Micro(SingleObjectiveAlgorithm):
         )
         algorithm.termination = termination
         return algorithm
+
+
 
     def create_callbacks(
         self,

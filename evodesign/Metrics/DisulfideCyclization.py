@@ -11,6 +11,8 @@ from .Normalization.Formulas import z_score as compute_z
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class DisulfideCyclization(StructuralMetric):
 
     _bond_lengths = {
@@ -35,6 +37,8 @@ class DisulfideCyclization(StructuralMetric):
         z_score = compute_z(distance, avg, stdev)
         norm_z_score = reciprocal(abs(z_score), self._scaling_factors[bond_name])
         return (distance, z_score, norm_z_score)
+
+
 
     def do(
         self,
@@ -75,6 +79,8 @@ class DisulfideCyclization(StructuralMetric):
             h2_norm_z_score,
             ss_total_score,
         )
+
+
 
     def do_for_fitness_fn(
         self,

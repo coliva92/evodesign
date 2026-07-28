@@ -5,6 +5,8 @@ from ..System.Subprocess import run_subprocess
 from .AlphaFold3Docker import AlphaFold3Docker
 
 
+
+
 class AlphaFold3(AlphaFold3Docker):
 
     def __init__(
@@ -63,6 +65,8 @@ class AlphaFold3(AlphaFold3Docker):
         )
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
 
+
+
     def _create_cmd_array(
         self,
         input_path: str,
@@ -82,6 +86,8 @@ class AlphaFold3(AlphaFold3Docker):
         cmd[3] = f"--model_dir={self.model_dir}"  # change /root/af_model
         cmd[4] = f"--output_dir={output_dir}"  # change /root/af_output
         return cmd
+
+
 
     def run_inference(
         self,

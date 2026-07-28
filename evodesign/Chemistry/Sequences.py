@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
+
 AMINO_ACIDS = list("ACDEFGHIKLMNPQRSTVWY")
 NUM_AMINO_ACIDS = len(AMINO_ACIDS)
 AMINO_ACIDS_INT_ALPHABET = np.array(range(20), dtype=np.int64)
@@ -9,12 +10,16 @@ OPENFOLD_AMINO_ACIDS = list("ARNDCQEGHILKMFPSTWYVX")
 OPENFOLD_MAP_AMINO_ACID_TO_INT = {aa: i for i, aa in enumerate(OPENFOLD_AMINO_ACIDS)}
 
 
+
+
 def to_numpy(sequence: str) -> npt.NDArray[np.int64]:
     return np.array([MAP_AMINO_ACID_TO_INT[aa] for aa in sequence], dtype=np.int64)
 
 
+
 def to_str(sequence_numpy: npt.NDArray[np.int64]) -> str:
     return "".join(AMINO_ACIDS[i] for i in sequence_numpy)
+
 
 
 def load_profile(filename: str) -> npt.NDArray[np.float64]:
@@ -47,6 +52,7 @@ def load_profile(filename: str) -> npt.NDArray[np.float64]:
     return profile
 
 
+
 def save_profile(profile: npt.NDArray[np.float64], filename: str):
     with open(filename, "wt", encoding="utf-8") as txt:
         txt.write(f"{profile.shape[0]}\n")
@@ -55,6 +61,7 @@ def save_profile(profile: npt.NDArray[np.float64], filename: str):
             for j in range(profile.shape[1]):
                 txt.write(f" {AMINO_ACIDS[j]}:{profile[i][j]}")
             txt.write("\n")
+
 
 
 def compute_identity(a: npt.NDArray[np.int64], b: npt.NDArray[np.int64]) -> float:

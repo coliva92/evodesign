@@ -7,6 +7,8 @@ from ..System.APIRequester import APIRequester
 from .ESM2Interface import ESM2Interface
 
 
+
+
 class ESM2RemoteAPI(ESM2Interface):
 
     def __init__(
@@ -20,6 +22,8 @@ class ESM2RemoteAPI(ESM2Interface):
         super().__init__()
         self.requester = requester
         return
+
+
 
     def query_model(
         self,

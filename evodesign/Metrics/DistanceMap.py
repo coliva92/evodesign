@@ -11,6 +11,8 @@ from .Normalization.Reciprocal import Reciprocal
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class DistanceMap(StructuralMetric):
 
     def __init__(
@@ -23,12 +25,16 @@ class DistanceMap(StructuralMetric):
         self.normalization = normalization
         return
 
+
+
     @classmethod
     def compute_map(
         cls,
         atoms: List[Atom],
     ) -> npt.NDArray[np.float64]:
         return np.array([a - b for (a, b) in itertools.combinations(atoms, 2)])
+
+
 
     def do(
         self,
@@ -43,6 +49,8 @@ class DistanceMap(StructuralMetric):
         if self.normalization is not None:
             norm = self.normalization.do(rmse)
         return rmse, norm
+
+
 
     def do_for_fitness_fn(
         self,

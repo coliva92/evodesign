@@ -7,7 +7,10 @@ from matplotlib.axes import Axes
 
 from .Chemistry.Sequences import NUM_AMINO_ACIDS
 
+
 NUM_SERIES = 3
+
+
 
 
 def get_final_solution_indices(
@@ -22,12 +25,14 @@ def get_final_solution_indices(
     return np.unravel_index(np.argmax(fitness_values), fitness_values.shape)
 
 
+
 def get_best_fitness_evolution(
     fitness_values: npt.NDArray[np.int64],
 ) -> npt.NDArray[np.float64]:
     assert len(fitness_values.shape) == 2
     highest_per_generation = np.max(fitness_values, axis=1)
     return np.maximum.accumulate(highest_per_generation)
+
 
 
 def get_population_missing_amino_acids(
@@ -42,10 +47,12 @@ def get_population_missing_amino_acids(
     )
 
 
+
 def get_amino_acid_loss_evolution(
     generations: npt.NDArray[np.int64],
 ) -> npt.NDArray[np.float64]:
     return np.array([get_population_missing_amino_acids(pop) for pop in generations])
+
 
 
 def get_population_identity(
@@ -68,11 +75,13 @@ def get_population_identity(
     return sum_identity / num_pairs
 
 
+
 def get_population_identity_evolution(
     generations: npt.NDArray[np.int64],
     sample_size: Optional[int] = None,
 ) -> npt.NDArray[np.float64]:
     return np.array([get_population_identity(pop, sample_size) for pop in generations])
+
 
 
 def get_new_sequences_evolution(
@@ -91,6 +100,7 @@ def get_new_sequences_evolution(
                 unique_solutions.add(seq)
         counts[i] = num_new_solutions
     return counts
+
 
 
 def create_convergence_plot(
@@ -142,6 +152,7 @@ def create_convergence_plot(
     return ax, pd.DataFrame.from_dict(data)
 
 
+
 def get_population_diversity_loss(
     population: npt.NDArray[np.int64],
     sample_size: Optional[int] = None,
@@ -151,6 +162,7 @@ def get_population_diversity_loss(
     l2 = get_population_identity(population, sample_size) / sequence_length
     diversity_loss = (l1 + l2) / 2
     return diversity_loss
+
 
 
 def get_reason_for_termination(

@@ -8,6 +8,8 @@ from ...Fitness.FitnessFunction import FitnessFunction
 from .SingleObjectiveCPD import SingleObjectiveCPD
 
 
+
+
 class AlternatingCPD(SingleObjectiveCPD):
 
     _NUM_FITNESS_FUNCS = 2
@@ -18,6 +20,8 @@ class AlternatingCPD(SingleObjectiveCPD):
         self.alt_archive = {}
         self._curr_fn_idx = 0
         return
+
+
 
     def _compute_term_values(
         self,
@@ -36,6 +40,8 @@ class AlternatingCPD(SingleObjectiveCPD):
                     row.extend([0 for _ in range(g.num_terms())])
             terms_matrix.append(row)
         return np.array(terms_matrix)
+
+
 
     def alternate_fitness_fn(self) -> None:
         self._curr_fn_idx = int(not self._curr_fn_idx)

@@ -6,6 +6,8 @@ from pymoo.operators.selection.tournament import TournamentSelection
 from .Selection import Selection
 
 
+
+
 class StochasticRankingBinaryTournament(Selection):
 
     def __init__(
@@ -15,6 +17,8 @@ class StochasticRankingBinaryTournament(Selection):
         super().__init__(TournamentSelection(self.compare_by_rank, pressure=2))
         self.rank_by_fitness_prob = rank_by_fitness_prob
         return
+
+
 
     def _stochastic_ranking(
         self, pop: Population, *args, **kwargs
@@ -59,6 +63,8 @@ class StochasticRankingBinaryTournament(Selection):
             if not swap_done:
                 break
         return sorted_indices
+
+
 
     def compare_by_rank(
         self,

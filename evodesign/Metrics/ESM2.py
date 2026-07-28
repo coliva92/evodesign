@@ -9,6 +9,8 @@ from .ESM2Interface import ESM2Interface
 from .ESM2ModelContainer import ESM2ModelContainer
 
 
+
+
 class ESM2(ESM2Interface):
 
     _model = None
@@ -21,6 +23,8 @@ class ESM2(ESM2Interface):
         if ESM2._model is None:
             ESM2._model = ESM2ModelContainer(self.gpu_device)
         return
+
+
 
     def contacts_map_from_prediction(
         self,
@@ -40,6 +44,8 @@ class ESM2(ESM2Interface):
         binary_map[top_x, top_y] = 1
         binary_map[top_y, top_x] = 1
         return binary_map
+
+
 
     def query_model(
         self,

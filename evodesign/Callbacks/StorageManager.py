@@ -14,6 +14,8 @@ from ..Prediction.DirectoryManager import \
 from ..System.PathsContainer import PathsContainer
 
 
+
+
 class StorageManager(Callback):
 
     def __init__(
@@ -41,6 +43,8 @@ class StorageManager(Callback):
             self.directory.predictor_output_dir,
         )
 
+
+
     def _extend_numpy_array(
         self,
         arr: npt.NDArray,
@@ -56,6 +60,8 @@ class StorageManager(Callback):
         new_arr[:copy_len] = arr[:copy_len]
         return new_arr
 
+
+
     def extend_result_arrays(
         self,
         new_size: int,
@@ -63,6 +69,8 @@ class StorageManager(Callback):
         self.generations = self._extend_numpy_array(self.generations, new_size, -1)
         self.fitness_values = self._extend_numpy_array(self.fitness_values, new_size, 0)
         self.term_values = self._extend_numpy_array(self.term_values, new_size, -1)
+
+
 
     def notify(
         self,
@@ -81,6 +89,8 @@ class StorageManager(Callback):
             or algorithm.termination.perc == 1.0
         ):
             self.save(algorithm)
+
+
 
     def save(
         self,
@@ -103,6 +113,8 @@ class StorageManager(Callback):
             save_profile(algorithm.problem.aa_profile, self.directory.profile_path)
         return
 
+
+
     def save_rng_state(
         self,
         state: tuple,
@@ -115,6 +127,8 @@ class StorageManager(Callback):
             txt_file.write(f"{values}\n")
             for i in range(2, len(state)):
                 txt_file.write(f"{state[i]}\n")
+
+
 
     def save_pymoo_algorithm(
         self,
@@ -130,6 +144,8 @@ class StorageManager(Callback):
             algorithm.problem = tmp_problem
             algorithm.callback = tmp_callback
 
+
+
     def save_git_commit_hash(self) -> None:
         os.makedirs(self.directory.path, exist_ok=True)
         file_path = self.directory.git_commit_hash_path
@@ -138,6 +154,8 @@ class StorageManager(Callback):
             txt_file.write(
                 f"https://github.com/coliva92/evodesign/commit/{commit_hash}\n"
             )
+
+
 
     def save_settings(
         self,
@@ -148,6 +166,8 @@ class StorageManager(Callback):
         with open(file_path, "wt", encoding="utf-8") as json_file:
             json_file.write(json.dumps(settings, indent=4) + "\n")
 
+
+
     def save_target_pdb(
         self,
         target_pdb_path: str,
@@ -156,6 +176,8 @@ class StorageManager(Callback):
         pdb_filename = os.path.basename(target_pdb_path)
         destination = os.path.join(self.directory.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)
+
+
 
     def load_results_npz(self) -> None:
         data = np.load(self.directory.results_npz_path)
@@ -172,6 +194,8 @@ class StorageManager(Callback):
         self.fitness_values = fitness_values
         self.term_values = term_values
         return
+
+
 
     def load_rng_state(
         self,
@@ -195,11 +219,15 @@ class StorageManager(Callback):
             i += 1
         return tuple(result)
 
+
+
     def load_pymoo_algorithm(self) -> PyMOOAlgorithm:
         file_path = self.directory.pymoo_algorithm_bin_path
         with open(file_path, "rb") as bin_file:
             algorithm = dill.load(bin_file)
         return algorithm
+
+
 
     def delete_file(
         self,
@@ -208,12 +236,16 @@ class StorageManager(Callback):
         if os.path.isfile(file_path):
             os.remove(file_path)
 
+
+
     def delete_folder(
         self,
         folder_path: str,
     ) -> None:
         if os.path.isdir(folder_path):
             shutil.rmtree(folder_path)
+
+
 
     def delete_non_essential_files_and_folders(self) -> None:
         for filename in os.listdir(self.directory.path):
@@ -223,6 +255,8 @@ class StorageManager(Callback):
                     self.delete_file(file_path)
                     continue
                 self.delete_folder(file_path)
+
+
 
     def resize_array_z_axis(
         self,

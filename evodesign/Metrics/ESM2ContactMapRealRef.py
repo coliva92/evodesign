@@ -9,6 +9,8 @@ from .ESM2 import ESM2
 from .NonStructuralMetric import NonStructuralMetric
 
 
+
+
 class ESM2ContactMapRealRef(NonStructuralMetric):
 
     def __init__(
@@ -24,6 +26,8 @@ class ESM2ContactMapRealRef(NonStructuralMetric):
         self.min_separation = min_separation
         self.dist_norm_const = dist_norm_const
         return
+
+
 
     def normalized_laplacian(
         self,
@@ -43,6 +47,8 @@ class ESM2ContactMapRealRef(NonStructuralMetric):
         L_norm = I - np.dot(D_inv_sqrt_mat, np.dot(adj_matrix, D_inv_sqrt_mat))
         return L_norm
 
+
+
     def spectral_distance(
         self,
         predicted_laplacian: npt.NDArray[np.int64],
@@ -57,15 +63,19 @@ class ESM2ContactMapRealRef(NonStructuralMetric):
         distance = np.linalg.norm(eig_predicted - eig_ref)
         return distance
 
+
+
     def do(
         self,
         predicted_laplacian: npt.NDArray[np.int64],
         ref_laplacian: npt.NDArray[np.int64],
         **kwargs,
-    ) -> Tuple[float]:
+    ) -> Tuple[float, float]:
         dist = self.spectral_distance(predicted_laplacian, ref_laplacian)
         norm_dist = 1 - (dist / self.dist_norm_const)
         return dist, norm_dist
+
+
 
     def do_for_fitness_fn(
         self,

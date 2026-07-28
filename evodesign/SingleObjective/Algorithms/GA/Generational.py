@@ -14,6 +14,8 @@ from ....GA.Termination.MaximumDiversityLoss import MaximumDiversityLoss
 from ..SingleObjectiveAlgorithm import SingleObjectiveAlgorithm
 
 
+
+
 class Generational(SingleObjectiveAlgorithm):
 
     def __init__(
@@ -31,6 +33,8 @@ class Generational(SingleObjectiveAlgorithm):
         self.mutation = mutation
         self.diversity_loss_tol = diversity_loss_tol
         self.sample_size = sample_size
+
+
 
     def create_algorithm(self) -> GA:
         replacement = GenerationalReplacement()

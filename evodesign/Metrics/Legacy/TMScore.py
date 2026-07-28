@@ -9,6 +9,8 @@ from ..Normalization.Normalization import Normalization
 from ..StructuralMetric import StructuralMetric
 
 
+
+
 class v1(StructuralMetric):
 
     def __init__(
@@ -22,6 +24,8 @@ class v1(StructuralMetric):
         self._backbone_weights = None
         return
 
+
+
     def normalizing_constant(
         self,
         num_residues: int,
@@ -29,6 +33,8 @@ class v1(StructuralMetric):
         if num_residues > 21:
             return 1.24 * np.cbrt(num_residues - 15) - 1.8
         return 0.5
+
+
 
     def do(
         self,
@@ -54,6 +60,8 @@ class v1(StructuralMetric):
         if self.regularization is not None:
             reg_tm_score = self.regularization.do(tm_score)
         return tm_score, reg_tm_score
+
+
 
     def do_for_fitness_fn(
         self,

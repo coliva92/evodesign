@@ -6,6 +6,8 @@ import numpy.typing as npt
 from ..RetrievableSettings import RetrievableSettings
 
 
+
+
 class ESM2Interface(RetrievableSettings):
 
     def query_model(

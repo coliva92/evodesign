@@ -8,6 +8,8 @@ from ..Statistics import (ALPHABET_SIZE, get_population_amino_acid_loss,
                           get_population_identity)
 
 
+
+
 class PopulationRestarter(Callback):
 
     def __init__(
@@ -17,6 +19,8 @@ class PopulationRestarter(Callback):
         super().__init__()
         self.diversity_loss_tol = diversity_loss_tol
         return
+
+
 
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         assert isinstance(algorithm, GeneticAlgorithm)

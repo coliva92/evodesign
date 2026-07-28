@@ -1,6 +1,8 @@
 from typing import Optional
 
 
+
+
 class ESM2ModelContainer:
 
     esmfold_model = None

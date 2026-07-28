@@ -6,10 +6,13 @@ import os
 from .AlgorithmFactory import AlgorithmFactory
 
 
+
+
 def read_json(settings_path: str) -> dict:
     with open(os.path.abspath(settings_path), "rt", encoding="utf-8") as json_file:
         settings = json.load(json_file)
     return settings
+
 
 
 def parse(settings: dict) -> AlgorithmFactory:
@@ -23,6 +26,7 @@ def parse(settings: dict) -> AlgorithmFactory:
         if type(item) == list and type(item[0]) == dict:
             params[key] = [parse(s) for s in item] if type(item[0]) == dict else item
     return actual_class(**params)
+
 
 
 def load(settings_path: str) -> AlgorithmFactory:

@@ -8,6 +8,8 @@ from ..ContextInterface import ContextInterface
 from ..StructuralMetric import StructuralMetric
 
 
+
+
 class v1(StructuralMetric):
 
     def __init__(
@@ -16,6 +18,8 @@ class v1(StructuralMetric):
     ) -> None:
         super().__init__()
         self.cutoffs = cutoffs
+
+
 
     def do(
         self,
@@ -31,6 +35,8 @@ class v1(StructuralMetric):
         distances = np.array([a - b for a, b in zip(model_backbone, ref_backbone)])
         gdt = np.mean([np.mean([d <= c for d in distances]) for c in self.cutoffs])
         return gdt
+
+
 
     def do_for_fitness_fn(
         self,

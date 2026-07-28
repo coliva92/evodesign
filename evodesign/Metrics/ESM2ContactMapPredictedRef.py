@@ -8,6 +8,8 @@ from .ESM2 import ESM2
 from .NonStructuralMetric import NonStructuralMetric
 
 
+
+
 class ESM2ContactMapPredictedRef(NonStructuralMetric):
 
     def __init__(
@@ -24,6 +26,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         self.dist_norm_const = dist_norm_const
         return
 
+
+
     def _rmse(
         self,
         predicted_contacts: npt.NDArray[np.float64],
@@ -32,6 +36,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
     ) -> float:
         return np.sqrt(np.mean((predicted_contacts - ref_contact_map) ** 2))
 
+
+
     def _euclidean_distance(
         self,
         predicted_contacts: npt.NDArray[np.float64],
@@ -39,6 +45,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         **kwargs,
     ) -> float:
         return np.linalg.norm(predicted_contacts - ref_contact_map)
+
+
 
     def _jensen_shannon(self, p: npt.NDArray[np.float64], q: npt.NDArray[np.float64]):
         from scipy.special import rel_entr
@@ -50,6 +58,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         right_sum = np.max([0, np.sum(right)])
         js = left_sum + right_sum
         return np.sqrt(js / 2.0)
+
+
 
     def _mean_jensen_shannon(
         self,
@@ -64,12 +74,14 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
             ]
         )
 
+
+
     def do(
         self,
         predicted_contacts: npt.NDArray[np.float64],
         ref_contact_map: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float]:
+    ) -> Tuple[float, float, float, float, float]:
         assert predicted_contacts.shape[0] == ref_contact_map.shape[0]
         row_idx, col_idx = np.triu_indices_from(predicted_contacts)
         u = predicted_contacts[row_idx, col_idx]
@@ -86,6 +98,8 @@ class ESM2ContactMapPredictedRef(NonStructuralMetric):
         js_dist = self._mean_jensen_shannon(predicted_contacts, ref_contact_map)
         neg_js_dist = 1 - js_dist
         return rmse, norm_rmse, dist, norm_dist, neg_js_dist
+
+
 
     def do_for_fitness_fn(
         self,

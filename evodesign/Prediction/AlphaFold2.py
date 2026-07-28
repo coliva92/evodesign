@@ -4,6 +4,8 @@ from ..System.Subprocess import run_subprocess
 from .AlphaFoldInterface import AlphaFoldInterface
 
 
+
+
 class AlphaFold2(AlphaFoldInterface):
 
     def __init__(
@@ -39,6 +41,8 @@ class AlphaFold2(AlphaFoldInterface):
         )
         self.db_preset = db_preset  # { 'reduced_dbs', 'full_dbs' }
 
+
+
     def _create_model_input(
         self,
         sequence: str,
@@ -52,12 +56,16 @@ class AlphaFold2(AlphaFoldInterface):
         self.create_empty_msa(fasta_path, output_dir)
         return fasta_path
 
+
+
     def _prediction_pdb_path(
         self,
         protein_full_name: str,
         output_dir: str,
     ) -> str:
         return os.path.join(output_dir, protein_full_name, "ranked_0.pdb")
+
+
 
     def _create_cmd_array(
         self,
@@ -80,6 +88,8 @@ class AlphaFold2(AlphaFoldInterface):
             f"--mgnify_database_path={self.mgnify_database_path}",
             f"--data_dir={self.data_dir}",
         ]
+
+
 
     def create_empty_msa(
         self,

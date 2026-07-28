@@ -7,6 +7,8 @@ from ..RetrievableSettings import RetrievableSettings
 from .Exceptions import *
 
 
+
+
 class APIRequester(RetrievableSettings):
 
     def __init__(
@@ -25,17 +27,23 @@ class APIRequester(RetrievableSettings):
         self.connection_timeout = connection_timeout
         self.verify = verify
 
+
+
     def post(
         self,
         payload_data,
     ):
         return self._send_request(payload_data, requests.post)
 
+
+
     def get(
         self,
         payload_data,
     ):
         return self._send_request(payload_data, requests.get)
+
+
 
     def _send_request(
         self,

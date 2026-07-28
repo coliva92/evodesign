@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from ...RetrievableSettings import RetrievableSettings
 
 
+
+
 class Normalization(RetrievableSettings, ABC):
 
     @abstractmethod

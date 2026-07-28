@@ -4,6 +4,8 @@ from typing import Dict
 from ..Chemistry.Chain import Chain
 
 
+
+
 class ContextInterface(ABC):
 
     @abstractmethod
@@ -13,6 +15,8 @@ class ContextInterface(ABC):
     ) -> Dict[str, float]:
         raise NotImplementedError
 
+
+
     @abstractmethod
     def get_component_value(
         self,
@@ -20,13 +24,19 @@ class ContextInterface(ABC):
     ) -> float:
         raise NotImplementedError
 
+
+
     @abstractmethod
     def get_model_chain(self) -> Chain:
         raise NotImplementedError
 
+
+
     @abstractmethod
     def get_reference_chain(self) -> Chain:
         raise NotImplementedError
+
+
 
     @abstractmethod
     def get_extra_param_value(
@@ -34,6 +44,8 @@ class ContextInterface(ABC):
         param_name: str,
     ):
         raise NotImplementedError
+
+
 
     @abstractmethod
     def set_extra_param_value(

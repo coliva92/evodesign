@@ -4,6 +4,8 @@ from typing import List, Optional
 from .HighFold3Docker import HighFold3Docker
 
 
+
+
 class HighFold3(HighFold3Docker):
 
     def __init__(
@@ -65,6 +67,8 @@ class HighFold3(HighFold3Docker):
             jax_compilation_cache_dir,
         )
         self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
+
+
 
     def _create_cmd_array(
         self,

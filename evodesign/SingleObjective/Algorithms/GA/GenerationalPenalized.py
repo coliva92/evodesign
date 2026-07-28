@@ -15,6 +15,8 @@ from ...Problems.PenalizedCPD import PenalizedCPD
 from .Generational import Generational
 
 
+
+
 class GenerationalPenalized(Generational):
 
     def __init__(self, identity_tol: float = 0.3, **kwargs):
@@ -22,6 +24,8 @@ class GenerationalPenalized(Generational):
         assert isinstance(kwargs["selection"], StochasticRankingBinaryTournament)
         self.identity_tol = identity_tol
         return
+
+
 
     def create_problem(
         self,
@@ -37,6 +41,8 @@ class GenerationalPenalized(Generational):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
+
+
 
     def create_algorithm(self) -> GA:
         replacement = GenerationalReplacement()

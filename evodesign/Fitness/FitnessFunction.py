@@ -10,6 +10,8 @@ from ..Metrics.Metric import Metric
 from ..RetrievableSettings import RetrievableSettings
 
 
+
+
 class FitnessFunction(RetrievableSettings, ABC):
 
     def __init__(
@@ -26,6 +28,8 @@ class FitnessFunction(RetrievableSettings, ABC):
             calc._class_name(): calc for calc in self.term_calculators
         }
 
+
+
     def do(
         self,
         model_chain: Chain,
@@ -38,6 +42,8 @@ class FitnessFunction(RetrievableSettings, ABC):
         )
         return np.concatenate((np.array([self.combine(term_values)]), term_values))
 
+
+
     @abstractmethod
     def combine(
         self,
@@ -45,12 +51,18 @@ class FitnessFunction(RetrievableSettings, ABC):
     ) -> float:
         raise NotImplementedError
 
+
+
     @abstractmethod
     def name(self) -> str:
         raise NotImplementedError
 
+
+
     def num_terms(self) -> int:
         return len(self.terms)
+
+
 
     def requires_structure_predictor(self) -> bool:
         for calc in self.term_calculators:

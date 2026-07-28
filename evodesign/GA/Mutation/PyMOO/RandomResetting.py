@@ -10,6 +10,8 @@ from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
 from ....IntegerProfileSampling import IntegerProfileSampling
 
 
+
+
 class RandomResetting(Mutation):
 
     def __init__(
@@ -21,6 +23,8 @@ class RandomResetting(Mutation):
         self.prob = Real(prob, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.prob_var = Real(prob_var, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.sampler = IntegerProfileSampling()
+
+
 
     def _do(
         self,

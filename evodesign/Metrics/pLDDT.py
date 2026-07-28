@@ -7,6 +7,8 @@ from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class pLDDT(StructuralMetric):
 
     def do(
@@ -25,6 +27,8 @@ class pLDDT(StructuralMetric):
             ]
         )
         return bfactors.mean()
+
+
 
     def do_for_fitness_fn(
         self,

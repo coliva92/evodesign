@@ -7,6 +7,8 @@ from Bio.PDB.Atom import Atom
 from Bio.PDB.Residue import Residue
 
 
+
+
 def find_atoms_in_residue(
     residue: Residue,
     atom_names: List[str],
@@ -19,6 +21,7 @@ def find_atoms_in_residue(
             continue
         atoms.append(None)
     return atoms
+
 
 
 def compute_dihedral_angle(a: Atom, b: Atom, c: Atom, d: Atom) -> float:
@@ -34,8 +37,10 @@ def compute_dihedral_angle(a: Atom, b: Atom, c: Atom, d: Atom) -> float:
     return dihedral
 
 
+
 def compute_distance_map(atoms: List[Atom]) -> npt.NDArray[np.float64]:
     return np.array([a - b for (a, b) in itertools.combinations(atoms, 2)])
+
 
 
 def compute_contacts_map(

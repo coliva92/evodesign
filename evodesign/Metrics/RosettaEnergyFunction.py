@@ -1,10 +1,11 @@
-import os
 from typing import Dict
 
 import pyrosetta
 
 from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
+
+
 
 
 class RosettaEnergyFunction(StructuralMetric):
@@ -21,6 +22,8 @@ class RosettaEnergyFunction(StructuralMetric):
             self._score_fn = pyrosetta.get_score_function(True)
         pose = pyrosetta.pose_from_pdb(pdb_path)
         return self._score_fn(pose)
+
+
 
     def do_for_fitness_fn(
         self,

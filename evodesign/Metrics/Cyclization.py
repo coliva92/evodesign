@@ -9,6 +9,8 @@ from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
 
 
+
+
 class Cyclization(StructuralMetric):
 
     _mean = 1.3248119
@@ -19,12 +21,14 @@ class Cyclization(StructuralMetric):
         self,
         model_backbone: List[Atom],
         **kwargs,
-    ) -> Tuple[float]:
+    ) -> Tuple[float, float, float]:
         # assuming the backbone consists of atoms N-CA-C-O
         distance = model_backbone[-2] - model_backbone[0]
         z_score = compute_z(distance, self._mean, self._stdev)
         norm_z_score = reciprocal(abs(z_score), self._scaling_factor)
-        return (distance, z_score, norm_z_score)
+        return distance, z_score, norm_z_score
+
+
 
     def do_for_fitness_fn(
         self,

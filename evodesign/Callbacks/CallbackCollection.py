@@ -4,6 +4,8 @@ from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.callback import Callback
 
 
+
+
 class CallbackCollection(Callback):
 
     def __init__(self, callbacks: List[Callback]):
@@ -11,9 +13,13 @@ class CallbackCollection(Callback):
         self.callbacks = callbacks
         return
 
+
+
     def append(self, callback: Callback) -> None:
         self.callbacks.append(callback)
         return
+
+
 
     def notify(
         self,

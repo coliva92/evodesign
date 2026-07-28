@@ -2,6 +2,8 @@ import subprocess
 from typing import List
 
 
+
+
 def _open_command_line(command: List[str]):
     popen = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
     for stdout_line in iter(popen.stdout.readline, ""):
@@ -10,6 +12,7 @@ def _open_command_line(command: List[str]):
     return_code = popen.wait()
     if return_code:
         raise subprocess.CalledProcessError(return_code, command)
+
 
 
 def run_subprocess(command: List[str]):

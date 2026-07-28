@@ -8,6 +8,8 @@ from .ESM2 import ESM2
 from .NonStructuralMetric import NonStructuralMetric
 
 
+
+
 class ESM2Descriptors(NonStructuralMetric):
 
     def __init__(
@@ -24,6 +26,8 @@ class ESM2Descriptors(NonStructuralMetric):
         self.dist_norm_const = dist_norm_const
         return
 
+
+
     def _rmse(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
@@ -34,6 +38,8 @@ class ESM2Descriptors(NonStructuralMetric):
         v = ref_desc_matrix.flatten()
         return np.sqrt(np.mean((u - v) ** 2))
 
+
+
     def _cos_similarity(
         self,
         u: npt.NDArray[np.float64],
@@ -43,6 +49,8 @@ class ESM2Descriptors(NonStructuralMetric):
         n1 = np.linalg.norm(u)
         n2 = np.linalg.norm(v)
         return np.dot(u, v) / (n1 * n2)
+
+
 
     def _mean_cos_similarity(
         self,
@@ -57,6 +65,8 @@ class ESM2Descriptors(NonStructuralMetric):
             values.append((self._cos_similarity(u, v) + 1) / 2)
         return np.mean(values)
 
+
+
     def _mean_euclidean_distance(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
@@ -70,18 +80,22 @@ class ESM2Descriptors(NonStructuralMetric):
             values.append(np.linalg.norm(u - v))
         return np.mean(values)
 
+
+
     def do(
         self,
         model_desc_matrix: npt.NDArray[np.float64],
         ref_desc_matrix: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float]:
+    ) -> Tuple[float, float, float, float, float]:
         rmse = self._rmse(model_desc_matrix, ref_desc_matrix)
         norm_rmse = 1 - (rmse / self.rmse_norm_const)
         mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
         distance = self._mean_euclidean_distance(model_desc_matrix, ref_desc_matrix)
         norm_distance = 1 - (distance / self.dist_norm_const)
         return rmse, norm_rmse, mean_cos, distance, norm_distance
+
+
 
     def do_for_fitness_fn(
         self,

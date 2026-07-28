@@ -11,6 +11,8 @@ from .AlphaFoldInterface import AlphaFoldInterface
 from .DirectoryManager import DirectoryManager
 
 
+
+
 class AlphaFold3Docker(AlphaFoldInterface):
 
     _parser = MMCIFParser()
@@ -134,6 +136,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
         )
         return
 
+
+
     def _create_model_input(
         self,
         sequence: str,
@@ -147,6 +151,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
             json.dump(input_json, json_file)
         return json_path
 
+
+
     def _prediction_pdb_path(
         self,
         protein_full_name: str,
@@ -155,6 +161,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
         prediction_dir = os.path.join(output_dir, protein_full_name)
         prediction_cif = os.path.join(prediction_dir, f"{protein_full_name}_model.cif")
         return convert_cif_to_pdb(prediction_cif, parser=self._parser, io=self._io)
+
+
 
     def _create_cmd_array(
         self,
@@ -231,6 +239,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
         cmd.append("--force_output_dir=True")
         return cmd
 
+
+
     def create_input_json(
         self,
         sequence: str,
@@ -255,6 +265,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
             "dialect": "alphafold3",
             "version": self.version,
         }
+
+
 
     def do(
         self,
@@ -286,6 +298,8 @@ class AlphaFold3Docker(AlphaFoldInterface):
                 directory.prediction_pdbs_dir, f"{protein_name}.pdb"
             )
             shutil.copyfile(prediction_pdb, pdb_path)
+
+
 
     def run_inference(
         self,

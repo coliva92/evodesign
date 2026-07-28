@@ -8,6 +8,8 @@ from ..ContextInterface import ContextInterface
 from ..NonStructuralMetric import NonStructuralMetric
 
 
+
+
 class Sum(NonStructuralMetric):
 
     _MAX_VALUE_PER_RESIDUE = NUM_AMINO_ACIDS - 1
@@ -18,6 +20,8 @@ class Sum(NonStructuralMetric):
         total_sum = model_sequence.sum(axis=0)
         avg = total_sum / (Sum._MAX_VALUE_PER_RESIDUE * model_sequence.shape[0])
         return total_sum, avg
+
+
 
     def do_for_fitness_fn(
         self,

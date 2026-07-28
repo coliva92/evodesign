@@ -1,6 +1,8 @@
 from Bio.PDB import PDBIO, MMCIFParser
 
 
+
+
 def convert_cif_to_pdb(
     cif_path: str,
     structure_id: str = "A",

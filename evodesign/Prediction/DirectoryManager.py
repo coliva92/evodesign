@@ -2,6 +2,8 @@ import os
 import shutil
 
 
+
+
 class DirectoryManager:
 
     def __init__(
@@ -17,8 +19,12 @@ class DirectoryManager:
         self.prefix = prefix
         return
 
+
+
     def protein_full_name(self, suffix: str) -> str:
         return f"{self.prefix}_{suffix}"
+
+
 
     def create_folders(self) -> None:
         os.makedirs(self.prediction_pdbs_dir, exist_ok=True)
@@ -26,11 +32,15 @@ class DirectoryManager:
         os.makedirs(self.model_output_dir, exist_ok=True)
         return
 
+
+
     def empty_folders_content(self) -> None:
         self._empty_folder(self.prediction_pdbs_dir)
         self._empty_folder(self.model_input_dir)
         self._empty_folder(self.model_output_dir)
         return
+
+
 
     def _empty_folder(self, folder_path: str) -> None:
         if not os.path.isdir(folder_path):

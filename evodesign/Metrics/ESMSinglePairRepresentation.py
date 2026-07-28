@@ -8,6 +8,8 @@ from .ESM2 import ESM2_3
 from .NonStructuralMetric import NonStructuralMetric
 
 
+
+
 class ESMSinglePairRepresentation(NonStructuralMetric):
 
     def __init__(
@@ -20,6 +22,8 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
         self.rmse_norm_const = rmse_norm_const
         return
 
+
+
     def _rmse(
         self,
         a: npt.NDArray[np.float64],
@@ -30,6 +34,8 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
         v = b.flatten()
         return np.sqrt(np.mean((u - v) ** 2))
 
+
+
     def do(
         self,
         model_single_rep: npt.NDArray[np.float64],
@@ -37,12 +43,14 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
         ref_single_rep: npt.NDArray[np.float64],
         ref_pair_rep: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float]:
+    ) -> Tuple[float, float]:
         single_rmse = self._rmse(model_single_rep, ref_single_rep)
         pair_rmse = self._rmse(model_pair_rep, ref_pair_rep)
         rmse = (single_rmse + pair_rmse) / 2
         norm_rmse = 1 - (rmse / self.rmse_norm_const)
         return rmse, norm_rmse
+
+
 
     def do_for_fitness_fn(
         self,

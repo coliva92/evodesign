@@ -4,6 +4,8 @@ from pymoo.core.callback import Callback
 from ..Problems.MonoObjective.AlternatingMonoCPD import AlternatingMonoCPD
 
 
+
+
 class MonoFitnessFnAlternator(Callback):
 
     def __init__(
@@ -13,6 +15,8 @@ class MonoFitnessFnAlternator(Callback):
         super().__init__()
         self.alt_every_nth_gen = alt_every_nth_gen
         return
+
+
 
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         problem = algorithm.problem

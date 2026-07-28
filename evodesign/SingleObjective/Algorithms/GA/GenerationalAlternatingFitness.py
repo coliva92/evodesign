@@ -13,6 +13,8 @@ from ...Problems.AlternatingCPD import AlternatingCPD
 from .Generational import Generational
 
 
+
+
 class GenerationalAlternatingFitness(Generational):
 
     def __init__(
@@ -26,8 +28,12 @@ class GenerationalAlternatingFitness(Generational):
         self.alt_fitness_fn_every_nth_gen = alt_fitness_fn_every_nth_gen
         return
 
+
+
     def num_terms(self):
         return self.fitness_fn.num_terms() + self.alt_fitness_fn.num_terms()
+
+
 
     def create_problem(
         self,
@@ -43,6 +49,8 @@ class GenerationalAlternatingFitness(Generational):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
+
+
 
     def create_callbacks(
         self,

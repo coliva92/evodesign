@@ -1,6 +1,8 @@
 from abc import ABC
 
 
+
+
 class RetrievableSettings(ABC):
 
     _basic_types = (int, float, str, bool, complex, bytes)
@@ -14,6 +16,8 @@ class RetrievableSettings(ABC):
         i = result.find(".")  # Remove 'evodesign.' at the beginning
         j = result.rfind(".")  # Remove repeated class name at the end
         return result[i + 1 : j]
+
+
 
     def settings(self) -> dict:
         # returns all the public instance and class attributes as a dictionary

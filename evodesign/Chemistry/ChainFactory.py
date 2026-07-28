@@ -12,7 +12,10 @@ from Bio.PDB.Structure import Structure
 from .Chain import Chain
 from .Sequences import to_numpy, to_str
 
+
 BACKBONE_ATOMS = dict.fromkeys(["N", "CA", "C", "O"])
+
+
 
 
 class ChainFactory:
@@ -52,15 +55,21 @@ class ChainFactory:
             ca_atoms,
         )
 
+
+
     @classmethod
     def create_from_numpy(cls, sequence_numpy: npt.NDArray[np.int64]) -> Chain:
         sequence = cls.sequence_numpy_to_str(sequence_numpy)
         return Chain(sequence=sequence, sequence_numpy=sequence_numpy)
 
+
+
     @classmethod
     def get_sequence(cls, structure: Structure, model_id: int, chain_id: str) -> str:
         chain = structure[model_id][chain_id]
         return "".join(three_to_one(r.get_resname()) for r in chain if is_aa(r))
+
+
 
     @classmethod
     def get_backbone_atoms(
@@ -72,6 +81,8 @@ class ChainFactory:
             if atom.get_name() in BACKBONE_ATOMS
         ]
 
+
+
     @classmethod
     def get_ca_atoms(
         cls, structure: Structure, model_id: int, chain_id: str
@@ -82,15 +93,21 @@ class ChainFactory:
             if atom.get_name() == "CA"
         ]
 
+
+
     @classmethod
     def get_residues(
         cls, structure: Structure, model_id: int, chain_id: str
     ) -> List[Residue]:
         return [res for res in structure[model_id][chain_id].get_residues()]
 
+
+
     @classmethod
     def sequence_str_to_numpy(cls, sequence: str) -> npt.NDArray[np.int64]:
         return to_numpy(sequence)
+
+
 
     @classmethod
     def sequence_numpy_to_str(cls, sequence_numpy: npt.NDArray[np.int64]) -> str:

@@ -8,6 +8,8 @@ from .DirectoryManager import DirectoryManager
 from .Predictor import Predictor
 
 
+
+
 class AlphaFoldInterface(Predictor, ABC):
 
     def predict_single_pdb_file(
@@ -36,6 +38,8 @@ class AlphaFoldInterface(Predictor, ABC):
         shutil.copyfile(prediction_pdb_path, output_pdb_path)
         return
 
+
+
     @abstractmethod
     def _create_model_input(
         self,
@@ -46,6 +50,8 @@ class AlphaFoldInterface(Predictor, ABC):
     ) -> str:
         raise NotImplementedError
 
+
+
     @abstractmethod
     def _prediction_pdb_path(
         self,
@@ -53,6 +59,8 @@ class AlphaFoldInterface(Predictor, ABC):
         output_dir: str,
     ) -> str:
         raise NotImplementedError
+
+
 
     @abstractmethod
     def _create_cmd_array(
@@ -62,6 +70,8 @@ class AlphaFoldInterface(Predictor, ABC):
         do_batch_inference: bool,
     ) -> List[str]:
         raise NotImplemented
+
+
 
     def run_inference(
         self,
