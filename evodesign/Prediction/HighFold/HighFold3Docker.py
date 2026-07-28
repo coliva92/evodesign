@@ -1,6 +1,6 @@
 from typing import List
 
-from ..System.Subprocess import run_subprocess
+from ...System.Subprocess import run_subprocess
 from .HighFold3Base import HighFold3Base
 
 

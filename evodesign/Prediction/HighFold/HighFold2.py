@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
 
-from .AlphaFoldInterface import AlphaFoldInterface
+from ..AlphaFold.AlphaFoldInterface import AlphaFoldInterface
 
 
 

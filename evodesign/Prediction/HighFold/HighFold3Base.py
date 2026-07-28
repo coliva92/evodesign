@@ -1,17 +1,14 @@
-import os
 from typing import List, Optional
 
-from ..System.Subprocess import run_subprocess
-from .HighFold3Base import HighFold3Base
+from ..AlphaFold.AF3Interface import AF3Interface
 
 
 
 
-class HighFold3(HighFold3Base):
+class HighFold3Base(AF3Interface):
 
     def __init__(
         self,
-        path_to_run_alphafold_py: str,
         model_dir: str,
         head_to_tail: bool = True,
         disulfide_chain_res: Optional[List[List[int]]] = None,
@@ -41,8 +38,6 @@ class HighFold3(HighFold3Base):
     ) -> None:
         super().__init__(
             model_dir,
-            head_to_tail,
-            disulfide_chain_res,
             num_recycles,
             num_diffusion_samples,
             model_seeds,
@@ -67,36 +62,21 @@ class HighFold3(HighFold3Base):
             seqres_database_path,
             jax_compilation_cache_dir,
         )
-        self.path_to_run_alphafold_py = os.path.abspath(path_to_run_alphafold_py)
+        self.head_to_tail = head_to_tail
+        self.disulfide_chain_res = disulfide_chain_res
         return
 
-    def _create_cmd_array(
-        self,
-        input_path: str,
-        output_dir: str,
-        do_batch_inference: bool,
-    ) -> List[str]:
-        cmd = [
-            "python3",
-            self.path_to_run_alphafold_py,
-            (
-                f"--input_dir={input_path}"
-                if do_batch_inference
-                else f"--json_path={input_path}"
-            ),
-            f"--model_dir={self.model_dir}",
-            f"--output_dir={output_dir}",
-        ]
-        cmd.extend(self._get_af3_flags())
-        return cmd
 
-    def run_inference(
-        self,
-        input_path: str,
-        output_dir: str,
-        do_batch_inference: bool,
-    ) -> None:
-        run_subprocess(
-            self._create_cmd_array(input_path, output_dir, do_batch_inference)
-        )
-        return
+
+    def _get_af3_flags(self) -> List[str]:
+        flags = super()._get_af3_flags()
+        
+        # HighFold3 specifics
+        # Remove --force_output_dir if present
+        if "--force_output_dir=True" in flags:
+            flags.remove("--force_output_dir=True")
+            
+        flags.append(f"--head_to_tail={self.head_to_tail}")
+        if self.disulfide_chain_res is not None:
+            flags.append(f"--disulfide_chain_res {self.disulfide_chain_res}")
+        return flags
