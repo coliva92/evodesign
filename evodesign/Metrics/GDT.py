@@ -2,14 +2,11 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import numpy.typing as npt
-
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
 from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
-
-
 
 
 class GDT(StructuralMetric):
@@ -21,8 +18,6 @@ class GDT(StructuralMetric):
         super().__init__()
         self.cutoffs = cutoffs
         return
-
-
 
     def do(
         self,
@@ -120,8 +115,6 @@ class GDT(StructuralMetric):
         )
         return gdt, rmsd, rotation, translation
 
-
-
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
@@ -132,5 +125,5 @@ class GDT(StructuralMetric):
         if superimposer is None:
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
-        gdt = self.do(model_backbone, ref_backbone, superimposer)
+        gdt, _, _, _ = self.do(model_backbone, ref_backbone, superimposer)
         return {"gdt": gdt}

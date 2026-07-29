@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+import numpy.typing as npt
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
@@ -34,7 +35,7 @@ class TMScore(StructuralMetric):
         model_ca_atoms: List[Atom],
         ref_ca_atoms: List[Atom],
         superimposer: Optional[Superimposer] = None,
-    ) -> Tuple[float, float, float]:
+    ) -> Tuple[float, npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         if superimposer is None:
             superimposer = Superimposer()
 
