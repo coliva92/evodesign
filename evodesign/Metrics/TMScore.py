@@ -8,8 +8,6 @@ from .ContextInterface import ContextInterface
 from .StructuralMetric import StructuralMetric
 
 
-
-
 class TMScore(StructuralMetric):
 
     def normalizing_constant(
@@ -21,8 +19,6 @@ class TMScore(StructuralMetric):
             return 1.24 * np.cbrt(num_residues - 15) - 1.8
         return 0.5
 
-
-
     def _calculate_total_tm_score(
         self, model_atoms: List[Atom], ref_atoms: List[Atom], d_0: float, L_T: int
     ) -> float:
@@ -33,14 +29,12 @@ class TMScore(StructuralMetric):
             tm_sum += 1.0 / (1.0 + (d / d_0) ** 2)
         return tm_sum / L_T
 
-
-
     def do(
         self,
         model_ca_atoms: List[Atom],
         ref_ca_atoms: List[Atom],
         superimposer: Optional[Superimposer] = None,
-    ) -> Tuple[float, float]:
+    ) -> Tuple[float, float, float]:
         if superimposer is None:
             superimposer = Superimposer()
 
@@ -136,8 +130,6 @@ class TMScore(StructuralMetric):
 
         return best_tm_score, rotation, translation
 
-
-
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
@@ -145,8 +137,10 @@ class TMScore(StructuralMetric):
         model_backbone = context.get_model_chain().ca_atoms
         ref_backbone = context.get_reference_chain().ca_atoms
         superimposer = context.get_extra_param_value("superimposer")
+
         if superimposer is None:
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
-        tm_score, reg_tm_score = self.do(model_backbone, ref_backbone, superimposer)
-        return {"tm_score": tm_score, "reg_tm_score": reg_tm_score}
+
+        tm_score, _, _ = self.do(model_backbone, ref_backbone, superimposer)
+        return {"tm_score": tm_score}
