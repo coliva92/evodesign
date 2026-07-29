@@ -7,6 +7,7 @@ import numpy.typing as npt
 from ..Chemistry.Chain import Chain
 from ..Metrics.Context import Context
 from ..Metrics.Metric import Metric
+from ..Settings import get_namespace
 
 
 
@@ -24,7 +25,7 @@ class FitnessFunction(ABC):
         self.terms = terms
         self.term_calculators = term_calculators
         self._term_calculators = {
-            calc._class_name(): calc for calc in self.term_calculators
+            get_namespace(calc): calc for calc in self.term_calculators
         }
         return
 
