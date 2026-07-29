@@ -21,8 +21,8 @@ class GDT(StructuralMetric):
 
     def do(
         self,
-        model_backbone: List[Atom],
-        ref_backbone: List[Atom],
+        model_ca_atoms: List[Atom],
+        ref_ca_atoms: List[Atom],
         superimposer: Optional[Superimposer] = None,
         **kwargs,
     ) -> Tuple[float, float, npt.NDArray[np.float64], npt.NDArray[np.float64]]:
@@ -31,12 +31,12 @@ class GDT(StructuralMetric):
         if superimposer is None:
             superimposer = Superimposer()
 
-        total_atoms = len(ref_backbone)
+        total_atoms = len(ref_ca_atoms)
         if total_atoms < 3:
             return 0.0  # SVD requires at least 3 points
 
         # Save original coordinates to reset between iterations
-        original_coords = [atom.coord.copy() for atom in model_backbone]
+        original_coords = [atom.coord.copy() for atom in model_ca_atoms]
 
         # Pre-calculate all initial seed indices (sliding windows)
         all_seeds = []
@@ -59,7 +59,7 @@ class GDT(StructuralMetric):
             for initial_seed in all_seeds:
 
                 # 1. Reset model coordinates for this specific seed trial
-                for atom, coord in zip(model_backbone, original_coords):
+                for atom, coord in zip(model_ca_atoms, original_coords):
                     atom.coord = coord.copy()
 
                 active_indices = initial_seed
@@ -68,18 +68,18 @@ class GDT(StructuralMetric):
                     if len(active_indices) < 3:
                         break
 
-                    ref_subset = [ref_backbone[i] for i in active_indices]
-                    model_subset = [model_backbone[i] for i in active_indices]
+                    ref_subset = [ref_ca_atoms[i] for i in active_indices]
+                    model_subset = [model_ca_atoms[i] for i in active_indices]
 
                     # 2. Obtain transform based on the current subset
                     superimposer.set_atoms(ref_subset, model_subset)
 
                     # 3. Apply to the entire model
-                    superimposer.apply(model_backbone)
+                    superimposer.apply(model_ca_atoms)
 
                     # Calculate distances
                     distances = np.array(
-                        [a - b for a, b in zip(model_backbone, ref_backbone)]
+                        [a - b for a, b in zip(model_ca_atoms, ref_ca_atoms)]
                     )
 
                     # 4. Identify atom pairs under threshold
@@ -104,13 +104,13 @@ class GDT(StructuralMetric):
 
         # GDT is the average of the maximums across all cutoffs
         gdt = float(np.mean(scores))
-        for atom, coord in zip(model_backbone, original_coords):
+        for atom, coord in zip(model_ca_atoms, original_coords):
             atom.coord = coord.copy()
         superimposer.rotran = (rotation, translation)
-        superimposer.apply(model_backbone)
+        superimposer.apply(model_ca_atoms)
         rmsd = np.sqrt(
             np.mean(
-                np.array([(a - b) ** 2 for a, b in zip(model_backbone, ref_backbone)])
+                np.array([(a - b) ** 2 for a, b in zip(model_ca_atoms, ref_ca_atoms)])
             )
         )
         return gdt, rmsd, rotation, translation
@@ -119,11 +119,13 @@ class GDT(StructuralMetric):
         self,
         context: ContextInterface,
     ) -> Dict[str, float]:
-        model_backbone = context.get_model_chain().backbone_atoms
-        ref_backbone = context.get_reference_chain().backbone_atoms
+        model_ca_atoms = context.get_model_chain().ca_atoms
+        ref_ca_atoms = context.get_reference_chain().ca_atoms
         superimposer = context.get_extra_param_value("superimposer")
+
         if superimposer is None:
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
-        gdt, _, _, _ = self.do(model_backbone, ref_backbone, superimposer)
+        
+        gdt, _, _, _ = self.do(model_ca_atoms, ref_ca_atoms, superimposer)
         return {"gdt": gdt}
