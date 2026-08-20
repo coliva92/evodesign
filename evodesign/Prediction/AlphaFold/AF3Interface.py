@@ -240,8 +240,7 @@ class AF3Interface(AlphaFoldInterface):
         sequences: List[str],
         directory: DirectoryManager,
     ) -> None:
-        os.makedirs(directory.prediction_pdbs_dir, exist_ok=True)
-        os.makedirs(directory.model_input_dir, exist_ok=True)
+        directory.create_folders()
         directory.empty_folders_content()
         for i, sequence in enumerate(sequences):
             protein_name = f"{directory.prefix}_{i}"
