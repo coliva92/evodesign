@@ -2,7 +2,6 @@ from .Normalization import Normalization
 
 
 
-
 class MinMax(Normalization):
 
     def __init__(self, min_val: float, max_val: float) -> None:
@@ -15,4 +14,6 @@ class MinMax(Normalization):
 
 
     def do(self, x: float) -> float:
-        return (x - self.min_val) / self._denom
+        norm = (x - self.min_val) / self._denom # move away from min_val
+        result = max(0, min(1, norm)) # clamping
+        return result
