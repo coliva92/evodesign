@@ -17,11 +17,11 @@ class DisulfideCyclization(StructuralMetric):
 
     _bond_lengths = {
         "SG-SG": 2.03,
-        "SG-CB": 3.018093966326573,
+        "SG-CB": 3.023361386716186,
     }
     _bond_stdevs = {
         "SG-SG": 0.008,
-        "SG-CB": 0.07019316291606081,
+        "SG-CB": 0.04516770398282618,
     }
     _scaling_factors = {
         "SG-SG": 0.11111111111111111,

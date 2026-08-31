@@ -30,7 +30,7 @@ class PathsContainer:
             after finishing the job.
     """
 
-    PROJECT_VERSION: ClassVar[str] = "20260831013305"
+    PROJECT_VERSION: ClassVar[str] = "20260831013408"
     jobname: str
     path: str
     results_npz_path: str
