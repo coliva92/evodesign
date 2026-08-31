@@ -6,6 +6,7 @@ import numpy.typing as npt
 from .ContextInterface import ContextInterface
 from .ESM2 import ESM2
 from .NonStructuralMetric import NonStructuralMetric
+from .Normalization.Normalization import Normalization
 
 
 
@@ -18,12 +19,14 @@ class ESM2Descriptors(NonStructuralMetric):
         submap_indices: Optional[List[int]] = None,
         rmse_norm_const: float = 1.0,
         dist_norm_const: float = 1.0,
+        normalization: Optional[Normalization] = None,
     ) -> None:
         super().__init__()
         self.esm_model = esm_model
         self.submap_indices = submap_indices
         self.rmse_norm_const = rmse_norm_const
         self.dist_norm_const = dist_norm_const
+        self.normalization = normalization
         return
 
 
@@ -92,7 +95,10 @@ class ESM2Descriptors(NonStructuralMetric):
         norm_rmse = 1 - (rmse / self.rmse_norm_const)
         mean_cos = self._mean_cos_similarity(model_desc_matrix, ref_desc_matrix)
         distance = self._mean_euclidean_distance(model_desc_matrix, ref_desc_matrix)
-        norm_distance = 1 - (distance / self.dist_norm_const)
+        if self.normalization is None:
+            norm_distance = 1 - (distance / self.dist_norm_const)
+        else:
+            norm_distance = self.normalization.do(distance)
         return rmse, norm_rmse, mean_cos, distance, norm_distance
 
 
