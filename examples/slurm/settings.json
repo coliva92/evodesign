@@ -1,0 +1,31 @@
+{
+    "SingleObjective.Algorithms.GA.Generational": {
+        "max_generations": 50,
+        "population_size": 100,
+        "predictor": {
+            "Prediction.Null": {}
+        },
+        "fitness_fn": {
+            "Fitness.WeightedMean": {
+                "upper_bound": 1.0,
+                "terms": [
+                    "Metrics.Test.Sum.sum",
+                    "Metrics.Test.Sum.average"
+                ],
+                "term_weights": [
+                    0, 1
+                ],
+                "term_calculators": [
+                    {
+                        "Metrics.Test.Sum": {}
+                    }
+                ]
+            }
+        },
+        "mutation": {
+            "GA.Mutation.RandomResetting": {
+                "sequence_mutation_prob": 0.1
+            }
+        }
+    }
+}
