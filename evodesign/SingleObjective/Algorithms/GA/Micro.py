@@ -19,18 +19,16 @@ class Micro(SingleObjectiveAlgorithm):
 
     def __init__(
         self,
-        max_fitness_fn_evals: int,
         diversity_loss_tol: float = 0.95,
         selection: Selection = Tournament(),
         crossover: Crossover = UniformCrossover(),
         **kwargs
     ) -> None:
-        max_generations = (max_fitness_fn_evals // kwargs["popultion_size"]) + 1
-        super().__init__(max_generations=max_generations, **kwargs)
-        self.max_fitness_fn_evals = max_fitness_fn_evals
+        super().__init__(**kwargs)
         self.diversity_loss_tol = diversity_loss_tol
         self.selection = selection
         self.crossover = crossover
+        self._max_fitness_fn_evals = kwargs["population_size"] * kwargs["max_generations"]
         return
 
 
@@ -38,7 +36,7 @@ class Micro(SingleObjectiveAlgorithm):
     def create_algorithm(self) -> GA:
         mutation = RandomResetting(sequence_mutation_prob=0, residue_mutation_prob=0)
         replacement = GenerationalElitism()
-        termination = MaximumFunctionCallTermination(self.max_fitness_fn_evals)
+        termination = MaximumFunctionCallTermination(self._max_fitness_fn_evals)
         algorithm = GA(
             pop_size=self.population_size,
             n_offsprings=self.population_size,
