@@ -61,7 +61,7 @@ def get_population_identity(
 ) -> float:
     population_size = population.shape[0]
     sample = lambda: np.arange(population_size)
-    if sample_size is not None and sample_size > 0:
+    if sample_size is not None and sample_size > 0 and sample_size < population_size:
         sample = lambda: np.random.choice(
             population_size, size=sample_size, replace=False
         )

@@ -4,7 +4,8 @@ from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.callback import Callback
 from pymoo.core.population import Population
 
-from ..Statistics import (ALPHABET_SIZE, get_population_amino_acid_loss,
+from ..Chemistry.Sequences import NUM_AMINO_ACIDS
+from ..Statistics import (get_population_missing_amino_acids,
                           get_population_identity)
 
 
@@ -25,7 +26,7 @@ class PopulationRestarter(Callback):
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         assert isinstance(algorithm, GeneticAlgorithm)
         population = np.array([solution for solution in algorithm.pop.get("X")])
-        d1 = get_population_amino_acid_loss(population) / ALPHABET_SIZE
+        d1 = get_population_missing_amino_acids(population) / NUM_AMINO_ACIDS
         d2 = get_population_identity(population) / population.shape[1]
         similarity = (d1 + d2) / 2
         if similarity >= self.diversity_loss_tol:
