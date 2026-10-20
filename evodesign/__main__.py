@@ -59,6 +59,13 @@ parser.add_argument(
     "allowed each amino acids on each positions in the "
     "designed sequences",
 )
+parser.add_argument(
+    "-e",
+    "--cleanup_on_error",
+    type=bool,
+    default=False,
+    help="delete non-essential files in the output folder in case of an error"
+)
 args = parser.parse_args()
 algorithm_factory = Settings.load(args.settings_path)
 ref_chain = ChainFactory.create_from_pdb(
@@ -122,11 +129,13 @@ while True:
         print("Fitness:", fitness_value)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         # Cleanup, then retry
-        storage.delete_non_essential_files_and_folders()
+        if args.cleanup_on_error:
+            storage.delete_non_essential_files_and_folders()
         continue
     except Exception as e:
         # Cleanup, then propagate
-        storage.delete_non_essential_files_and_folders()
+        if args.cleanup_on_error:
+            storage.delete_non_essential_files_and_folders()
         raise e
     else:
         # Normal completion: cleanup, then exit loop
