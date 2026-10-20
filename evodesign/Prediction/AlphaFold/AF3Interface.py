@@ -6,10 +6,8 @@ from typing import List, Optional
 from Bio.PDB import PDBIO, MMCIFParser
 
 from ...Files.mmCIF import convert_cif_to_pdb
-from .AlphaFoldInterface import AlphaFoldInterface
 from ..DirectoryManager import DirectoryManager
-
-
+from .AlphaFoldInterface import AlphaFoldInterface
 
 
 class AF3Interface(AlphaFoldInterface):
@@ -43,8 +41,9 @@ class AF3Interface(AlphaFoldInterface):
         pdb_database_path: Optional[str] = None,
         seqres_database_path: Optional[str] = None,
         jax_compilation_cache_dir: Optional[str] = None,
+        **kwargs,
     ) -> None:
-        super().__init__()
+        super().__init__(**kwargs)
         self.model_dir = os.path.abspath(model_dir)
         self.num_recycles = num_recycles
         self.num_diffusion_samples = num_diffusion_samples
@@ -135,8 +134,6 @@ class AF3Interface(AlphaFoldInterface):
         )
         return
 
-
-
     def _get_af3_flags(self) -> List[str]:
         flags = [
             f"--run_data_pipeline={self.run_data_pipeline}",
@@ -162,7 +159,9 @@ class AF3Interface(AlphaFoldInterface):
         if self.mgnify_database_path is not None:
             flags.append(f"--mgnify_database_path={self.mgnify_database_path}")
         if self.uniprot_cluster_annot_database_path is not None:
-            flags.append(f"--uniprot_cluster_annot_database_path={self.uniprot_cluster_annot_database_path}")
+            flags.append(
+                f"--uniprot_cluster_annot_database_path={self.uniprot_cluster_annot_database_path}"
+            )
         if self.uniref90_database_path is not None:
             flags.append(f"--uniref90_database_path={self.uniref90_database_path}")
         if self.ntrna_database_path is not None:
@@ -170,17 +169,19 @@ class AF3Interface(AlphaFoldInterface):
         if self.rfam_database_path is not None:
             flags.append(f"--rfam_database_path={self.rfam_database_path}")
         if self.rna_central_database_path is not None:
-            flags.append(f"--rna_central_database_path={self.rna_central_database_path}")
+            flags.append(
+                f"--rna_central_database_path={self.rna_central_database_path}"
+            )
         if self.pdb_database_path is not None:
             flags.append(f"--pdb_database_path={self.pdb_database_path}")
         if self.seqres_database_path is not None:
             flags.append(f"--seqres_database_path={self.seqres_database_path}")
         if self.jax_compilation_cache_dir is not None:
-            flags.append(f"--jax_compilation_cache_dir={self.jax_compilation_cache_dir}")
+            flags.append(
+                f"--jax_compilation_cache_dir={self.jax_compilation_cache_dir}"
+            )
         flags.append("--force_output_dir=True")
         return flags
-
-
 
     def _create_model_input(
         self,
@@ -195,8 +196,6 @@ class AF3Interface(AlphaFoldInterface):
             json.dump(input_json, json_file)
         return json_path
 
-
-
     def _prediction_pdb_path(
         self,
         protein_full_name: str,
@@ -205,8 +204,6 @@ class AF3Interface(AlphaFoldInterface):
         prediction_dir = os.path.join(output_dir, protein_full_name)
         prediction_cif = os.path.join(prediction_dir, f"{protein_full_name}_model.cif")
         return convert_cif_to_pdb(prediction_cif, parser=self._parser, io=self._io)
-
-
 
     def create_input_json(
         self,
@@ -232,8 +229,6 @@ class AF3Interface(AlphaFoldInterface):
             "dialect": "alphafold3",
             "version": self.version,
         }
-
-
 
     def do(
         self,

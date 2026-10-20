@@ -1,11 +1,18 @@
 import os
 from typing import List
 
-from ...System.Subprocess import run_subprocess
 from .AF3Interface import AF3Interface
 
 
 class AlphaFold3Docker(AF3Interface):
+
+    def __init__(
+        self,
+        docker_gpus: str = "all",  # can also admit MIG IDs; e.g.: 'device=MIG-blabla'
+        **kwargs,
+    ):
+        self.docker_gpus = docker_gpus
+        return
 
     def _create_cmd_array(
         self,
@@ -29,14 +36,14 @@ class AlphaFold3Docker(AF3Interface):
             (
                 f"{input_path}:/data/af_input"
                 if do_batch_inference
-                else f"{input_path}:/data/af_input/input.json"
+                else f"{input_path}:/data/af_input"
             ),
             "--volume",
             f"{output_dir}:/data/af_output",
             "--volume",
             f"{model_dir}:/data/models",
             "--gpus",
-            "all",
+            self.docker_gpus,
             "alphafold3",
             "python",
             "run_alphafold.py",
