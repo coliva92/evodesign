@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 
 from .AF3Interface import AF3Interface
 
@@ -9,9 +9,14 @@ class AlphaFold3Docker(AF3Interface):
     def __init__(
         self,
         docker_gpus: str = "all",  # can also admit MIG IDs; e.g.: 'device=MIG-blabla'
+        using_rootless_docker: bool = True,
+        jax_preallocate_memory: Optional[float] = 0.95,
         **kwargs,
     ):
+        super().__init__(**kwargs)
         self.docker_gpus = docker_gpus
+        self.using_rootless_docker = using_rootless_docker
+        self.jax_preallocate_memory = jax_preallocate_memory
         return
 
     def _create_cmd_array(
@@ -24,14 +29,24 @@ class AlphaFold3Docker(AF3Interface):
         output_dir = os.path.realpath(output_dir)
         model_dir = os.path.realpath(self.model_dir)
 
-        uid = os.getuid()
-        gid = os.getgid()
+        if self.using_rootless_docker:
+            uid = os.getuid()
+            gid = os.getgid()
 
         cmd = [
             "docker",
             "run",
-            "-u",
-            f"{uid}:{gid}",
+            (
+                f"-u {uid}:{gid}"
+                if self.using_rootless_docker
+                else ""
+            ),
+            (
+                "-e XLA_PYTHON_CLIENT_PREALLOCATE=false"
+                if self.jax_preallocate_memory is None or \
+                    self.jax_preallocate_memory <= 0
+                else f"-e XLA_CLIENT_MEM_FRACTION={self.jax_preallocate_memory}"
+            ),
             "--volume",
             (
                 f"{input_path}:/data/af_input"
