@@ -29,24 +29,19 @@ class AlphaFold3Docker(AF3Interface):
         output_dir = os.path.realpath(output_dir)
         model_dir = os.path.realpath(self.model_dir)
 
-        if self.using_rootless_docker:
+        cmd = ["docker", "run"]
+
+        if not self.using_rootless_docker:
             uid = os.getuid()
             gid = os.getgid()
+            cmd += [ "-u", f"{uid}:{gid}" ]
 
-        cmd = [
-            "docker",
-            "run",
-            (
-                f"-u {uid}:{gid}"
-                if self.using_rootless_docker
-                else ""
-            ),
-            (
-                "-e XLA_PYTHON_CLIENT_PREALLOCATE=false"
-                if self.jax_preallocate_memory is None or \
-                    self.jax_preallocate_memory <= 0
-                else f"-e XLA_CLIENT_MEM_FRACTION={self.jax_preallocate_memory}"
-            ),
+        if self.jax_preallocate_memory is None or self.jax_preallocate_memory <= 0:
+            cmd += ["-e", "XLA_PYTHON_CLIENT_PREALLOCATE=false"]
+        else:
+            cmd += ["-e", f"XLA_CLIENT_MEM_FRACTION={self.jax_preallocate_memory}"]
+
+        cmd += [
             "--volume",
             (
                 f"{input_path}:/data/af_input"
