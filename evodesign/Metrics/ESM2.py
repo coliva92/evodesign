@@ -30,14 +30,16 @@ class ESM2(ESM2Interface):
         self,
         predicted_contacts_matrix: npt.NDArray[np.float64],
         min_separation: int = 6,
+        num_contacts: Optional[int] = None,
     ) -> npt.NDArray[np.int64]:
         L = predicted_contacts_matrix.shape[0]
+        if num_contacts is None:
+            num_contacts = L
         row_indices, column_indices = np.triu_indices(L, k=min_separation)
         pred_upper = predicted_contacts_matrix[row_indices, column_indices]
-        top_L = min(L, pred_upper.size)
         # argsort can't sort in descending order;
         # highest probabilities must come first
-        top_indices = np.argsort(-pred_upper)[:top_L]
+        top_indices = np.argsort(-pred_upper)[:num_contacts]
         binary_map = np.zeros((L, L), dtype=np.int64)
         top_x = row_indices[top_indices]
         top_y = column_indices[top_indices]
