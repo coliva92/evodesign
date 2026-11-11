@@ -29,8 +29,8 @@ class ESM2ContactMapPrecisionAtLength(NonStructuralMetric):
         reference_map: npt.NDArray[np.int64],
         num_contacts: int,
     ) -> float:
-        assert predicted_map.shape == reference_map.shape
         assert predicted_map.shape[0] == predicted_map.shape[1]
+        assert predicted_map.shape == reference_map.shape
         L = reference_map.shape[0]
         num_hits = 0
         for i in range(L):
