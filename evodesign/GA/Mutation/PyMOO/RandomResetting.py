@@ -6,10 +6,8 @@ from pymoo.core.mutation import Mutation
 from pymoo.core.problem import Problem
 from pymoo.core.variable import Real
 
+from ....AminoAcidProfileSampler import AminoAcidProfileSampler
 from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
-from ....IntegerProfileSampling import IntegerProfileSampling
-
-
 
 
 class RandomResetting(Mutation):
@@ -22,10 +20,8 @@ class RandomResetting(Mutation):
         super().__init__()
         self.prob = Real(prob, bounds=(0.0, 1.0), strict=(0.0, 1.0))
         self.prob_var = Real(prob_var, bounds=(0.0, 1.0), strict=(0.0, 1.0))
-        self.sampler = IntegerProfileSampling()
+        self.sampler = AminoAcidProfileSampler()
         return
-
-
 
     def _do(
         self,

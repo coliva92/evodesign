@@ -3,16 +3,12 @@ import numpy.typing as npt
 from pymoo.operators.sampling.rnd import IntegerRandomSampling
 
 
-
-
-class IntegerProfileSampling(IntegerRandomSampling):
+class AminoAcidProfileSampler(IntegerRandomSampling):
 
     def _do(self, problem, n_samples, **kwargs):
         if problem.aa_profile is None:
             return super()._do(problem, n_samples, **kwargs)
         return self.generate_sequences(n_samples, problem.aa_profile)
-
-
 
     def generate_sequences(
         self,
