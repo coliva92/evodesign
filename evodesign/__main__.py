@@ -15,7 +15,7 @@ from evodesign.System.PathsContainer import PathsContainer
 Config.warnings["not_compiled"] = False
 parser = ArgumentParser(
     prog="evodesign",
-    description="A rudimentary suite of evolutionary " "algorithms for protein design.",
+    description="A suite of evolutionary algorithms for protein design",
 )
 parser.add_argument(
     "target_pdb_path", help="path to the PDB file of the target protein backbone"

@@ -4,9 +4,4 @@ channels:
 dependencies:
   - pip
   - pip:
-      - biopython
-      - pymoo
-      - matplotlib
-      - pandas
-      - requests
-      - scipy
+      - -e .

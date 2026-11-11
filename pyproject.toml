@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evodesign"
+version = "0.0.0"
+dependencies = [
+    "biopython",
+    "pymoo",
+    "matplotlib",
+    "pandas",
+    "requests",
+    "scipy",
+    "dill"
+]
+
+[tool.setuptools.packages.find]
+include = ["evodesign*"]

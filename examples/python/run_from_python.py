@@ -1,18 +1,18 @@
-from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
-from evodesign.Callbacks.StorageManager import StorageManager
-from evodesign.System.PathsContainer import PathsContainer
-from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Prediction.Null import Null
-from evodesign.Fitness.WeightedMean import WeightedMean
-from evodesign.Metrics.Test.Sum import Sum
-from evodesign.GA.Mutation.RandomResetting import RandomResetting
-from evodesign.Chemistry.Sequences import to_str
-from pymoo.optimize import minimize
-from evodesign.System.Exceptions import *
-from requests import ConnectTimeout
-import numpy as np
 import os
 
+import numpy as np
+from pymoo.optimize import minimize
+
+import evodesign.Settings as Settings
+from evodesign.Callbacks.StorageManager import StorageManager
+from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Chemistry.Sequences import to_str
+from evodesign.Fitness.WeightedMean import WeightedMean
+from evodesign.GA.Mutation.RandomResetting import RandomResetting
+from evodesign.Metrics.Test.Sum import Sum
+from evodesign.Prediction.Null import Null
+from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
+from evodesign.System.PathsContainer import PathsContainer
 
 if __name__ == "__main__":
     example_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,6 +21,7 @@ if __name__ == "__main__":
     population_size = 100
     ref_chain = ChainFactory.create_from_pdb(target_pdb_path)
     directory = PathsContainer.create(example_folder)
+
     ga = Generational(
         predictor=Null(),
         fitness_fn=WeightedMean(
@@ -32,6 +33,7 @@ if __name__ == "__main__":
         max_generations=max_generations,
         population_size=population_size,
     )
+
     storage = StorageManager(
         directory,
         max_generations,
@@ -39,35 +41,28 @@ if __name__ == "__main__":
         len(ref_chain.sequence),
         ga.fitness_fn.num_terms(),
     )
+
     storage.save_version()
-    storage.save_settings(ga.settings())
+    storage.save_settings(Settings.dump(ga))
     storage.save_target_pdb(target_pdb_path)
     storage.save_rng_state(np.random.get_state(), directory.initial_rng_state_path)
+
     while True:
         try:
             algorithm = ga.create_algorithm()
-            problem = ga.create_problem(
-                ref_chain, 
-                storage.predictor_directory)
+            problem = ga.create_problem(ref_chain, storage.predictor_directory)
             callbacks = ga.create_callbacks(storage)
-            result = minimize(problem=problem, 
-                              algorithm=algorithm, 
-                              callback=callbacks,
-                              verbose=True,)
+            result = minimize(
+                problem=problem,
+                algorithm=algorithm,
+                callback=callbacks,
+                verbose=True,
+            )
             solution = to_str(result.X)
             fitness_value = result.F[0]
             print("Sequence:", solution)
             print("Fitness:", fitness_value)
             storage.delete_non_essential_files_and_folders()
             break
-        except (
-            HttpInternalServerError,
-            HttpGatewayTimeout,
-            HttpForbidden,
-            ConnectTimeout,
-        ):
-            storage.delete_non_essential_files_and_folders()
-            continue
         except Exception as e:
-            storage.delete_non_essential_files_and_folders()
             raise e
