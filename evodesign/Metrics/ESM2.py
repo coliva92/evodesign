@@ -1,36 +1,28 @@
-from typing import Optional, Tuple
-
 import numpy as np
 import numpy.typing as npt
 import torch
 
 from ..Chemistry.Sequences import OPENFOLD_MAP_AMINO_ACID_TO_INT
-from .ESM2Interface import ESM2Interface
 from .ESM2ModelContainer import ESM2ModelContainer
+from .ESM2ModelInterface import ESM2ModelInterface
 
 
-
-
-class ESM2(ESM2Interface):
-
+class ESM2(ESM2ModelInterface):
     _model = None
 
     def __init__(
         self,
-        gpu_device: Optional[str] = "cuda:0",
+        gpu_device: str | None = "cuda:0",
     ) -> None:
         self.gpu_device = gpu_device
         if ESM2._model is None:
             ESM2._model = ESM2ModelContainer(self.gpu_device)
-        return
-
-
 
     def contacts_map_from_prediction(
         self,
         predicted_contacts_matrix: npt.NDArray[np.float64],
         min_separation: int = 6,
-        num_contacts: Optional[int] = None,
+        num_contacts: int | None = None,
     ) -> npt.NDArray[np.int64]:
         L = predicted_contacts_matrix.shape[0]
         if num_contacts is None:
@@ -47,20 +39,18 @@ class ESM2(ESM2Interface):
         binary_map[top_y, top_x] = 1
         return binary_map
 
-
-
     def query_model(
         self,
         sequence: str,
         sequence_name: str = "tmp_protein",
-    ) -> Tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
+    ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         L = len(sequence)
         residx = torch.from_numpy(np.array([list(range(L))]))
         aa = torch.from_numpy(
             np.array([OPENFOLD_MAP_AMINO_ACID_TO_INT[i] for i in sequence])
         )
         data = [(sequence_name, sequence)]
-        seq_ids, seqs, tokens = self._model.batch_converter(data)
+        _, _, tokens = self._model.batch_converter(data)
         if torch.cuda.is_available() and self._model.gpu_device is not None:
             tokens = tokens.to(device=self.gpu_device, non_blocking=True)
             residx = residx.to(device=self.gpu_device, non_blocking=True)

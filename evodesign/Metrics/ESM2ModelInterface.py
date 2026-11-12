@@ -2,7 +2,7 @@ import numpy as np
 import numpy.typing as npt
 
 
-class ESM2Interface:
+class ESM2ModelInterface:
     def query_model(
         self,
         sequence: str,

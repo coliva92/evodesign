@@ -4,12 +4,11 @@ import numpy as np
 import numpy.typing as npt
 import torch
 
-from ..ESM2Interface import ESM2Interface
 from ..ESM2ModelContainer import ESM2ModelContainer
+from ..ESM2ModelInterface import ESM2ModelInterface
 
 
-class ESM2_v1(ESM2Interface):
-
+class ESM2_v1(ESM2ModelInterface):
     _model = None
 
     def __init__(
