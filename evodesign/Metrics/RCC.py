@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Sequence
+from collections.abc import Sequence  # noqa: N999
 
 import numpy as np
 import numpy.typing as npt
@@ -7,7 +7,7 @@ from ..Chemistry.Geometry import compute_contacts_map
 from ..Files.Graph import create_graph_file
 from ..System.Subprocess import stream_command_line
 from .ContextInterface import ContextInterface
-from .ESM2 import ESM2
+from .ESM2_Tmp.ModelInterface import ModelInterface as ESM2Interface
 from .NonStructuralMetric import NonStructuralMetric
 
 RCC_LENGTH = 26
@@ -46,11 +46,10 @@ RCC_CLASSES = {
 
 
 class RCC(NonStructuralMetric):
-
     def __init__(
         self,
         path_to_quick_cliques: str,
-        esm_model: ESM2 = ESM2(),
+        esm_model: ESM2Interface | None = None,
         distance_threshold: float = 8.0,
         min_separation: int = 6,
     ) -> None:
@@ -59,7 +58,6 @@ class RCC(NonStructuralMetric):
         self.esm_model = esm_model
         self.distance_threshold = distance_threshold
         self.min_separation = min_separation
-        return
 
     def _rmse(
         self,
@@ -114,13 +112,15 @@ class RCC(NonStructuralMetric):
     def compute_rcc_vector(
         self,
         contact_map: npt.NDArray[np.float64],
-        filename: Optional[str] = None,
+        filename: str | None = None,
     ) -> npt.NDArray[np.int64]:
         # generate a temporary filename if none is provided
         if filename is None:
             import datetime
 
-            filename = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".txt"
+            filename = (
+                "Graph_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".txt"
+            )
 
         # create the graph file that is the input to quick-cliques
         create_graph_file(contact_map, filename)
@@ -132,7 +132,7 @@ class RCC(NonStructuralMetric):
         cmd = [
             self.path_to_quick_cliques,
             f"--input-file={filename}",
-            f"--algorithm=tomita",
+            "--algorithm=tomita",
         ]
         for raw_line in stream_command_line(cmd):
             line = raw_line.strip()
@@ -156,7 +156,7 @@ class RCC(NonStructuralMetric):
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         ref_rcc_vector = context.get_extra_param_value("ref_rcc_vector")
         if ref_rcc_vector is None:
             ref_contact_map = context.get_extra_param_value("ref_contact_map")
@@ -164,7 +164,6 @@ class RCC(NonStructuralMetric):
                 ref_atoms = context.get_reference_chain().ca_atoms
                 ref_contact_map = compute_contacts_map(
                     ref_atoms,
-                    self.distance_threshold,
                     self.min_separation,
                 )
                 context.set_extra_param_value("ref_contact_map", ref_contact_map)
@@ -172,6 +171,10 @@ class RCC(NonStructuralMetric):
             context.set_extra_param_value("ref_rcc_vector", ref_rcc_vector)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
+            if self.esm_model is None:
+                from .ESM2 import ESM2
+
+                self.esm_model = ESM2()
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, predicted_contacts = self.esm_model.query_model(
                 model_sequence
