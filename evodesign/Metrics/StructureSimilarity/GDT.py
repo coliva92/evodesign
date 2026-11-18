@@ -1,32 +1,34 @@
-from typing import Dict, List, Optional, Tuple
-
-import numpy as np
-import numpy.typing as npt
+import numpy as np  # noqa: N999
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
-from .ContextInterface import ContextInterface
-from .StructuralMetric import StructuralMetric
+from ..ContextInterface import ContextInterface
+from ..StructuralMetric import StructuralMetric
 
 
 class GDT(StructuralMetric):
-
     def __init__(
         self,
-        cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0],
+        cutoffs: list[float] | None = None,
+        sliding_window_sizes: list[int] | None = None,
     ) -> None:
         super().__init__()
         self.cutoffs = cutoffs
-        return
+        if self.cutoffs is None:
+            self.cutoffs = [1.0, 2.0, 4.0, 8.0]
+        self.sliding_window_sizes = sliding_window_sizes
+        if self.sliding_window_sizes is None:
+            self.sliding_window_sizes = [3, 5, 7]
+        self._rotation = None
+        self._translation = None
 
     def do(
         self,
-        model_ca_atoms: List[Atom],
-        ref_ca_atoms: List[Atom],
-        superimposer: Optional[Superimposer] = None,
+        model_ca_atoms: list[Atom],
+        ref_ca_atoms: list[Atom],
+        superimposer: Superimposer | None,
         **kwargs,
-    ) -> Tuple[float, float, npt.NDArray[np.float64], npt.NDArray[np.float64]]:
-        self.seed_sizes = [3, 5, 7]
+    ) -> tuple[float, ...]:
 
         if superimposer is None:
             superimposer = Superimposer()
@@ -38,15 +40,15 @@ class GDT(StructuralMetric):
         # Save original coordinates to reset between iterations
         original_coords = [atom.coord.copy() for atom in model_ca_atoms]
 
-        # Pre-calculate all initial seed indices (sliding windows)
-        all_seeds = []
-        for size in self.seed_sizes:
+        # Pre-calculate all initial sliding window indices (sliding windows)
+        all_windows = []
+        for size in self.sliding_window_sizes:
             for i in range(total_atoms - size + 1):
-                all_seeds.append(list(range(i, i + size)))
+                all_windows.append(list(range(i, i + size)))
 
-        # Fallback if sequence is too short for the seeds
-        if not all_seeds:
-            all_seeds = [list(range(total_atoms))]
+        # Fallback if sequence is too short for the windows
+        if not all_windows:
+            all_windows = [list(range(total_atoms))]
 
         scores = []
         rotation = None
@@ -55,14 +57,13 @@ class GDT(StructuralMetric):
         for cutoff in self.cutoffs:
             max_active_for_cutoff = 0
 
-            # Test every seed to find the maximum possible set for this cutoff
-            for initial_seed in all_seeds:
-
+            # Test every window to find the maximum possible set for this cutoff
+            for initial_window in all_windows:
                 # 1. Reset model coordinates for this specific seed trial
                 for atom, coord in zip(model_ca_atoms, original_coords):
                     atom.coord = coord.copy()
 
-                active_indices = initial_seed
+                active_indices = initial_window
 
                 while True:
                     if len(active_indices) < 3:
@@ -113,12 +114,14 @@ class GDT(StructuralMetric):
                 np.array([(a - b) ** 2 for a, b in zip(model_ca_atoms, ref_ca_atoms)])
             )
         )
-        return gdt, rmsd, rotation, translation
+        self._rotation = rotation
+        self._translation = translation
+        return gdt, rmsd
 
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         model_ca_atoms = context.get_model_chain().ca_atoms
         ref_ca_atoms = context.get_reference_chain().ca_atoms
         superimposer = context.get_extra_param_value("superimposer")
@@ -126,6 +129,6 @@ class GDT(StructuralMetric):
         if superimposer is None:
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
-        
-        gdt, _, _, _ = self.do(model_ca_atoms, ref_ca_atoms, superimposer)
-        return {"gdt": gdt}
+
+        gdt, rmsd = self.do(model_ca_atoms, ref_ca_atoms, superimposer)
+        return {"gdt": gdt, "rmsd": rmsd}

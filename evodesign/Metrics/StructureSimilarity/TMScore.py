@@ -1,15 +1,16 @@
-from typing import Dict, List, Optional, Tuple
-
-import numpy as np
-import numpy.typing as npt
+import numpy as np  # noqa: N999
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
-from .ContextInterface import ContextInterface
-from .StructuralMetric import StructuralMetric
+from ..ContextInterface import ContextInterface
+from ..StructuralMetric import StructuralMetric
 
 
 class TMScore(StructuralMetric):
+    def __init__(self) -> None:
+        super().__init__()
+        self._rotation = None
+        self._translation = None
 
     def normalizing_constant(
         self,
@@ -20,10 +21,14 @@ class TMScore(StructuralMetric):
             return 1.24 * np.cbrt(num_residues - 15) - 1.8
         return 0.5
 
-    def _calculate_total_tm_score(
-        self, model_atoms: List[Atom], ref_atoms: List[Atom], d_0: float, L_T: int
+    def _calculate_superposition_tm_score(
+        self,
+        model_atoms: list[Atom],
+        ref_atoms: list[Atom],
+        d_0: float,
+        L_T: int,
     ) -> float:
-        """Calculates the overall TM-score for the superimposed structure."""
+        """Calculates the TM-score for a pair of superimposed structures."""
         tm_sum = 0.0
         for m, r in zip(model_atoms, ref_atoms):
             d = m - r
@@ -32,10 +37,11 @@ class TMScore(StructuralMetric):
 
     def do(
         self,
-        model_ca_atoms: List[Atom],
-        ref_ca_atoms: List[Atom],
-        superimposer: Optional[Superimposer] = None,
-    ) -> Tuple[float, npt.NDArray[np.float64], npt.NDArray[np.float64]]:
+        model_ca_atoms: list[Atom],
+        ref_ca_atoms: list[Atom],
+        superimposer: Superimposer | None = None,
+    ) -> tuple[float, ...]:
+
         if superimposer is None:
             superimposer = Superimposer()
 
@@ -56,7 +62,8 @@ class TMScore(StructuralMetric):
         # Ensure lengths do not exceed L_T and are uniquely evaluated
         raw_lengths = [L_T, L_T // 2, L_T // 4, 4]
         fragment_lengths = sorted(
-            list(set([l for l in raw_lengths if l >= 3])), reverse=True
+            {l for l in raw_lengths if l >= 3},
+            reverse=True,
         )
 
         for L_int in fragment_lengths:
@@ -64,7 +71,7 @@ class TMScore(StructuralMetric):
             if L_int == L_T:
                 start_positions = [0]
             else:
-                start_positions = list(range(0, L_T - L_int + 1))
+                start_positions = list(range(L_T - L_int + 1))
 
             for start in start_positions:
                 # 1. Initial Superposition
@@ -109,7 +116,7 @@ class TMScore(StructuralMetric):
 
                 # 3. Evaluate the Converged Matrix
                 # The model_ca_atoms is currently superimposed using the converged matrix
-                current_tm_score = self._calculate_total_tm_score(
+                current_tm_score = self._calculate_superposition_tm_score(
                     model_ca_atoms, ref_ca_atoms, d_0, L_T
                 )
 
@@ -125,16 +132,19 @@ class TMScore(StructuralMetric):
         if best_rotran is not None:
             superimposer.rotran = best_rotran
             superimposer.apply(model_ca_atoms)
-            rotation, translation = best_rotran
+            rotation, translation = best_rotran[0].copy(), best_rotran[1].copy()
         else:
             rotation, translation = None, None
 
-        return best_tm_score, rotation, translation
+        self._rotation = rotation
+        self._translation = translation
+
+        return best_tm_score
 
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         model_backbone = context.get_model_chain().ca_atoms
         ref_backbone = context.get_reference_chain().ca_atoms
         superimposer = context.get_extra_param_value("superimposer")
@@ -143,5 +153,5 @@ class TMScore(StructuralMetric):
             superimposer = Superimposer()
             context.set_extra_param_value("superimposer", superimposer)
 
-        tm_score, _, _ = self.do(model_backbone, ref_backbone, superimposer)
+        tm_score = self.do(model_backbone, ref_backbone, superimposer)
         return {"tm_score": tm_score}
