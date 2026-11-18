@@ -1,11 +1,10 @@
 import time
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import requests
 
 from .Exceptions import *
-
-
 
 
 class APIRequester:
@@ -16,8 +15,8 @@ class APIRequester:
     def __init__(
         self,
         url: str,
-        json_request_key: Optional[str] = None,
-        json_response_key: Optional[str] = None,
+        json_request_key: str | None = None,
+        json_response_key: str | None = None,
         sleep_time: float = 1.5,
         connection_timeout: int = 30,
         verify: bool = False,
@@ -37,19 +36,12 @@ class APIRequester:
         self.sleep_time = sleep_time
         self.connection_timeout = connection_timeout
         self.verify = verify
-        return
-
-
 
     def post(self, payload_data):
         return self._send_request(payload_data, requests.post)
 
-
-
     def get(self, payload_data):
         return self._send_request(payload_data, requests.get)
-
-
 
     def _send_request(
         self,
@@ -59,7 +51,7 @@ class APIRequester:
         # wait for the specified time
         if self.sleep_time > 0.0:
             time.sleep(self.sleep_time)
-        
+
         if self.json_request_key is not None:
             # send request with a json payload
             response = method(
@@ -76,7 +68,7 @@ class APIRequester:
                 timeout=self.connection_timeout,
                 verify=self.verify,
             )
-        
+
         # handle the response according to the status code
         if response.status_code == 400:
             raise HttpBadRequest
@@ -90,9 +82,9 @@ class APIRequester:
             print(response.status_code)
             print(response.content.decode())
             raise HttpUnknownError
-        
+
         # read the json response payload if provided
         if self.json_response_key is not None:
             return response.json()[self.json_response_key]
-        
+
         return response.content.decode()

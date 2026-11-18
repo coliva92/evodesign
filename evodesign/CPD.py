@@ -1,5 +1,4 @@
-from abc import ABC
-from typing import Optional
+from abc import ABC  # noqa: N999
 
 import numpy as np
 import numpy.typing as npt
@@ -11,16 +10,13 @@ from .Prediction.DirectoryManager import DirectoryManager
 from .Prediction.Predictor import Predictor
 
 
-
-
 class CPD(Problem, ABC):
-
     def __init__(
         self,
         ref_chain: Chain,
         predictor: Predictor,
         predictor_directory: DirectoryManager,
-        aa_profile: Optional[npt.NDArray[np.float64]] = None,
+        aa_profile: npt.NDArray[np.float64] | None = None,
         **kwargs,
     ):
         if "n_ieq_constr" not in kwargs:
@@ -38,4 +34,3 @@ class CPD(Problem, ABC):
         self.predictor_directory = predictor_directory
         self.term_values = None
         self.aa_profile = aa_profile
-        return

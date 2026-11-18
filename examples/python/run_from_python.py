@@ -3,7 +3,7 @@ import os
 import numpy as np
 from pymoo.optimize import minimize
 
-import evodesign.Settings as Settings
+from evodesign import Settings
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Sequences import to_str
@@ -64,5 +64,5 @@ if __name__ == "__main__":
             print("Fitness:", fitness_value)
             storage.delete_non_essential_files_and_folders()
             break
-        except Exception as e:
-            raise e
+        except Exception:
+            continue

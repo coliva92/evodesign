@@ -1,10 +1,9 @@
-import numpy as np
+import numpy as np  # noqa: N999
 import numpy.typing as npt
 from pymoo.operators.sampling.rnd import IntegerRandomSampling
 
 
 class AminoAcidProfileSampler(IntegerRandomSampling):
-
     def _do(self, problem, n_samples, **kwargs):
         if problem.aa_profile is None:
             return super()._do(problem, n_samples, **kwargs)

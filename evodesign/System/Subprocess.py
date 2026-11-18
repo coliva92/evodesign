@@ -1,9 +1,9 @@
 import os
 import subprocess
-from typing import Generator, List
+from collections.abc import Generator
 
 
-def stream_command_line(command: List[str]) -> Generator[str, None, None]:
+def stream_command_line(command: list[str]) -> Generator[str, None, None]:
     """Runs a command and yields combined stdout and stderr lines in real time."""
     # Force child Python/Docker processes to flush output immediately
     env = os.environ.copy()
@@ -27,7 +27,7 @@ def stream_command_line(command: List[str]) -> Generator[str, None, None]:
         raise subprocess.CalledProcessError(return_code, command)
 
 
-def run_subprocess(command: List[str]) -> None:
+def run_subprocess(command: list[str]) -> None:
     """
     Executes a command and streams its standard output to the console in real-time.
 
@@ -39,4 +39,3 @@ def run_subprocess(command: List[str]) -> None:
     """
     for line in stream_command_line(command):
         print(line, end="")
-    return

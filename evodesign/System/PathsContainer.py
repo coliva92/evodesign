@@ -1,9 +1,7 @@
 import os
 from dataclasses import dataclass
 from datetime import datetime
-from typing import ClassVar, FrozenSet, Optional
-
-
+from typing import ClassVar
 
 
 @dataclass
@@ -11,7 +9,7 @@ class PathsContainer:
     """
     Central registry for all file and directory paths used during a job's execution.
     This class ensures consistent path resolution across the system.
-    
+
     Attributes:
         jobname (str): Unique identifier for the current run/job.
         path (str): The root directory for the job's outputs.
@@ -23,10 +21,10 @@ class PathsContainer:
         settings_json_path (str): Path to the serialized configuration for the run.
         program_version_path (str): Path to the file recording the program version.
         predictor_input_dir (str): Directory for staging inputs to the predictor model.
-        predictor_output_dir (str): Directory for capturing outputs from the predictor 
+        predictor_output_dir (str): Directory for capturing outputs from the predictor
             model.
         profile_path (str): Path to the probabilistic amino acid profile definition.
-        essential_files (FrozenSet[str]): Set of critical output files that must remain 
+        essential_files (FrozenSet[str]): Set of critical output files that must remain
             after finishing the job.
     """
 
@@ -43,19 +41,17 @@ class PathsContainer:
     predictor_input_dir: str
     predictor_output_dir: str
     profile_path: str
-    essential_files: FrozenSet[str]
-
-
+    essential_files: frozenset[str]
 
     @classmethod
-    def create(cls, output_dir: str, jobname: Optional[str] = None) -> "PathsContainer":
+    def create(cls, output_dir: str, jobname: str | None = None) -> "PathsContainer":
         """
         Factory method to initialize the paths container for a given output directory.
         If no jobname is provided, it generates one based on the current timestamp.
         """
         abs_output_dir = os.path.abspath(output_dir)
         if jobname is None:
-            today = datetime.today().strftime("%Y%m%d_%H%M%S")
+            today = datetime.now().strftime("%Y%m%d_%H%M%S")
             jobname = f"evodesign_{today}"
         base_path = os.path.join(abs_output_dir, jobname)
         results = os.path.join(base_path, "results.npz")

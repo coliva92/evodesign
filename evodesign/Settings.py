@@ -1,4 +1,4 @@
-import copy
+import copy  # noqa: N999
 import importlib
 import json
 import os
@@ -14,7 +14,7 @@ def read_json(settings_path: str) -> dict:
 
 def parse(settings: dict) -> AlgorithmFactory:
     # obtain the full namespace resolution string and import the class
-    class_namespace = list(settings.keys())[0]
+    class_namespace = next(iter(settings.keys()))
     imported_module = importlib.import_module(f"evodesign.{class_namespace}")
 
     # obtain the actual class definition and its constructor arguments
@@ -54,7 +54,6 @@ def get_namespace(obj):
 
 
 class _SettingsEncoder(json.JSONEncoder):
-
     def default(self, obj):
         # dump the public attributes and constructor arguments
         # basic primitive types are handled automatically by (JSONEncoder)

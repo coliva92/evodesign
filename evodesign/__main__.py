@@ -5,7 +5,7 @@ from pymoo.config import Config
 from pymoo.optimize import minimize
 from requests.exceptions import ConnectTimeout
 
-import evodesign.Settings as Settings
+from evodesign import Settings
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Sequences import load_profile, to_str
@@ -64,7 +64,7 @@ parser.add_argument(
     "--cleanup_on_error",
     type=bool,
     default=False,
-    help="delete non-essential files in the output folder in case of an error"
+    help="delete non-essential files in the output folder in case of an error",
 )
 args = parser.parse_args()
 algorithm_factory = Settings.load(args.settings_path)
