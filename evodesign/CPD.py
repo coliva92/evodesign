@@ -10,7 +10,7 @@ from .Prediction.DirectoryManager import DirectoryManager
 from .Prediction.Predictor import Predictor
 
 
-class CPD(Problem, ABC):
+class CPD(Problem, ABC):  # Computational Protein Design
     def __init__(
         self,
         ref_chain: Chain,

@@ -123,10 +123,6 @@ while True:
             verbose=True,
             copy_algorithm=False,
         )
-        solution = to_str(result.X)
-        fitness_value = result.F[0]
-        print("Sequence:", solution)
-        print("Fitness:", fitness_value)
     except (HttpInternalServerError, HttpGatewayTimeout, HttpForbidden, ConnectTimeout):
         # Cleanup, then retry
         if args.cleanup_on_error:
@@ -141,3 +137,8 @@ while True:
         # Normal completion: cleanup, then exit loop
         storage.delete_non_essential_files_and_folders()
         break
+
+solution = to_str(result.X)
+fitness_value = result.F[0]
+print("Sequence:", solution)
+print("Fitness:", fitness_value)

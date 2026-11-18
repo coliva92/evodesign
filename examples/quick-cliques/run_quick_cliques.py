@@ -6,7 +6,7 @@ from evodesign.Metrics.RCC import RCC
 
 home = os.environ["HOME"]
 rcc_calc = RCC(
-    path_to_quick_cliques=f"{home}/quick-cliques/bin/qc",
+    path_to_quick_cliques=os.path.join(home, "quick-cliques", "bin", "qc"),
     distance_threshold=6.0,
     min_separation=3,
 )

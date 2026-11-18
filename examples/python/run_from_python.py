@@ -58,11 +58,12 @@ if __name__ == "__main__":
                 callback=callbacks,
                 verbose=True,
             )
-            solution = to_str(result.X)
-            fitness_value = result.F[0]
-            print("Sequence:", solution)
-            print("Fitness:", fitness_value)
-            storage.delete_non_essential_files_and_folders()
             break
         except Exception:
             continue
+
+    solution = to_str(result.X)
+    fitness_value = result.F[0]
+    print("Sequence:", solution)
+    print("Fitness:", fitness_value)
+    storage.delete_non_essential_files_and_folders()

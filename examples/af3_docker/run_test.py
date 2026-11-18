@@ -1,9 +1,11 @@
+import os
 from pathlib import Path
 
 from evodesign.Prediction.AlphaFold.AlphaFold3Docker import AlphaFold3Docker
 from evodesign.Prediction.DirectoryManager import DirectoryManager
 
-MODEL_DIR = "/home/biocomp/Documents/af3_params"
+HOME = os.environ["HOME"]
+MODEL_DIR = os.path.join(HOME, "af3_params")
 MEMORY_FRACTION = 0.2
 
 
