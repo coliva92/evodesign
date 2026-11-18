@@ -7,8 +7,10 @@ from ..Chemistry.Geometry import compute_contacts_map
 from ..Files.Graph import create_graph_file
 from ..System.Subprocess import stream_command_line
 from .ContextInterface import ContextInterface
-from .ESM2_Tmp.ModelInterface import ModelInterface as ESM2Interface
+from .ESM2.ModelInterface import ModelInterface as ESM2Interface
+from .metrics import cosine_similarity, euclidean_distance, rmse
 from .NonStructuralMetric import NonStructuralMetric
+from .Normalization.Normalization import Normalization
 
 RCC_LENGTH = 26
 RCC_CLASSES = {
@@ -52,35 +54,18 @@ class RCC(NonStructuralMetric):
         esm_model: ESM2Interface | None = None,
         distance_threshold: float = 8.0,
         min_separation: int = 6,
+        rmse_normalization: Normalization | None = None,
+        distance_normalization: Normalization | None = None,
+        cos_normalization: Normalization | None = None,
     ) -> None:
         super().__init__()
         self.path_to_quick_cliques = path_to_quick_cliques
         self.esm_model = esm_model
         self.distance_threshold = distance_threshold
         self.min_separation = min_separation
-
-    def _rmse(
-        self,
-        model_rcc_vector: npt.NDArray[np.int64],
-        ref_rcc_vector: npt.NDArray[np.int64],
-    ) -> float:
-        return np.sqrt(np.mean((model_rcc_vector - ref_rcc_vector) ** 2))
-
-    def _cos_similarity(
-        self,
-        model_rcc_vector: npt.NDArray[np.int64],
-        ref_rcc_vector: npt.NDArray[np.int64],
-    ) -> float:
-        n1 = np.linalg.norm(model_rcc_vector)
-        n2 = np.linalg.norm(ref_rcc_vector)
-        return np.dot(model_rcc_vector, ref_rcc_vector) / (n1 * n2)
-
-    def _euclidean_distance(
-        self,
-        model_rcc_vector: npt.NDArray[np.int64],
-        ref_rcc_vector: npt.NDArray[np.int64],
-    ) -> float:
-        return np.linalg.norm(model_rcc_vector - ref_rcc_vector)
+        self.rmse_normalization = rmse_normalization
+        self.distance_normalization = distance_normalization
+        self.cos_normalization = cos_normalization
 
     @classmethod
     def get_rcc_class(cls, nodes: Sequence[int]) -> int:
@@ -147,11 +132,25 @@ class RCC(NonStructuralMetric):
 
         return rcc
 
-    def do(self, model_rcc_vector, reference_rcc_vector):
-        rmse = self._rmse(model_rcc_vector, reference_rcc_vector)
-        cos_sim = self._cos_similarity(model_rcc_vector, reference_rcc_vector)
-        dist = self._euclidean_distance(model_rcc_vector, reference_rcc_vector)
-        return rmse, cos_sim, dist
+    def do(
+        self,
+        model_rcc_vector: npt.NDArray[npt.float64],
+        reference_rcc_vector: npt.NDArray[npt.float64],
+        **kwargs,
+    ) -> tuple[float, ...]:
+        rmse_val = rmse(model_rcc_vector, reference_rcc_vector)
+        norm_rmse = rmse_val
+        if self.rmse_normalization is not None:
+            norm_rmse = self.rmse_normalization.do(rmse_val)
+        cos_sim = cosine_similarity(model_rcc_vector, reference_rcc_vector)
+        norm_cos = cos_sim
+        if self.cos_normalization is not None:
+            norm_cos = self.cos_normalization.do(cos_sim)
+        dist = euclidean_distance(model_rcc_vector, reference_rcc_vector)
+        norm_dist = dist
+        if self.distance_normalization is not None:
+            norm_dist = self.distance_normalization.do(dist)
+        return rmse_val, norm_rmse, cos_sim, norm_cos, dist, norm_dist
 
     def do_for_fitness_fn(
         self,
@@ -172,9 +171,9 @@ class RCC(NonStructuralMetric):
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
             if self.esm_model is None:
-                from .ESM2 import ESM2
+                from .ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
 
-                self.esm_model = ESM2()
+                self.esm_model = ESM2LocalAllLayers()
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, predicted_contacts = self.esm_model.query_model(
                 model_sequence

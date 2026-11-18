@@ -1,34 +1,30 @@
-from typing import Dict
-
-import numpy as np
+import numpy as np  # noqa: N999
 import numpy.typing as npt
 
-from ..Chemistry.Geometry import compute_contacts_map
-from .ContextInterface import ContextInterface
-from .ESM2 import ESM2
-from .NonStructuralMetric import NonStructuralMetric
+from ...Chemistry.Geometry import compute_contacts_map
+from ..ContextInterface import ContextInterface
+from ..NonStructuralMetric import NonStructuralMetric
+from .ModelInterface import ModelInterface
 
 
-class ESM2ContactMapPrecisionAtLength(NonStructuralMetric):
-
+class ContactMapPrecisionAtLength(NonStructuralMetric):
     def __init__(
         self,
-        esm_model: ESM2 = ESM2(),
+        model: ModelInterface | None = None,
         distance_threshold: float = 8.0,
         min_separation: int = 6,
     ) -> None:
         super().__init__()
-        self.esm_model = esm_model
+        self.model = model
         self.distance_threshold = distance_threshold
         self.min_separation = min_separation
-        return
 
     def do(
         self,
         predicted_map: npt.NDArray[np.int64],
         reference_map: npt.NDArray[np.int64],
-        num_contacts: int,
-    ) -> float:
+        total_contacts: int,
+    ) -> tuple[float, ...]:
         assert predicted_map.shape[0] == predicted_map.shape[1]
         assert predicted_map.shape == reference_map.shape
         L = reference_map.shape[0]
@@ -37,12 +33,12 @@ class ESM2ContactMapPrecisionAtLength(NonStructuralMetric):
             for j in range(i + 1, L):
                 if predicted_map[i, j] == 1 and reference_map[i, j] == 1:
                     num_hits += 1
-        return num_hits / num_contacts
+        return num_hits / total_contacts
 
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         ref_contact_map = context.get_extra_param_value("ref_contact_map")
         if ref_contact_map is None:
             ref_atoms = context.get_reference_chain().ca_atoms
@@ -52,22 +48,24 @@ class ESM2ContactMapPrecisionAtLength(NonStructuralMetric):
                 self.min_separation,
             )
             context.set_extra_param_value("ref_contact_map", ref_contact_map)
-        num_contacts = context.get_extra_param_value("num_ref_contacts")
-        if num_contacts is None:
-            num_contacts = np.triu(ref_contact_map, k=1).sum()
+        total_contacts = context.get_extra_param_value("num_ref_contacts")
+        if total_contacts is None:
+            total_contacts = np.triu(ref_contact_map, k=1).sum()
             context.set_extra_param_value("num_ref_contacts")
-        predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
-        if predicted_contacts is None:
+        predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
+        if predicted_map is None:
+            if self.model is None:
+                from .ESM2LocalAllLayers import ESM2LocalAllLayers
+
+                self.model = ESM2LocalAllLayers()
             model_sequence = context.get_model_chain().sequence
-            model_desc_matrix, predicted_contacts = self.esm_model.query_model(
-                model_sequence
-            )
+            model_desc_matrix, predicted_map = self.model.query_model(model_sequence)
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
-            context.set_extra_param_value("esm2_predicted_contacts", predicted_contacts)
-        predicted_contacts = self.esm_model.contacts_map_from_prediction(
-            predicted_contacts,
+            context.set_extra_param_value("esm2_predicted_contacts", predicted_map)
+        predicted_map = self.model.contacts_map_from_prediction(
+            predicted_map,
             self.min_separation,
-            num_contacts,
+            total_contacts,
         )
-        P_at_L = self.do(predicted_contacts, ref_contact_map, num_contacts)
-        return P_at_L
+        P_at_L = self.do(predicted_map, ref_contact_map, total_contacts)
+        return {"precision": P_at_L}

@@ -1,40 +1,22 @@
-from typing import Dict, Tuple
-
-import numpy as np
+import numpy as np  # noqa: N999
 import numpy.typing as npt
 
-from .ContextInterface import ContextInterface
-from .ESM2 import ESM2_3
-from .NonStructuralMetric import NonStructuralMetric
+from ..ContextInterface import ContextInterface
+from ..metrics import rmse
+from ..NonStructuralMetric import NonStructuralMetric
+from ..Normalization.Normalization import Normalization
+from .ModelInterface import ModelInterface
 
 
-
-
-class ESMSinglePairRepresentation(NonStructuralMetric):
-
+class SinglePairRepresentationSimilarity(NonStructuralMetric):
     def __init__(
         self,
-        rmse_norm_const: float = 1.0,
-        esm_model=None,
+        model: ModelInterface | None = None,
+        rmse_normalization: Normalization | None = None,
     ) -> None:
         super().__init__()
-        self.esm_model = ESM2_3()  # hardcoded for now
-        self.rmse_norm_const = rmse_norm_const
-        return
-
-
-
-    def _rmse(
-        self,
-        a: npt.NDArray[np.float64],
-        b: npt.NDArray[np.float64],
-        **kwargs,
-    ) -> float:
-        u = a.flatten()
-        v = b.flatten()
-        return np.sqrt(np.mean((u - v) ** 2))
-
-
+        self.model = model
+        self.rmse_normalization = rmse_normalization
 
     def do(
         self,
@@ -43,33 +25,43 @@ class ESMSinglePairRepresentation(NonStructuralMetric):
         ref_single_rep: npt.NDArray[np.float64],
         ref_pair_rep: npt.NDArray[np.float64],
         **kwargs,
-    ) -> Tuple[float, float]:
-        single_rmse = self._rmse(model_single_rep, ref_single_rep)
-        pair_rmse = self._rmse(model_pair_rep, ref_pair_rep)
-        rmse = (single_rmse + pair_rmse) / 2
-        norm_rmse = 1 - (rmse / self.rmse_norm_const)
+    ) -> tuple[float, ...]:
+        single_rmse = rmse(model_single_rep.flatten(), ref_single_rep.flatten())
+        pair_rmse = rmse(model_pair_rep.flatten(), ref_pair_rep.flatten())
+        rmse_val = (single_rmse + pair_rmse) / 2
+        norm_rmse = rmse_val
+        if self.rmse_normalization is not None:
+            norm_rmse = self.rmse_normalization.do(rmse_val)
         return rmse, norm_rmse
-
-
 
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         ref_single_rep = context.get_extra_param_value("esmfold_ref_single_rep")
         ref_pair_rep = context.get_extra_param_value("esmfold_ref_pair_rep")
         if ref_single_rep is None or ref_pair_rep is None:
+            if self.model is None:
+                from .ESM2LocalSinglePairRepresentation import (
+                    ESM2LocalSinglePairRepresentation,
+                )
+
+                self.model = ESM2LocalSinglePairRepresentation()
             ref_sequence = context.get_reference_chain().sequence
-            ref_single_rep, ref_pair_rep = self.esm_model.query_model(ref_sequence)
+            ref_single_rep, ref_pair_rep = self.model.query_model(ref_sequence)
             context.set_extra_param_value("esmfold_ref_single_rep", ref_single_rep)
             context.set_extra_param_value("esmfold_ref_pair_rep", ref_pair_rep)
         model_single_rep = context.get_extra_param_value("esmfold_model_single_rep")
         model_pair_rep = context.get_extra_param_value("esmfold_model_pair_rep")
         if model_single_rep is None or model_pair_rep is None:
+            if self.model is None:
+                from .ESM2LocalSinglePairRepresentation import (
+                    ESM2LocalSinglePairRepresentation,
+                )
+
+                self.model = ESM2LocalSinglePairRepresentation()
             model_sequence = context.get_model_chain().sequence
-            model_single_rep, model_pair_rep = self.esm_model.query_model(
-                model_sequence
-            )
+            model_single_rep, model_pair_rep = self.model.query_model(model_sequence)
             context.set_extra_param_value("esmfold_model_single_rep", model_single_rep)
             context.set_extra_param_value("esmfold_model_pair_rep", model_pair_rep)
         rmse, norm_rmse = self.do(

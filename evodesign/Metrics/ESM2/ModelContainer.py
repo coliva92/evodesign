@@ -1,4 +1,4 @@
-class ESM2ModelContainer:
+class ModelContainer:  # noqa: N999
     """
     Singleton container that loads and caches the pretrained ESMFold v1 model and its
     underlying ESM-2 language model in GPU memory.
@@ -18,6 +18,7 @@ class ESM2ModelContainer:
     esmfold_model = None
     esm_model = None
     batch_converter = None
+    gpu_device = None
 
     def __init__(
         self,
@@ -27,26 +28,24 @@ class ESM2ModelContainer:
         Initializes the ESMFold and ESM-2 models on the specified device if they have
         not already been loaded into the class attributes.
         """
-        self.gpu_device = gpu_device
+        ModelContainer.gpu_device = gpu_device
         if (
-            ESM2ModelContainer.esmfold_model is not None
-            and ESM2ModelContainer.esm_model is not None
+            ModelContainer.esmfold_model is not None
+            and ModelContainer.esm_model is not None
         ):
             return
 
         import esm
         import torch
 
-        ESM2ModelContainer.esmfold_model = esm.pretrained.esmfold_v1()
-        ESM2ModelContainer.esmfold_model.eval()
-        if torch.cuda.is_available() and self.gpu_device is not None:
-            device = torch.device(self.gpu_device)
-            ESM2ModelContainer.esmfold_model = ESM2ModelContainer.esmfold_model.to(
-                device
-            )
-            ESM2ModelContainer.esmfold_model.set_chunk_size(128)
-        ESM2ModelContainer.esm_model = ESM2ModelContainer.esmfold_model.esm
-        ESM2ModelContainer.batch_converter = (
-            ESM2ModelContainer.esmfold_model.esm_dict.get_batch_converter()
+        ModelContainer.esmfold_model = esm.pretrained.esmfold_v1()
+        ModelContainer.esmfold_model.eval()
+        if torch.cuda.is_available() and ModelContainer.gpu_device is not None:
+            device = torch.device(ModelContainer.gpu_device)
+            ModelContainer.esmfold_model = ModelContainer.esmfold_model.to(device)
+            ModelContainer.esmfold_model.set_chunk_size(128)
+        ModelContainer.esm_model = ModelContainer.esmfold_model.esm
+        ModelContainer.batch_converter = (
+            ModelContainer.esmfold_model.esm_dict.get_batch_converter()
         )
         return
