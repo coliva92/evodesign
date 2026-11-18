@@ -64,6 +64,7 @@ Bellow are links to each model's official installation instructions:
 - [ESM2 and ESMFold](https://github.com/facebookresearch/esm).
 - [PyRosetta](https://www.pyrosetta.org/downloads#h.iwt5ktel05jc).
 - [iLearn](https://github.com/Superzchen/iLearn).
+- [quick-cliques](https://github.com/darrenstrash/quick-cliques).
 
 ### Tips for installing these models
 
@@ -92,6 +93,8 @@ source ~/.bashrc
 ```
 
 You can also edit the `~/.bashrc` file to make these changes permanent.
+
+**To install HighFold 3, use the Dockerfile provided in this repository.** See [this issue](https://github.com/hongliangduan/HighFold3/issues/2) for more information.
 
 ## Running EvoDesign from the Linux terminal
 
