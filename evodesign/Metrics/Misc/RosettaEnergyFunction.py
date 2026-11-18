@@ -1,15 +1,8 @@
-from typing import Dict
-
-import pyrosetta
-
-from .ContextInterface import ContextInterface
-from .StructuralMetric import StructuralMetric
-
-
+from ..ContextInterface import ContextInterface  # noqa: N999
+from ..StructuralMetric import StructuralMetric
 
 
 class RosettaEnergyFunction(StructuralMetric):
-
     _score_fn = None
 
     def do(
@@ -18,17 +11,17 @@ class RosettaEnergyFunction(StructuralMetric):
         **kwargs,
     ) -> float:
         if self._score_fn is None:
+            import pyrosetta
+
             pyrosetta.init()
             self._score_fn = pyrosetta.get_score_function(True)
         pose = pyrosetta.pose_from_pdb(pdb_path)
         return self._score_fn(pose)
 
-
-
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         pdb_path = context.get_model_chain().pdb_path
         energy_score = self.do(pdb_path)
         return {"energy_score": energy_score}

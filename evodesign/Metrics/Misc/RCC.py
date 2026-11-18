@@ -3,14 +3,14 @@ from collections.abc import Sequence  # noqa: N999
 import numpy as np
 import numpy.typing as npt
 
-from ..Chemistry.Geometry import compute_contacts_map
-from ..Files.Graph import create_graph_file
-from ..System.Subprocess import stream_command_line
-from .ContextInterface import ContextInterface
-from .ESM2.ModelInterface import ModelInterface as ESM2Interface
-from .metrics import cosine_similarity, euclidean_distance, rmse
-from .NonStructuralMetric import NonStructuralMetric
-from .Normalization.Normalization import Normalization
+from ...Chemistry.Geometry import compute_contacts_map
+from ...Files.Graph import create_graph_file
+from ...System.Subprocess import stream_command_line
+from ..ContextInterface import ContextInterface
+from ..ESM2.ModelInterface import ModelInterface as ESM2Interface
+from ..metrics import cosine_similarity, euclidean_distance, rmse
+from ..NonStructuralMetric import NonStructuralMetric
+from ..Normalization.Normalization import Normalization
 
 RCC_LENGTH = 26
 RCC_CLASSES = {
@@ -51,7 +51,7 @@ class RCC(NonStructuralMetric):
     def __init__(
         self,
         path_to_quick_cliques: str,
-        esm_model: ESM2Interface | None = None,
+        esm_model: ESM2Interface | None = None,  # other models could be supported later
         distance_threshold: float = 8.0,
         min_separation: int = 6,
         rmse_normalization: Normalization | None = None,
