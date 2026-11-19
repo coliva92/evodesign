@@ -17,6 +17,4 @@ def create_graph_file(contacts_map: npt.NDArray[np.float64], filename: str) -> N
     # save the graph info into a text file
     with open(filename, "wt", encoding="utf-8") as txt:
         txt.write(f"{num_residues}\n{num_edges}\n")
-        for edge in edges_list:
-            txt.write(",".join(edge) + "\n")
-    return
+        txt.writelines(",".join(edge) + "\n" for edge in edges_list)
