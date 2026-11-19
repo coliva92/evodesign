@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-from evodesign.System.OutputPaths import OutputPaths
 from pymoo.optimize import minimize
 
 from evodesign import Settings
@@ -13,14 +12,16 @@ from evodesign.Prediction.Null import Null
 from evodesign.Protein.ChainFactory import ChainFactory
 from evodesign.Protein.Sequences import to_str
 from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
+from evodesign.System.OutputPaths import OutputPaths
 
 if __name__ == "__main__":
     example_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    output_folder = os.path.join(example_folder, "outputs")
     target_pdb_path = os.path.join(example_folder, "1y32.pdb")
     max_generations = 50
     population_size = 100
     ref_chain = ChainFactory.create_from_pdb(target_pdb_path)
-    directory = OutputPaths.create(example_folder)
+    directory = OutputPaths.create(output_folder)
 
     ga = Generational(
         predictor=Null(),
@@ -47,20 +48,15 @@ if __name__ == "__main__":
     storage.save_target_pdb(target_pdb_path)
     storage.save_rng_state(np.random.get_state(), directory.initial_rng_state_path)
 
-    while True:
-        try:
-            algorithm = ga.create_algorithm()
-            problem = ga.create_problem(ref_chain, storage.predictor_directory)
-            callbacks = ga.create_callbacks(storage)
-            result = minimize(
-                problem=problem,
-                algorithm=algorithm,
-                callback=callbacks,
-                verbose=True,
-            )
-            break
-        except Exception:
-            continue
+    algorithm = ga.create_algorithm()
+    problem = ga.create_problem(ref_chain, storage.predictor_directory)
+    callbacks = ga.create_callbacks(storage)
+    result = minimize(
+        problem=problem,
+        algorithm=algorithm,
+        callback=callbacks,
+        verbose=True,
+    )
 
     solution = to_str(result.X)
     fitness_value = result.F[0]

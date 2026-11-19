@@ -15,7 +15,7 @@
                 "term_weights": [
                     0, 1
                 ],
-                "term_calculators": [
+                "evaluators": [
                     {
                         "Evaluation.Test.Sum": {}
                     }
