@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import List
+from abc import ABC, abstractmethod  # noqa: N999
 
 import numpy as np
 import numpy.typing as npt
@@ -14,17 +13,14 @@ class FitnessFunction(ABC):
     def __init__(
         self,
         upper_bound: float,
-        terms: List[str],
-        term_calculators: List[Evaluator],
+        terms: list[str],
+        evaluators: list[Evaluator],
     ) -> None:
         super().__init__()
         self.upper_bound = upper_bound
         self.terms = terms
-        self.term_calculators = term_calculators
-        self._term_calculators = {
-            get_namespace(calc): calc for calc in self.term_calculators
-        }
-        return
+        self.evaluators = evaluators
+        self._evaluators = {get_namespace(calc): calc for calc in self.evaluators}
 
     def do(
         self,
@@ -32,7 +28,7 @@ class FitnessFunction(ABC):
         ref_chain: Chain,
         **kwargs,
     ) -> npt.NDArray[np.float64]:
-        context = Context(model_chain, ref_chain, self._term_calculators, **kwargs)
+        context = Context(model_chain, ref_chain, self._evaluators, **kwargs)
         term_values = np.array(
             [context.get_component_value(name) for name in self.terms]
         )
@@ -52,8 +48,14 @@ class FitnessFunction(ABC):
     def num_terms(self) -> int:
         return len(self.terms)
 
-    def requires_structure_predictor(self) -> bool:
-        for calc in self.term_calculators:
+    def requires_structure_prediction(self) -> bool:
+        for calc in self.evaluators:
             if calc.requires_structure_predictor():
                 return True
         return False
+        
+        active_terms = {".".join(term.split(".")[:-1]) for term in self.terms}
+        return any(
+            self._term_calculators[name].requires_structure_predictor()
+            for name in active_terms
+        )

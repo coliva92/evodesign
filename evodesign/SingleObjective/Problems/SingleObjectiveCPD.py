@@ -74,7 +74,7 @@ class SingleObjectiveCPD(CPD):
             self.term_values = tmp_terms[:, 1:]
             out["F"] = -1.0 * tmp_terms[:, 0]
             return
-        if self.fitness_fn.requires_structure_predictor():
+        if self.fitness_fn.requires_structure_prediction():
             model_chains = self._predict_structures(
                 [sequences[k] for k in idx_not_archived]
             )

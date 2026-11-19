@@ -1,6 +1,4 @@
-from typing import List
-
-import numpy as np
+import numpy as np  # noqa: N999
 import numpy.typing as npt
 
 from ..Evaluation.Evaluator import Evaluator
@@ -10,15 +8,14 @@ from .FitnessFunction import FitnessFunction
 class WeightedMean(FitnessFunction):
     def __init__(
         self,
-        term_calculators: List[Evaluator],
-        terms: List[str],
-        term_weights: List[float],
+        term_calculators: list[Evaluator],
+        terms: list[str],
+        term_weights: list[float],
         upper_bound: float = 1.0,
     ) -> None:
         super().__init__(upper_bound, terms, term_calculators)
         self.term_weights = term_weights
         assert len(self.term_weights) == len(self.terms)
-        return
 
     def combine(
         self,
