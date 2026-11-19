@@ -12,7 +12,6 @@ class ESM2LocalSinglePairRepresentation(ModelInterface):
         self,
         sequence: str,
         sequence_name: str = "tmp_protein",
-        **kwargs,
     ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
 
         if self.model is None:

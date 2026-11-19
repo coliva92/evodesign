@@ -11,8 +11,6 @@ class ESM2LocalAllLayers(ModelInterface):  # chronollogically, this is ESM2Local
         self,
         sequence: str,
         sequence_name: str = "tmp_protein",
-        submap_indices: list[int] | None = None,
-        **kwargs,
     ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
 
         if self.model is None:
@@ -49,13 +47,6 @@ class ESM2LocalAllLayers(ModelInterface):  # chronollogically, this is ESM2Local
         esm_s = esm_s.to("cpu")
         molecular_descriptors = esm_s[0].numpy()
         predicted_contact_map = result["contacts"][0].cpu().numpy()
-
-        # get the requested subset of descriptors and contact map
-        if submap_indices is not None:
-            molecular_descriptors = molecular_descriptors[submap_indices]
-            predicted_contact_map = predicted_contact_map[
-                np.ix_(submap_indices, submap_indices)
-            ]
 
         # free GPU memory
         del tokens

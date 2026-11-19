@@ -73,10 +73,7 @@ class ContactMapJensenShannon(SequenceBasedEvaluator):
 
                 self.model = ESM2LocalAllLayers()
             ref_sequence = context.get_reference_chain().sequence
-            _, ref_contact_map = self.model.query_model(
-                ref_sequence,
-                submap_indices=self.submap_indices,
-            )
+            _, ref_contact_map = self.model.query_model(ref_sequence)
             context.set_extra_param_value("esm2_ref_contact_map", ref_contact_map)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_map is None:
@@ -85,11 +82,33 @@ class ContactMapJensenShannon(SequenceBasedEvaluator):
 
                 self.model = ESM2LocalAllLayers()
             model_sequence = context.get_model_chain().sequence
-            model_desc_matrix, predicted_map = self.model.query_model(
-                model_sequence, submap_indices=self.submap_indices
-            )
+            model_desc_matrix, predicted_map = self.model.query_model(model_sequence)
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", predicted_map)
+
+        # get the requested subset of descriptors
+        if self.submap_indices is not None:
+            if self.model is None:
+                from .ESM2LocalAllLayers import ESM2LocalAllLayers
+
+                ref_contact_map = ESM2LocalAllLayers.get_contact_map_submap(
+                    ref_contact_map,
+                    self.submap_indices,
+                )
+                predicted_map = ESM2LocalAllLayers.get_contact_map_submap(
+                    predicted_map,
+                    self.submap_indices,
+                )
+            else:
+                ref_contact_map = self.model.get_contact_map_submap(
+                    ref_contact_map,
+                    self.submap_indices,
+                )
+                predicted_map = self.model.get_contact_map_submap(
+                    predicted_map,
+                    self.submap_indices,
+                )
+
         rmse_val, norm_rmse, dist, norm_dist, js_dist = self.do(
             predicted_map,
             ref_contact_map,

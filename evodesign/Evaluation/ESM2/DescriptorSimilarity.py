@@ -80,20 +80,40 @@ class DescriptorSimilarity(SequenceBasedEvaluator):
 
                 self.model = ESM2LocalLastLayer()
             ref_sequence = context.get_reference_chain().sequence
-            ref_desc_matrix, _ = self.model.query_model(
-                ref_sequence,
-                submap_indices=self.submap_indices,
-            )
+            ref_desc_matrix, _ = self.model.query_model(ref_sequence)
             context.set_extra_param_value("esm2_ref_desc_matrix", ref_desc_matrix)
         model_desc_matrix = context.get_extra_param_value("esm2_model_desc_matrix")
         if model_desc_matrix is None:
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, model_contact_map = self.model.query_model(
-                model_sequence,
-                submap_indices=self.submap_indices,
+                model_sequence
             )
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)
             context.set_extra_param_value("esm2_predicted_contacts", model_contact_map)
+
+        # get the requested subset of descriptors
+        if self.submap_indices is not None:
+            if self.model is None:
+                from .ESM2LocalLastLayer import ESM2LocalLastLayer
+
+                ref_desc_matrix = ESM2LocalLastLayer.get_descriptors_submap(
+                    ref_desc_matrix,
+                    self.submap_indices,
+                )
+                model_desc_matrix = ESM2LocalLastLayer.get_descriptors_submap(
+                    model_desc_matrix,
+                    self.submap_indices,
+                )
+            else:
+                ref_desc_matrix = self.model.get_descriptors_submap(
+                    ref_desc_matrix,
+                    self.submap_indices,
+                )
+                model_desc_matrix = self.model.get_descriptors_submap(
+                    model_desc_matrix,
+                    self.submap_indices,
+                )
+
         rmse_val, norm_rmse, mean_norm_cos, distance, norm_distance = self.do(
             model_desc_matrix,
             ref_desc_matrix,
