@@ -56,3 +56,23 @@ def compute_contacts_map(
     contacts_map[rows, columns] = 1
     contacts_map[columns, rows] = 1
     return contacts_map
+
+
+def convert_2d_contact_map_to_1d(
+    contact_map: npt.NDArray[np.float64],
+) -> npt.NDArray[np.float64]:
+    rows, cols = np.triu_indices(contact_map.shape[0], k=1)
+    return contact_map[rows, cols]
+
+
+def convert_1d_contact_map_to_2d(
+    contact_map: npt.NDArray[np.float64],
+) -> npt.NDArray[np.float64]:
+    L = contact_map.shape[0]
+    # remember that L = N(N - 1) / 2, then apply the quadratic formula
+    N = int((1 + np.sqrt(1 + 8 * L)) / 2)
+    tmp_matrix = np.zeros((N, N))
+    rows, cols = np.triu_indices(N, k=1)
+    tmp_matrix[rows, cols] = contact_map
+    tmp_matrix = tmp_matrix + tmp_matrix.T
+    return tmp_matrix
