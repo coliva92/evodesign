@@ -26,7 +26,7 @@ class AlternatingCPD(SingleObjectiveCPD):
         g = self.alt_fitness_fn
         terms_matrix = []
         for model_chain in model_chains:
-            term_values = f.do(model_chain, self.ref_chain)
+            term_values = f.do(model_chain, self.ref_chain, self.persistent_params)
             row = [term_values[0]]
             for i in range(self._NUM_FITNESS_FUNCS):
                 if i == self._curr_fn_idx:
