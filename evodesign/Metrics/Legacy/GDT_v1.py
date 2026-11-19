@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from warnings import deprecated  # noqa: N999
 
 import numpy as np
 from Bio.PDB.Atom import Atom
@@ -8,25 +8,28 @@ from ..ContextInterface import ContextInterface
 from ..StructuralMetric import StructuralMetric
 
 
-
-
+@deprecated("Use `StructureSimilarity.GDT` instead")
 class GDT_v1(StructuralMetric):
+    """
+    This version of the GDT class only considers a single structure superposition,
+    despite the fact that Zemla's original LGA program actually calculates the GDT from
+    multiple superpositions.
+    """
 
     def __init__(
         self,
-        cutoffs: List[float] = [1.0, 2.0, 4.0, 8.0],
+        cutoffs: list[float] | None = None,
     ) -> None:
         super().__init__()
         self.cutoffs = cutoffs
-        return
-
-
+        if self.cutoffs is None:
+            self.cutoffs = [1.0, 2.0, 4.0, 8.0]
 
     def do(
         self,
-        model_backbone: List[Atom],
-        ref_backbone: List[Atom],
-        superimposer: Optional[Superimposer] = None,
+        model_backbone: list[Atom],
+        ref_backbone: list[Atom],
+        superimposer: Superimposer | None = None,
         **kwargs,
     ) -> float:
         # assume the backbones are superimposed if no superimposer is provided
@@ -37,12 +40,10 @@ class GDT_v1(StructuralMetric):
         gdt = np.mean([np.mean([d <= c for d in distances]) for c in self.cutoffs])
         return gdt
 
-
-
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_reference_chain().backbone_atoms
         superimposer = context.get_extra_param_value("superimposer")

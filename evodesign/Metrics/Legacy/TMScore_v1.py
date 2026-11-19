@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from warnings import deprecated  # noqa: N999
 
 import numpy as np
 from Bio.PDB.Atom import Atom
@@ -9,22 +9,25 @@ from ..Normalization.Normalization import Normalization
 from ..StructuralMetric import StructuralMetric
 
 
-
-
+@deprecated("Use `StructureSimilarity.TMScore` instead")
 class TMScore_v1(StructuralMetric):
+    """
+    This version of the TMScore class only considers a single structure superposition,
+    despite the fact that Zhang's original TM-align program actually calculates the
+    TM-score from multiple superpositions.
+    """
 
     def __init__(
         self,
-        residue_weights: Optional[List[float]] = None,
-        regularization: Optional[Normalization] = None,
+        residue_weights: list[float] | None = None,
+        regularization: Normalization | None = None,
     ) -> None:
         super().__init__()
-        self.residue_weights = residue_weights
         self.regularization = regularization
+        # this version of the TM-score supports evaluating the similarity of a
+        # residue subset instead of the whole structure
+        self.residue_weights = residue_weights
         self._backbone_weights = None
-        return
-
-
 
     def normalizing_constant(
         self,
@@ -34,15 +37,13 @@ class TMScore_v1(StructuralMetric):
             return 1.24 * np.cbrt(num_residues - 15) - 1.8
         return 0.5
 
-
-
     def do(
         self,
-        model_backbone: List[Atom],
-        ref_backbone: List[Atom],
-        superimposer: Optional[Superimposer] = None,
+        model_backbone: list[Atom],
+        ref_backbone: list[Atom],
+        superimposer: Superimposer | None = None,
         **kwargs,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, ...]:
         if self.residue_weights is not None and self._backbone_weights is None:
             self._backbone_weights = []
             for i in range(len(self.residue_weights)):
@@ -61,12 +62,10 @@ class TMScore_v1(StructuralMetric):
             reg_tm_score = self.regularization.do(tm_score)
         return tm_score, reg_tm_score
 
-
-
     def do_for_fitness_fn(
         self,
         context: ContextInterface,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         model_backbone = context.get_model_chain().ca_atoms
         ref_backbone = context.get_reference_chain().ca_atoms
         superimposer = context.get_extra_param_value("superimposer")
