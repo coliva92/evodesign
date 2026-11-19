@@ -5,7 +5,7 @@ from .ContextInterface import ContextInterface
 
 class Evaluator(ABC):
     @abstractmethod
-    def requires_structure_predictor(self) -> bool:
+    def requires_structure_prediction(self) -> bool:
         raise RuntimeError
 
     @abstractmethod

@@ -51,6 +51,6 @@ class FitnessFunction(ABC):
     def requires_structure_prediction(self) -> bool:
         active_terms = {".".join(term.split(".")[:-1]) for term in self.terms}
         return any(
-            self._term_calculators[name].requires_structure_predictor()
+            self._term_calculators[name].requires_structure_prediction()
             for name in active_terms
         )
