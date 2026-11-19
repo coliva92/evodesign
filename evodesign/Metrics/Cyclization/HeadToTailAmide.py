@@ -5,10 +5,10 @@ from Bio.PDB.Atom import Atom
 from ..ContextInterface import ContextInterface
 from ..Normalization.Reciprocal import Reciprocal
 from ..Normalization.ZScore import ZScore
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class HeadToTailAmide(StructuralMetric):
+class HeadToTailAmide(StructureBasedEvaluator):
     # statistical values obtained from measuring peptide bond lengths
     # in a collection of cyclic peptide PDBs
     _z_calc: ClassVar[ZScore] = ZScore(mean_value=1.3248119, stdev=0.10498072)

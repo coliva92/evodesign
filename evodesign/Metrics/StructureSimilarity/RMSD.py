@@ -3,10 +3,10 @@ from Bio.PDB.Atom import Atom
 
 from ..ContextInterface import ContextInterface
 from ..Normalization.Normalization import Normalization
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class RMSD(StructuralMetric):
+class RMSD(StructureBasedEvaluator):
     def __init__(
         self,
         normalization: Normalization | None = None,

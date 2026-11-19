@@ -2,10 +2,10 @@ import numpy as np  # noqa: N999
 
 from ...Chemistry.Chain import Chain
 from ..ContextInterface import ContextInterface
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class pLDDT(StructuralMetric):
+class pLDDT(StructureBasedEvaluator):
     def do(
         self,
         model_chain: Chain,

@@ -4,10 +4,10 @@ from Bio.PDB.Atom import Atom
 from scipy.spatial import cKDTree
 
 from ..ContextInterface import ContextInterface
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class lDDT(StructuralMetric):
+class lDDT(StructureBasedEvaluator):
     def __init__(
         self,
         ca_atoms_only: bool = False,

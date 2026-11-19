@@ -5,11 +5,11 @@ from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
 from ..ContextInterface import ContextInterface
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
 @deprecated("Use `StructureSimilarity.GDT` instead")
-class GDT_v1(StructuralMetric):
+class GDT_v1(StructureBasedEvaluator):
     """
     This version of the GDT class only considers a single structure superposition,
     despite the fact that Zemla's original LGA program actually calculates the GDT from

@@ -3,10 +3,10 @@ from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 
 from ..ContextInterface import ContextInterface
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class GDT(StructuralMetric):
+class GDT(StructureBasedEvaluator):
     def __init__(
         self,
         cutoffs: list[float] | None = None,

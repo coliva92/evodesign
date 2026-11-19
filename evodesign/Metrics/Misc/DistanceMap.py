@@ -6,10 +6,10 @@ from Bio.PDB.Atom import Atom
 
 from ..ContextInterface import ContextInterface
 from ..Normalization.Normalization import Normalization
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class DistanceMap(StructuralMetric):
+class DistanceMap(StructureBasedEvaluator):
     def __init__(
         self,
         ca_atoms_only: bool = True,

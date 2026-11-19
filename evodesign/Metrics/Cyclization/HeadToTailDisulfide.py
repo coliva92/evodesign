@@ -9,10 +9,10 @@ from ..ContextInterface import ContextInterface
 from ..Normalization.Normalization import Normalization
 from ..Normalization.Reciprocal import Reciprocal
 from ..Normalization.ZScore import ZScore
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class HeadToTailDisulfide(StructuralMetric):
+class HeadToTailDisulfide(StructureBasedEvaluator):
     # statistical values obtained from measuring relevant bond lengths
     # in a collection of cyclic peptide PDBs
     _Z_CALCULATORS: ClassVar[dict[str, Normalization]] = {

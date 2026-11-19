@@ -1,8 +1,8 @@
 from ..ContextInterface import ContextInterface  # noqa: N999
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
-class RosettaEnergyFunction(StructuralMetric):
+class RosettaEnergyFunction(StructureBasedEvaluator):
     _score_fn = None
 
     def do(

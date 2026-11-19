@@ -6,11 +6,11 @@ from Bio.PDB.Superimposer import Superimposer
 
 from ..ContextInterface import ContextInterface
 from ..Normalization.Normalization import Normalization
-from ..StructuralMetric import StructuralMetric
+from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 
 @deprecated("Use `StructureSimilarity.TMScore` instead")
-class TMScore_v1(StructuralMetric):
+class TMScore_v1(StructureBasedEvaluator):
     """
     This version of the TMScore class only considers a single structure superposition,
     despite the fact that Zhang's original TM-align program actually calculates the
