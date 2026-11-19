@@ -156,6 +156,13 @@ class RCC(SequenceBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
+
+        if self.esm_model is None:
+            from .ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
+
+            # ESM-2 model is instanced only when `query_model` is called
+            self.esm_model = ESM2LocalAllLayers()
+
         ref_rcc_vector = context.get_extra_param_value("ref_rcc_vector")
         if ref_rcc_vector is None:
             ref_contact_map = context.get_extra_param_value("ref_contact_map")
@@ -170,10 +177,6 @@ class RCC(SequenceBasedEvaluator):
             context.set_extra_param_value("ref_rcc_vector", ref_rcc_vector)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
-            if self.esm_model is None:
-                from .ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
-
-                self.esm_model = ESM2LocalAllLayers()
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, predicted_contacts = self.esm_model.query_model(
                 model_sequence
