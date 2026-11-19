@@ -3,17 +3,14 @@ from typing import List
 import numpy as np
 import numpy.typing as npt
 
-from ..Metrics.Metric import Metric
+from ..Metrics.Evaluator import Evaluator
 from .FitnessFunction import FitnessFunction
 
 
-
-
 class WeightedMean(FitnessFunction):
-
     def __init__(
         self,
-        term_calculators: List[Metric],
+        term_calculators: List[Evaluator],
         terms: List[str],
         term_weights: List[float],
         upper_bound: float = 1.0,
@@ -23,15 +20,11 @@ class WeightedMean(FitnessFunction):
         assert len(self.term_weights) == len(self.terms)
         return
 
-
-
     def combine(
         self,
         term_values: npt.NDArray[np.float64],
     ) -> float:
         return np.average(term_values, weights=self.term_weights)
-
-
 
     def name(self) -> str:
         return "_".join(

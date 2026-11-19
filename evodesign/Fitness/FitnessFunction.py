@@ -6,19 +6,16 @@ import numpy.typing as npt
 
 from ..Chemistry.Chain import Chain
 from ..Metrics.Context import Context
-from ..Metrics.Metric import Metric
+from ..Metrics.Evaluator import Evaluator
 from ..Settings import get_namespace
 
 
-
-
 class FitnessFunction(ABC):
-
     def __init__(
         self,
         upper_bound: float,
         terms: List[str],
-        term_calculators: List[Metric],
+        term_calculators: List[Evaluator],
     ) -> None:
         super().__init__()
         self.upper_bound = upper_bound
@@ -28,8 +25,6 @@ class FitnessFunction(ABC):
             get_namespace(calc): calc for calc in self.term_calculators
         }
         return
-
-
 
     def do(
         self,
@@ -43,8 +38,6 @@ class FitnessFunction(ABC):
         )
         return np.concatenate((np.array([self.combine(term_values)]), term_values))
 
-
-
     @abstractmethod
     def combine(
         self,
@@ -52,18 +45,12 @@ class FitnessFunction(ABC):
     ) -> float:
         raise NotImplementedError
 
-
-
     @abstractmethod
     def name(self) -> str:
         raise NotImplementedError
 
-
-
     def num_terms(self) -> int:
         return len(self.terms)
-
-
 
     def requires_structure_predictor(self) -> bool:
         for calc in self.term_calculators:

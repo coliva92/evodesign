@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod  # noqa: N999
 from .ContextInterface import ContextInterface
 
 
-class Metric(ABC):
+class Evaluator(ABC):
     @abstractmethod
     def requires_structure_predictor(self) -> bool:
         raise RuntimeError

@@ -1,6 +1,6 @@
-from .Metric import Metric  # noqa: N999
+from .Evaluator import Evaluator  # noqa: N999
 
 
-class StructureBasedEvaluator(Metric):
+class StructureBasedEvaluator(Evaluator):
     def requires_structure_predictor(self) -> bool:
         return True
