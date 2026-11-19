@@ -8,7 +8,7 @@ from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 
 class Sum(SequenceBasedEvaluator):
     """
-    A dummy fitness function term that converts individual amino acid letters in a
+    A dummy fitness function component that converts individual amino acid letters in a
     sequence into unique integer values and adds them together.
     `Sum` is meant to be used for making quick tests and check the code's integrity
     without needing to initialize costly deep learning models. As such, it does not

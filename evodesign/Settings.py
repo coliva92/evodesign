@@ -6,8 +6,8 @@ import os
 from .AlgorithmFactory import AlgorithmFactory
 
 
-def read_json(settings_path: str) -> dict:
-    with open(os.path.abspath(settings_path), "rt", encoding="utf-8") as json_file:
+def read_json(filename: str) -> dict:
+    with open(os.path.abspath(filename), "rt", encoding="utf-8") as json_file:
         settings = json.load(json_file)
     return settings
 
@@ -34,8 +34,8 @@ def parse(settings: dict) -> AlgorithmFactory:
     return actual_class(**constructor_args)
 
 
-def load(settings_path: str) -> AlgorithmFactory:
-    settings = read_json(settings_path)
+def load(filename: str) -> AlgorithmFactory:
+    settings = read_json(filename)
     return parse(settings)
 
 

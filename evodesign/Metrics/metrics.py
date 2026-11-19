@@ -3,15 +3,24 @@ import numpy.typing as npt
 from scipy.special import rel_entr
 
 
-def rmse(x: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> float:
+def rmse(
+    x: npt.NDArray[np.float64],
+    y: npt.NDArray[np.float64],
+) -> float:
     return np.sqrt(np.mean((x - y) ** 2))
 
 
-def euclidean_distance(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:
+def euclidean_distance(
+    u: npt.NDArray[np.float64],
+    v: npt.NDArray[np.float64],
+) -> float:
     return np.linalg.norm(u - v)
 
 
-def cosine_similarity(u: npt.NDArray[np.float64], v: npt.NDArray[np.float64]) -> float:
+def cosine_similarity(
+    u: npt.NDArray[np.float64],
+    v: npt.NDArray[np.float64],
+) -> float:
     n1 = np.linalg.norm(u)
     n2 = np.linalg.norm(v)
     return np.dot(u, v) / (n1 * n2)
