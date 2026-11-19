@@ -1,33 +1,25 @@
-from typing import Optional
-
-from ...Metrics.ESM2ModelContainer import ESM2ModelContainer
+from ...Evaluation.ESM2.ModelContainer import ModelContainer as ESM2ModelContainer  # noqa: N999
 from .ESMFoldInterface import ESMFoldInterface
 
 
-
-
 class ESMFoldLocal(ESMFoldInterface):
-
     _model = None
-
-
 
     def __init__(
         self,
-        gpu_device: Optional[str] = "cuda:0",
+        model: ESM2ModelContainer | None = None,
     ) -> None:
         super().__init__()
-        self.gpu_device = gpu_device
-        if ESMFoldLocal._model is None:
-            ESMFoldLocal._model = ESM2ModelContainer(self.gpu_device)
-        return
-
-
+        self.model = model
 
     def predict_single_pdb_str(
         self,
         sequence: str,
     ) -> str:
+        if self.model is None:
+            from ...Evaluation.ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
+
+            self.model = ESM2LocalAllLayers()
         import torch
 
         with torch.no_grad():

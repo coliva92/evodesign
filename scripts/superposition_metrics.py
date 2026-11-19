@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
-from evodesign.Metrics.RMSD import RMSD
-from evodesign.Metrics.GDT import GDT
-from evodesign.Metrics.TMScore import TMScore
-from evodesign.Metrics.lDDT import lDDT
-from evodesign.Chemistry.ChainFactory import ChainFactory
 
+from evodesign.Evaluation.GDT import GDT
+from evodesign.Evaluation.lDDT import lDDT
+from evodesign.Evaluation.RMSD import RMSD
+from evodesign.Evaluation.TMScore import TMScore
+
+from evodesign.Chemistry.ChainFactory import ChainFactory
 
 if __name__ == "__main__":
     parser = ArgumentParser()

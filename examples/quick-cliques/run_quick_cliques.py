@@ -1,8 +1,9 @@
 import os
 
+from evodesign.Evaluation.RCC import RCC
+
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Geometry import compute_contacts_map
-from evodesign.Metrics.RCC import RCC
 
 home = os.environ["HOME"]
 rcc_calc = RCC(

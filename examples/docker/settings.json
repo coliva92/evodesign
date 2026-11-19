@@ -9,15 +9,15 @@
             "Fitness.WeightedMean": {
                 "upper_bound": 1.0,
                 "terms": [
-                    "Metrics.Test.Sum.sum",
-                    "Metrics.Test.Sum.average"
+                    "Evaluation.Test.Sum.sum",
+                    "Evaluation.Test.Sum.average"
                 ],
                 "term_weights": [
                     0, 1
                 ],
                 "term_calculators": [
                     {
-                        "Metrics.Test.Sum": {}
+                        "Evaluation.Test.Sum": {}
                     }
                 ]
             }

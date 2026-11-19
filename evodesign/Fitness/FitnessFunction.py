@@ -5,8 +5,8 @@ import numpy as np
 import numpy.typing as npt
 
 from ..Chemistry.Chain import Chain
-from ..Metrics.Context import Context
-from ..Metrics.Evaluator import Evaluator
+from ..Evaluation.Context import Context
+from ..Evaluation.Evaluator import Evaluator
 from ..Settings import get_namespace
 
 

@@ -7,9 +7,9 @@ from evodesign import Settings
 from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Chemistry.Sequences import to_str
+from evodesign.Evaluation.Test.Sum import Sum
 from evodesign.Fitness.WeightedMean import WeightedMean
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
-from evodesign.Metrics.Test.Sum import Sum
 from evodesign.Prediction.Null import Null
 from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
 from evodesign.System.PathsContainer import PathsContainer
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         predictor=Null(),
         fitness_fn=WeightedMean(
             [Sum()],
-            ["Metrics.Test.Sum.sum", "Metrics.Test.Sum.average"],
+            ["Evaluation.Test.Sum.sum", "Evaluation.Test.Sum.average"],
             [0, 1],
         ),
         mutation=RandomResetting(sequence_mutation_prob=0.1),

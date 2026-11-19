@@ -2,10 +2,10 @@
 gunicorn -w 1 -b 127.0.0.1:8000 local_api_esmfold_only:app
 """
 
-from flask import Flask, request, jsonify
-from evodesign.Prediction.ESMFold import ESMFold
-from evodesign.Metrics.ESM2 import ESM2
+from flask import Flask, jsonify, request
 
+from evodesign.Evaluation.ESM2 import ESM2
+from evodesign.Prediction.ESMFold import ESMFold
 
 gpu_device = "cuda:0"
 esmfold_model = ESMFold(gpu_device)

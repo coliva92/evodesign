@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 import numpy.typing as npt
 
-from ..Metrics.Evaluator import Evaluator
+from ..Evaluation.Evaluator import Evaluator
 from .FitnessFunction import FitnessFunction
 
 

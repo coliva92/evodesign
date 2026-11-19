@@ -1,11 +1,13 @@
+import os
 from argparse import ArgumentParser
-import evodesign.Settings as Settings
-from evodesign.Prediction.DirectoryManager import DirectoryManager
-from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Metrics.TMScore import TMScore
+
 import pandas as pd
 import seaborn as sns
-import os
+from evodesign.Evaluation.TMScore import TMScore
+
+import evodesign.Settings as Settings
+from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Prediction.DirectoryManager import DirectoryManager
 
 
 def compute_sctm_scores(
