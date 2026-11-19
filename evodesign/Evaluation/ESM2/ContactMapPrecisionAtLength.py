@@ -51,7 +51,7 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
         total_contacts = context.get_extra_param_value("num_ref_contacts")
         if total_contacts is None:
             total_contacts = np.triu(ref_contact_map, k=1).sum()
-            context.set_extra_param_value("num_ref_contacts")
+            context.set_extra_param_value("num_ref_contacts", total_contacts)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_map is None:
             if self.model is None:
