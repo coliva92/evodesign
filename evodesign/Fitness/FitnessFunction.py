@@ -49,11 +49,6 @@ class FitnessFunction(ABC):
         return len(self.terms)
 
     def requires_structure_prediction(self) -> bool:
-        for calc in self.evaluators:
-            if calc.requires_structure_predictor():
-                return True
-        return False
-        
         active_terms = {".".join(term.split(".")[:-1]) for term in self.terms}
         return any(
             self._term_calculators[name].requires_structure_predictor()
