@@ -4,16 +4,13 @@ import numpy as np
 import numpy.typing as npt
 
 from ...AlgorithmFactory import AlgorithmFactory
-from ...Chemistry.Chain import Chain
 from ...Fitness.FitnessFunction import FitnessFunction
 from ...Prediction.DirectoryManager import DirectoryManager
+from ...Protein.Chain import Chain
 from ...SingleObjective.Problems.SingleObjectiveCPD import SingleObjectiveCPD
 
 
-
-
 class SingleObjectiveAlgorithm(AlgorithmFactory):
-
     def __init__(
         self,
         fitness_fn: FitnessFunction,
@@ -22,8 +19,6 @@ class SingleObjectiveAlgorithm(AlgorithmFactory):
         super().__init__(**kwargs)
         self.fitness_fn = fitness_fn
         return
-
-
 
     def create_problem(
         self,
@@ -38,8 +33,6 @@ class SingleObjectiveAlgorithm(AlgorithmFactory):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
-
-
 
     def num_terms(self) -> int:
         return self.fitness_fn.num_terms()

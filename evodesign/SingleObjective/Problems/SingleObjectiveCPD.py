@@ -4,23 +4,18 @@ from typing import List, Tuple
 import numpy as np
 import numpy.typing as npt
 
-from ...Chemistry.Chain import Chain
-from ...Chemistry.ChainFactory import ChainFactory
 from ...CPD import CPD
 from ...Fitness.FitnessFunction import FitnessFunction
-
-
+from ...Protein.Chain import Chain
+from ...Protein.ChainFactory import ChainFactory
 
 
 class SingleObjectiveCPD(CPD):
-
     def __init__(self, fitness_fn: FitnessFunction, **kwargs):
         super().__init__(n_obj=1, **kwargs)
         self.fitness_fn = fitness_fn
         self.archive = {}
         return
-
-
 
     def _predict_structures(self, sequences: List[str]) -> List[Chain]:
         self.predictor.do(sequences, self.predictor_directory)
@@ -31,8 +26,6 @@ class SingleObjectiveCPD(CPD):
             for i in range(len(sequences))
         ]
         return model_chains
-
-
 
     def _compute_term_values(
         self,
@@ -45,8 +38,6 @@ class SingleObjectiveCPD(CPD):
             ]
         )
 
-
-
     def _find_sequences_in_archive(
         self, sequences: List[str]
     ) -> Tuple[List[int], List[int]]:
@@ -58,8 +49,6 @@ class SingleObjectiveCPD(CPD):
             idx_not_archived.append(k)
         return idx_archived, idx_not_archived
 
-
-
     def _update_archive(
         self,
         sequences: List[str],
@@ -69,8 +58,6 @@ class SingleObjectiveCPD(CPD):
         for k, i in enumerate(indices):
             self.archive[sequences[i]] = term_values[k]
         return
-
-
 
     def _evaluate(
         self,

@@ -7,8 +7,8 @@ from requests.exceptions import ConnectTimeout
 
 from evodesign import Settings
 from evodesign.Callbacks.StorageManager import StorageManager
-from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Chemistry.Sequences import load_profile, to_str
+from evodesign.Protein.ChainFactory import ChainFactory
+from evodesign.Protein.Sequences import load_profile, to_str
 from evodesign.System.Exceptions import *
 from evodesign.System.PathsContainer import PathsContainer
 

@@ -2,7 +2,7 @@ import numpy as np  # noqa: N999
 import numpy.typing as npt
 import torch
 
-from ...Chemistry.Sequences import OPENFOLD_MAP_AMINO_ACID_TO_INT
+from ...Protein.Sequences import OPENFOLD_MAP_AMINO_ACID_TO_INT
 from .ModelContainer import ModelContainer
 from .ModelInterface import ModelInterface
 

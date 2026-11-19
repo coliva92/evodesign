@@ -9,13 +9,12 @@ from pymoo.core.problem import Problem as PyMOOProblem
 from .AminoAcidProfileSampler import AminoAcidProfileSampler
 from .Callbacks.CallbackCollection import CallbackCollection
 from .Callbacks.StorageManager import StorageManager
-from .Chemistry.Chain import Chain
 from .Prediction.DirectoryManager import DirectoryManager
 from .Prediction.Predictor import Predictor
+from .Protein.Chain import Chain
 
 
 class AlgorithmFactory(ABC):
-
     def __init__(
         self,
         max_generations: int,

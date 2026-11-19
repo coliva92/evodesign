@@ -4,7 +4,7 @@ import numpy as np
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Residue import Residue
 
-from ...Chemistry.Geometry import find_atoms_in_residue
+from ...Protein.Geometry import find_atoms_in_residue
 from ..ContextInterface import ContextInterface
 from ..Normalization.Normalization import Normalization
 from ..Normalization.Reciprocal import Reciprocal

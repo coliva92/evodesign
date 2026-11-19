@@ -1,19 +1,14 @@
 import numpy as np
 
-from ...Chemistry.Sequences import compute_identity
+from ...Protein.Sequences import compute_identity
 from .SingleObjectiveCPD import SingleObjectiveCPD
 
 
-
-
 class PenalizedCPD(SingleObjectiveCPD):
-
     def __init__(self, identity_tol: float = 0.3, **kwargs):
         super().__init__(n_ieq_constr=1, **kwargs)
         self.identity_tol = identity_tol
         return
-
-
 
     def _evaluate_constraints(
         self,
@@ -31,8 +26,6 @@ class PenalizedCPD(SingleObjectiveCPD):
             ]
         )
         return
-
-
 
     def _evaluate(
         self,

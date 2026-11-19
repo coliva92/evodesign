@@ -4,10 +4,10 @@ import numpy as np
 import numpy.typing as npt
 from pymoo.core.problem import Problem
 
-from .Chemistry.Chain import Chain
-from .Chemistry.Sequences import AMINO_ACIDS
 from .Prediction.DirectoryManager import DirectoryManager
 from .Prediction.Predictor import Predictor
+from .Protein.Chain import Chain
+from .Protein.Sequences import AMINO_ACIDS
 
 
 class CPD(Problem, ABC):  # Computational Protein Design

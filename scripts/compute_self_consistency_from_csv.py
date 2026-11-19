@@ -6,8 +6,8 @@ import seaborn as sns
 from evodesign.Evaluation.TMScore import TMScore
 
 import evodesign.Settings as Settings
-from evodesign.Chemistry.ChainFactory import ChainFactory
 from evodesign.Prediction.DirectoryManager import DirectoryManager
+from evodesign.Protein.ChainFactory import ChainFactory
 
 
 def compute_sctm_scores(

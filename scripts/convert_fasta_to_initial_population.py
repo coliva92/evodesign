@@ -1,9 +1,11 @@
-from argparse import ArgumentParser
-from evodesign.Settings import read_json, parse
-from evodesign.Chemistry.ChainFactory import ChainFactory
-import numpy as np
 import os
+from argparse import ArgumentParser
 from typing import Tuple
+
+import numpy as np
+
+from evodesign.Protein.ChainFactory import ChainFactory
+from evodesign.Settings import parse, read_json
 
 
 def get_params_from_settings(
@@ -38,8 +40,10 @@ if __name__ == "__main__":
         curr_seq += line.strip()
 
     settings = read_json(args.settings_json_path)
-    num_generations, population_size, num_fitness_fn_terms = get_params_from_settings(settings)
-    assert(population_size == len(sequences))
+    num_generations, population_size, num_fitness_fn_terms = get_params_from_settings(
+        settings
+    )
+    assert population_size == len(sequences)
     sequence_length = len(sequences[0])
     shape_3d = (num_generations, population_size, sequence_length)
     shape_2d = (num_generations, population_size)

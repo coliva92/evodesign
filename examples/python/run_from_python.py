@@ -5,12 +5,12 @@ from pymoo.optimize import minimize
 
 from evodesign import Settings
 from evodesign.Callbacks.StorageManager import StorageManager
-from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Chemistry.Sequences import to_str
 from evodesign.Evaluation.Test.Sum import Sum
 from evodesign.Fitness.WeightedMean import WeightedMean
 from evodesign.GA.Mutation.RandomResetting import RandomResetting
 from evodesign.Prediction.Null import Null
+from evodesign.Protein.ChainFactory import ChainFactory
+from evodesign.Protein.Sequences import to_str
 from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
 from evodesign.System.PathsContainer import PathsContainer
 

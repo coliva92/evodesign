@@ -3,8 +3,8 @@ from collections.abc import Sequence  # noqa: N999
 import numpy as np
 import numpy.typing as npt
 
-from ...Chemistry.Geometry import compute_contacts_map
 from ...Files.Graph import create_graph_file
+from ...Protein.Geometry import compute_contacts_map
 from ...System.Subprocess import stream_command_line
 from ..ContextInterface import ContextInterface
 from ..ESM2.ModelInterface import ModelInterface as ESM2Interface

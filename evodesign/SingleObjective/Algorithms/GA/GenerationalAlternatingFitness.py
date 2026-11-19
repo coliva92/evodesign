@@ -6,34 +6,27 @@ import numpy.typing as npt
 from ....Callbacks.CallbackCollection import CallbackCollection
 from ....Callbacks.MonoFitnessFnAlternator import MonoFitnessFnAlternator
 from ....Callbacks.StorageManager import StorageManager
-from ....Chemistry.Chain import Chain
 from ....Fitness.FitnessFunction import FitnessFunction
 from ....Prediction.DirectoryManager import DirectoryManager
+from ....Protein.Chain import Chain
 from ...Problems.AlternatingCPD import AlternatingCPD
 from .Generational import Generational
 
 
-
-
 class GenerationalAlternatingFitness(Generational):
-
     def __init__(
         self,
         alt_fitness_fn: FitnessFunction,
         alt_fitness_fn_every_nth_gen: int = 10,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self.alt_fitness_fn = alt_fitness_fn
         self.alt_fitness_fn_every_nth_gen = alt_fitness_fn_every_nth_gen
         return
 
-
-
     def num_terms(self):
         return self.fitness_fn.num_terms() + self.alt_fitness_fn.num_terms()
-
-
 
     def create_problem(
         self,
@@ -49,8 +42,6 @@ class GenerationalAlternatingFitness(Generational):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
-
-
 
     def create_callbacks(
         self,

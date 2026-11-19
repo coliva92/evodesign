@@ -1,6 +1,6 @@
 import numpy as np  # noqa: N999
 
-from ...Chemistry.Chain import Chain
+from ...Protein.Chain import Chain
 from ..ContextInterface import ContextInterface
 from ..StructureBasedEvaluator import StructureBasedEvaluator
 

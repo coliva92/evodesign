@@ -4,28 +4,25 @@ import numpy as np
 import numpy.typing as npt
 from pymoo.algorithms.soo.nonconvex.ga import GA
 
-from ....Chemistry.Chain import Chain
-from ....GA.Replacement.PyMOO.Generational import \
-    Generational as GenerationalReplacement
-from ....GA.Selection.StochasticRankingBinaryTournament import \
-    StochasticRankingBinaryTournament
+from ....GA.Replacement.PyMOO.Generational import (
+    Generational as GenerationalReplacement,
+)
+from ....GA.Selection.StochasticRankingBinaryTournament import (
+    StochasticRankingBinaryTournament,
+)
 from ....GA.Termination.MaximumDiversityLoss import MaximumDiversityLoss
 from ....Prediction.DirectoryManager import DirectoryManager
+from ....Protein.Chain import Chain
 from ...Problems.PenalizedCPD import PenalizedCPD
 from .Generational import Generational
 
 
-
-
 class GenerationalPenalized(Generational):
-
     def __init__(self, identity_tol: float = 0.3, **kwargs):
         super().__init__(**kwargs)
         assert isinstance(kwargs["selection"], StochasticRankingBinaryTournament)
         self.identity_tol = identity_tol
         return
-
-
 
     def create_problem(
         self,
@@ -41,8 +38,6 @@ class GenerationalPenalized(Generational):
             predictor_directory=predictor_directory,
             aa_profile=aa_profile,
         )
-
-
 
     def create_algorithm(self) -> GA:
         replacement = GenerationalReplacement()

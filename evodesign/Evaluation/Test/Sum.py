@@ -1,7 +1,7 @@
 import numpy as np  # noqa: N999
 import numpy.typing as npt
 
-from ...Chemistry.Sequences import NUM_AMINO_ACIDS
+from ...Protein.Sequences import NUM_AMINO_ACIDS
 from ..ContextInterface import ContextInterface
 from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 

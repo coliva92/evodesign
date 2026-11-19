@@ -8,16 +8,12 @@ import numpy.typing as npt
 from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.callback import Callback
 
-from ..Chemistry.Sequences import save_profile
-from ..Prediction.DirectoryManager import \
-    DirectoryManager as PredictorDirectoryManager
+from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
+from ..Protein.Sequences import save_profile
 from ..System.PathsContainer import PathsContainer
 
 
-
-
 class StorageManager(Callback):
-
     def __init__(
         self,
         directory: PathsContainer,
@@ -44,8 +40,6 @@ class StorageManager(Callback):
         )
         return
 
-
-
     def _extend_numpy_array(
         self,
         arr: npt.NDArray,
@@ -61,8 +55,6 @@ class StorageManager(Callback):
         new_arr[:copy_len] = arr[:copy_len]
         return new_arr
 
-
-
     def extend_result_arrays(
         self,
         new_size: int,
@@ -71,8 +63,6 @@ class StorageManager(Callback):
         self.fitness_values = self._extend_numpy_array(self.fitness_values, new_size, 0)
         self.term_values = self._extend_numpy_array(self.term_values, new_size, -1)
         return
-
-
 
     def notify(
         self,
@@ -92,8 +82,6 @@ class StorageManager(Callback):
         ):
             self.save(algorithm)
         return
-
-
 
     def save(
         self,
@@ -116,8 +104,6 @@ class StorageManager(Callback):
             save_profile(algorithm.problem.aa_profile, self.directory.profile_path)
         return
 
-
-
     def save_rng_state(
         self,
         state: tuple,
@@ -131,8 +117,6 @@ class StorageManager(Callback):
             for i in range(2, len(state)):
                 txt_file.write(f"{state[i]}\n")
         return
-
-
 
     def save_pymoo_algorithm(
         self,
@@ -149,8 +133,6 @@ class StorageManager(Callback):
             algorithm.callback = tmp_callback
         return
 
-
-
     def save_version(self) -> None:
         os.makedirs(self.directory.path, exist_ok=True)
         file_path = self.directory.program_version_path
@@ -158,8 +140,6 @@ class StorageManager(Callback):
             version = self.directory.PROJECT_VERSION
             txt_file.write(f"{version}\n")
         return
-
-
 
     def save_settings(
         self,
@@ -171,8 +151,6 @@ class StorageManager(Callback):
             json_file.write(json.dumps(settings, indent=4) + "\n")
         return
 
-
-
     def save_target_pdb(
         self,
         target_pdb_path: str,
@@ -182,8 +160,6 @@ class StorageManager(Callback):
         destination = os.path.join(self.directory.path, pdb_filename)
         shutil.copy(target_pdb_path, destination)
         return
-
-
 
     def load_results_npz(self) -> None:
         data = np.load(self.directory.results_npz_path)
@@ -200,8 +176,6 @@ class StorageManager(Callback):
         self.fitness_values = fitness_values
         self.term_values = term_values
         return
-
-
 
     def load_rng_state(
         self,
@@ -225,15 +199,11 @@ class StorageManager(Callback):
             i += 1
         return tuple(result)
 
-
-
     def load_pymoo_algorithm(self) -> PyMOOAlgorithm:
         file_path = self.directory.pymoo_algorithm_bin_path
         with open(file_path, "rb") as bin_file:
             algorithm = dill.load(bin_file)
         return algorithm
-
-
 
     def delete_file(
         self,
@@ -243,8 +213,6 @@ class StorageManager(Callback):
             os.remove(file_path)
         return
 
-
-
     def delete_folder(
         self,
         folder_path: str,
@@ -252,8 +220,6 @@ class StorageManager(Callback):
         if os.path.isdir(folder_path):
             shutil.rmtree(folder_path)
         return
-
-
 
     def delete_non_essential_files_and_folders(self) -> None:
         for filename in os.listdir(self.directory.path):
@@ -264,8 +230,6 @@ class StorageManager(Callback):
                     continue
                 self.delete_folder(file_path)
         return
-
-
 
     def resize_array_z_axis(
         self,

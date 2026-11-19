@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from ..Chemistry.Chain import Chain
+from ..Protein.Chain import Chain
 from .ContextInterface import ContextInterface
 from .Evaluator import Evaluator
 

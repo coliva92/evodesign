@@ -1,21 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from ..Chemistry.Chain import Chain
-
-
+from ..Protein.Chain import Chain
 
 
 class ContextInterface(ABC):
-
     @abstractmethod
     def get_metric_components(
         self,
         metric_name: str,
     ) -> Dict[str, float]:
         raise NotImplementedError
-
-
 
     @abstractmethod
     def get_component_value(
@@ -24,19 +19,13 @@ class ContextInterface(ABC):
     ) -> float:
         raise NotImplementedError
 
-
-
     @abstractmethod
     def get_model_chain(self) -> Chain:
         raise NotImplementedError
 
-
-
     @abstractmethod
     def get_reference_chain(self) -> Chain:
         raise NotImplementedError
-
-
 
     @abstractmethod
     def get_extra_param_value(
@@ -44,8 +33,6 @@ class ContextInterface(ABC):
         param_name: str,
     ):
         raise NotImplementedError
-
-
 
     @abstractmethod
     def set_extra_param_value(

@@ -7,11 +7,10 @@ from pymoo.core.problem import Problem
 from pymoo.core.variable import Real
 
 from ....AminoAcidProfileSampler import AminoAcidProfileSampler
-from ....Chemistry.Sequences import AMINO_ACIDS_INT_ALPHABET
+from ....Protein.Sequences import AMINO_ACIDS_INT_ALPHABET
 
 
 class RandomResetting(Mutation):
-
     def __init__(
         self,
         prob: float,

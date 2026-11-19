@@ -4,9 +4,9 @@ from typing import List
 import numpy as np
 import numpy.typing as npt
 
-from ..Chemistry.Chain import Chain
 from ..Evaluation.Context import Context
 from ..Evaluation.Evaluator import Evaluator
+from ..Protein.Chain import Chain
 from ..Settings import get_namespace
 
 

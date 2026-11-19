@@ -5,7 +5,7 @@ from evodesign.Evaluation.lDDT import lDDT
 from evodesign.Evaluation.RMSD import RMSD
 from evodesign.Evaluation.TMScore import TMScore
 
-from evodesign.Chemistry.ChainFactory import ChainFactory
+from evodesign.Protein.ChainFactory import ChainFactory
 
 if __name__ == "__main__":
     parser = ArgumentParser()

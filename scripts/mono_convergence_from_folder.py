@@ -1,13 +1,14 @@
 from argparse import ArgumentParser
-from evodesign.Statistics import create_convergence_plot, get_final_solution_indices
-from evodesign.Settings import parse
-from evodesign.Chemistry.ChainFactory import ChainFactory
-from evodesign.Chemistry.Sequences import AMINO_ACIDS
-from evodesign.Settings import read_json
-import pandas as pd
-import numpy as np
-from matplotlib import pyplot as plt
 from typing import List
+
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+
+from evodesign.Protein.ChainFactory import ChainFactory
+from evodesign.Protein.Sequences import AMINO_ACIDS
+from evodesign.Settings import parse, read_json
+from evodesign.Statistics import create_convergence_plot, get_final_solution_indices
 
 
 def get_fitness_fn_name(settings: dict) -> str:
@@ -32,8 +33,8 @@ def compute_statistics_from_folder(
     folder_dir: str,
     output_dir: str,
 ) -> None:
-    from pathlib import Path
     import os
+    from pathlib import Path
 
     df = None
     root_dir = Path(folder_dir)

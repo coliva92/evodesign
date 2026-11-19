@@ -4,15 +4,11 @@ from pymoo.core.algorithm import Algorithm as PyMOOAlgorithm
 from pymoo.core.callback import Callback
 from pymoo.core.population import Population
 
-from ..Chemistry.Sequences import NUM_AMINO_ACIDS
-from ..Statistics import (get_population_missing_amino_acids,
-                          get_population_identity)
-
-
+from ..Protein.Sequences import NUM_AMINO_ACIDS
+from ..Statistics import get_population_identity, get_population_missing_amino_acids
 
 
 class PopulationRestarter(Callback):
-
     def __init__(
         self,
         diversity_loss_tol: float = 0.95,
@@ -20,8 +16,6 @@ class PopulationRestarter(Callback):
         super().__init__()
         self.diversity_loss_tol = diversity_loss_tol
         return
-
-
 
     def notify(self, algorithm: PyMOOAlgorithm) -> None:
         assert isinstance(algorithm, GeneticAlgorithm)
