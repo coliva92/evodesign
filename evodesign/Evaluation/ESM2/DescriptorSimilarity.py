@@ -73,12 +73,15 @@ class DescriptorSimilarity(SequenceBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
+
+        if self.model is None:
+            from .ESM2LocalLastLayer import ESM2LocalLastLayer
+
+            # ESM-2 model is instanced only when `query_model` is called
+            self.model = ESM2LocalLastLayer()
+
         ref_desc_matrix = context.get_extra_param_value("esm2_ref_desc_matrix")
         if ref_desc_matrix is None:
-            if self.model is None:
-                from .ESM2LocalLastLayer import ESM2LocalLastLayer
-
-                self.model = ESM2LocalLastLayer()
             ref_sequence = context.get_reference_chain().sequence
             ref_desc_matrix, _ = self.model.query_model(ref_sequence)
             context.set_extra_param_value("esm2_ref_desc_matrix", ref_desc_matrix)
@@ -93,26 +96,14 @@ class DescriptorSimilarity(SequenceBasedEvaluator):
 
         # get the requested subset of descriptors
         if self.submap_indices is not None:
-            if self.model is None:
-                from .ESM2LocalLastLayer import ESM2LocalLastLayer
-
-                ref_desc_matrix = ESM2LocalLastLayer.get_descriptors_submap(
-                    ref_desc_matrix,
-                    self.submap_indices,
-                )
-                model_desc_matrix = ESM2LocalLastLayer.get_descriptors_submap(
-                    model_desc_matrix,
-                    self.submap_indices,
-                )
-            else:
-                ref_desc_matrix = self.model.get_descriptors_submap(
-                    ref_desc_matrix,
-                    self.submap_indices,
-                )
-                model_desc_matrix = self.model.get_descriptors_submap(
-                    model_desc_matrix,
-                    self.submap_indices,
-                )
+            ref_desc_matrix = self.model.get_descriptors_submap(
+                ref_desc_matrix,
+                self.submap_indices,
+            )
+            model_desc_matrix = self.model.get_descriptors_submap(
+                model_desc_matrix,
+                self.submap_indices,
+            )
 
         rmse_val, norm_rmse, mean_norm_cos, distance, norm_distance = self.do(
             model_desc_matrix,

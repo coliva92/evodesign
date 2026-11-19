@@ -71,6 +71,13 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
+
+        if self.model is None:
+            from .ESM2LocalAllLayers import ESM2LocalAllLayers
+
+            # ESM-2 model is instanced only when `query_model` is called
+            self.model = ESM2LocalAllLayers()
+
         ref_laplacian = context.get_extra_param_value("ref_norm_laplacian")
         if ref_laplacian is None:
             ref_contact_map = context.get_extra_param_value("ref_contact_map")
@@ -90,10 +97,6 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
         if predicted_laplacian is None:
             predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
             if predicted_map is None:
-                if self.model is None:
-                    from .ESM2LocalAllLayers import ESM2LocalAllLayers
-
-                    self.model = ESM2LocalAllLayers()
                 model_sequence = context.get_model_chain().sequence
                 model_desc_matrix, predicted_map = self.model.query_model(
                     model_sequence

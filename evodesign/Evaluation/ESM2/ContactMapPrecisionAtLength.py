@@ -39,6 +39,13 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
+
+        if self.model is None:
+            from .ESM2LocalAllLayers import ESM2LocalAllLayers
+
+            # ESM-2 model is instanced only when `query_model` is called
+            self.model = ESM2LocalAllLayers()
+
         ref_contact_map = context.get_extra_param_value("ref_contact_map")
         if ref_contact_map is None:
             ref_atoms = context.get_reference_chain().ca_atoms
@@ -54,10 +61,6 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
             context.set_extra_param_value("num_ref_contacts", total_contacts)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_map is None:
-            if self.model is None:
-                from .ESM2LocalAllLayers import ESM2LocalAllLayers
-
-                self.model = ESM2LocalAllLayers()
             model_sequence = context.get_model_chain().sequence
             model_desc_matrix, predicted_map = self.model.query_model(model_sequence)
             context.set_extra_param_value("esm2_model_desc_matrix", model_desc_matrix)

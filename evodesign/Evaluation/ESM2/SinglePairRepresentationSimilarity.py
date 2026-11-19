@@ -38,15 +38,18 @@ class SinglePairRepresentationSimilarity(SequenceBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
+
+        if self.model is None:
+            from .ESM2LocalSinglePairRepresentation import (
+                ESM2LocalSinglePairRepresentation,
+            )
+
+            # ESM-2 model is instanced only when `query_model` is called
+            self.model = ESM2LocalSinglePairRepresentation()
+
         ref_single_rep = context.get_extra_param_value("esmfold_ref_single_rep")
         ref_pair_rep = context.get_extra_param_value("esmfold_ref_pair_rep")
         if ref_single_rep is None or ref_pair_rep is None:
-            if self.model is None:
-                from .ESM2LocalSinglePairRepresentation import (
-                    ESM2LocalSinglePairRepresentation,
-                )
-
-                self.model = ESM2LocalSinglePairRepresentation()
             ref_sequence = context.get_reference_chain().sequence
             ref_single_rep, ref_pair_rep = self.model.query_model(ref_sequence)
             context.set_extra_param_value("esmfold_ref_single_rep", ref_single_rep)
