@@ -3,10 +3,10 @@ import numpy.typing as npt
 
 from ...Chemistry.Sequences import NUM_AMINO_ACIDS
 from ..ContextInterface import ContextInterface
-from ..NonStructuralMetric import NonStructuralMetric
+from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 
 
-class Sum(NonStructuralMetric):
+class Sum(SequenceBasedEvaluator):
     """
     A dummy fitness function term that converts individual amino acid letters in a
     sequence into unique integer values and adds them together.

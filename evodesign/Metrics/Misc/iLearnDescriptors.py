@@ -5,10 +5,10 @@ from pubscripts import *
 
 from ..ContextInterface import ContextInterface
 from ..metrics import rmse
-from ..NonStructuralMetric import NonStructuralMetric
+from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 
 
-class iLearnDescriptors(NonStructuralMetric):
+class iLearnDescriptors(SequenceBasedEvaluator):
     def __init__(
         self,
         method: str,

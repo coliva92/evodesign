@@ -3,11 +3,11 @@ import numpy.typing as npt
 
 from ...Chemistry.Geometry import compute_contacts_map
 from ..ContextInterface import ContextInterface
-from ..NonStructuralMetric import NonStructuralMetric
+from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 from .ModelInterface import ModelInterface
 
 
-class ContactMapPrecisionAtLength(NonStructuralMetric):
+class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
     def __init__(
         self,
         model: ModelInterface | None = None,

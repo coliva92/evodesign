@@ -3,12 +3,12 @@ import numpy.typing as npt
 
 from ..ContextInterface import ContextInterface
 from ..metrics import euclidean_distance, jensen_shannon_distance, rmse
-from ..NonStructuralMetric import NonStructuralMetric
 from ..Normalization.Normalization import Normalization
+from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 from .ModelInterface import ModelInterface
 
 
-class ContactMapJensenShannon(NonStructuralMetric):
+class ContactMapJensenShannon(SequenceBasedEvaluator):
     def __init__(
         self,
         model: ModelInterface | None = None,

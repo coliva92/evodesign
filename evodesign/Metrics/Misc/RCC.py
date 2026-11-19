@@ -9,8 +9,8 @@ from ...System.Subprocess import stream_command_line
 from ..ContextInterface import ContextInterface
 from ..ESM2.ModelInterface import ModelInterface as ESM2Interface
 from ..metrics import cosine_similarity, euclidean_distance, rmse
-from ..NonStructuralMetric import NonStructuralMetric
 from ..Normalization.Normalization import Normalization
+from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 
 RCC_LENGTH = 26
 RCC_CLASSES = {
@@ -47,7 +47,7 @@ RCC_CLASSES = {
 }
 
 
-class RCC(NonStructuralMetric):
+class RCC(SequenceBasedEvaluator):
     def __init__(
         self,
         path_to_quick_cliques: str,
