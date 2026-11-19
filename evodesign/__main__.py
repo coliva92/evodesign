@@ -10,7 +10,7 @@ from evodesign.Callbacks.StorageManager import StorageManager
 from evodesign.Protein.ChainFactory import ChainFactory
 from evodesign.Protein.Sequences import load_profile, to_str
 from evodesign.System.Exceptions import *
-from evodesign.System.PathsContainer import PathsContainer
+from evodesign.System.OutputPaths import OutputPaths
 
 Config.warnings["not_compiled"] = False
 parser = ArgumentParser(
@@ -72,7 +72,7 @@ ref_chain = ChainFactory.create_from_pdb(
     args.target_pdb_path, args.model_id, args.chain_id
 )
 storage = StorageManager(
-    PathsContainer.create(args.output_dir, args.jobname),
+    OutputPaths.create(args.output_dir, args.jobname),
     algorithm_factory.max_generations,
     algorithm_factory.population_size,
     len(ref_chain.sequence),

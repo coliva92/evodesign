@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+from evodesign.System.OutputPaths import OutputPaths
 from pymoo.optimize import minimize
 
 from evodesign import Settings
@@ -12,7 +13,6 @@ from evodesign.Prediction.Null import Null
 from evodesign.Protein.ChainFactory import ChainFactory
 from evodesign.Protein.Sequences import to_str
 from evodesign.SingleObjective.Algorithms.GA.Generational import Generational
-from evodesign.System.PathsContainer import PathsContainer
 
 if __name__ == "__main__":
     example_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     max_generations = 50
     population_size = 100
     ref_chain = ChainFactory.create_from_pdb(target_pdb_path)
-    directory = PathsContainer.create(example_folder)
+    directory = OutputPaths.create(example_folder)
 
     ga = Generational(
         predictor=Null(),

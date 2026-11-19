@@ -5,7 +5,7 @@ from typing import ClassVar
 
 
 @dataclass
-class PathsContainer:
+class OutputPaths:
     """
     Central registry for all file and directory paths used during a job's execution.
     This class ensures consistent path resolution across the system.
@@ -44,7 +44,11 @@ class PathsContainer:
     essential_files: frozenset[str]
 
     @classmethod
-    def create(cls, output_dir: str, jobname: str | None = None) -> "PathsContainer":
+    def create(
+        cls,
+        output_dir: str,
+        jobname: str | None = None,
+    ) -> "OutputPaths":
         """
         Factory method to initialize the paths container for a given output directory.
         If no jobname is provided, it generates one based on the current timestamp.

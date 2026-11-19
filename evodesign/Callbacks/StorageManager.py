@@ -10,13 +10,13 @@ from pymoo.core.callback import Callback
 
 from ..Prediction.DirectoryManager import DirectoryManager as PredictorDirectoryManager
 from ..Protein.Sequences import save_profile
-from ..System.PathsContainer import PathsContainer
+from ..System.OutputPaths import OutputPaths
 
 
 class StorageManager(Callback):
     def __init__(
         self,
-        directory: PathsContainer,
+        directory: OutputPaths,
         num_generations: int,
         population_size: int,
         sequence_length: int,
