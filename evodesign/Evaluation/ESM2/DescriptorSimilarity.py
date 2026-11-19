@@ -80,11 +80,11 @@ class DescriptorSimilarity(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.model = ESM2LocalLastLayer()
 
-        ref_desc_matrix = context.get_extra_param_value("esm2_ref_desc_matrix")
+        ref_desc_matrix = context.get_persistent_param_value("esm2_ref_desc_matrix")
         if ref_desc_matrix is None:
             ref_sequence = context.get_reference_chain().sequence
             ref_desc_matrix, _ = self.model.query_model(ref_sequence)
-            context.set_extra_param_value("esm2_ref_desc_matrix", ref_desc_matrix)
+            context.set_persistent_param_value("esm2_ref_desc_matrix", ref_desc_matrix)
         model_desc_matrix = context.get_extra_param_value("esm2_model_desc_matrix")
         if model_desc_matrix is None:
             model_sequence = context.get_model_chain().sequence

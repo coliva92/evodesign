@@ -89,7 +89,7 @@ class lDDT(StructureBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
-        ref_distances_dict = context.get_extra_param_value("ref_distances_dict")
+        ref_distances_dict = context.get_persistent_param_value("ref_distances_dict")
         if ref_distances_dict is None:
             ref_atoms = (
                 context.get_reference_chain().ca_atoms
@@ -97,7 +97,7 @@ class lDDT(StructureBasedEvaluator):
                 else context.get_reference_chain().backbone_atoms
             )
             ref_distances_dict = self.get_distances_dict(ref_atoms)
-            context.set_extra_param_value("ref_distances_dict", ref_distances_dict)
+            context.set_persistent_param_value("ref_distances_dict", ref_distances_dict)
         model_atoms = (
             context.get_model_chain().ca_atoms
             if self.ca_atoms_only

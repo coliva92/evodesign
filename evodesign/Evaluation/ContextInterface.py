@@ -41,3 +41,15 @@ class ContextInterface(ABC):
         param_value,
     ) -> None:
         raise NotImplementedError
+
+    @abstractmethod
+    def set_persistent_param_value(
+        self,
+        param_name: str,
+        param_value,
+    ) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_persistent_param_value(self, param_name: str):
+        raise NotImplementedError

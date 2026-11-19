@@ -124,11 +124,11 @@ class GDT(StructureBasedEvaluator):
     ) -> dict[str, float]:
         model_ca_atoms = context.get_model_chain().ca_atoms
         ref_ca_atoms = context.get_reference_chain().ca_atoms
-        superimposer = context.get_extra_param_value("superimposer")
+        superimposer = context.get_persistent_param_value("superimposer")
 
         if superimposer is None:
             superimposer = Superimposer()
-            context.set_extra_param_value("superimposer", superimposer)
+            context.set_persistent_param_value("superimposer", superimposer)
 
         gdt, rmsd = self.do(model_ca_atoms, ref_ca_atoms, superimposer)
         return {"gdt": gdt, "rmsd": rmsd}

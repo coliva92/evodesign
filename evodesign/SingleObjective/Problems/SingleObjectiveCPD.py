@@ -31,9 +31,10 @@ class SingleObjectiveCPD(CPD):
         self,
         model_chains: List[Chain],
     ) -> npt.NDArray[np.float64]:
+        persistent_params = {} # just persistent for a single generation
         return np.array(
             [
-                self.fitness_fn.do(model_chain, self.ref_chain)
+                self.fitness_fn.do(model_chain, self.ref_chain, persistent_params)
                 for model_chain in model_chains
             ]
         )

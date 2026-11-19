@@ -44,7 +44,7 @@ class DistanceMap(StructureBasedEvaluator):
         self,
         context: ContextInterface,
     ) -> dict[str, float]:
-        ref_distances = context.get_extra_param_value("ref_distance_map")
+        ref_distances = context.get_persistent_param_value("ref_distance_map")
         if ref_distances is None:
             ref_atoms = (
                 context.get_reference_chain().ca_atoms
@@ -52,7 +52,7 @@ class DistanceMap(StructureBasedEvaluator):
                 else context.get_reference_chain().backbone_atoms
             )
             ref_distances = self.compute_map(ref_atoms)
-            context.set_extra_param_value("ref_distance_map", ref_distances)
+            context.set_persistent_param_value("ref_distance_map", ref_distances)
         model_atoms = (
             context.get_model_chain().ca_atoms
             if self.ca_atoms_only

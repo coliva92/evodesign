@@ -73,11 +73,11 @@ class ContactMapJensenShannon(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.model = ESM2LocalAllLayers()
 
-        ref_contact_map = context.get_extra_param_value("esm2_ref_contact_map")
+        ref_contact_map = context.get_persistent_param_value("esm2_ref_contact_map")
         if ref_contact_map is None:
             ref_sequence = context.get_reference_chain().sequence
             _, ref_contact_map = self.model.query_model(ref_sequence)
-            context.set_extra_param_value("esm2_ref_contact_map", ref_contact_map)
+            context.set_persistent_param_value("esm2_ref_contact_map", ref_contact_map)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_map is None:
             model_sequence = context.get_model_chain().sequence

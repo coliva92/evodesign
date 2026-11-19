@@ -163,18 +163,18 @@ class RCC(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.esm_model = ESM2LocalAllLayers()
 
-        ref_rcc_vector = context.get_extra_param_value("ref_rcc_vector")
+        ref_rcc_vector = context.get_persistent_param_value("ref_rcc_vector")
         if ref_rcc_vector is None:
-            ref_contact_map = context.get_extra_param_value("ref_contact_map")
+            ref_contact_map = context.get_persistent_param_value("ref_contact_map")
             if ref_contact_map is None:
                 ref_atoms = context.get_reference_chain().ca_atoms
                 ref_contact_map = compute_contacts_map(
                     ref_atoms,
                     self.min_separation,
                 )
-                context.set_extra_param_value("ref_contact_map", ref_contact_map)
+                context.set_persistent_param_value("ref_contact_map", ref_contact_map)
             ref_rcc_vector = self.compute_rcc_vector(ref_contact_map)
-            context.set_extra_param_value("ref_rcc_vector", ref_rcc_vector)
+            context.set_persistent_param_value("ref_rcc_vector", ref_rcc_vector)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
             model_sequence = context.get_model_chain().sequence

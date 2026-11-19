@@ -39,9 +39,9 @@ class RMSD(StructureBasedEvaluator):
     ) -> dict[str, float]:
         model_backbone = context.get_model_chain().backbone_atoms
         ref_backbone = context.get_reference_chain().backbone_atoms
-        superimposer = context.get_extra_param_value("superimposer")
-        rmsd, norm = self.do(model_backbone, ref_backbone, superimposer)
+        superimposer = context.get_persistent_param_value("superimposer")
         if superimposer is None:
             superimposer = Superimposer()
-            context.set_extra_param_value("superimposer", superimposer)
+            context.set_persistent_param_value("superimposer", superimposer)
+        rmsd, norm = self.do(model_backbone, ref_backbone, superimposer)
         return {"rmsd": rmsd, "norm_rmsd": norm}

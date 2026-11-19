@@ -47,13 +47,13 @@ class SinglePairRepresentationSimilarity(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.model = ESM2LocalSinglePairRepresentation()
 
-        ref_single_rep = context.get_extra_param_value("esmfold_ref_single_rep")
-        ref_pair_rep = context.get_extra_param_value("esmfold_ref_pair_rep")
+        ref_single_rep = context.get_persistent_param_value("esmfold_ref_single_rep")
+        ref_pair_rep = context.get_persistent_param_value("esmfold_ref_pair_rep")
         if ref_single_rep is None or ref_pair_rep is None:
             ref_sequence = context.get_reference_chain().sequence
             ref_single_rep, ref_pair_rep = self.model.query_model(ref_sequence)
-            context.set_extra_param_value("esmfold_ref_single_rep", ref_single_rep)
-            context.set_extra_param_value("esmfold_ref_pair_rep", ref_pair_rep)
+            context.set_persistent_param_value("esmfold_ref_single_rep", ref_single_rep)
+            context.set_persistent_param_value("esmfold_ref_pair_rep", ref_pair_rep)
         model_single_rep = context.get_extra_param_value("esmfold_model_single_rep")
         model_pair_rep = context.get_extra_param_value("esmfold_model_pair_rep")
         if model_single_rep is None or model_pair_rep is None:

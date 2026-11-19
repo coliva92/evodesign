@@ -11,6 +11,7 @@ class Context(ContextInterface):
         model_chain: Chain,
         ref_chain: Chain,
         metric_calculators: Dict[str, Evaluator],
+        persistent_params: dict,
         **kwargs,
     ) -> None:
         self._model_chain = model_chain
@@ -18,7 +19,7 @@ class Context(ContextInterface):
         self._metric_calculators = metric_calculators
         self._cached_results = {}
         self._extra_params = {**kwargs}
-        return
+        self._persistent_params = persistent_params
 
     def get_metric_components(
         self,
@@ -61,3 +62,18 @@ class Context(ContextInterface):
     ) -> None:
         self._extra_params[param_name] = param_value
         return
+
+    def set_persistent_param_value(
+        self,
+        param_name: str,
+        param_value,
+    ) -> None:
+        self._persistent_params[param_name] = param_value
+
+    def get_persistent_param_value(
+        self,
+        param_name: str,
+    ):
+        if param_name not in self._persistent_params:
+            return None
+        return self._persistent_params[param_name]

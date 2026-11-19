@@ -46,7 +46,7 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.model = ESM2LocalAllLayers()
 
-        ref_contact_map = context.get_extra_param_value("ref_contact_map")
+        ref_contact_map = context.get_persistent_param_value("ref_contact_map")
         if ref_contact_map is None:
             ref_atoms = context.get_reference_chain().ca_atoms
             ref_contact_map = compute_contacts_map(
@@ -54,11 +54,11 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
                 self.distance_threshold,
                 self.min_separation,
             )
-            context.set_extra_param_value("ref_contact_map", ref_contact_map)
-        total_contacts = context.get_extra_param_value("num_ref_contacts")
+            context.set_persistent_param_value("ref_contact_map", ref_contact_map)
+        total_contacts = context.get_persistent_param_value("num_ref_contacts")
         if total_contacts is None:
             total_contacts = np.triu(ref_contact_map, k=1).sum()
-            context.set_extra_param_value("num_ref_contacts", total_contacts)
+            context.set_persistent_param_value("num_ref_contacts", total_contacts)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_map is None:
             model_sequence = context.get_model_chain().sequence

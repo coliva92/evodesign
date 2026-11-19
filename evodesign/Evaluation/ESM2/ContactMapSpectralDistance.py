@@ -78,9 +78,9 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.model = ESM2LocalAllLayers()
 
-        ref_laplacian = context.get_extra_param_value("ref_norm_laplacian")
+        ref_laplacian = context.get_persistent_param_value("ref_norm_laplacian")
         if ref_laplacian is None:
-            ref_contact_map = context.get_extra_param_value("ref_contact_map")
+            ref_contact_map = context.get_persistent_param_value("ref_contact_map")
             if ref_contact_map is None:
                 ref_atoms = context.get_reference_chain().ca_atoms
                 ref_contact_map = compute_contacts_map(
@@ -88,9 +88,9 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
                     self.distance_threshold,
                     self.min_separation,
                 )
-                context.set_extra_param_value("ref_contact_map", ref_contact_map)
+                context.set_persistent_param_value("ref_contact_map", ref_contact_map)
             ref_laplacian = self.normalized_laplacian(ref_contact_map)
-            context.set_extra_param_value("ref_norm_laplacian", ref_laplacian)
+            context.set_persistent_param_value("ref_norm_laplacian", ref_laplacian)
         predicted_laplacian = context.get_extra_param_value(
             "esm2_predicted_norm_laplacian"
         )

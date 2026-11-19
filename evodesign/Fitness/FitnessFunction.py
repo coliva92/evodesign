@@ -26,9 +26,10 @@ class FitnessFunction(ABC):
         self,
         model_chain: Chain,
         ref_chain: Chain,
+        persistent_params: dict,
         **kwargs,
     ) -> npt.NDArray[np.float64]:
-        context = Context(model_chain, ref_chain, self._evaluators, **kwargs)
+        context = Context(model_chain, ref_chain, self._evaluators, persistent_params, **kwargs)
         term_values = np.array(
             [context.get_component_value(name) for name in self.terms]
         )

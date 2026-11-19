@@ -42,7 +42,7 @@ class iLearnDescriptors(SequenceBasedEvaluator):
         context: ContextInterface,
     ) -> dict[str, float]:
         fasta_filename = "tmp_sequence.fasta"
-        ref_descriptors = context.get_extra_param_value(
+        ref_descriptors = context.get_persistent_param_value(
             f"reference_ilearn_desc_{self.method}"
         )
         if ref_descriptors is None:
@@ -51,7 +51,7 @@ class iLearnDescriptors(SequenceBasedEvaluator):
                 fasta_filename,
                 ref_sequence,
             )
-            context.set_extra_param_value(
+            context.set_persistent_param_value(
                 ref_descriptors,
                 f"reference_ilearn_desc_{self.method}",
             )
