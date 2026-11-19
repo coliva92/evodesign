@@ -1,5 +1,4 @@
 import itertools
-from typing import List, Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -7,12 +6,10 @@ from Bio.PDB.Atom import Atom
 from Bio.PDB.Residue import Residue
 
 
-
-
 def find_atoms_in_residue(
     residue: Residue,
-    atom_names: List[str],
-) -> List[Optional[Atom]]:
+    atom_names: list[str],
+) -> list[Atom | None]:
     residue_atoms = {atom.get_name(): atom for atom in residue.get_atoms()}
     atoms = []
     for name in atom_names:
@@ -21,7 +18,6 @@ def find_atoms_in_residue(
             continue
         atoms.append(None)
     return atoms
-
 
 
 def compute_dihedral_angle(a: Atom, b: Atom, c: Atom, d: Atom) -> float:
@@ -37,14 +33,12 @@ def compute_dihedral_angle(a: Atom, b: Atom, c: Atom, d: Atom) -> float:
     return dihedral
 
 
-
-def compute_distance_map(atoms: List[Atom]) -> npt.NDArray[np.float64]:
+def compute_distance_map(atoms: list[Atom]) -> npt.NDArray[np.float64]:
     return np.array([a - b for (a, b) in itertools.combinations(atoms, 2)])
 
 
-
 def compute_contacts_map(
-    atoms: List[Atom],
+    atoms: list[Atom],
     distance_threshold: float = 8.0,
     min_separation: int = 6,
 ) -> npt.NDArray[np.int64]:
