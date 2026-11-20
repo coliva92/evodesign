@@ -43,11 +43,11 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
 
     def spectral_distance(
         self,
-        predicted_laplacian: npt.NDArray[np.int64],
+        model_laplacian: npt.NDArray[np.int64],
         ref_laplacian: npt.NDArray[np.int64],
     ) -> float:
-        assert predicted_laplacian.shape == ref_laplacian.shape
-        eig_predicted = np.linalg.eigvalsh(predicted_laplacian)
+        assert model_laplacian.shape == ref_laplacian.shape
+        eig_predicted = np.linalg.eigvalsh(model_laplacian)
         eig_ref = np.linalg.eigvalsh(ref_laplacian)
         eig_predicted /= 2.0
         eig_ref /= 2.0
@@ -57,11 +57,11 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
 
     def do(
         self,
-        predicted_laplacian: npt.NDArray[np.int64],
+        model_laplacian: npt.NDArray[np.int64],
         ref_laplacian: npt.NDArray[np.int64],
         **kwargs,
     ) -> tuple[float, ...]:
-        distance = self.spectral_distance(predicted_laplacian, ref_laplacian)
+        distance = self.spectral_distance(model_laplacian, ref_laplacian)
         norm_distance = distance
         if self.distance_normalization is not None:
             norm_distance = self.distance_normalization.do(distance)
@@ -91,10 +91,10 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
                 context.set_persistent_param_value("ref_contact_map", ref_contact_map)
             ref_laplacian = self.normalized_laplacian(ref_contact_map)
             context.set_persistent_param_value("ref_norm_laplacian", ref_laplacian)
-        predicted_laplacian = context.get_extra_param_value(
+        model_laplacian = context.get_extra_param_value(
             "esm2_predicted_norm_laplacian"
         )
-        if predicted_laplacian is None:
+        if model_laplacian is None:
             predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
             if predicted_map is None:
                 model_sequence = context.get_model_chain().sequence
@@ -109,11 +109,11 @@ class ContactMapSpectralDistance(SequenceBasedEvaluator):
                 predicted_map,
                 self.min_separation,
             )
-            predicted_laplacian = self.normalized_laplacian(predicted_map)
+            model_laplacian = self.normalized_laplacian(predicted_map)
             context.set_extra_param_value(
-                "esm2_predicted_norm_laplacian", predicted_laplacian
+                "esm2_predicted_norm_laplacian", model_laplacian
             )
-        dist, norm_dist = self.do(predicted_laplacian, ref_laplacian)
+        dist, norm_dist = self.do(model_laplacian, ref_laplacian)
         return {
             "distance": dist,
             "norm_distance": norm_dist,
