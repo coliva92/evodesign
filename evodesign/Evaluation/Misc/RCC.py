@@ -141,7 +141,9 @@ class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
         norm_rmse = rmse_val
         if self.rmse_normalization is not None:
             norm_rmse = self.rmse_normalization.do(rmse_val)
-        norm_cos = norm_cosine_similarity(model_rcc_vector, reference_rcc_vector)
+        norm_cos = 0
+        if np.any(model_rcc_vector) and np.any(reference_rcc_vector):
+            norm_cos = norm_cosine_similarity(model_rcc_vector, reference_rcc_vector)
         dist = euclidean_distance(model_rcc_vector, reference_rcc_vector)
         norm_dist = dist
         if self.distance_normalization is not None:

@@ -23,6 +23,8 @@ def cosine_similarity(
 ) -> float:
     n1 = np.linalg.norm(u)
     n2 = np.linalg.norm(v)
+    if n1 == 0 or n2 == 0:
+        return 0.0
     return np.dot(u, v) / (n1 * n2)
 
 
