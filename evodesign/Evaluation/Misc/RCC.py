@@ -145,7 +145,7 @@ class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
     ) -> dict[str, float]:
 
         if self.esm_model is None:
-            from .ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
+            from ..ESM2.ESM2LocalAllLayers import ESM2LocalAllLayers
 
             # ESM-2 model is instanced only when `query_model` is called
             self.esm_model = ESM2LocalAllLayers()
