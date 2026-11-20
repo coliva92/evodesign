@@ -66,6 +66,7 @@ class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
         self.min_separation = min_separation
         self.rmse_normalization = rmse_normalization
         self.distance_normalization = distance_normalization
+        self._tmp_filename = None
 
     @classmethod
     def get_rcc_class(cls, nodes: Sequence[int]) -> int:
@@ -113,10 +114,16 @@ class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
         ]
         for raw_line in stream_command_line(cmd):
             line = raw_line.strip()
-            if not line or line.startswith(("NOTE:", "Reading", "tomita:")):
+            if not line or line.startswith(("NOTE:", "Reading")):
+                continue
+            if "maximal" in line or "cliques" in line or "seconds" in line:
                 continue
 
+            if line.startswith("tomita:"):
+                line = line.removeprefix("tomita:").strip()
+
             # Process clique directly in memory
+            # assuming quick-cliques was compiled with the `PRINT_CLIQUES_ONE_BY_ONE` flag
             nodes = sorted([int(token) for token in line.split()])
             rcc_class = self.get_rcc_class(nodes)
             if rcc_class > -1:
@@ -167,6 +174,7 @@ class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
                 ref_atoms = context.get_reference_chain().ca_atoms
                 ref_contact_map = compute_contacts_map(
                     ref_atoms,
+                    self.distance_threshold,
                     self.min_separation,
                 )
                 context.set_persistent_param_value("ref_contact_map", ref_contact_map)
