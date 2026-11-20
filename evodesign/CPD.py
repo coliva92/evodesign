@@ -1,4 +1,6 @@
-from abc import ABC  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from abc import ABC
 
 import numpy as np
 import numpy.typing as npt

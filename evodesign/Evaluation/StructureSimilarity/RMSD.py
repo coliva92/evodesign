@@ -1,4 +1,6 @@
-from Bio.PDB import Superimposer  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from Bio.PDB import Superimposer
 from Bio.PDB.Atom import Atom
 
 from ..ContextInterface import ContextInterface

@@ -1,4 +1,6 @@
-from collections.abc import Sequence  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from collections.abc import Sequence
 
 import numpy as np
 import numpy.typing as npt

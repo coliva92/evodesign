@@ -1,4 +1,7 @@
-class ModelContainer:  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+
+class ModelContainer:
     """
     Singleton container that loads and caches the pretrained ESMFold v1 model and its
     underlying ESM-2 language model in GPU memory.

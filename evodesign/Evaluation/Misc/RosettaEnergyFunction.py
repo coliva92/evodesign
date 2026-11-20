@@ -1,4 +1,6 @@
-from ..ContextInterface import ContextInterface  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from ..ContextInterface import ContextInterface
 from ..StructureBasedEvaluator import StructureBasedEvaluator
 
 

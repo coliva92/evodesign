@@ -1,4 +1,6 @@
-from ...Evaluation.ESM2.ModelContainer import ModelContainer as ESM2ModelContainer  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from ...Evaluation.ESM2.ModelContainer import ModelContainer as ESM2ModelContainer
 from .ESMFoldInterface import ESMFoldInterface
 
 

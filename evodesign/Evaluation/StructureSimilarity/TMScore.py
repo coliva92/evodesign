@@ -1,4 +1,6 @@
-import numpy as np  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+import numpy as np
 from Bio.PDB.Atom import Atom
 from Bio.PDB.Superimposer import Superimposer
 

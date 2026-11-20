@@ -1,4 +1,6 @@
-import itertools  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+import itertools
 
 import numpy as np
 import numpy.typing as npt

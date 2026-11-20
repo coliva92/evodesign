@@ -1,4 +1,6 @@
-from warnings import deprecated  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from warnings import deprecated
 
 import numpy as np
 from Bio.PDB.Atom import Atom

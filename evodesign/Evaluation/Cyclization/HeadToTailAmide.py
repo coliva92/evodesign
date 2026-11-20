@@ -1,4 +1,6 @@
-from typing import ClassVar  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+from typing import ClassVar
 
 from Bio.PDB.Atom import Atom
 

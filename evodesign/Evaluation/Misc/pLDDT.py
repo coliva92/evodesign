@@ -1,4 +1,6 @@
-import numpy as np  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+import numpy as np
 
 from ...Protein.Chain import Chain
 from ..ContextInterface import ContextInterface

@@ -1,4 +1,6 @@
-import numpy as np  # noqa: N999
+from __future__ import annotations  # noqa: N999
+
+import numpy as np
 import numpy.typing as npt
 from descproteins import *  # assuming iLearn source code is globally accessible
 from pubscripts import *
