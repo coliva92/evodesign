@@ -8,7 +8,7 @@ from ...Protein.Geometry import compute_contacts_map
 from ...System.Subprocess import stream_command_line
 from ..ContextInterface import ContextInterface
 from ..ESM2.ModelInterface import ModelInterface as ESM2Interface
-from ..metrics import cosine_similarity, euclidean_distance, rmse
+from ..metrics import euclidean_distance, norm_cosine_similarity, rmse
 from ..Normalization.Normalization import Normalization
 from ..SequenceBasedEvaluator import SequenceBasedEvaluator
 
@@ -47,7 +47,7 @@ RCC_CLASSES = {
 }
 
 
-class RCC(SequenceBasedEvaluator):
+class RCC(SequenceBasedEvaluator):  # Residue Cluster Class
     def __init__(
         self,
         path_to_quick_cliques: str,
@@ -56,7 +56,6 @@ class RCC(SequenceBasedEvaluator):
         min_separation: int = 6,
         rmse_normalization: Normalization | None = None,
         distance_normalization: Normalization | None = None,
-        cos_normalization: Normalization | None = None,
     ) -> None:
         super().__init__()
         self.path_to_quick_cliques = path_to_quick_cliques
@@ -65,7 +64,6 @@ class RCC(SequenceBasedEvaluator):
         self.min_separation = min_separation
         self.rmse_normalization = rmse_normalization
         self.distance_normalization = distance_normalization
-        self.cos_normalization = cos_normalization
 
     @classmethod
     def get_rcc_class(cls, nodes: Sequence[int]) -> int:
@@ -97,16 +95,8 @@ class RCC(SequenceBasedEvaluator):
     def compute_rcc_vector(
         self,
         contact_map: npt.NDArray[np.float64],
-        filename: str | None = None,
+        filename: str,
     ) -> npt.NDArray[np.int64]:
-        # generate a temporary filename if none is provided
-        if filename is None:
-            import datetime
-
-            filename = (
-                "Graph_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".txt"
-            )
-
         # create the graph file that is the input to quick-cliques
         create_graph_file(contact_map, filename)
 
@@ -142,15 +132,12 @@ class RCC(SequenceBasedEvaluator):
         norm_rmse = rmse_val
         if self.rmse_normalization is not None:
             norm_rmse = self.rmse_normalization.do(rmse_val)
-        cos_sim = cosine_similarity(model_rcc_vector, reference_rcc_vector)
-        norm_cos = cos_sim
-        if self.cos_normalization is not None:
-            norm_cos = self.cos_normalization.do(cos_sim)
+        norm_cos = norm_cosine_similarity(model_rcc_vector, reference_rcc_vector)
         dist = euclidean_distance(model_rcc_vector, reference_rcc_vector)
         norm_dist = dist
         if self.distance_normalization is not None:
             norm_dist = self.distance_normalization.do(dist)
-        return rmse_val, norm_rmse, cos_sim, norm_cos, dist, norm_dist
+        return rmse_val, norm_rmse, norm_cos, dist, norm_dist
 
     def do_for_fitness_fn(
         self,
@@ -163,6 +150,14 @@ class RCC(SequenceBasedEvaluator):
             # ESM-2 model is instanced only when `query_model` is called
             self.esm_model = ESM2LocalAllLayers()
 
+        # generate a temporary filename if none is provided
+        if self._tmp_filename is None:
+            import datetime
+
+            self._tmp_filename = (
+                "Graph_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".txt"
+            )
+
         ref_rcc_vector = context.get_persistent_param_value("ref_rcc_vector")
         if ref_rcc_vector is None:
             ref_contact_map = context.get_persistent_param_value("ref_contact_map")
@@ -173,7 +168,10 @@ class RCC(SequenceBasedEvaluator):
                     self.min_separation,
                 )
                 context.set_persistent_param_value("ref_contact_map", ref_contact_map)
-            ref_rcc_vector = self.compute_rcc_vector(ref_contact_map)
+            ref_rcc_vector = self.compute_rcc_vector(
+                ref_contact_map,
+                self._tmp_filename,
+            )
             context.set_persistent_param_value("ref_rcc_vector", ref_rcc_vector)
         predicted_contacts = context.get_extra_param_value("esm2_predicted_contacts")
         if predicted_contacts is None:
@@ -187,5 +185,18 @@ class RCC(SequenceBasedEvaluator):
             predicted_contacts,
             self.min_separation,
         )
-        model_rcc_vector = self.compute_rcc_vector(predicted_contacts)
-        return self.do(model_rcc_vector, ref_rcc_vector)
+        model_rcc_vector = self.compute_rcc_vector(
+            predicted_contacts,
+            self._tmp_filename,
+        )
+        rmse_val, norm_rmse, norm_cos, dist, norm_dist = self.do(
+            model_rcc_vector,
+            ref_rcc_vector,
+        )
+        return {
+            "rmse": rmse_val,
+            "norm_rmse": norm_rmse,
+            "norm_cos_similarity": norm_cos,
+            "distance": dist,
+            "norm_distance": norm_dist,
+        }

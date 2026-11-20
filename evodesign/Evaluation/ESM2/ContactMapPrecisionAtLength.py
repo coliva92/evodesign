@@ -57,6 +57,7 @@ class ContactMapPrecisionAtLength(SequenceBasedEvaluator):
             context.set_persistent_param_value("ref_contact_map", ref_contact_map)
         total_contacts = context.get_persistent_param_value("num_ref_contacts")
         if total_contacts is None:
+            # consider all the contacts from the real contact map of the reference
             total_contacts = np.triu(ref_contact_map, k=1).sum()
             context.set_persistent_param_value("num_ref_contacts", total_contacts)
         predicted_map = context.get_extra_param_value("esm2_predicted_contacts")
