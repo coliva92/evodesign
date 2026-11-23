@@ -19,6 +19,11 @@ class ModelInterface:
     ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         raise NotImplementedError
 
+    def predict_pdb(self, sequence: str) -> str:
+        if self.model is None:
+            self.model = ModelContainer()
+        return self.model.esmfold_model.infer_pdb(sequence)
+
     @classmethod
     def contacts_map_from_prediction(  # TODO: rename to `contact_map_from_prediction`
         cls,

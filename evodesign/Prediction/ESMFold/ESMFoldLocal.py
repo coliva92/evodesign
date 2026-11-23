@@ -25,5 +25,5 @@ class ESMFoldLocal(ESMFoldInterface):
         import torch
 
         with torch.no_grad():
-            prediction = self.model.esmfold_model.infer_pdb(sequence)
+            prediction = self.model.predict_pdb(sequence)
         return prediction
