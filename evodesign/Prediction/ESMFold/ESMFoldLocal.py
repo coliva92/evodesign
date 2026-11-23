@@ -1,6 +1,6 @@
 from __future__ import annotations  # noqa: N999
 
-from ...Evaluation.ESM2.ModelContainer import ModelContainer as ESM2ModelContainer
+from ...Evaluation.ESM2.ModelInterface import ModelInterface
 from .ESMFoldInterface import ESMFoldInterface
 
 
@@ -9,7 +9,7 @@ class ESMFoldLocal(ESMFoldInterface):
 
     def __init__(
         self,
-        model: ESM2ModelContainer | None = None,
+        model: ModelInterface | None = None,
     ) -> None:
         super().__init__()
         self.model = model
@@ -25,5 +25,5 @@ class ESMFoldLocal(ESMFoldInterface):
         import torch
 
         with torch.no_grad():
-            prediction = self._model.esmfold_model.infer_pdb(sequence)
+            prediction = self.model.esmfold_model.infer_pdb(sequence)
         return prediction
